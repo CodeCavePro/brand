@@ -22,11 +22,6 @@ This repository contains resources for the **CODECAVE** brand such as logos, ico
 | Rounded 64px (png) | ![Icon Rounded 64](/icons/64x64.png "Icon Rounded 64")  |
 | Rounded 32px (png) | ![Icon Rounded 32](/icons/32x32.png "Icon Rounded 32")  |
 | Rounded 16px (png) | ![Icon Rounded 16](/icons/16x16.png "Icon Rounded 16")  |
-| Square 256px (png) | ![Icon Square 256](/icons/square-256x256.png "Icon Square 256")  |
-| Square 128px (png) | ![Icon Square 128](/icons/square-128x128.png "Icon Square 128")  |
-| Square 64px (png) | ![Icon Square 64](/icons/square-64x64.png "Icon Square 64")  |
-| Square 32px (png) | ![Icon Square 32](/icons/square-32x32.png "Icon Square 32")  |
-| Square 16px (png) | ![Icon Square 16](/icons/square-16x16.png "Icon Square 16")  |
 
 [View more sizes](/icons)
 
