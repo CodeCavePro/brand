@@ -8,7 +8,7 @@ cd logos
 # Create square logos
 inkscape --export-type png --export-filename codecave.png -w 1024 -d 600 ../src/codecave.svg
 for size in "${logo_sizes[@]}"; do
-  size2="$(($size * 80 / 100 ))"
+  size2="$(($size * 85 / 100 ))"
   skew="$(($size / 10 ))"
   convert codecave.png -density 600 -background none -gravity center -scale ${size2}x${size2} -extent ${size}x${size} -crop ${size}x${size}+0+${skew} codecave-${size}x${size}.png
   convert codecave-${size}x${size}.png -density 600 -background none -gravity center -extent ${size}x${size} codecave-${size}x${size}.png
@@ -44,7 +44,7 @@ cd icons
 inkscape --export-type png --export-filename codecave.png -w 1024 -d 600 ../src/codecave.svg
 size_icon=""
 for size in "${icon_sizes[@]}"; do
-  size2="$(($size * 80 / 100 ))"
+  size2="$(($size * 90 / 100 ))"
   skew="$(($size / 10 ))"
   convert codecave.png -density 600 -background none -gravity center -scale ${size2}x${size2} -extent ${size}x${size} -crop ${size}x${size}+0+${skew} ${size}x${size}.png
   convert ${size}x${size}.png -density 600 -background none -gravity center -extent ${size}x${size} ${size}x${size}.png
