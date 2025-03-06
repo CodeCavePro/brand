@@ -1,27 +1,25 @@
 # CODECAVE Brand
 
-This repository contains resources for the **CODECAVE** brand such as logos, icons, screenshots, color palettes, and other media.
+This repository contains resources for the **CODECAVE** brand such as [logos](/logos), [logos](/icons), [color palettes](#color-palettes), [fonts](#fonts) and other media.
 
-- [Logo folder](/logos)
-
-## Logo
+## Logos
 
 | Version | Preview |
 |---|---|
-| Inverse | ![Inverse](/logos/logo%20-%20icon+text%20285x405,%20vert.%20(Withe%20text).svg) |
-| Default | ![Default](/logos/logo%20-%20icon+text%20285x405,%20vert.%20(Black%20text).svg) |  
+| Inverse | ![Inverse](/logos/codecave-tall-128-text-white.png) |
+| Default | ![Default](/logos/codecave-tall-128-text-black.png) |
+| B/W White | ![Default](/logos/codecave-tall-128-all-white.png) |
+| B/W Black | ![Default](/logos/codecave-tall-128-all-black.png) |
 
 ## Icons
 
 | Version | Preview |
 |---|---|
-| Inverse (svg) | ![Inverse](/logos/icon-inverse.svg) |
-| Default (svg) | ![Default](/logos/icon.svg) |  
-| Rounded 256px (png) | ![Icon Rounded 256](/icons/256x256.png "Icon Rounded 256")  |
-| Rounded 128px (png) | ![Icon Rounded 128](/icons/128x128.png "Icon Rounded 128")  |
-| Rounded 64px (png) | ![Icon Rounded 64](/icons/64x64.png "Icon Rounded 64")  |
-| Rounded 32px (png) | ![Icon Rounded 32](/icons/32x32.png "Icon Rounded 32")  |
-| Rounded 16px (png) | ![Icon Rounded 16](/icons/16x16.png "Icon Rounded 16")  |
+| 256px (png) | ![Icon 256](/icons/256x256.png "Icon 256")  |
+| 128px (png) | ![Icon 128](/icons/128x128.png "Icon 128")  |
+| 64px (png) | ![Icon 64](/icons/64x64.png "Icon 64")  |
+| 32px (png) | ![Icon 32](/icons/32x32.png "Icon 32")  |
+| 16px (png) | ![Icon 16](/icons/16x16.png "Icon 16")  |
 
 [View more sizes](/icons)
 
@@ -48,3 +46,8 @@ This repository contains resources for the **CODECAVE** brand such as logos, ico
 ## Other Things To Know
 
 Coming soon...
+
+## How to Build
+
+Put 3 types of the logo: squate, horizontal and vertical into the [source folder](/src).
+Edit the list of desired sizes for logos and icons in the [build script file](build.sh).
