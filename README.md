@@ -4,6 +4,17 @@ This repository contains resources for the **CODECAVE** brand such as [logos](/l
 
 ## Logos
 
+### Wide version
+
+| Version | Preview |
+|---|---|
+| Inverse | ![Inverse](/logos/codecave-wide-256-text-white.png) |
+| Default | ![Default](/logos/codecave-wide-256-text-black.png) |
+| B/W White | ![Default](/logos/codecave-wide-256-all-white.png) |
+| B/W Black | ![Default](/logos/codecave-wide-256-all-black.png) |
+
+### Tall version
+
 | Version | Preview |
 |---|---|
 | Inverse | ![Inverse](/logos/codecave-tall-128-text-white.png) |
