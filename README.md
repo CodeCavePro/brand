@@ -51,8 +51,8 @@ This repository contains resources for the **CODECAVE** brand such as [logos](/l
 
 | Use Case |                           Link                               |          Weights          |
 |----------|--------------------------------------------------------------|---------------------------|
-| Website  |  [Montserrat](https://fonts.google.com/specimen/Montserrat)  | 500 (normal), 700 (bold)  |
-| Logo     |  [Montserrat](https://fonts.google.com/specimen/Montserrat)  |       700 (bold)          |
+| Website  |  [Inter](https://fonts.google.com/specimen/Inter)  | 500 (normal), 700 (bold)  |
+| Logo     |  [Inter](https://fonts.google.com/specimen/Inter)  |       700 (bold)          |
 
 ## Other Things To Know
 
