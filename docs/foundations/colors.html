@@ -1,0 +1,62 @@
+<!-- @dsCard group="Foundations" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CODECAVE — Colours</title>
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { padding: 40px; }
+  h1 { font-size: var(--text-lg); margin-bottom: 8px; }
+  p.lede { color: var(--color-body-secondary-lighter); margin: 0 0 32px; max-width: 60ch; }
+  h2 { font-size: var(--text-base); text-transform: uppercase; letter-spacing: .08em;
+       color: var(--color-body-secondary); margin: 32px 0 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+  .sw { border-radius: var(--radius-md); overflow: hidden; background: var(--color-surface-secondary); }
+  /* hairline keeps near-black swatches visible against the near-black page */
+  .chip { height: 64px; box-shadow: inset 0 0 0 1px var(--color-surface-quaternary); }
+  .meta { padding: 10px 12px; font-size: var(--text-caption); line-height: 1.45; }
+  .name { color: var(--color-body-primary); }
+  .val { color: var(--color-body-secondary); font-family: ui-monospace, monospace; }
+  .gradient { height: 72px; border-radius: var(--radius-md); background: var(--gradient-brand); }
+</style>
+</head>
+<body>
+  <h1>Colour</h1>
+  <p class="lede">Consume the <strong>semantic</strong> tokens. The raw ramp below them exists so
+  the semantic names have somewhere to point — reach for it only when no semantic token fits.</p>
+
+  <h2>Semantic</h2>
+  <div class="grid">
+    <div class="sw"><div class="chip" style="background:var(--color-surface-primary)"></div><div class="meta"><div class="name">surface-primary</div><div class="val">page background</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--color-surface-secondary)"></div><div class="meta"><div class="name">surface-secondary</div><div class="val">cards, panels</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--color-surface-tertiary)"></div><div class="meta"><div class="name">surface-tertiary</div><div class="val">raised surface</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--color-surface-quaternary)"></div><div class="meta"><div class="name">surface-quaternary</div><div class="val">borders, dividers</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--color-action)"></div><div class="meta"><div class="name">action</div><div class="val">links, borders, accents</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--color-hovered)"></div><div class="meta"><div class="name">hovered</div><div class="val">hover state</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--color-body-primary)"></div><div class="meta"><div class="name">body-primary</div><div class="val">headings, body text</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--color-body-secondary-lighter)"></div><div class="meta"><div class="name">body-secondary-lighter</div><div class="val">secondary text</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--color-body-secondary)"></div><div class="meta"><div class="name">body-secondary</div><div class="val">captions, muted</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--color-error)"></div><div class="meta"><div class="name">error</div><div class="val">error text</div></div></div>
+  </div>
+
+  <h2>Brand gradient</h2>
+  <div class="gradient"></div>
+
+  <h2>Raw ramp</h2>
+  <div class="grid">
+    <div class="sw"><div class="chip" style="background:var(--color-brand-0)"></div><div class="meta"><div class="name">brand-0</div><div class="val">#E8E6F0</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--color-brand-50)"></div><div class="meta"><div class="name">brand-50</div><div class="val">#C6C4CC</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--color-brand-100)"></div><div class="meta"><div class="name">brand-100</div><div class="val">#645F70</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--color-brand-200)"></div><div class="meta"><div class="name">brand-200</div><div class="val">#B19AFE</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--color-brand-210)"></div><div class="meta"><div class="name">brand-210</div><div class="val">#9980FF</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--color-brand-300)"></div><div class="meta"><div class="name">brand-300</div><div class="val">#8252FC</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--color-brand-400)"></div><div class="meta"><div class="name">brand-400</div><div class="val">#20EFFE</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--color-brand-500)"></div><div class="meta"><div class="name">brand-500</div><div class="val">#5F20FE</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--color-brand-600)"></div><div class="meta"><div class="name">brand-600</div><div class="val">#4004AF</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--color-brand-670)"></div><div class="meta"><div class="name">brand-670</div><div class="val">#1B0D4E</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--color-brand-910)"></div><div class="meta"><div class="name">brand-910</div><div class="val">#0D0D0F</div></div></div>
+    <div class="sw"><div class="chip" style="background:var(--color-brand-950)"></div><div class="meta"><div class="name">brand-950</div><div class="val">#050505</div></div></div>
+  </div>
+</body>
+</html>

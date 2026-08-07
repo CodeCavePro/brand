@@ -1,0 +1,35 @@
+/* CODECAVE — layout, radius and elevation tokens
+ * --max-width-desktop, --breakpoint-sm and --radius-custom come from
+ * codecave.pro/src/styles/global.css; the rest is measured from codecave.gay.
+ */
+
+:root {
+  --max-width-desktop: 1280px;
+  --breakpoint-sm: 457px;
+
+  /* ---- Radii — CODECAVE runs unusually large corners ---- */
+  --radius-sm: 0.5rem;      /* 8px  — inputs, small chips */
+  --radius-md: 0.75rem;     /* 12px — inline chips */
+  --radius-card: 1.5rem;    /* 24px — DEFAULT card, dominant sitewide */
+  --radius-article: 2.25rem;/* 36px — article / insight cards */
+  --radius-custom: 2.75rem; /* 44px — feature cards (from @theme) */
+  --radius-section: 4rem;   /* 64px — section panel, mobile */
+  --radius-section-md: 7.5rem; /* 120px — section panel, >=768px */
+  --radius-pill: 9999px;    /* buttons, pills, avatars */
+
+  /* ---- Page gutters ---- */
+  --gutter-base: 0.5rem;    /* <768px  */
+  --gutter-md: 1rem;        /* >=768px */
+  --gutter-xl: 2rem;        /* >=1280px */
+
+  /* ---- Section rhythm (desktop) ---- */
+  --section-padding-top: 12.5rem;   /* 200px */
+  --section-padding-bottom: 7.5rem; /* 120px */
+  --card-padding: 2rem 2rem 3rem;   /* heavier bottom seats a footer action */
+
+  /* ---- Elevation: the section panel's upward violet glow ---- */
+  --shadow-section:
+    0 -64px 64px 0 hsl(from var(--color-brand-660) h s l / 0.20),
+    0 -10px 24px 0 hsl(from var(--color-brand-660) h s l / 0.10),
+    0 -6px 6px 0 hsl(from var(--color-brand-660) h s l / 0.08);
+}

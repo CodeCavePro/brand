@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CODECAVE — Design System</title>
+<link rel="icon" href="favicon.svg">
+<link rel="stylesheet" href="styles.css">
+<style>
+  body { padding: 0; }
+  .wrap { max-width: var(--max-width-desktop); margin: 0 auto; padding: 0 var(--gutter-md); }
+  header { padding: 96px 0 64px; }
+  .eyebrow { color: var(--color-action); font-weight: 700; font-size: var(--text-lg);
+             line-height: var(--leading-lg); margin: 0 0 8px; }
+  h1 { font-size: var(--text-heading-lg); line-height: var(--text-heading-lg--line-height); margin: 0; }
+  .lede { color: var(--color-body-secondary-lighter); font-size: var(--text-md);
+          line-height: var(--leading-md); max-width: 62ch; margin: 20px 0 0; }
+  .rule { height: 4px; border-radius: var(--radius-pill); background: var(--gradient-brand);
+          margin: 40px 0 0; max-width: 320px; }
+
+  h2 { font-size: var(--text-heading-sm); line-height: 110%; margin: 72px 0 24px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+  a.card { display: block; text-decoration: none; background: var(--color-surface-secondary);
+           border-radius: var(--radius-card); padding: 28px 28px 32px;
+           border: 1px solid transparent; transition: border-color .2s, transform .2s; }
+  a.card:hover { border-color: var(--color-action); transform: translateY(-2px); }
+  a.card h3 { font-size: var(--text-lg); line-height: var(--leading-lg); margin: 0 0 8px;
+              color: var(--color-heading); }
+  a.card p { margin: 0; color: var(--color-body-secondary-lighter);
+             font-size: var(--text-base); line-height: var(--leading-base); }
+
+  .swatches { display: flex; gap: 10px; margin-top: 18px; }
+  .sw { width: 34px; height: 34px; border-radius: var(--radius-sm);
+        box-shadow: inset 0 0 0 1px var(--color-surface-quaternary); }
+
+  table { border-collapse: collapse; width: 100%; font-size: var(--text-base); margin-top: 8px; }
+  td, th { text-align: left; padding: 11px 14px;
+           border-bottom: 1px solid var(--color-surface-quaternary); }
+  th { color: var(--color-body-secondary); font-weight: 400;
+       text-transform: uppercase; letter-spacing: .06em; font-size: var(--text-caption); }
+  code { font-family: ui-monospace, SFMono-Regular, monospace; font-size: .9em;
+         color: var(--color-body-primary); }
+  .note { margin-top: 28px; padding: 18px 22px; border-radius: var(--radius-md);
+          background: var(--color-surface-secondary); border-left: 3px solid var(--color-action);
+          color: var(--color-body-secondary-lighter); font-size: var(--text-base);
+          line-height: var(--leading-base); }
+  footer { margin: 96px 0 64px; padding-top: 28px;
+           border-top: 1px solid var(--color-surface-quaternary);
+           color: var(--color-body-secondary); font-size: var(--text-caption); }
+  footer a { color: var(--color-body-secondary-lighter); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">CODECAVE</p>
+    <h1>Design System</h1>
+    <p class="lede">The tokens, type and shape language behind CODECAVE. Everything here is
+    transcribed from the production stylesheet and verified against the live site — not estimated
+    from screenshots.</p>
+    <div class="rule"></div>
+  </header>
+
+  <h2>Foundations</h2>
+  <div class="grid">
+    <a class="card" href="foundations/colors.html">
+      <h3>Colour</h3>
+      <p>Semantic tokens, the 24-step brand ramp, and the brand gradient.</p>
+      <div class="swatches">
+        <div class="sw" style="background:var(--color-surface-primary)"></div>
+        <div class="sw" style="background:var(--color-action)"></div>
+        <div class="sw" style="background:var(--color-brand-210)"></div>
+        <div class="sw" style="background:var(--color-brand-400)"></div>
+        <div class="sw" style="background:var(--color-body-primary)"></div>
+      </div>
+    </a>
+    <a class="card" href="foundations/typography.html">
+      <h3>Typography</h3>
+      <p>The Satoshi scale from 56px down to 14px, and the eyebrow pattern.</p>
+    </a>
+    <a class="card" href="foundations/spacing.html">
+      <h3>Radius &amp; Layout</h3>
+      <p>Corner radii, container breakpoints, section rhythm and the glow panel.</p>
+    </a>
+    <a class="card" href="foundations/patterns.html">
+      <h3>Patterns</h3>
+      <p>Buttons, cards and the eyebrow — with copy-paste CSS.</p>
+    </a>
+  </div>
+
+  <h2>Guidelines</h2>
+  <div class="grid">
+    <a class="card" href="guidelines.html">
+      <h3>Brand guidelines</h3>
+      <p>Logo usage, colour and type rules, shape language, motion, and what not to do.</p>
+    </a>
+  </div>
+
+  <h2>Using the tokens</h2>
+  <p class="lede">Link the stylesheet and every token is live on <code>:root</code>. There is no
+  provider and no theme object.</p>
+  <table>
+    <tr><th>File</th><th>Contents</th></tr>
+    <tr><td><code><a href="styles.css">styles.css</a></code></td><td>Imports fonts and all tokens, sets the dark baseline, defines <code>.page-container</code> and <code>.section-container</code></td></tr>
+    <tr><td><code><a href="tokens/colors.css">tokens/colors.css</a></code></td><td>Brand ramp, error ramp, semantic colour layer, gradient</td></tr>
+    <tr><td><code><a href="tokens/typography.css">tokens/typography.css</a></code></td><td>Family, heading sizes, type scale, line heights</td></tr>
+    <tr><td><code><a href="tokens/layout.css">tokens/layout.css</a></code></td><td>Radii, gutters, section rhythm, card padding, section glow</td></tr>
+    <tr><td><code><a href="fonts/fonts.css">fonts/fonts.css</a></code></td><td>The Satoshi <code>@font-face</code></td></tr>
+  </table>
+
+  <div class="note">
+    <strong>Two things that constrain design.</strong>
+    Only Satoshi <em>Regular (400)</em> ships as a real font file — 300 and 700 are synthesized by
+    the browser. And CODECAVE builds in Astro and Vue, so there is no importable component
+    library: compose markup yourself and style it with these tokens.
+  </div>
+
+  <footer>
+    Source: <a href="https://github.com/CodeCavePro/brand">CodeCavePro/brand</a> ·
+    Tokens transcribed from <code>codecave.pro/src/styles/global.css</code> and verified against
+    the live site.
+  </footer>
+
+</div>
+</body>
+</html>

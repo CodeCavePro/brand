@@ -1,0 +1,89 @@
+/* CODECAVE Design System — root stylesheet.
+ *
+ * Rendered designs receive ONLY this file's transitive @import closure, so
+ * everything the design language needs must be reachable from here.
+ */
+
+@import "./fonts/fonts.css";
+@import "./tokens/colors.css";
+@import "./tokens/typography.css";
+@import "./tokens/layout.css";
+
+/* ---- Baseline ----
+ * CODECAVE is a dark-first brand. The page is near-black; text is near-white.
+ */
+
+html {
+  background: var(--color-surface-primary);
+}
+
+body {
+  margin: 0;
+  background: var(--color-surface-primary);
+  color: var(--color-body-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-base);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-heading);
+  font-weight: var(--font-weight-bold);
+  margin: 0;
+}
+
+h1 { font-size: var(--text-heading-lg); line-height: var(--text-heading-lg--line-height); }
+h2 { font-size: var(--text-heading-md); line-height: var(--text-heading-md--line-height); }
+h3 { font-size: var(--text-heading-sm); line-height: var(--text-heading-sm--line-height); }
+
+a { color: var(--color-action); }
+a:hover { color: var(--color-hovered); }
+
+/* ---- Layout primitives (verbatim from the production stylesheet) ---- */
+
+.page-container {
+  width: 100%;
+  min-height: 100%;
+  margin: 0 auto;
+  padding-left: var(--gutter-base);
+  padding-right: var(--gutter-base);
+}
+
+@media (min-width: 768px) {
+  .page-container {
+    padding-left: var(--gutter-md);
+    padding-right: var(--gutter-md);
+  }
+}
+
+@media (min-width: 1280px) {
+  .page-container {
+    max-width: var(--max-width-desktop);
+    padding-left: var(--gutter-xl);
+    padding-right: var(--gutter-xl);
+  }
+}
+
+.section-container {
+  position: relative;
+  z-index: 50;
+  background: var(--color-surface-primary);
+  border-radius: var(--radius-section);
+  box-shadow: var(--shadow-section);
+}
+
+@media (min-width: 768px) {
+  .section-container { border-radius: var(--radius-section-md); }
+}
+
+/* ---- Accessibility ---- */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

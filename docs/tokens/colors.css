@@ -1,0 +1,70 @@
+/* CODECAVE — colour tokens
+ * Source of truth: codecave.pro/src/styles/global.css
+ * Two layers: a raw brand ramp (--color-brand-*) and a semantic layer
+ * (--color-surface-*, --color-body-*, …). Always consume the SEMANTIC layer;
+ * the ramp exists so the semantic names have somewhere to point.
+ */
+
+:root {
+  /* ---- Raw brand ramp — light to dark, accents mid-ramp ---- */
+  --color-brand-0: #E8E6F0;
+  --color-brand-25: #DFDDE4;
+  --color-brand-50: #C6C4CC;
+  --color-brand-100: #645F70;
+  --color-brand-105: #585461;
+  --color-brand-110: #2E2C33;
+  --color-brand-130: #2A2637;
+  --color-brand-200: #B19AFE;
+  --color-brand-210: #9980FF;
+  --color-brand-300: #8252FC;
+  --color-brand-400: #20EFFE;
+  --color-brand-450: #077689;
+  --color-brand-500: #5F20FE;
+  --color-brand-580: #5206E3;
+  --color-brand-600: #4004AF;
+  --color-brand-650: #33196E;
+  --color-brand-660: #281470;
+  --color-brand-670: #1B0D4E;
+  --color-brand-700: #1A0452;
+  --color-brand-800: #1E113B;
+  --color-brand-900: #070312;
+  --color-brand-910: #0D0D0F;
+  --color-brand-920: #141319;
+  --color-brand-950: #050505;
+
+  /* ---- Error ramp ---- */
+  --color-error-100: #FE9A9A;
+  --color-error-200: #FE2020;
+  --color-error-300: #B42318;
+  --color-error-400: #CA1400;
+
+  /* ---- Semantic layer — use these ---- */
+  --color-heading: var(--color-brand-0);
+  --color-action: var(--color-brand-500);
+  --color-neutral: var(--color-brand-105);
+  --color-hovered: var(--color-brand-200);
+  --color-outline-primary-hover: var(--color-brand-670);
+
+  --color-body-primary: var(--color-brand-0);
+  --color-body-secondary: var(--color-brand-100);
+  --color-body-secondary-lighter: var(--color-brand-50);
+
+  --color-surface-primary: var(--color-brand-950);
+  --color-surface-primary-transparent: hsl(from var(--color-surface-primary) h s l / 0.3);
+  --color-surface-primary-hover: var(--color-brand-130);
+  --color-surface-secondary: var(--color-brand-910);
+  --color-surface-tertiary: var(--color-brand-920);
+  --color-surface-quaternary: var(--color-brand-110);
+
+  --color-default-transparent: var(--color-brand-25);
+  --color-error: var(--color-error-300);
+
+  /* ---- Brand gradient (observed on the production site) ---- */
+  --gradient-brand: linear-gradient(
+    to right,
+    var(--color-brand-500) 0%,
+    var(--color-brand-300) 60%,
+    var(--color-brand-200) 75%,
+    var(--color-brand-0) 100%
+  );
+}

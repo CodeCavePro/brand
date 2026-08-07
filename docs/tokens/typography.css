@@ -1,0 +1,35 @@
+/* CODECAVE — typography tokens
+ * Named sizes come from codecave.pro/src/styles/global.css (@theme).
+ * The remaining steps are measured from the production site at codecave.gay.
+ */
+
+:root {
+  --font-sans: Satoshi, sans-serif;
+
+  /* ---- Named heading sizes (from @theme) ---- */
+  --text-heading-lg: 3.5rem;              /* 56px */
+  --text-heading-lg--line-height: 130%;
+  --text-heading-md: 2.75rem;             /* 44px */
+  --text-heading-md--line-height: 115%;
+  --text-heading-sm: 2rem;                /* 32px */
+  --text-heading-sm--line-height: 110%;
+
+  /* ---- Measured steps ---- */
+  --text-stat: 2.25rem;      /* 36px / 40px  — stat figures */
+  --text-lg: 1.5rem;         /* 24px / 32px  — subsection heading */
+  --text-md: 1.25rem;        /* 20px / 28px  — intro copy */
+  --text-sm: 1.125rem;       /* 18px / 28px  — names, labels */
+  --text-base: 1rem;         /* 16px / 24px  — body, buttons */
+  --text-caption: 0.875rem;  /* 14px / 20px  — captions */
+
+  --leading-stat: 2.5rem;
+  --leading-lg: 2rem;
+  --leading-md: 1.75rem;
+  --leading-sm: 1.75rem;
+  --leading-base: 1.5rem;
+  --leading-caption: 1.25rem;
+
+  /* Only two real weights exist — see fonts/fonts.css */
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+}

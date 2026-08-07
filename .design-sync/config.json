@@ -1,0 +1,12 @@
+{
+  "projectId": "37e536aa-cd72-45fc-859d-066404b92daf",
+  "projectName": "CODECAVE Design System",
+  "shape": "foundations",
+  "readmeHeader": ".design-sync/conventions.md",
+  "sources": {
+    "tokens": "../codecave.pro/src/styles/global.css",
+    "font": "../codecave.pro/src/assets/fonts/Satoshi-Regular.ttf",
+    "liveSite": "https://codecave.gay/"
+  },
+  "notes": "Foundations-only sync. No _ds_bundle.js and no components/*.d.ts are emitted: CODECAVE ships no React. See .design-sync/NOTES.md."
+}

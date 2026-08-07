@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CODECAVE — Brand Guidelines</title>
+<link rel="icon" href="favicon.svg">
+<link rel="stylesheet" href="styles.css">
+<style>
+  body { padding: 0; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 var(--gutter-md) 96px; }
+  .back { display: inline-block; margin: 40px 0 28px; color: var(--color-action);
+          text-decoration: none; font-size: var(--text-base); }
+  .back:hover { color: var(--color-hovered); }
+  h1 { font-size: var(--text-heading-md); line-height: var(--text-heading-md--line-height); margin: 0 0 12px; }
+  h2 { font-size: var(--text-heading-sm); line-height: 110%; margin: 56px 0 16px; }
+  p, li { color: var(--color-body-secondary-lighter); font-size: var(--text-base);
+          line-height: var(--leading-base); }
+  ul { padding-left: 22px; }
+  li { margin-bottom: 10px; }
+  strong { color: var(--color-body-primary); }
+  code { font-family: ui-monospace, SFMono-Regular, monospace; font-size: .9em;
+         color: var(--color-body-primary); }
+  table { border-collapse: collapse; width: 100%; font-size: var(--text-base); margin-top: 8px; }
+  td, th { text-align: left; padding: 11px 14px;
+           border-bottom: 1px solid var(--color-surface-quaternary); }
+  th { color: var(--color-body-secondary); font-weight: 400;
+       text-transform: uppercase; letter-spacing: .06em; font-size: var(--text-caption); }
+  .dont { margin-top: 20px; padding: 20px 24px; border-radius: var(--radius-md);
+          background: var(--color-surface-secondary);
+          border-left: 3px solid var(--color-error); }
+  .dont li { margin-bottom: 8px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html">&larr; Design System</a>
+  <h1>Brand guidelines</h1>
+
+  <h2>Logo</h2>
+  <p>The repository ships three source marks in <code>src/</code>, each exported to PNG at many sizes.</p>
+  <table>
+    <tr><th>Mark</th><th>Use</th></tr>
+    <tr><td><strong>Square</strong> — <code>codecave.svg</code></td><td>Avatars, favicons, app icons</td></tr>
+    <tr><td><strong>Wide</strong> — <code>codecave-wide.svg</code></td><td>Site headers, letterheads, horizontal lockups</td></tr>
+    <tr><td><strong>Tall</strong> — <code>codecave-tall.svg</code></td><td>Vertical lockups, portrait layouts</td></tr>
+  </table>
+  <p>Wide and tall marks come in four treatments: <code>text-white</code> (default, for dark
+  backgrounds), <code>text-black</code> (for light backgrounds), and <code>all-white</code> /
+  <code>all-black</code> single-colour versions for one-ink printing.</p>
+  <p>Because CODECAVE is dark-first, <strong>text-white on the near-black surface is the default
+  pairing.</strong> Use text-black only on a genuinely light surface.</p>
+  <p>The wordmark is outlined vector paths, not live text — it does not depend on an installed
+  font, and it must never be re-typed by hand to fake a missing size. Export from <code>src/</code>.</p>
+
+  <h2>Colour</h2>
+  <ul>
+    <li>The page is near-black (<code>--color-surface-primary</code>, #050505); cards step up one
+      level to <code>--color-surface-secondary</code> (#0D0D0F). The separation is deliberately
+      narrow — depth comes from radius and glow, not surface contrast.</li>
+    <li><code>--color-action</code> (#5F20FE) is the brand purple. It carries interaction: links,
+      borders, eyebrow text, focus. Emphasis, not large fills.</li>
+    <li>Large purple fills use the lighter <code>--color-brand-210</code> (#9980FF) with
+      <strong>black</strong> text — the primary button, and the only place black text appears.</li>
+    <li><code>--color-brand-400</code> (#20EFFE) is a cyan accent for gradients and orb motifs,
+      not UI chrome.</li>
+  </ul>
+
+  <h2>Type</h2>
+  <p>One family: <strong>Satoshi</strong>. Headings bold, long-form copy regular, lead paragraphs light.</p>
+  <p>The signature pattern is the <strong>eyebrow</strong>: short bold text in
+  <code>--color-action</code>, directly above a larger light lead line. Use it to open a section
+  rather than inventing a new heading treatment.</p>
+  <p>Only Satoshi Regular (400) ships as a real font file — light and bold are synthesized by the
+  browser. Don't specify weights the brand can't render.</p>
+
+  <h2>Shape</h2>
+  <ul>
+    <li>Cards: 24px (<code>--radius-card</code>)</li>
+    <li>Feature and article cards: 36–44px</li>
+    <li>Section panels: 64px, rising to 120px at ≥768px</li>
+    <li>Buttons, pills, avatars: fully round</li>
+  </ul>
+  <p>Small radii (2–4px) read as generic and off-brand. Section panels carry an <strong>upward</strong>
+  violet glow (<code>--shadow-section</code>) — the light source sits below the panel edge. This is
+  unusual; keep it, and don't replace it with a conventional drop shadow.</p>
+
+  <h2>Motion</h2>
+  <p>The production site uses GSAP with scroll-driven pinning and a Lenis smooth-scroll wrapper.
+  Motion is slow and continuous rather than snappy. All of it collapses under
+  <code>prefers-reduced-motion: reduce</code>, which <code>styles.css</code> enforces globally.</p>
+
+  <h2>What not to do</h2>
+  <div class="dont">
+    <ul>
+      <li>Don't hard-code hex values — every brand colour has a token name.</li>
+      <li>Don't put white text on <code>--color-brand-210</code>; that fill takes black text.</li>
+      <li>Don't use small corner radii.</li>
+      <li>Don't re-type the wordmark in a live font.</li>
+      <li>Don't assume Satoshi weights beyond 400 are real.</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>
