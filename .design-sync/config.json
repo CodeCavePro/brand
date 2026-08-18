@@ -3,10 +3,12 @@
   "projectName": "CODECAVE Design System",
   "shape": "foundations",
   "readmeHeader": ".design-sync/conventions.md",
-  "sources": {
+  "canonical": "https://codecavepro.github.io/brand/",
+  "sourceOfTruth": "docs/",
+  "originalProvenance": {
     "tokens": "../codecave.pro/src/styles/global.css",
     "font": "../codecave.pro/src/assets/fonts/Satoshi-Regular.ttf",
     "liveSite": "https://codecave.gay/"
   },
-  "notes": "Foundations-only sync. No _ds_bundle.js and no components/*.d.ts are emitted: CODECAVE ships no React. See .design-sync/NOTES.md."
+  "notes": "Foundations-only sync. No _ds_bundle.js and no components/*.d.ts are emitted: CODECAVE ships no React. This repo is authoritative: values were recovered from codecave.pro but are now maintained here, and the site conforms to them. See .design-sync/NOTES.md."
 }

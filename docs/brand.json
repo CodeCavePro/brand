@@ -1,0 +1,247 @@
+{
+  "name": "CODECAVE",
+  "tagline": "CODECAVE is dark, round, and violet — in that order of importance.",
+  "description": "CODECAVE is a software delivery studio. Its public surface is a marketing and lead-generation site whose entire job is to turn a visitor into one booked consultation. Six services are offered — Cloud & DevOps, E-Commerce, Autodesk plugins, Automation & AI, HubSpot, and AR & VR — and each is titled by the outcome it produces rather than the technology it uses. The stack is Astro 7, Vue 3 and Tailwind 4, with GSAP for entrance motion, Lenis for smooth scroll and Strapi as the content backend.",
+  "sourceUrl": "https://codecavepro.github.io/brand",
+  "logo": {
+    "primary": "build/codecave-wide.svg",
+    "alternates": [
+      "build/codecave-tall.svg",
+      "build/codecave.svg",
+      "build/logo.svg",
+      "build/favicon.svg",
+      "build/favicon.ico",
+      "build/favicon-96x96.png",
+      "build/apple-touch-icon.png",
+      "build/web-app-manifest-192x192.png",
+      "build/web-app-manifest-512x512.png",
+      "build/icon.png",
+      "build/logo.png",
+      "build/logo-tall.png",
+      "build/icons/16x16.png",
+      "build/icons/32x32.png",
+      "build/icons/64x64.png",
+      "build/icons/96x96.png",
+      "build/icons/128x128.png",
+      "build/icons/256x256.png",
+      "build/icons/512x512.png",
+      "assets/codecave-wide-1024-text-white.png",
+      "assets/codecave-wide-1024-text-black.png",
+      "assets/codecave-wide-1024-all-white.png",
+      "assets/codecave-wide-1024-all-black.png",
+      "assets/codecave-wide-256-text-white.png",
+      "assets/codecave-wide-256-text-black.png",
+      "assets/codecave-wide-256-all-white.png",
+      "assets/codecave-wide-256-all-black.png",
+      "assets/codecave-tall-1024-text-white.png",
+      "assets/codecave-tall-1024-text-black.png",
+      "assets/codecave-tall-1024-all-white.png",
+      "assets/codecave-tall-1024-all-black.png",
+      "assets/codecave-tall-256-text-white.png",
+      "assets/codecave-tall-256-text-black.png",
+      "assets/codecave-tall-256-all-white.png",
+      "assets/codecave-tall-256-all-black.png",
+      "assets/codecave-1024x1024.png",
+      "assets/codecave-256x256.png"
+    ],
+    "notes": "Horizontal wordmark is primary (357x110). The chevron glyph is always #5F20FE; wordmark paths are white, so the default pairing is white-on-near-black. Use the black-text variant only on a genuinely light surface and the all-white variant for one-ink printing. Clear space equals the height of the chevron. Known defect carried forward: the artwork predates Satoshi and is drawn in outlined Montserrat Bold — the paths are outlined vector, not live text, and must never be re-typed by hand."
+  },
+  "colors": [
+    {
+      "role": "background",
+      "hex": "#050505",
+      "oklch": "oklch(0.1149 0 89.9)",
+      "name": "Surface primary",
+      "usage": "the page canvas — near-black, never pure black"
+    },
+    {
+      "role": "foreground",
+      "hex": "#e8e6f0",
+      "oklch": "oklch(0.9294 0.0136 295.3)",
+      "name": "Heading / body",
+      "usage": "headings and body text — 17.6:1 on the page"
+    },
+    {
+      "role": "accent",
+      "hex": "#5f20fe",
+      "oklch": "oklch(0.5087 0.2838 282.5)",
+      "name": "Action",
+      "usage": "links, borders, eyebrows, focus halo — edges and marks only, never a large fill"
+    },
+    {
+      "role": "surface",
+      "hex": "#0d0d0f",
+      "oklch": "oklch(0.1600 0.0042 285.9)",
+      "name": "Surface secondary",
+      "usage": "cards and panels — one hair above the page; depth comes from radius and border, not contrast"
+    },
+    {
+      "role": "muted",
+      "hex": "#645f70",
+      "oklch": "oklch(0.4962 0.0274 298.8)",
+      "name": "Body secondary",
+      "usage": "metadata and placeholders only — never long-form copy"
+    },
+    {
+      "role": "border",
+      "hex": "#2e2c33",
+      "oklch": "oklch(0.2980 0.0128 298.7)",
+      "name": "Surface quaternary",
+      "usage": "hairline rules, dividers and card edges"
+    }
+  ],
+  "typography": {
+    "display": {
+      "family": "Satoshi",
+      "fallbacks": [
+        "system-ui",
+        "-apple-system",
+        "Segoe UI",
+        "Helvetica Neue",
+        "Arial",
+        "sans-serif"
+      ],
+      "weights": [
+        400,
+        700
+      ]
+    },
+    "body": {
+      "family": "Satoshi",
+      "fallbacks": [
+        "system-ui",
+        "-apple-system",
+        "Segoe UI",
+        "Helvetica Neue",
+        "Arial",
+        "sans-serif"
+      ],
+      "weights": [
+        400,
+        700
+      ]
+    }
+  },
+  "voice": {
+    "adjectives": [
+      "plain",
+      "specific",
+      "senior",
+      "reassuring",
+      "outcome-led",
+      "unhurried",
+      "non-promotional"
+    ],
+    "tone": "A small senior team talking straight to a decision-maker: first-person plural, present tense, short declaratives. Leads with the business outcome, then names the technology. Confident without superlatives. Risk, cost and ownership are addressed head-on, because reassurance rather than excitement is what the audience is buying.",
+    "messagingPillars": [
+      "Outcome before technology — every service is titled by what it produces, never by its stack.",
+      "Risk is named, not hidden — NDA, scope, milestones and outcomes are stated upfront.",
+      "One low-friction ask — a free consultation, requested through a single primary action per page.",
+      "Evidence over adjectives — every figure carries a named source; nothing is claimed without one."
+    ],
+    "vocabulary": {
+      "use": [
+        "Discuss project for free",
+        "Get a free consultation",
+        "Discuss partnership",
+        "Learn more",
+        "Tell us about your project",
+        "Optimize costs",
+        "payback",
+        "scope, milestones and outcomes upfront",
+        "Your idea stays yours"
+      ],
+      "avoid": [
+        "world-class",
+        "best-in-class",
+        "cutting-edge",
+        "industry-leading",
+        "revolutionary",
+        "game-changing",
+        "synergy",
+        "leverage as a noun",
+        "paradigm",
+        "ecosystem-speak",
+        "exclamation marks outside a single lead-magnet CTA",
+        "hard-sell urgency",
+        "unattributed statistics or invented metrics"
+      ]
+    }
+  },
+  "imagery": {
+    "style": "Dark-ground product photography and flat vector illustration, always composited onto the near-black canvas.",
+    "subjects": [
+      "product screenshots in device mockups or full-bleed",
+      "flat vector illustration of delivery and infrastructure",
+      "client and team portraits on a dark ground",
+      "decorative line-and-glow art: thin violet strokes, concentric orbs, radial gradients fading to transparent"
+    ],
+    "treatment": "Crop everything into the system's large radii — 24px minimum, 44px on feature blocks. Decorative art reads as emitted light rather than as a filled shape. Screenshots keep their own chrome; never add a drop shadow beneath them.",
+    "avoid": [
+      "white or light image backgrounds",
+      "square un-rounded corners",
+      "conventional downward drop shadows under imagery",
+      "stock handshake photography",
+      "competing saturated hues",
+      "icons and avatars treated as brand imagery"
+    ],
+    "samples": [
+      {
+        "file": "imagery/partnership-background.svg",
+        "kind": "Section background art · homepage/partnership.astro",
+        "caption": "Concentric orbs — the signature decorative motif"
+      },
+      {
+        "file": "imagery/work-process-background.svg",
+        "kind": "Section background art · workflow/work-process.astro",
+        "caption": "Orb field behind the work-process rail"
+      },
+      {
+        "file": "imagery/failureproof-background.svg",
+        "kind": "Section background art · workflow/failureproof.astro",
+        "caption": "Orbital ellipses at 0.05–0.4 opacity"
+      },
+      {
+        "file": "imagery/testimonials-background.svg",
+        "kind": "Section background art · homepage/testimonial.astro",
+        "caption": "Long arcs behind the testimonial band"
+      },
+      {
+        "file": "imagery/questions-background.svg",
+        "kind": "Section background art · homepage/questions.astro",
+        "caption": "Dense line field behind the FAQ"
+      },
+      {
+        "file": "imagery/project-review-background.svg",
+        "kind": "Section background art · projects/[slug]/index.astro",
+        "caption": "Project review header art"
+      },
+      {
+        "file": "imagery/project-target-audience.svg",
+        "kind": "Inline vector illustration",
+        "caption": "Target-audience diagram"
+      }
+    ]
+  },
+  "layout": {
+    "radius": "24px",
+    "borderWeight": "1px",
+    "spacing": "16px",
+    "postureRules": [
+      "Radius is the loudest brand signal: 8px inputs, 12px icon tiles, 24px default card, 36px article, 44px feature, 64px section panel below 768px, 120px at and above it, pill for every button. A 4px corner does not occur in source.",
+      "Depth never comes from contrast. The page is #050505 and a card is #0D0D0F — separation is radius plus a 1px #2E2C33 hairline.",
+      "The only shadow points upward: --shadow-section stacks three layers with negative Y offsets seeded from #281470. Cards receive no shadow at all.",
+      "Violet lives on edges. #5F20FE never fills a large area; the one violet field is the glow button at #9980FF with #1B0D4E text.",
+      "One primary action per page. A long page may repeat the glow button once at the very end, never twice in a viewport.",
+      "Section rhythm is asymmetric: 200px of padding above, 120px below. Card padding is bottom-heavy at 2rem 2rem 3rem.",
+      "Nothing dims on hover — hover raises contrast. Only :disabled reduces it, to opacity 0.2.",
+      "Focus is a violet halo on text inputs (outline:none plus --shadow-input-focus) and a 2px #B19AFE ring everywhere else. Neither may be removed.",
+      "There is no light theme. Three light surfaces exist as exceptions and cannot be generalized into one.",
+      "Component kit covers: button-glow, button-primary, button-secondary, button-tertiary, button-ghost, button-text, button-link, button-disabled, card, card-article, card-feature, chip, field, checkbox, eyebrow, lead, eyebrow-lead, stat, divider, page-container, section-container.",
+      "Motion is short and eased, never bouncy: 150ms cubic-bezier(0.4, 0, 0.2, 1) for colour, border and fill changes, 200ms ease for surfaces and shadows, 500ms ease for transform. GSAP entrances run 0.5s on power2.out. Nothing loops and nothing bounces.",
+      "The reduced-motion guard is not optional. @media (prefers-reduced-motion: reduce) collapses every animation and transition to 0.01ms, caps iteration count at 1, and forces scroll-behavior: auto — which also disables the Lenis smooth scroll.",
+      "Only two breakpoints exist in source: 768px and 1280px. Everything below 768px is single-column, and the section-panel radius flips 64px → 120px at 768px. There is no tablet-specific layout.",
+      "Decorative art is stroke-only vector on a transparent ground — concentric orbs and long arcs at 0.05–0.8 opacity, gradient-stroked in #5F20FE, #20EFFE and #391398. It reads as emitted light, never as a filled shape, and only resolves when composited on #050505."
+    ]
+  }
+}

@@ -1,0 +1,108 @@
+---
+import { paths } from "../../helpers/paths.ts";
+import { strapi } from "../../lib/strapi";
+import Button from "../common/Button.vue";
+import GlowButton from "../common/GlowButton.vue";
+import TestimonialsCarousel from "./testimonials-carousel.vue";
+
+const entries = await strapi.testimonials.find({
+    filters: {
+        documentId: {
+            $in: [
+                'eravwbyqlvt48bu9h94tzrhv',
+                'vmla1ovuo85xlviyv81wvmi7',
+                'wu9cr0kjbf1o4ihkdtnmkvtk',
+                'apqa5hl6oe805dg7b9e267a3',
+                'j8mma7rt9olyupbz832c65x5',
+                'rtazbu0q7p4iwv3r7kmk6xwq',
+            ],
+        },
+    },
+    populate: { 
+        photo: true 
+    },
+})
+const reviewsSchema = {
+    review: entries.map((review) => ({
+        "@context": "https://schema.org/",
+        "@id": "https://codecave.it/#review",
+        "@type": "Review",
+        "itemReviewed": {
+            "@type": "Organization",
+            "@id": "https://codecave.it/#organization",
+            "name": "CodeCave",
+        },
+        "author": {
+            "@type": "Person",
+            "name": review.name
+        },
+        "reviewBody": review.review,
+        "reviewRating": {
+            "@type": "Rating",
+            "ratingValue": review.reviewrating,
+            "bestRating": "5",
+            "worstRating": "1",
+        }
+    }))
+}
+---
+
+<section id="testimonials" class="page-container testimonial space-y-20 py-14 md:pb-20">
+    <div id="testimonial-text" class="text-center space-y-8">
+        <h2 class="font-bold text-heading text-heading-sm md:text-heading-md">Words of appreciation</h2>
+        <div class="text-body-secondary-lighter md:text-xl">
+            <p>Thank you for the feedback and</p>
+            <p>for choosing to grow with us.</p>
+        </div>
+    </div>
+    <div class="-mx-2">
+        <TestimonialsCarousel items={entries} client:only="vue" />
+    </div>
+    <div class="flex flex-col items-center justify-center gap-7 xl:gap-8 xl:flex-row">
+        <GlowButton title="Discuss partnership" class="w-full max-w-56" client:load />
+        <Button
+                as="link"
+                href={paths.workflow}
+                title="About us & how we work"
+                variant="tertiary"
+                class="max-w-56"
+        />
+    </div>
+</section>
+
+<style>
+    .testimonial {
+        background-image: url("../../assets/images/testimonials-background.svg");
+        background-position: center center;
+        background-repeat: no-repeat;
+    }
+</style>
+
+<script>
+    import { gsap } from "gsap";
+    import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+    gsap.registerPlugin(ScrollTrigger)
+    gsap.from('#testimonial-text', {
+        scrollTrigger: {
+            trigger: '#testimonial-text',
+            start: 'top bottom',
+            end: 'bottom end',
+            scrub: false,
+            once: true,
+        },
+        y: '100%',
+        opacity: 0,
+        ease: 'power3.out',
+    })
+</script>
+
+<script is:inline type="application/ld+json" set:html={JSON.stringify(reviewsSchema)} />
+
+<style>
+  /* GSAP tween targets: promote to compositor layers up-front so the
+     first animation frame does not pay for layer creation */
+  #testimonial-text {
+    will-change: transform, opacity;
+  }
+</style>

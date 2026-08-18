@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CODECAVE — Component storybook</title>
+<link rel="icon" href="../build/favicon.svg">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="components.css">
+<link rel="stylesheet" href="storybook.css">
+<style>
+  .sb-lead { max-width: 68ch; margin: 1.25rem 0 0;
+             color: var(--color-body-secondary-lighter);
+             font-size: var(--text-md); line-height: var(--leading-md); }
+  .sb-group { margin-top: 3.5rem; }
+  .sb-group > h2 { margin: 0 0 0.25rem; font-size: var(--text-lg);
+                   line-height: var(--leading-lg); }
+  .sb-group > p { margin: 0 0 1.5rem; color: var(--color-body-secondary-lighter);
+                  font-size: var(--text-caption); line-height: var(--leading-caption); }
+  .mini { transform: scale(0.72); transform-origin: center; }
+</style>
+</head>
+<body data-od-id="storybook-index">
+<div class="sb">
+  <a class="sb-back" href="../index.html">&larr; Design system</a>
+
+  <header class="sb-head">
+    <p class="eyebrow">Component storybook</p>
+    <h1>13 components, extracted from codecave.pro</h1>
+    <p class="sb-lead">Every story renders from <code>components.css</code> — a
+       framework-free translation of the Tailwind utility strings in the
+       <code>.vue</code> and <code>.astro</code> source, resolved against the
+       system tokens. No screenshots, no redrawn marks, and no invented states:
+       where the source has no rule, the story has no rule, and the gap is
+       written down.</p>
+    <div class="sb-tags">
+      <span class="sb-tag is-vue">12 Vue islands</span>
+      <span class="sb-tag is-astro">1 Astro component</span>
+      <span class="sb-tag">Astro 6 · Vue 3.5 · Tailwind 4.1</span>
+    </div>
+  </header>
+
+  <section class="sb-group">
+    <h2>Primitives</h2>
+    <p>The reusable controls. Everything else on the site is built from these.</p>
+    <div class="sb-cat">
+
+      <a href="button.html">
+        <span class="thumb">
+          <span class="cc-btn cc-btn-primary" style="height:2.25rem;padding:0.25rem 1.25rem;font-size:0.8125rem">Primary</span>
+          <span class="cc-btn cc-btn-tertiary" style="height:2.25rem;padding:0.25rem 1.25rem;font-size:0.8125rem">Tertiary</span>
+        </span>
+        <span class="meta">
+          <strong>Button</strong>
+          <span>Seven variants off one prop — four pills and three bare text links that share no box.</span>
+          <code>common/Button.vue</code>
+        </span>
+      </a>
+
+      <a href="glow-button.html">
+        <span class="thumb">
+          <span class="cc-glow-wrap mini">
+            <span class="cc-edge cc-edge-left"></span>
+            <span class="cc-glow"><span>Book a call</span><span class="orb"></span></span>
+            <span class="cc-edge cc-edge-right"></span>
+          </span>
+        </span>
+        <span class="meta">
+          <strong>GlowButton</strong>
+          <span>The single conversion CTA. Pointer-tracked glow, GSAP-driven.</span>
+          <code>common/GlowButton.vue</code>
+        </span>
+      </a>
+
+      <a href="input-text.html">
+        <span class="thumb">
+          <span class="cc-field" style="max-width:15rem">
+            <span style="position:absolute;padding-left:0.75rem;padding-top:0.75rem;font-weight:700;color:var(--color-heading);font-size:0.75rem">Email</span>
+            <input type="text" placeholder="you@company.com" tabindex="-1" style="font-size:0.8125rem">
+          </span>
+        </span>
+        <span class="meta">
+          <strong>InputText</strong>
+          <span>Stacked label over the field. Focus is a halo, never an outline.</span>
+          <code>common/InputText.vue</code>
+        </span>
+      </a>
+
+      <a href="text-field.html">
+        <span class="thumb">
+          <span class="cc-textfield" style="max-width:15rem;min-height:5rem;width:100%">
+            <span style="font-weight:700;font-size:0.75rem">Message</span>
+            <span style="font-size:0.75rem;color:var(--color-body-secondary);padding-top:0.375rem">Tell us about your project</span>
+          </span>
+        </span>
+        <span class="meta">
+          <strong>TextField</strong>
+          <span>Auto-resizing textarea; halo on the wrapper via <code>:focus-within</code>.</span>
+          <code>common/TextField.vue</code>
+        </span>
+      </a>
+
+      <a href="checkbox.html">
+        <span class="thumb">
+          <span class="cc-check cc-check-primary" style="pointer-events:none"><input type="checkbox" checked tabindex="-1"><span style="font-size:0.8125rem">I agree</span></span>
+          <span class="cc-check cc-check-secondary" style="pointer-events:none"><input type="checkbox" tabindex="-1"><span style="font-size:0.8125rem">Cloud</span></span>
+        </span>
+        <span class="meta">
+          <strong>Checkbox</strong>
+          <span>Two variants × two sizes. Stateless — no <code>v-model</code>, no emit.</span>
+          <code>common/Checkbox.vue</code>
+        </span>
+      </a>
+
+      <a href="radio.html">
+        <span class="thumb">
+          <span class="cc-radio cc-radio-primary" style="pointer-events:none"><input type="radio" checked tabindex="-1"><span>$10–25k</span></span>
+          <span class="cc-radio cc-radio-primary" style="pointer-events:none"><input type="radio" tabindex="-1"><span>$25–50k</span></span>
+        </span>
+        <span class="meta">
+          <strong>Radio</strong>
+          <span>Variant names are inverted relative to Checkbox — same word, opposite treatment.</span>
+          <code>common/Radio.vue</code>
+        </span>
+      </a>
+
+    </div>
+  </section>
+
+  <section class="sb-group">
+    <h2>Content</h2>
+    <p>Cards and blocks, mostly fed from Strapi.</p>
+    <div class="sb-cat">
+
+      <a href="article-preview.html">
+        <span class="thumb">
+          <span style="width:100%;max-width:15rem;padding:0.875rem;border-radius:1.25rem;background:var(--color-surface-secondary);display:flex;gap:0.75rem;align-items:center">
+            <span style="width:44px;height:44px;border-radius:0.5rem;background:var(--color-surface-tertiary);flex:none"></span>
+            <span>
+              <span style="display:block;font-size:0.625rem;color:var(--color-body-secondary)">18 April 2026</span>
+              <span style="display:block;font-size:0.8125rem;font-weight:700;color:var(--color-heading);line-height:1.3">Cutting a BIM export step</span>
+            </span>
+          </span>
+        </span>
+        <span class="meta">
+          <strong>ArticlePreview</strong>
+          <span>The insight card, at a 2.25rem radius that exists nowhere else.</span>
+          <code>common/ArticlePreview.vue</code>
+        </span>
+      </a>
+
+      <a href="review.html">
+        <span class="thumb" style="background:var(--color-surface-primary) url('../imagery/partnership-background.svg') center/cover no-repeat">
+          <span style="backdrop-filter:blur(32px);border-radius:1.5rem;padding:1rem 1.25rem;max-width:15rem">
+            <span style="display:block;font-size:0.8125rem;color:var(--color-heading)">Marta Feld</span>
+            <span style="display:block;font-size:0.625rem;color:var(--color-body-secondary)">CTO, Northwind</span>
+          </span>
+        </span>
+        <span class="meta">
+          <strong>Review</strong>
+          <span>No background of its own — only a 32px backdrop blur. Judge it on art.</span>
+          <code>common/Review.vue</code>
+        </span>
+      </a>
+
+      <a href="technology-card.html">
+        <span class="thumb">
+          <span class="cc-tech" style="width:7rem;height:7rem"><span class="inner"><span style="font-size:0.875rem;font-weight:700;color:var(--color-heading);text-align:center">Cloud &amp; DevOps</span></span></span>
+        </span>
+        <span class="meta">
+          <strong>TechnologyCard</strong>
+          <span>The only component that uses the cyan — as a masked gradient stroke.</span>
+          <code>homepage/technology-card.vue</code>
+        </span>
+      </a>
+
+      <a href="project-chip.html">
+        <span class="thumb">
+          <span class="cc-chip" style="padding:0.5rem 1rem;font-size:0.8125rem">Autodesk Revit</span>
+          <span class="cc-chip" style="padding:0.5rem 1rem;font-size:0.8125rem">Azure</span>
+        </span>
+        <span class="meta">
+          <strong>ProjectChip</strong>
+          <span>The smallest component in the system: one div, one slot, no props.</span>
+          <code>project/project-chip.astro</code>
+        </span>
+      </a>
+
+      <a href="typing-effect.html">
+        <span class="thumb">
+          <span style="text-align:center;font-weight:700;line-height:1.3">
+            <span style="display:block;font-size:1rem;color:var(--color-heading)">We build software</span>
+            <span style="display:block;font-size:1rem;color:var(--color-action)">that survives contact</span>
+          </span>
+        </span>
+        <span class="meta">
+          <strong>TypingEffect</strong>
+          <span>Two-line display heading; a sanctioned large-text use of <code>#5F20FE</code>.</span>
+          <code>common/TypingEffect.vue</code>
+        </span>
+      </a>
+
+      <a href="pain-points-item.html">
+        <span class="thumb">
+          <span style="width:9rem;padding:0.875rem;border-radius:1rem;background:var(--color-surface-secondary)">
+            <span style="display:block;width:1.5rem;height:1.5rem;border-radius:0.5rem;background:var(--color-surface-tertiary);margin-bottom:0.75rem"></span>
+            <span style="display:block;font-size:0.75rem;color:var(--color-body-secondary-lighter)">Manual exports between Revit and the ERP.</span>
+          </span>
+        </span>
+        <span class="meta">
+          <strong>PainPointsItem</strong>
+          <span>CMS markdown through <code>v-html</code> with a custom <code>marked</code> renderer.</span>
+          <code>project/pain-points-item.vue</code>
+        </span>
+      </a>
+
+    </div>
+  </section>
+
+  <section class="sb-group">
+    <h2>Compositions</h2>
+    <p>Not primitives — assemblies worth documenting because they define styling
+       that lives nowhere else.</p>
+    <div class="sb-cat">
+
+      <a href="link-group.html">
+        <span class="thumb">
+          <span class="cc-linkgroup">
+            <span class="group-name" style="display:block;margin-bottom:0.5rem">Services</span>
+            <span style="display:flex;flex-direction:column;gap:0.25rem;font-size:0.75rem">
+              <span class="cc-btn-text">Cloud &amp; DevOps</span>
+              <span class="cc-btn-text">E-Commerce</span>
+              <span class="cc-btn-text">AR &amp; VR</span>
+            </span>
+          </span>
+        </span>
+        <span class="meta">
+          <strong>LinkGroup</strong>
+          <span>Heading plus N <code>Button variant="text"</code> — the footer's link styling.</span>
+          <code>footer/link-group.vue</code>
+        </span>
+      </a>
+
+    </div>
+  </section>
+
+  <section class="sb-group">
+    <h2>What this storybook found</h2>
+    <p>53 findings across the thirteen components — 29 defects and 24 design
+       observations — each recorded on its own story page. The six that would
+       change behavior in production:</p>
+
+    <p class="sb-note is-warn"><strong>Two components animate against an undefined variable.</strong>
+      <code>Checkbox.vue</code>:75 and <code>Radio.vue</code>:61 both declare
+      <code>transition: var(--default-transition-duration) transform ease-in-out;</code>.
+      That property is defined nowhere in the project — not in
+      <code>global.css</code>, not in <code>@theme</code>, not in
+      <code>tailwind.config.ts</code> — so both declarations are invalid and both
+      indicators snap instead of easing.</p>
+
+    <p class="sb-note is-warn"><strong><code>tailwind.config.ts</code> is never loaded.</strong>
+      The project is Tailwind 4.1.13 configured CSS-first
+      (<code>@import "tailwindcss"</code> plus <code>@theme</code> in
+      <code>global.css</code>). In v4 a JS config is only read when a stylesheet
+      names it with <code>@config</code>, and no file does. So
+      <code>darkMode: 'class'</code>, the <code>content</code> globs and the
+      <code>theme.extend</code> block have no effect — including the
+      <code>*.stories</code> exclusion that suggests a Storybook was once
+      planned.</p>
+
+    <p class="sb-note is-warn"><strong><code>Button</code>'s <code>isDisabled</code> does not disable anything.</strong>
+      It sets opacity and a cursor. The <code>disabled</code> attribute is never
+      bound, so the control stays clickable and keyboard-reachable — and as a link
+      it still navigates.</p>
+
+    <p class="sb-note is-warn"><strong><code>PainPointsItem</code> renders unsanitized CMS markdown through <code>v-html</code>.</strong>
+      Markdown permits raw HTML and no sanitizer runs, so the field is an XSS sink
+      gated only by Strapi access control.</p>
+
+    <p class="sb-note is-warn"><strong><code>TextField</code> syncs its model on <code>change</code>, not <code>input</code>.</strong>
+      The parent's <code>v-model</code> only updates on blur, while
+      <code>InputText</code> in the same form updates per keystroke.</p>
+
+    <p class="sb-note"><strong>Two dead styles.</strong>
+      <code>Radio</code>'s secondary hover needs a <code>group</code> ancestor that
+      nothing renders, and <code>Button</code>'s <code>type</code> prop is declared
+      but never bound.</p>
+  </section>
+
+</div>
+</body>
+</html>

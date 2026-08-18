@@ -5,18 +5,24 @@ and Vue, so no React components ship with this project — there is no `_ds_bund
 `window.*` global to import from. Write your own markup and style it with the tokens below. That
 is the whole idiom.
 
+This project **is** the CODECAVE source of truth — canonical at
+<https://codecavepro.github.io/brand/>, published from `CodeCavePro/brand`. Implementations conform
+to it; where the live site at <https://codecave.gay> differs, the site is what's out of date.
+
 ## Setup
 
 No provider, no wrapper, no theme object. Link the stylesheet and the tokens are live on `:root`:
 
 ```html
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="colors_and_type.css">
 ```
 
-`styles.css` also sets the dark baseline on `html`/`body` (near-black background, near-white text,
-Satoshi) and defines two layout classes you should reuse: `.page-container` (centred, max 1280px,
-responsive gutters) and `.section-container` (the big rounded panel with CODECAVE's upward violet
-glow).
+`colors_and_type.css` is the whole system in one file: six `@font-face` blocks, the token layer on
+`:root`, the dark baseline on `html`/`body` (near-black background, near-white text, Satoshi), and
+a component class layer on top. It defines two layout classes you should reuse — `.page-container`
+(centred, max 1280px, responsive gutters) and `.section-container` (the big rounded panel with
+CODECAVE's upward violet glow) — plus `.btn` and its eight variants, `.card`, `.field`,
+`.checkbox`, `.chip`, `.eyebrow`, `.stat`, `.divider`, and `.rule` / `.progress`.
 
 ## The idiom: semantic CSS custom properties
 
@@ -33,6 +39,7 @@ primary button fill).
 | Accent | `--color-action` (links, borders, eyebrows), `--color-hovered`, `--gradient-brand`, `--color-error` |
 | Type size | `--text-heading-lg` / `-md` / `-sm`, `--text-stat`, `--text-lg`, `--text-md`, `--text-sm`, `--text-base`, `--text-caption` |
 | Radius | `--radius-sm` 8, `--radius-md` 12, `--radius-card` 24, `--radius-article` 36, `--radius-custom` 44, `--radius-pill`, `--radius-section` 64 |
+| Gradient | `--gradient-brand` — display type only, plus the one sanctioned field: `.rule` / `.progress` |
 | Layout | `--max-width-desktop`, `--gutter-base` / `-md` / `-xl`, `--section-padding-top` / `-bottom`, `--card-padding`, `--shadow-section` |
 
 Three rules that make a design read as CODECAVE:
@@ -43,17 +50,21 @@ Three rules that make a design read as CODECAVE:
 3. **The eyebrow move.** Bold text in `--color-action` sitting above a light (300) lead paragraph
    is the signature type pattern.
 
-Only Satoshi Regular (400) is a real cut — 300 and 700 are browser-synthesized. Use them (that is
-what production looks like), but don't design around weights that don't exist.
+The system designs to three weights — 300, 400, 700. All six Satoshi cuts now ship as real files
+in `docs/fonts/`, properly bound, so nothing is browser-synthesized here; the live site still
+serves one TTF and lags behind. Design to 300/400/700 and do not reach for 500, 600 or 900.
 
 ## Where the truth lives
 
-- `styles.css` — the baseline and the layout classes; its `@import` closure is the whole system.
-- `tokens/colors.css`, `tokens/typography.css`, `tokens/layout.css` — every token, with comments
-  on intended use. Read these before styling.
-- `components/Foundations/*.html` — rendered reference for colour, type, radius, and the
-  button/card recipes. `Patterns.html` carries copy-paste CSS.
-- `guidelines/brand.md` — voice, logo usage, and what not to do.
+- `docs/DESIGN.md` — the canonical rules: foundations, the full ramp, components, motion, voice,
+  logo usage, anti-patterns and the known divergences. Read this first.
+- `docs/colors_and_type.css` — every token with comments on intended use, then the component
+  layer. Each block names the source file it was transcribed from.
+- `docs/tokens/*.ts` — the same tokens as typed modules, for consumers that cannot read a
+  stylesheet.
+- `docs/preview/` — twelve review cards, one concern each, rendering live tokens and real
+  components. `docs/storybook/` — thirteen components with variant matrices.
+- `docs/brand-kit.html` — lockups, clear space, palette and type scale on the real dark ground.
 
 ## A build looks like this
 
@@ -63,12 +74,12 @@ what production looks like), but don't design around weights that don't exist.
     <p style="color: var(--color-action); font-weight: 700; font-size: var(--text-heading-sm)">Tell us about</p>
     <h2 style="font-size: var(--text-heading-md); line-height: 115%">the product you want to build.</h2>
 
-    <article style="background: var(--color-surface-secondary); border-radius: var(--radius-card); padding: var(--card-padding); max-width: 340px">
+    <hr class="rule">
+
+    <article class="card" style="max-width: 340px">
       <h3 style="font-size: var(--text-lg)">Cloud &amp; DevOps</h3>
       <p style="color: var(--color-body-secondary-lighter)">Infrastructure that scales with demand.</p>
-      <button style="background: var(--color-brand-210); color: #000; border: 0; border-radius: var(--radius-pill); padding: 4px 24px; font: inherit">
-        Discuss project
-      </button>
+      <button class="btn btn-primary">Discuss project</button>
     </article>
   </div>
 </section>

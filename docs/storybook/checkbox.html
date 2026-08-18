@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checkbox — CODECAVE storybook</title>
+<link rel="icon" href="../build/favicon.svg">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="components.css">
+<link rel="stylesheet" href="storybook.css">
+</head>
+<body data-od-id="story-checkbox">
+<div class="sb">
+  <a class="sb-back" href="index.html">&larr; All components</a>
+
+  <header class="sb-head">
+    <p class="eyebrow">Primitive · 5 of 13</p>
+    <h1>Checkbox</h1>
+    <p>Two variants × two sizes. The native input is stripped with
+       <code>appearance: none</code> and the tick is a scaled pseudo-element
+       carrying the real <code>checked-icon.svg</code>.</p>
+    <div class="sb-tags">
+      <span class="sb-tag is-vue">Vue island</span>
+      <span class="sb-tag">src/components/common/Checkbox.vue</span>
+      <span class="sb-tag">4 combinations</span>
+    </div>
+  </header>
+
+  <section class="sb-section">
+    <h2>Props</h2>
+    <table class="sb-props">
+      <thead><tr><th>Prop</th><th>Type</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>id <span class="sb-req">*</span></td><td><code>string</code></td><td>Also passed as <code>autocomplete</code>, which is unusual — see findings.</td></tr>
+        <tr><td>label <span class="sb-req">*</span></td><td><code>string</code></td><td>Rendered beside the box inside the same <code>&lt;label&gt;</code>.</td></tr>
+        <tr><td>variant</td><td><code>'primary' | 'secondary'</code></td><td>primary is bare; secondary adds a filled pill around the pair.</td></tr>
+        <tr><td>size</td><td><code>'small' | 'medium'</code></td><td>medium (24px) is the default; small is 16px.</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:1rem">There is no <code>modelValue</code> and no emit.
+       This component holds no state and reports nothing to its parent — see the
+       findings.</p>
+  </section>
+
+  <section class="sb-section">
+    <h2>The matrix</h2>
+    <p>Click them. Hover them too — the tick previews at full scale on hover, not
+       only when checked.</p>
+    <div class="sb-stories">
+
+      <div class="sb-story">
+        <div class="sb-canvas">
+          <label class="cc-check cc-check-primary" for="cb1">
+            <input type="checkbox" id="cb1"><span>I agree to the privacy policy</span>
+          </label>
+        </div>
+        <div class="sb-story-body">
+          <span class="sb-story-name">Primary · medium</span>
+          <span class="sb-story-args">variant="primary" size="medium"</span>
+          <span class="sb-story-note">2px border in <code>--color-outline-primary-hover</code> #1B0D4E → hover #5F20FE.</span>
+        </div>
+      </div>
+
+      <div class="sb-story">
+        <div class="sb-canvas">
+          <label class="cc-check cc-check-primary is-small" for="cb2">
+            <input type="checkbox" id="cb2" checked><span>Subscribe to insights</span>
+          </label>
+        </div>
+        <div class="sb-story-body">
+          <span class="sb-story-name">Primary · small</span>
+          <span class="sb-story-args">size="small"</span>
+          <span class="sb-story-note">16px box, 12px label. Shown checked.</span>
+        </div>
+      </div>
+
+      <div class="sb-story">
+        <div class="sb-canvas">
+          <label class="cc-check cc-check-secondary" for="cb3">
+            <input type="checkbox" id="cb3"><span>Cloud &amp; DevOps</span>
+          </label>
+        </div>
+        <div class="sb-story-body">
+          <span class="sb-story-name">Secondary · medium</span>
+          <span class="sb-story-args">variant="secondary"</span>
+          <span class="sb-story-note">Pill on #0D0D0F. Uses <code>outline</code>, not <code>border</code>, and fills solid violet when checked.</span>
+        </div>
+      </div>
+
+      <div class="sb-story">
+        <div class="sb-canvas">
+          <label class="cc-check cc-check-secondary is-small" for="cb4">
+            <input type="checkbox" id="cb4" checked><span>Automation &amp; AI</span>
+          </label>
+        </div>
+        <div class="sb-story-body">
+          <span class="sb-story-name">Secondary · small</span>
+          <span class="sb-story-args">variant="secondary" size="small"</span>
+          <span class="sb-story-note">The filter-chip form. Checked state drops the outline entirely.</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="sb-section">
+    <h2>Findings</h2>
+
+    <p class="sb-note is-warn"><strong>The tick transition is invalid and does not animate.</strong>
+      Source declares
+      <code>transition: var(--default-transition-duration) transform ease-in-out;</code>
+      and <code>--default-transition-duration</code> is defined nowhere in the
+      project — not in <code>global.css</code>, not in <code>@theme</code>, not in
+      <code>tailwind.config.ts</code>. The custom property resolves to nothing, the
+      shorthand fails to parse, and the tick snaps from scale(0) to scale(1) with
+      no easing. Reproduced as-authored here. The fix is a real duration; the
+      system already ships <code>--transition-base</code> (200ms ease).
+      <code>Radio.vue</code> line 61 has the identical bug.</p>
+
+    <p class="sb-note is-warn"><strong>The component is stateless and unreported.</strong>
+      No <code>modelValue</code>, no <code>defineEmits</code>, no
+      <code>:checked</code> binding. The parent cannot set the checked state and
+      is never told when it changes; the only way to read one is to query the DOM
+      by <code>id</code>. Every other form component here uses
+      <code>v-model</code>, so this is inconsistent as well as limiting.</p>
+
+    <p class="sb-note is-warn"><strong>Hover shows a tick that is not there.</strong>
+      <code>input:hover::before</code> scales the tick to 1 exactly as
+      <code>:checked</code> does, so hovering an unchecked box renders it as
+      checked. The mark disappears again on mouse-out. With no border or fill
+      change to distinguish the two, a user cannot tell a hovered-empty box from a
+      checked one while the pointer is on it.</p>
+
+    <p class="sb-note"><strong><code>autocomplete</code> is bound to <code>id</code>.</strong>
+      <code>:autocomplete="id"</code> puts an arbitrary identifier where the spec
+      expects a known token. Browsers ignore unrecognized values, so this is inert
+      rather than harmful — but it means autofill is not actually being configured.</p>
+  </section>
+
+</div>
+</body>
+</html>

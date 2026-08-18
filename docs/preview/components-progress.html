@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CODECAVE — Rule &amp; progress: the gradient line</title>
+<link rel="icon" href="../build/favicon.svg">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="preview.css">
+<style>
+  .var-row { display: grid; gap: 1rem; padding: 1.5rem 0;
+             border-bottom: 1px solid var(--color-surface-quaternary); }
+  @media (min-width: 860px) { .var-row { grid-template-columns: 15rem 1fr; align-items: center; } }
+  .var-row:last-child { border-bottom: 0; }
+  .ladder { display: grid; gap: 1.25rem; }
+  .ladder > div { display: grid; grid-template-columns: 3.5rem 1fr; gap: 1rem; align-items: center; }
+  .ladder .pct { font-family: var(--font-mono); font-size: 0.8125rem;
+                 color: var(--color-body-secondary-lighter); }
+  /* Counter-examples. Neither of these ships — they are here to be rejected. */
+  .anti-stretch { max-width: none; }
+  .anti-scaled > .progress-value { background-size: 100% 100%; }
+  .anti-thick { height: 16px; }
+  .compare { display: grid; gap: 1.5rem; }
+  @media (min-width: 900px) { .compare { grid-template-columns: 1fr 1fr; } }
+  .compare > div { padding: 1.5rem; border-radius: var(--radius-md);
+                   background: var(--color-surface-secondary);
+                   border: 1px solid var(--color-surface-quaternary); }
+  .verdict { display: block; margin-top: 0.875rem; font-family: var(--font-mono);
+             font-size: 0.75rem; }
+  .ok  { color: var(--color-action); }
+  .bad { color: var(--color-error); }
+</style>
+</head>
+<body data-od-id="preview-components-progress">
+
+<div class="pv-shell">
+  <a class="pv-back" href="index.html">&larr; All preview cards</a>
+
+  <header class="pv-head" data-od-id="progress-head">
+    <span class="eyebrow">Components · card 3 of 3</span>
+    <h1>Rule &amp; progress — the gradient line</h1>
+    <p>Carried forward from the brand repository&rsquo;s previously published docs site, where it sat
+       under the masthead as <code>.rule</code>. It is the one element the old site had that this
+       package did not, so it is restored here as a real component rather than a page-local style.
+       This is also the <strong>only</strong> place <code>--gradient-brand</code> is permitted as a
+       field rather than as display type.</p>
+  </header>
+
+  <section class="pv-block" data-od-id="progress-rule">
+    <h2>The static rule</h2>
+    <p class="pv-note">A 4px pill running <code>#5F20FE</code> to <code>#E8E6F0</code> left to
+       right, capped at 320px. It carries no value and reports no state — it is a masthead accent,
+       and the gradient is doing the same job it does in display type: resolving violet into the
+       body colour. Use <code>&lt;hr class="rule"&gt;</code> so it is a separator in the
+       accessibility tree, not an empty <code>div</code>.</p>
+    <div class="pv-tile">
+      <div class="var-row">
+        <span><span class="pv-label">.rule</span>
+              <span class="pv-meta">height 4px · radius-pill · gradient-brand · max 320px</span></span>
+        <div><hr class="rule"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-block" data-od-id="progress-determinate">
+    <h2>Determinate progress</h2>
+    <p class="pv-note">The same line with a track behind it. The fill width comes from a
+       <code>--progress</code> custom property, and the gradient is painted at the
+       <em>track&rsquo;s</em> full width and then revealed — so the violet end stays anchored at 0%
+       and the near-white end always means finished. Width transitions on
+       <code>--transition-slow</code> (500ms), matching the system&rsquo;s slow-and-continuous motion
+       rule.</p>
+    <div class="pv-tile">
+      <div class="ladder">
+        <div><span class="pct">0%</span>
+             <div class="progress"><span class="progress-value" style="--progress:0%"></span></div></div>
+        <div><span class="pct">15%</span>
+             <div class="progress"><span class="progress-value" style="--progress:15%"></span></div></div>
+        <div><span class="pct">40%</span>
+             <div class="progress"><span class="progress-value" style="--progress:40%"></span></div></div>
+        <div><span class="pct">72%</span>
+             <div class="progress"><span class="progress-value" style="--progress:72%"></span></div></div>
+        <div><span class="pct">100%</span>
+             <div class="progress"><span class="progress-value" style="--progress:100%"></span></div></div>
+      </div>
+    </div>
+    <p class="pv-note" style="margin-top:1.5rem">Give the track the ARIA role so the value is
+       announced — the element is decorative markup, not a native <code>&lt;progress&gt;</code>:</p>
+    <div class="pv-tile">
+      <div class="progress" role="progressbar" aria-valuenow="72" aria-valuemin="0"
+           aria-valuemax="100" aria-label="Upload progress">
+        <span class="progress-value" style="--progress:72%"></span>
+      </div>
+      <span class="pv-meta" style="margin-top:0.875rem">role="progressbar" · aria-valuenow="72"</span>
+    </div>
+  </section>
+
+  <section class="pv-block" data-od-id="progress-indeterminate">
+    <h2>Indeterminate</h2>
+    <p class="pv-note">A 40% band sweeping the track, for work with no measurable end. Prefer the
+       determinate bar whenever a percentage exists. Under
+       <code>prefers-reduced-motion</code> the sweep would otherwise freeze off-screen — the global
+       collapse in <code>colors_and_type.css</code> pins every animation to 0.01ms — so the variant
+       falls back to a filled track at 0.6 opacity.</p>
+    <div class="pv-tile">
+      <div class="progress is-indeterminate"><span class="progress-value"></span></div>
+      <span class="pv-meta" style="margin-top:0.875rem">.progress.is-indeterminate</span>
+    </div>
+  </section>
+
+  <section class="pv-block" data-od-id="progress-antipatterns">
+    <h2>Three ways to break it</h2>
+    <p class="pv-note">Each pair shows the shipped element beside the mistake. None of the right-hand
+       versions may ship.</p>
+
+    <div class="compare">
+      <div>
+        <span class="pv-label">Capped at 320px</span>
+        <span class="pv-meta" style="margin-bottom:1rem">what ships</span>
+        <hr class="rule">
+        <span class="verdict ok">&check; violet reads as brand</span>
+      </div>
+      <div>
+        <span class="pv-label">Stretched full width</span>
+        <span class="pv-meta" style="margin-bottom:1rem">max-width removed</span>
+        <hr class="rule anti-stretch">
+        <span class="verdict bad">&times; the gradient flattens into a pale wash</span>
+      </div>
+    </div>
+
+    <div class="compare" style="margin-top:1.5rem">
+      <div>
+        <span class="pv-label">Gradient sized to the track</span>
+        <span class="pv-meta" style="margin-bottom:1rem">what ships — 15%</span>
+        <div class="progress"><span class="progress-value" style="--progress:15%"></span></div>
+        <span class="verdict ok">&check; early progress is violet</span>
+      </div>
+      <div>
+        <span class="pv-label">Gradient sized to the fill</span>
+        <span class="pv-meta" style="margin-bottom:1rem">background-size: 100% — 15%</span>
+        <div class="progress anti-scaled"><span class="progress-value" style="--progress:15%"></span></div>
+        <span class="verdict bad">&times; near-white at 15% reads as done</span>
+      </div>
+    </div>
+
+    <div class="compare" style="margin-top:1.5rem">
+      <div>
+        <span class="pv-label">4px</span>
+        <span class="pv-meta" style="margin-bottom:1rem">what ships</span>
+        <div class="progress"><span class="progress-value" style="--progress:60%"></span></div>
+        <span class="verdict ok">&check; a line, not a surface</span>
+      </div>
+      <div>
+        <span class="pv-label">16px</span>
+        <span class="pv-meta" style="margin-bottom:1rem">thickened</span>
+        <div class="progress anti-thick"><span class="progress-value" style="--progress:60%"></span></div>
+        <span class="verdict bad">&times; now a violet field — violet is rationed</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-block" data-od-id="progress-usage">
+    <h2>Markup</h2>
+    <div class="pv-tile">
+      <pre style="margin:0;overflow-x:auto;font-family:var(--font-mono);font-size:0.8125rem;line-height:1.6;color:var(--color-body-secondary-lighter)">&lt;hr class="rule"&gt;
+
+&lt;div class="progress" role="progressbar"
+     aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"&gt;
+  &lt;span class="progress-value" style="--progress:72%"&gt;&lt;/span&gt;
+&lt;/div&gt;
+
+&lt;div class="progress is-indeterminate"&gt;
+  &lt;span class="progress-value"&gt;&lt;/span&gt;
+&lt;/div&gt;</pre>
+    </div>
+    <p class="pv-note" style="margin-top:1.5rem">If the track is not 320px wide, tell the fill so the
+       gradient still resolves at the right point:
+       <code>style="--progress:72%; --progress-track-width:480px"</code>.</p>
+  </section>
+</div>
+
+</body>
+</html>

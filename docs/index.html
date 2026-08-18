@@ -1,126 +1,183 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CODECAVE — Design System</title>
-<link rel="icon" href="favicon.svg">
-<link rel="stylesheet" href="styles.css">
-<style>
-  body { padding: 0; }
-  .wrap { max-width: var(--max-width-desktop); margin: 0 auto; padding: 0 var(--gutter-md); }
-  header { padding: 96px 0 64px; }
-  .eyebrow { color: var(--color-action); font-weight: 700; font-size: var(--text-lg);
-             line-height: var(--leading-lg); margin: 0 0 8px; }
-  h1 { font-size: var(--text-heading-lg); line-height: var(--text-heading-lg--line-height); margin: 0; }
-  .lede { color: var(--color-body-secondary-lighter); font-size: var(--text-md);
-          line-height: var(--leading-md); max-width: 62ch; margin: 20px 0 0; }
-  .rule { height: 4px; border-radius: var(--radius-pill); background: var(--gradient-brand);
-          margin: 40px 0 0; max-width: 320px; }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CODECAVE — Design system</title>
+  <link rel="icon" href="build/favicon.svg" />
+  <!-- The ground is dark because this file links the system's own token sheet,
+       whose `body` rule sets background: var(--color-surface-primary). There is
+       no local color literal to drift, and nothing here to re-render. -->
+  <link rel="stylesheet" href="colors_and_type.css" />
+  <style>
+    body { padding: 4rem var(--gutter-md) 6rem; }
+    .shell { max-width: var(--max-width-desktop); margin: 0 auto; }
+    @media (min-width: 1280px) { body { padding-inline: var(--gutter-xl); } }
 
-  h2 { font-size: var(--text-heading-sm); line-height: 110%; margin: 72px 0 24px; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
-  a.card { display: block; text-decoration: none; background: var(--color-surface-secondary);
-           border-radius: var(--radius-card); padding: 28px 28px 32px;
-           border: 1px solid transparent; transition: border-color .2s, transform .2s; }
-  a.card:hover { border-color: var(--color-action); transform: translateY(-2px); }
-  a.card h3 { font-size: var(--text-lg); line-height: var(--leading-lg); margin: 0 0 8px;
-              color: var(--color-heading); }
-  a.card p { margin: 0; color: var(--color-body-secondary-lighter);
-             font-size: var(--text-base); line-height: var(--leading-base); }
+    .mark { height: 34px; width: auto; display: block; margin-bottom: 2.5rem; }
 
-  .swatches { display: flex; gap: 10px; margin-top: 18px; }
-  .sw { width: 34px; height: 34px; border-radius: var(--radius-sm);
-        box-shadow: inset 0 0 0 1px var(--color-surface-quaternary); }
+    .eyebrow { margin: 0 0 0.75rem; color: var(--color-hovered);
+               font-size: var(--text-caption); font-weight: var(--font-weight-bold);
+               letter-spacing: 0.08em; text-transform: uppercase; }
+    h1 { margin: 0; font-size: var(--text-heading-lg);
+         line-height: var(--text-heading-lg--line-height); }
+    /* The gradient resolves violet into near-white, left to right. Display type
+       only — never a page wash. */
+    h1 em { font-style: normal; background: var(--gradient-brand);
+            -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .lead { max-width: 64ch; margin: 1.25rem 0 0;
+            color: var(--color-body-secondary-lighter);
+            font-size: var(--text-md); line-height: var(--leading-md); }
+    /* .rule itself is in colors_and_type.css — only its placement is local. */
+    .rule { margin-top: 2.5rem; }
 
-  table { border-collapse: collapse; width: 100%; font-size: var(--text-base); margin-top: 8px; }
-  td, th { text-align: left; padding: 11px 14px;
-           border-bottom: 1px solid var(--color-surface-quaternary); }
-  th { color: var(--color-body-secondary); font-weight: 400;
-       text-transform: uppercase; letter-spacing: .06em; font-size: var(--text-caption); }
-  code { font-family: ui-monospace, SFMono-Regular, monospace; font-size: .9em;
-         color: var(--color-body-primary); }
-  .note { margin-top: 28px; padding: 18px 22px; border-radius: var(--radius-md);
-          background: var(--color-surface-secondary); border-left: 3px solid var(--color-action);
-          color: var(--color-body-secondary-lighter); font-size: var(--text-base);
-          line-height: var(--leading-base); }
-  footer { margin: 96px 0 64px; padding-top: 28px;
-           border-top: 1px solid var(--color-surface-quaternary);
-           color: var(--color-body-secondary); font-size: var(--text-caption); }
-  footer a { color: var(--color-body-secondary-lighter); }
-</style>
+    h2 { margin: 0 0 0.5rem; font-size: var(--text-lg); line-height: var(--leading-lg); }
+    section { margin-top: 4rem; }
+    section > p { max-width: 70ch; margin: 0 0 1.75rem;
+                  color: var(--color-body-secondary-lighter);
+                  font-size: var(--text-caption); line-height: var(--leading-caption); }
+
+    .cards { display: grid; gap: 1rem;
+             grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr)); }
+    /* 24px is the default card. A 4px radius is instantly off-brand. */
+    .card { display: block; padding: 1.5rem; text-decoration: none;
+            border-radius: var(--radius-card);
+            background: var(--color-surface-secondary);
+            border: 1px solid var(--color-surface-quaternary);
+            transition: border-color var(--transition-colors),
+                        background var(--transition-colors); }
+    .card:hover { background: var(--color-surface-tertiary);
+                  border-color: var(--color-action); }
+    .card strong { display: block; color: var(--color-heading);
+                   font-size: var(--text-caption); }
+    .card span { display: block; margin-top: 0.5rem;
+                 color: var(--color-body-secondary-lighter);
+                 font-size: var(--text-caption); line-height: var(--leading-caption); }
+    .card code { display: block; margin-top: 0.75rem; font-family: var(--font-mono);
+                 font-size: 0.75rem; color: var(--color-hovered); }
+
+    .swatches { display: grid; gap: 1rem;
+                grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)); }
+    .swatch { border-radius: var(--radius-md); overflow: hidden;
+              border: 1px solid var(--color-surface-quaternary); }
+    .swatch b { display: block; height: 5rem; background: var(--c); }
+    .swatch div { padding: 0.75rem; background: var(--color-surface-secondary); }
+    .swatch em { display: block; font-style: normal; color: var(--color-heading);
+                 font-size: var(--text-caption); font-weight: var(--font-weight-bold); }
+    .swatch code { display: block; font-family: var(--font-mono); font-size: 0.75rem;
+                   color: var(--color-body-secondary-lighter); }
+
+    /* The light comes from below: the source sits under the panel edge. */
+    .panel { margin-top: 4rem; padding: 3rem 2rem; text-align: center;
+             border-radius: var(--radius-section);
+             background: var(--color-surface-secondary);
+             box-shadow: var(--shadow-section); }
+    .panel p { max-width: 56ch; margin: 0 auto 2rem;
+               color: var(--color-body-secondary-lighter);
+               font-size: var(--text-caption); line-height: var(--leading-caption); }
+    /* Purple fields flip to near-black text — the only dark-on-light in the system. */
+    .glow { display: inline-block; padding: 0.875rem 2rem; text-decoration: none;
+            border-radius: var(--radius-pill);
+            background: var(--color-brand-210);
+            color: var(--color-outline-primary-hover);
+            font-weight: var(--font-weight-bold); font-size: var(--text-caption);
+            box-shadow: var(--shadow-glow-button); }
+
+    .note { margin-top: 4rem; padding: 1rem 1.25rem; border-radius: var(--radius-sm);
+            border: 1px solid var(--color-action);
+            color: var(--color-body-secondary-lighter);
+            font-size: var(--text-caption); line-height: var(--leading-caption); }
+    .note strong { color: var(--color-heading); }
+    .note code { font-family: var(--font-mono); font-size: 0.8125rem;
+                 color: var(--color-hovered); }
+  </style>
 </head>
-<body>
-<div class="wrap">
+<body data-od-id="system-front-door">
+<div class="shell">
 
-  <header>
-    <p class="eyebrow">CODECAVE</p>
-    <h1>Design System</h1>
-    <p class="lede">The tokens, type and shape language behind CODECAVE. Everything here is
-    transcribed from the production stylesheet and verified against the live site — not estimated
-    from screenshots.</p>
-    <div class="rule"></div>
-  </header>
+  <img class="mark" src="build/codecave-wide.svg" alt="CODECAVE" />
 
-  <h2>Foundations</h2>
-  <div class="grid">
-    <a class="card" href="foundations/colors.html">
-      <h3>Colour</h3>
-      <p>Semantic tokens, the 24-step brand ramp, and the brand gradient.</p>
-      <div class="swatches">
-        <div class="sw" style="background:var(--color-surface-primary)"></div>
-        <div class="sw" style="background:var(--color-action)"></div>
-        <div class="sw" style="background:var(--color-brand-210)"></div>
-        <div class="sw" style="background:var(--color-brand-400)"></div>
-        <div class="sw" style="background:var(--color-body-primary)"></div>
-      </div>
-    </a>
-    <a class="card" href="foundations/typography.html">
-      <h3>Typography</h3>
-      <p>The Satoshi scale from 56px down to 14px, and the eyebrow pattern.</p>
-    </a>
-    <a class="card" href="foundations/spacing.html">
-      <h3>Radius &amp; Layout</h3>
-      <p>Corner radii, container breakpoints, section rhythm and the glow panel.</p>
-    </a>
-    <a class="card" href="foundations/patterns.html">
-      <h3>Patterns</h3>
-      <p>Buttons, cards and the eyebrow — with copy-paste CSS.</p>
-    </a>
+  <p class="eyebrow">Open Design system</p>
+  <h1>CODECAVE is dark, round,<br />and <em>violet</em>.</h1>
+  <p class="lead">In that order of importance. This is the front door to the system —
+     the canonical rules, the machine-readable tokens, and the specimen cards that
+     prove them. Everything below is traceable to first-party source.</p>
+
+  <!-- The gradient rule, carried forward from the previous published docs site.
+       Violet resolves into near-white left to right, capped at 320px. -->
+  <hr class="rule" />
+
+  <section data-od-id="front-door-routes">
+    <h2>Start here</h2>
+    <p>Read in this order. <code>DESIGN.md</code> is the source of truth;
+       <code>colors_and_type.css</code> is its machine-readable half.</p>
+    <div class="cards">
+      <a class="card" href="DESIGN.md">
+        <strong>1 · The rules</strong>
+        <span>Eleven sections: foundations, the 26-step ramp, components, motion,
+              anti-patterns, and the known divergences. Says so where evidence is
+              thin rather than guessing.</span>
+        <code>DESIGN.md</code>
+      </a>
+      <a class="card" href="colors_and_type.css">
+        <strong>2 · The tokens</strong>
+        <span>Every value as a custom property, semantic layer over raw ramp.
+              Consume the semantic names; never hard-code a hex.</span>
+        <code>colors_and_type.css</code>
+      </a>
+      <a class="card" href="brand-kit.html">
+        <strong>3 · The brand kit</strong>
+        <span>The dark brand page — logo lockups, clear space, palette, type scale
+              and the glow CTA, rendered on the real ground.</span>
+        <code>brand-kit.html</code>
+      </a>
+      <a class="card" href="preview/index.html">
+        <strong>4 · The specimens</strong>
+        <span>Twelve preview cards: color, typography, spacing, radius, buttons,
+              inputs, assets and the decorative art layer.</span>
+        <code>preview/</code>
+      </a>
+      <a class="card" href="storybook/index.html">
+        <strong>5 · The storybook</strong>
+        <span>Thirteen components extracted from codecave.pro, each with its real
+              prop signature, a live variant matrix and what the extraction
+              found — 53 findings, 29 of them defects.</span>
+        <code>storybook/</code>
+      </a>
+    </div>
+  </section>
+
+  <section data-od-id="front-door-palette">
+    <h2>The four decisions, in color</h2>
+    <p>Depth is not built from contrast. The page is <code>#050505</code>; cards rise one
+       barely-perceptible step to <code>#0D0D0F</code>. That narrow separation is deliberate —
+       if you are lightening a card to make it read, you have made a layout mistake,
+       not a color mistake.</p>
+    <div class="swatches">
+      <div class="swatch"><b style="--c:#050505"></b><div><em>Surface primary</em><code>#050505</code></div></div>
+      <div class="swatch"><b style="--c:#0D0D0F"></b><div><em>Surface secondary</em><code>#0D0D0F</code></div></div>
+      <div class="swatch"><b style="--c:#2E2C33"></b><div><em>Border</em><code>#2E2C33</code></div></div>
+      <div class="swatch"><b style="--c:#E8E6F0"></b><div><em>Heading / body</em><code>#E8E6F0</code></div></div>
+      <div class="swatch"><b style="--c:#5F20FE"></b><div><em>Action</em><code>#5F20FE</code></div></div>
+      <div class="swatch"><b style="--c:#20EFFE"></b><div><em>The cyan (reserved)</em><code>#20EFFE</code></div></div>
+    </div>
+  </section>
+
+  <div class="panel" data-od-id="front-door-panel">
+    <h2>The light comes from below</h2>
+    <p>Section panels cast violet light upward — the source sits under the panel edge.
+       It is physically wrong and instantly recognizable. Never replace it with a
+       conventional drop shadow. This panel and the button are the real thing.</p>
+    <a class="glow" href="brand-kit.html">Open the brand kit</a>
   </div>
 
-  <h2>Guidelines</h2>
-  <div class="grid">
-    <a class="card" href="guidelines.html">
-      <h3>Brand guidelines</h3>
-      <p>Logo usage, colour and type rules, shape language, motion, and what not to do.</p>
-    </a>
-  </div>
-
-  <h2>Using the tokens</h2>
-  <p class="lede">Link the stylesheet and every token is live on <code>:root</code>. There is no
-  provider and no theme object.</p>
-  <table>
-    <tr><th>File</th><th>Contents</th></tr>
-    <tr><td><code><a href="styles.css">styles.css</a></code></td><td>Imports fonts and all tokens, sets the dark baseline, defines <code>.page-container</code> and <code>.section-container</code></td></tr>
-    <tr><td><code><a href="tokens/colors.css">tokens/colors.css</a></code></td><td>Brand ramp, error ramp, semantic colour layer, gradient</td></tr>
-    <tr><td><code><a href="tokens/typography.css">tokens/typography.css</a></code></td><td>Family, heading sizes, type scale, line heights</td></tr>
-    <tr><td><code><a href="tokens/layout.css">tokens/layout.css</a></code></td><td>Radii, gutters, section rhythm, card padding, section glow</td></tr>
-    <tr><td><code><a href="fonts/fonts.css">fonts/fonts.css</a></code></td><td>The Satoshi <code>@font-face</code></td></tr>
-  </table>
-
-  <div class="note">
-    <strong>Two things that constrain design.</strong>
-    Only Satoshi <em>Regular (400)</em> ships as a real font file — 300 and 700 are synthesized by
-    the browser. And CODECAVE builds in Astro and Vue, so there is no importable component
-    library: compose markup yourself and style it with these tokens.
-  </div>
-
-  <footer>
-    Source: <a href="https://github.com/CodeCavePro/brand">CodeCavePro/brand</a> ·
-    Tokens transcribed from <code>codecave.pro/src/styles/global.css</code> and verified against
-    the live site.
-  </footer>
+  <p class="note" data-od-id="front-door-brandkit-note">
+    <strong>There is one brand page.</strong> <code>brand-kit.html</code> is it, and
+    <code>DESIGN.md</code> is the rules. The host pipeline also emits a
+    <code>brand.html</code> from <code>brand.json</code>, but its template is fixed-light —
+    <code>--paper</code> is a hard-coded <code>#ffffff</code> and any dark surface falls
+    through to white — so it renders this dark-first brand on paper. It is not shipped here.
+  </p>
 
 </div>
 </body>

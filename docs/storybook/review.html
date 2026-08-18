@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Review — CODECAVE storybook</title>
+<link rel="icon" href="../build/favicon.svg">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="components.css">
+<link rel="stylesheet" href="storybook.css">
+<style>
+  /* Story-only. The testimonial card is transparent with a 32px backdrop blur,
+     so it only reads correctly over the decorative art it is designed to sit on.
+     This canvas supplies that ground from the real harvested SVG. */
+  .on-art { background: var(--color-surface-primary) url("../imagery/partnership-background.svg") center/cover no-repeat; }
+  .ph-av { background: var(--color-surface-tertiary); border-radius: 9999px;
+           display: grid; place-content: center; color: var(--color-body-secondary);
+           font-family: var(--font-mono); font-size: 0.625rem; }
+</style>
+</head>
+<body data-od-id="story-review">
+<div class="sb">
+  <a class="sb-back" href="index.html">&larr; All components</a>
+
+  <header class="sb-head">
+    <p class="eyebrow">Content · 8 of 13</p>
+    <h1>Review</h1>
+    <p>The attributed testimonial. It has no background of its own — only a 32px
+       <code>backdrop-filter</code> — so it is the one component that cannot be
+       judged on a plain surface.</p>
+    <div class="sb-tags">
+      <span class="sb-tag is-vue">Vue island</span>
+      <span class="sb-tag">src/components/common/Review.vue</span>
+      <span class="sb-tag">Strapi</span>
+    </div>
+  </header>
+
+  <section class="sb-section">
+    <h2>Props</h2>
+    <table class="sb-props">
+      <thead><tr><th>Prop</th><th>Type</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>item <span class="sb-req">*</span></td><td><code>Testimonial</code></td><td>Reads <code>photo.url</code>, <code>photo.name</code>, <code>name</code>, <code>position</code>, <code>review</code>, <code>linkedinurl</code>, <code>verification</code>.</td></tr>
+        <tr><td>className</td><td><code>string</code></td><td>Interpolated with no fallback — see findings.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="sb-section">
+    <h2>Stories</h2>
+    <p>Shown over <code>partnership-background.svg</code>, the ground it is built
+       for. The blur is what separates the card from the art behind it.</p>
+    <div class="sb-stories is-wide">
+
+      <div class="sb-story">
+        <div class="sb-canvas is-block on-art">
+          <div class="cc-review">
+            <div class="who">
+              <div class="ph-av" style="width:4rem;height:4rem;flex:none">photo</div>
+              <div>
+                <div class="name">
+                  <p>Marta Feld</p>
+                  <a href="#" aria-label="LinkedIn profile"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5zM.22 8.02h4.56V24H.22V8.02zm7.6 0h4.37v2.18h.06c.61-1.16 2.1-2.38 4.32-2.38 4.62 0 5.47 3.04 5.47 7v9.18h-4.56v-8.14c0-1.94-.03-4.44-2.7-4.44-2.71 0-3.13 2.11-3.13 4.3V24H7.82V8.02z"/></svg></a>
+                </div>
+                <p class="position">CTO, Northwind Logistics</p>
+              </div>
+            </div>
+            <p class="body">They scoped the smallest thing that would prove the integration worked, shipped it in three weeks, and only then talked about the rest. The estimate held.</p>
+            <div class="verified"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span>Verified on Clutch</span></div>
+          </div>
+        </div>
+        <div class="sb-story-body">
+          <span class="sb-story-name">Full</span>
+          <span class="sb-story-args">photo + linkedinurl + verification</span>
+          <span class="sb-story-note">Verification row is <code>--color-action</code>. At this size that is 3.03:1 — see findings.</span>
+        </div>
+      </div>
+
+      <div class="sb-story">
+        <div class="sb-canvas is-block on-art">
+          <div class="cc-review">
+            <div class="who">
+              <div>
+                <div class="name"><p>Anonymous</p></div>
+                <p class="position">Head of Engineering</p>
+              </div>
+            </div>
+            <p class="body">Short and unattributed, to show the card with every optional branch off.</p>
+          </div>
+        </div>
+        <div class="sb-story-body">
+          <span class="sb-story-name">Minimal</span>
+          <span class="sb-story-args">no photo · no linkedinurl · no verification</span>
+          <span class="sb-story-note">Photo is hidden by a literal filename check: <code>v-if="item.photo.name !== 'no-image.svg'"</code>.</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="sb-section">
+    <h2>Findings</h2>
+
+    <p class="sb-note is-warn"><strong>A sentinel filename controls rendering.</strong>
+      The avatar is gated on <code>item.photo.name !== 'no-image.svg'</code>. The
+      contract between CMS and component is a magic string: rename the placeholder
+      asset in Strapi and every testimonial sprouts a broken avatar. There is also
+      no guard on <code>photo</code> itself, so a testimonial with no photo
+      relation throws on <code>photo.name</code> rather than falling back.</p>
+
+    <p class="sb-note is-warn"><strong><code>linkedinurl.length > 1</code> is a truthiness test in disguise.</strong>
+      It guards against the empty string and a single character, not against an
+      invalid URL. Any one-character-plus value renders a live external link.
+      The same expression throws if <code>linkedinurl</code> is null rather than
+      empty.</p>
+
+    <p class="sb-note is-warn"><strong>The verification row fails contrast.</strong>
+      <code>text-action</code> on the near-black ground is 3.03:1, below the 4.5:1
+      floor for text this size. It is also the trust signal on a testimonial, so
+      it is load-bearing copy. <code>--color-hovered</code> (8.66:1) is the
+      in-palette fix. Same shape as <code>DESIGN.md</code> §10.5.</p>
+
+    <p class="sb-note"><strong><code>className</code> has no fallback.</strong>
+      The template interpolates <code>${className}</code> directly, unlike
+      ArticlePreview's <code>${className ?? ''}</code>. Omitting the prop puts the
+      literal string <code>undefined</code> into the class list. Harmless as a
+      class name, but it ships in the markup.</p>
+
+    <p class="sb-note"><strong>Judge it on art, never on flat color.</strong>
+      With no background of its own, previewing this card on <code>#050505</code>
+      makes the blur invisible and the design look unfinished. That is a preview
+      error, not a component defect.</p>
+  </section>
+
+</div>
+</body>
+</html>

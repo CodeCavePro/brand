@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CODECAVE — Decorative art: the line-and-glow layer</title>
+<link rel="icon" href="../build/favicon.svg">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="preview.css">
+<style>
+  /* Every plate carries its own #050505 ground. That is not a preview
+     convenience — the art is stroke-only on a transparent root, so on any
+     lighter surface it does not read as off-brand, it fails to render. */
+  .art-grid { display: grid; gap: 1.5rem;
+              grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); }
+  .art-plate { border: 1px solid var(--color-surface-quaternary);
+               border-radius: var(--radius-card); overflow: hidden;
+               background: var(--color-surface-primary); }
+  .art-frame { display: block; width: 100%; aspect-ratio: 16 / 10;
+               background: var(--color-surface-primary); }
+  /* contain, not cover: a specimen has to show the whole plate. The letterbox
+     is invisible because the frame and the SVG's own ground rect are both
+     #050505, so the art reads as one continuous field. */
+  .art-frame img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .art-body { padding: 1.25rem 1.25rem 1.5rem;
+              border-top: 1px solid var(--color-surface-quaternary); }
+  .art-name { display: block; color: var(--color-heading);
+              font-weight: var(--font-weight-bold); font-size: var(--text-caption); }
+
+  /* The opacity ladder, shown rather than described. */
+  .ladder { display: flex; flex-wrap: wrap; gap: 1.25rem; align-items: flex-end;
+            padding: 2rem 1.5rem; border-radius: var(--radius-card);
+            background: var(--color-surface-primary);
+            border: 1px solid var(--color-surface-quaternary); }
+  .rung { text-align: center; }
+  .rung i { display: block; width: 76px; height: 76px; border-radius: 9999px;
+            border: 1px solid var(--color-action); }
+  .rung span { display: block; margin-top: 0.5rem; font-family: var(--font-mono);
+               font-size: 0.6875rem; color: var(--color-body-secondary-lighter); }
+
+  .stops { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem; }
+  .stop { display: flex; align-items: center; gap: 0.625rem;
+          padding: 0.5rem 0.875rem; border-radius: 9999px;
+          border: 1px solid var(--color-surface-quaternary); }
+  .stop i { width: 18px; height: 18px; border-radius: 9999px; flex: none; }
+  .stop code { font-family: var(--font-mono); font-size: 0.75rem;
+               color: var(--color-body-secondary-lighter); }
+</style>
+</head>
+<body data-od-id="preview-brand-imagery">
+
+<div class="pv-shell">
+  <a class="pv-back" href="index.html">&larr; All preview cards</a>
+
+  <header class="pv-head" data-od-id="imagery-head">
+    <span class="eyebrow">Imagery · card 1 of 1</span>
+    <h1>Decorative art — the line-and-glow layer</h1>
+    <p>Seven section backgrounds harvested from <code>codecave.pro/src/assets/images/</code>.
+       Untouched originals live in <code>imagery/source/</code>; the copies below carry an added
+       <code>#050505</code> ground so they reproduce in any viewer. This is the brand's one
+       non-photographic image system, and it is built entirely from strokes.</p>
+  </header>
+
+  <section class="pv-block" data-od-id="imagery-technique">
+    <h2>The technique</h2>
+    <p class="pv-note">Every file has a <code>fill="none"</code> root. There is not one filled
+       shape in the set. Falloff is produced by <strong>redrawing the same orb at descending
+       opacity on a growing radius</strong> — not by a blur, not by a radial gradient fill. That
+       is why the art stays crisp at any scale and costs nothing to render.</p>
+    <div class="ladder" data-od-id="imagery-opacity-ladder">
+      <div class="rung"><i style="opacity:0.8"></i><span>0.80 · r64</span></div>
+      <div class="rung"><i style="opacity:0.65;width:96px;height:96px"></i><span>0.65 · r112</span></div>
+      <div class="rung"><i style="opacity:0.55;width:116px;height:116px"></i><span>0.55 · r160</span></div>
+      <div class="rung"><i style="opacity:0.45;width:136px;height:136px"></i><span>0.45 · r208</span></div>
+    </div>
+    <p class="pv-note" style="margin-top:1.25rem">Stroke gradients use three stops, and only
+       three:</p>
+    <div class="stops" data-od-id="imagery-gradient-stops">
+      <span class="stop"><i style="background:#5F20FE"></i><code>#5F20FE · brand-500 · action</code></span>
+      <span class="stop"><i style="background:#20EFFE"></i><code>#20EFFE · brand-400 · the cyan</code></span>
+      <span class="stop"><i style="background:#391398"></i><code>#391398 · brand-620 · NEW</code></span>
+    </div>
+    <p class="pv-note" style="margin-top:1rem"><code>#391398</code> and <code>#4C4759</code>
+       (the <code>world-map.svg</code> landmass stroke) were carrying production art while going
+       unrecorded by every token file. They were added to the ramp in this pass as
+       <code>--color-brand-620</code> and <code>--color-brand-107</code>, positioned by relative
+       luminance. Both are <strong>imagery-only</strong> — never UI, never text.</p>
+  </section>
+
+  <section class="pv-block" data-od-id="imagery-plates">
+    <h2>The harvested set</h2>
+    <div class="art-grid">
+      <figure class="art-plate" style="margin:0" data-od-id="art-partnership">
+        <span class="art-frame"><img src="../imagery/partnership-background.svg" alt="Concentric orb field" loading="lazy"></span>
+        <figcaption class="art-body">
+          <span class="art-name">Concentric orbs — the signature motif</span>
+          <span class="pv-meta">imagery/partnership-background.svg · 1280&times;948</span>
+        </figcaption>
+      </figure>
+      <figure class="art-plate" style="margin:0" data-od-id="art-work-process">
+        <span class="art-frame"><img src="../imagery/work-process-background.svg" alt="Orb field behind the work-process rail" loading="lazy"></span>
+        <figcaption class="art-body">
+          <span class="art-name">Work-process rail</span>
+          <span class="pv-meta">imagery/work-process-background.svg · 1280&times;844</span>
+        </figcaption>
+      </figure>
+      <figure class="art-plate" style="margin:0" data-od-id="art-failureproof">
+        <span class="art-frame"><img src="../imagery/failureproof-background.svg" alt="Orbital ellipses" loading="lazy"></span>
+        <figcaption class="art-body">
+          <span class="art-name">Orbital ellipses, 0.05&ndash;0.4</span>
+          <span class="pv-meta">imagery/failureproof-background.svg · 1280&times;864</span>
+        </figcaption>
+      </figure>
+      <figure class="art-plate" style="margin:0" data-od-id="art-testimonials">
+        <span class="art-frame"><img src="../imagery/testimonials-background.svg" alt="Long arcs" loading="lazy"></span>
+        <figcaption class="art-body">
+          <span class="art-name">Long arcs, testimonial band</span>
+          <span class="pv-meta">imagery/testimonials-background.svg · 1541&times;1322</span>
+        </figcaption>
+      </figure>
+      <figure class="art-plate" style="margin:0" data-od-id="art-questions">
+        <span class="art-frame"><img src="../imagery/questions-background.svg" alt="Dense line field" loading="lazy"></span>
+        <figcaption class="art-body">
+          <span class="art-name">Dense line field, FAQ</span>
+          <span class="pv-meta">imagery/questions-background.svg</span>
+        </figcaption>
+      </figure>
+      <figure class="art-plate" style="margin:0" data-od-id="art-project-review">
+        <span class="art-frame"><img src="../imagery/project-review-background.svg" alt="Project review header art" loading="lazy"></span>
+        <figcaption class="art-body">
+          <span class="art-name">Project review header</span>
+          <span class="pv-meta">imagery/project-review-background.svg</span>
+        </figcaption>
+      </figure>
+      <figure class="art-plate" style="margin:0" data-od-id="art-target-audience">
+        <span class="art-frame"><img src="../imagery/project-target-audience.svg" alt="Target-audience diagram" loading="lazy"></span>
+        <figcaption class="art-body">
+          <span class="art-name">Target-audience diagram</span>
+          <span class="pv-meta">imagery/project-target-audience.svg</span>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="pv-block" data-od-id="imagery-exclusions">
+    <h2>What was deliberately left out</h2>
+    <p class="pv-warn"><strong>The photography set was not taken as brand imagery.</strong>
+      Eleven of the thirteen <code>work-process-img-*.jpg</code> files are 400&times;400 squares —
+      by rendered size and role those are thumbnails or avatars, and the brand bars avatars as
+      brand imagery. No raster decoder was available in this environment, so their ground color is
+      <strong>unmeasured</strong>. They were excluded on role, not cleared on contrast, and that
+      distinction is recorded in <code>DESIGN.md</code> &sect;11 rather than smoothed over.</p>
+    <p class="pv-note" style="margin-top:1.25rem">Partner marks
+       (<code>aws-partner.png</code>, <code>autodesk-partner.png</code>,
+       <code>hubspot-partner.png</code>, <code>microsoft-partner.png</code>) are third-party
+       trademarks used as trust cues. They are evidence of a conversion pattern, not CODECAVE
+       brand assets, and are not part of this system.</p>
+    <p class="pv-note"><code>world-map.svg</code> is preserved in
+       <code>imagery/source/</code> but kept out of the gallery at 1.4&nbsp;MB — it is a
+       full-page background, not a plate.</p>
+  </section>
+</div>
+
+</body>
+</html>

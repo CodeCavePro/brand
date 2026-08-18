@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CODECAVE — Radius, the loudest signal</title>
+<link rel="icon" href="../build/favicon.svg">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="preview.css">
+<style>
+  .r-demo   { height: 9rem; background: var(--color-surface-secondary);
+              border: 1px solid var(--color-surface-quaternary);
+              display: grid; place-content: center;
+              font-family: var(--font-mono); font-size: 0.8125rem;
+              color: var(--color-body-secondary-lighter); }
+  .census   { display: grid; gap: 0.75rem; }
+  .census-row { display: grid; grid-template-columns: 5.5rem 1fr 3.5rem;
+                align-items: center; gap: 1rem; font-size: var(--text-caption); }
+  .census-bar { height: 1.5rem; background: var(--color-action);
+                border-radius: var(--radius-pill); }
+  .bad      { border: 1px solid var(--color-error-300); }
+</style>
+</head>
+<body data-od-id="preview-spacing-radius">
+
+<div class="pv-shell">
+  <a class="pv-back" href="index.html">&larr; All preview cards</a>
+
+  <header class="pv-head" data-od-id="radius-head">
+    <span class="eyebrow">Spacing · card 2 of 3</span>
+    <h1>Radius — the loudest brand signal</h1>
+    <p>Corners do more brand work here than the violet does. A 24px card is the <em>default</em>,
+       not a soft option; section panels reach 120px. Nothing in this system has a small corner, and
+       that single constraint is the fastest way to tell an on-brand surface from a generic one.</p>
+  </header>
+
+  <section class="pv-block" data-od-id="radius-scale">
+    <h2>The eight steps, at true size</h2>
+    <div class="pv-grid pv-grid-3">
+      <div class="r-demo" style="border-radius:var(--radius-sm)">--radius-sm · 8px<br>inputs, small chips</div>
+      <div class="r-demo" style="border-radius:var(--radius-md)">--radius-md · 12px<br>inline chips, icon tiles</div>
+      <div class="r-demo" style="border-radius:var(--radius-card)">--radius-card · 24px<br><strong>DEFAULT card</strong></div>
+      <div class="r-demo" style="border-radius:var(--radius-article)">--radius-article · 36px<br>article / insight cards</div>
+      <div class="r-demo" style="border-radius:var(--radius-custom)">--radius-custom · 44px<br>feature &amp; testimonial cards</div>
+      <div class="r-demo" style="border-radius:var(--radius-section)">--radius-section · 64px<br>section panel &lt;768px</div>
+      <div class="r-demo" style="border-radius:var(--radius-section-md);grid-column:span 2">--radius-section-md · 120px · section panel &ge;768px</div>
+      <div class="r-demo" style="border-radius:var(--radius-pill)">--radius-pill · 9999px<br>buttons, pills, avatars</div>
+    </div>
+  </section>
+
+  <section class="pv-block" data-od-id="radius-census">
+    <h2>Measured census — homepage</h2>
+    <p class="pv-note">Counted on the rendered production homepage. 24px dominates by a wide margin;
+       that is what makes it the default rather than one option among several.</p>
+    <div class="pv-tile census">
+      <div class="census-row"><span><code>24px</code></span><span class="census-bar" style="width:100%"></span><span class="pv-meta">42 blocks</span></div>
+      <div class="census-row"><span><code>12px</code></span><span class="census-bar" style="width:21.4%"></span><span class="pv-meta">9 blocks</span></div>
+      <div class="census-row"><span><code>44px</code></span><span class="census-bar" style="width:19%"></span><span class="pv-meta">8 blocks</span></div>
+      <div class="census-row"><span><code>8px</code></span><span class="census-bar" style="width:16.7%"></span><span class="pv-meta">7 blocks</span></div>
+      <div class="census-row"><span><code>120px</code></span><span class="census-bar" style="width:4.8%"></span><span class="pv-meta">2 blocks</span></div>
+      <div class="census-row"><span><code>2–4px</code></span><span style="color:var(--color-body-secondary-lighter);font-family:var(--font-mono);font-size:0.75rem">does not occur</span><span class="pv-meta">0</span></div>
+    </div>
+  </section>
+
+  <section class="pv-block" data-od-id="radius-antipattern">
+    <h2>What off-brand looks like</h2>
+    <p class="pv-note">Same fill, same border, same padding. Only the corner changed. This is how
+       much of the brand lives in the radius alone.</p>
+    <div class="pv-grid pv-grid-3">
+      <div class="card" style="padding:1.5rem" data-od-id="radius-good">
+        <span class="pv-label">On-brand</span>
+        <span class="pv-meta" style="margin-top:0.5rem">--radius-card · 24px</span>
+      </div>
+      <div class="card bad" style="padding:1.5rem;border-radius:4px" data-od-id="radius-bad-4">
+        <span class="pv-label">Off-brand</span>
+        <span class="pv-meta" style="margin-top:0.5rem">4px — reads as generic admin UI</span>
+      </div>
+      <div class="card bad" style="padding:1.5rem;border-radius:0" data-od-id="radius-bad-0">
+        <span class="pv-label">Off-brand</span>
+        <span class="pv-meta" style="margin-top:0.5rem">0px — never occurs in source</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-block" data-od-id="radius-section-panel">
+    <h2>The section panel in place</h2>
+    <p class="pv-note">64px below 768px, 120px at and above it. Resize this window across the
+       breakpoint and watch the corner change — the panel below is the real
+       <code>.section-container</code> class, glow included.</p>
+    <div class="section-container" style="padding:3rem 2rem" data-od-id="radius-live-panel">
+      <h3 class="eyebrow-lead" style="margin:0;text-align:center">
+        <span class="lead">Words of appreciation</span>
+        <span class="eyebrow">from the teams we build with</span>
+      </h3>
+    </div>
+  </section>
+</div>
+
+</body>
+</html>

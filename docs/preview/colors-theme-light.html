@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CODECAVE — Light-surface exceptions (not a light theme)</title>
+<link rel="icon" href="../build/favicon.svg">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="preview.css">
+<style>
+  .light-plate { background: #E8E6F0; color: var(--color-brand-670);
+                 border-radius: var(--radius-card); padding: 2rem;
+                 display: grid; gap: 1rem; place-items: start; }
+  .light-plate .pv-meta { color: var(--color-brand-105); }
+</style>
+</head>
+<body data-od-id="preview-colors-theme-light">
+
+<div class="pv-shell">
+  <a class="pv-back" href="index.html">&larr; All preview cards</a>
+
+  <header class="pv-head" data-od-id="colors-light-head">
+    <span class="eyebrow">Color · card 3 of 3</span>
+    <h1>Light-surface exceptions — and why there is no light theme</h1>
+    <p>CODECAVE is dark-first and ships no light mode. Exactly three light surfaces exist in the
+       system, and this is the complete set. Reviewers should confirm no fourth has crept in.</p>
+  </header>
+
+  <section class="pv-block">
+    <p class="pv-warn"><strong>Not a theme.</strong> Do not derive a light palette by inverting the
+      ramp. If a light surface is genuinely unavoidable — a printed page, a third-party embed — use
+      the black-text wordmark variant and leave every other token untouched.</p>
+  </section>
+
+  <section class="pv-block" data-od-id="light-exception-cta">
+    <h2>Exception 1 — the glow CTA field</h2>
+    <p class="pv-note">
+      <code>#9980FF</code> with <code>#1B0D4E</code> text: <strong>8.0:1</strong>. This is the only
+      dark-on-light text in the entire system, and it exists on exactly one control.
+      Source: <code>source_examples/common/GlowButton.vue</code>.
+    </p>
+    <div class="pv-row">
+      <span class="btn-glow-field"><a class="btn btn-glow" href="#" data-od-id="light-glow-cta"><span>Discuss project for free</span></a></span>
+      <span class="pv-meta">fill --color-brand-210 · text --color-brand-670<br>44px pill · halo, not a drop shadow</span>
+    </div>
+  </section>
+
+  <section class="pv-block" data-od-id="light-exception-type">
+    <h2>Exception 2 — the near-white type ramp</h2>
+    <p class="pv-note">Light <em>ink</em>, not a light surface. Included here so the distinction is
+       explicit: <code>#E8E6F0</code> and <code>#C6C4CC</code> are foregrounds and never become
+       page fills.</p>
+    <div class="pv-grid pv-grid-2">
+      <div class="pv-tile">
+        <span style="color:var(--color-heading);font-size:var(--text-lg);font-weight:700">#E8E6F0 as ink</span>
+        <span class="pv-meta" style="margin-top:0.5rem">correct — foreground on #050505</span>
+      </div>
+      <div class="pv-tile" style="background:#E8E6F0">
+        <span style="color:var(--color-brand-670);font-size:var(--text-lg);font-weight:700">#E8E6F0 as a field</span>
+        <span class="pv-meta" style="margin-top:0.5rem;color:var(--color-brand-105)">off-system — do not build pages on this</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-block" data-od-id="light-exception-wordmark">
+    <h2>Exception 3 — the black-text wordmark</h2>
+    <p class="pv-note">
+      For print and genuinely light third-party surfaces only. The chevron glyph stays
+      <code>#5F20FE</code>; only the wordmark paths change color. Real files, loaded from
+      <code>assets/</code>.
+    </p>
+    <div class="light-plate" data-od-id="light-wordmark-plate">
+      <img src="../assets/codecave-wide-1024-text-black.png" alt="CODECAVE horizontal wordmark, black text" width="360" style="max-width:100%;height:auto">
+      <span class="pv-meta">assets/codecave-wide-1024-text-black.png — on a genuinely light plate</span>
+      <hr class="divider" style="width:100%;background:var(--color-brand-50)">
+      <img src="../assets/codecave-tall-1024-all-black.png" alt="CODECAVE stacked wordmark, all black" width="180" style="max-width:100%;height:auto">
+      <span class="pv-meta">assets/codecave-tall-1024-all-black.png — one-ink printing</span>
+    </div>
+  </section>
+
+  <section class="pv-block" data-od-id="light-error-note">
+    <h2>A note on error text</h2>
+    <p class="pv-note">
+      <code>--color-error</code> (<code>#B42318</code>) reaches only <strong>3.2:1</strong> on the
+      near-black page, which is below the 4.5:1 requirement for normal text. The package therefore
+      renders error <em>messages</em> in <code>--color-error-100</code> (<code>#FE9A9A</code>,
+      <strong>8.4:1</strong>) and keeps <code>#B42318</code> for icons and rules. This is a
+      deliberate divergence from production — see DESIGN.md &rarr; Known divergences.
+    </p>
+    <div class="pv-row">
+      <span style="color:var(--color-error);font-weight:700">#B42318 — production error text (3.2:1)</span>
+      <span style="color:var(--color-error-100);font-weight:700">#FE9A9A — package error text (8.4:1)</span>
+    </div>
+  </section>
+</div>
+
+</body>
+</html>

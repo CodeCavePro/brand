@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CODECAVE — The dark canvas (the only theme)</title>
+<link rel="icon" href="../build/favicon.svg">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="preview.css">
+<style>
+  .stack-demo { border-radius: var(--radius-card); overflow: hidden;
+                border: 1px solid var(--color-surface-quaternary); }
+  .stack-demo > div { padding: 1.5rem; font-size: var(--text-caption);
+                      font-family: var(--font-mono); color: var(--color-body-secondary-lighter); }
+  .fg-row { display: flex; align-items: baseline; gap: 1.5rem; padding: 1rem 0;
+            border-bottom: 1px solid var(--color-surface-quaternary); }
+  .fg-row:last-child { border-bottom: 0; }
+  .fg-row .sample { flex: 1; min-width: 14rem; }
+</style>
+</head>
+<body data-od-id="preview-colors-theme-dark">
+
+<div class="pv-shell">
+  <a class="pv-back" href="index.html">&larr; All preview cards</a>
+
+  <header class="pv-head" data-od-id="colors-dark-head">
+    <span class="eyebrow">Color · card 2 of 3</span>
+    <h1>The dark canvas — CODECAVE&rsquo;s only theme</h1>
+    <p>The defining decision of the system: the page and its cards sit one barely-perceptible step
+       apart. Depth is carried by radius, border and the upward glow — never by lightening a
+       surface. Check the four steps below read as <em>separate</em> without reading as
+       <em>contrasted</em>.</p>
+  </header>
+
+  <section class="pv-block" data-od-id="colors-dark-surfaces">
+    <h2>The four surface steps</h2>
+    <p class="pv-note">Total luminance spread across all four is smaller than a single step in most
+       dark UI kits. That is intentional and must survive review.</p>
+    <div class="stack-demo">
+      <div style="background:var(--color-surface-primary)">--color-surface-primary · #050505 · the page</div>
+      <div style="background:var(--color-surface-secondary)">--color-surface-secondary · #0D0D0F · card fill (one step off the page)</div>
+      <div style="background:var(--color-surface-tertiary)">--color-surface-tertiary · #141319 · raised / hovered card, icon tiles</div>
+      <div style="background:var(--color-surface-primary-hover)">--color-surface-primary-hover · #2A2637 · surface hover</div>
+      <div style="background:var(--color-surface-quaternary)">--color-surface-quaternary · #2E2C33 · borders, dividers, checkbox outline</div>
+    </div>
+  </section>
+
+  <section class="pv-block" data-od-id="colors-dark-foregrounds">
+    <h2>Foreground ramp on the page</h2>
+    <p class="pv-note">Three text weights of grey, each with a defined job. Nothing lighter than
+       <code>#645F70</code> is permitted for text that carries meaning.</p>
+    <div class="pv-tile" style="background:var(--color-surface-primary)">
+      <div class="fg-row">
+        <span class="sample" style="color:var(--color-heading);font-size:var(--text-lg);font-weight:700">Optimize costs. Protect your Data</span>
+        <span class="pv-meta">--color-heading · #E8E6F0<br>headings · 15.9:1</span>
+      </div>
+      <div class="fg-row">
+        <span class="sample" style="color:var(--color-body-primary)">We scope, price and warranty the work before it starts.</span>
+        <span class="pv-meta">--color-body-primary · #E8E6F0<br>body · 15.9:1</span>
+      </div>
+      <div class="fg-row">
+        <span class="sample" style="color:var(--color-body-secondary-lighter)">Long-form description copy sits one step down, so a paragraph never competes with the heading above it.</span>
+        <span class="pv-meta">--color-body-secondary-lighter · #C6C4CC<br>descriptions · 11.7:1</span>
+      </div>
+      <div class="fg-row">
+        <span class="sample" style="color:var(--color-body-secondary);font-size:var(--text-caption)">14 Aug 2026 · 6 min read</span>
+        <span class="pv-meta">--color-body-secondary · #645F70<br>metadata &amp; placeholders only · 3.1:1<br><strong>never body text</strong></span>
+      </div>
+      <div class="fg-row">
+        <a class="sample" href="#" style="font-weight:700">Discuss project for free</a>
+        <span class="pv-meta">--color-action &rarr; --color-hovered on hover<br>hover raises contrast, never lowers it</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-block" data-od-id="colors-dark-in-situ">
+    <h2>In situ — page, card, raised card</h2>
+    <p class="pv-note">The same content at three surface levels. Confirm separation comes from
+       corner radius and the 1px border, not from fill.</p>
+    <div class="pv-grid pv-grid-2">
+      <div class="card" data-od-id="dark-card-default">
+        <span class="eyebrow" style="font-size:var(--text-caption)">Cloud &amp; DevOps</span>
+        <h3 style="font-size:var(--text-lg);line-height:var(--leading-lg);margin:0.5rem 0 0.75rem">Optimize costs.<br>Protect your Data</h3>
+        <p style="color:var(--color-body-secondary-lighter);font-size:var(--text-caption);margin:0 0 1.5rem">
+          Default card: <code>#0D0D0F</code> fill, 24px radius, 1px <code>#2E2C33</code> border,
+          padding <code>32px 32px 48px</code>.</p>
+        <a class="btn btn-tertiary" href="#">Learn more</a>
+      </div>
+      <div class="card" style="background:var(--color-surface-tertiary)" data-od-id="dark-card-raised">
+        <span class="eyebrow" style="font-size:var(--text-caption)">Autodesk plugins</span>
+        <h3 style="font-size:var(--text-lg);line-height:var(--leading-lg);margin:0.5rem 0 0.75rem">10x efficiency with<br>custom Plugins</h3>
+        <p style="color:var(--color-body-secondary-lighter);font-size:var(--text-caption);margin:0 0 1.5rem">
+          Raised / hovered card: <code>#141319</code>. This is the entire hover delta for a card —
+          nothing scales, nothing brightens.</p>
+        <a class="btn btn-tertiary" href="#">Learn more</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-block">
+    <p class="pv-warn"><strong>There is no light theme.</strong> The system ships none, and one must
+      not be derived. The three light-surface exceptions are catalogued in
+      <a href="colors-theme-light.html">colors-theme-light.html</a>.</p>
+  </section>
+</div>
+
+</body>
+</html>

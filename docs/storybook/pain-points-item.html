@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PainPointsItem — CODECAVE storybook</title>
+<link rel="icon" href="../build/favicon.svg">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="components.css">
+<link rel="stylesheet" href="storybook.css">
+<style>
+  .ph-ic { background: var(--color-surface-tertiary); border-radius: var(--radius-sm); }
+</style>
+</head>
+<body data-od-id="story-pain-points-item">
+<div class="sb">
+  <a class="sb-back" href="index.html">&larr; All components</a>
+
+  <header class="sb-head">
+    <p class="eyebrow">Content · 13 of 13</p>
+    <h1>PainPointsItem</h1>
+    <p>A fixed-width card whose body is CMS markdown rendered to HTML at
+       component scope, with a custom <code>marked</code> renderer supplying the
+       Tailwind classes.</p>
+    <div class="sb-tags">
+      <span class="sb-tag is-vue">Vue island</span>
+      <span class="sb-tag">src/components/project/pain-points-item.vue</span>
+      <span class="sb-tag">v-html</span>
+    </div>
+  </header>
+
+  <section class="sb-section">
+    <h2>Props</h2>
+    <table class="sb-props">
+      <thead><tr><th>Prop</th><th>Type</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>item <span class="sb-req">*</span></td><td><code>Feature</code></td><td>Strapi entity. Reads <code>image.url</code>, <code>image.name</code>, <code>content</code> (markdown).</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:1rem">The renderer overrides two node types only:
+       <code>paragraph</code> → <code>&lt;p class="text-lg"&gt;</code> and
+       <code>list</code> → <code>&lt;ul|ol class="pt-2 pl-5 list-disc"&gt;</code>.
+       Everything else falls through to <code>marked</code>'s defaults, unstyled.</p>
+  </section>
+
+  <section class="sb-section">
+    <h2>Stories</h2>
+    <div class="sb-stories">
+
+      <div class="sb-story">
+        <div class="sb-canvas is-start is-tall">
+          <div class="cc-painpoint">
+            <div class="ph-ic" style="width:2rem;height:2rem"></div>
+            <p>Manual exports between Revit and the ERP.</p>
+          </div>
+        </div>
+        <div class="sb-story-body">
+          <span class="sb-story-name">Paragraph only</span>
+          <span class="sb-story-args">content = one paragraph</span>
+          <span class="sb-story-note">18px body on a 24px-radius #0D0D0F card, fixed 14rem wide.</span>
+        </div>
+      </div>
+
+      <div class="sb-story">
+        <div class="sb-canvas is-start is-tall">
+          <div class="cc-painpoint">
+            <div class="ph-ic" style="width:2rem;height:2rem"></div>
+            <p>Three places the data drifts:</p>
+            <ul><li>Nightly batch</li><li>Manual CSV</li><li>Ad-hoc fixes</li></ul>
+          </div>
+        </div>
+        <div class="sb-story-body">
+          <span class="sb-story-name">With a list</span>
+          <span class="sb-story-args">content = paragraph + bullets</span>
+          <span class="sb-story-note">The custom renderer is why the bullets have discs at all — <code>list-disc</code> is not a browser default under Tailwind's reset.</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="sb-section">
+    <h2>Findings</h2>
+
+    <p class="sb-note is-warn"><strong><code>v-html</code> on CMS content with no sanitizer.</strong>
+      <code>marked</code> is configured without <code>sanitize</code> (removed in
+      marked v5+ anyway) and no DOMPurify pass runs before the result reaches
+      <code>v-html</code>. Markdown permits raw HTML, so anything an editor can put
+      in the Strapi <code>content</code> field executes in the page. That makes
+      this an XSS sink gated only by CMS access control. Sanitizing the parsed
+      HTML before binding closes it.</p>
+
+    <p class="sb-note is-warn"><strong>Markdown is parsed once, outside any reactive scope.</strong>
+      <code>htmlContent</code> is computed at <code>&lt;script setup&gt;</code> body
+      level from <code>props.item.content</code>, not in a <code>computed</code>.
+      If the parent swaps <code>item</code> without remounting, the card keeps
+      rendering the previous body while the image updates — the two halves of the
+      card can disagree.</p>
+
+    <p class="sb-note"><strong>The ordered-list branch still gets <code>list-disc</code>.</strong>
+      The renderer picks <code>ol</code> vs <code>ul</code> from
+      <code>token.ordered</code> but applies the same class string either way, so a
+      numbered list renders with bullets and no numbers.</p>
+
+    <p class="sb-note"><strong>Width is fixed at <code>w-56</code>.</strong>
+      14rem regardless of viewport or content, with only the horizontal margin
+      responding to breakpoints. Long copy grows the card downward indefinitely,
+      which is what the carousel parent expects — but it means the component
+      cannot be reused in a wider slot.</p>
+  </section>
+
+</div>
+</body>
+</html>

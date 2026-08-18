@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CODECAVE — applied interface kit</title>
+<link rel="icon" href="../../build/favicon.svg">
+
+<!-- React runtime. Development builds on purpose: this kit exists to be inspected. -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"></script>
+
+<!-- The design system itself. Every color, size, radius, shadow and component
+     class below comes from this one file — the kit adds layout, never new tokens. -->
+<link rel="stylesheet" href="../../colors_and_type.css">
+
+<style>
+  /* ---------------------------------------------------------------------------
+     Kit chrome only. Nothing here introduces a color, radius or type size that
+     colors_and_type.css does not already define — every value is a var().
+     --------------------------------------------------------------------------- */
+  html, body { height: 100%; }
+  body { margin: 0; overflow: hidden; }
+  #root { height: 100vh; }
+
+  /* --- shell (App.jsx) ----------------------------------------------------- */
+  .kit-shell     { display: grid; height: 100vh;
+                   grid-template-columns: 17rem 20rem 1fr;
+                   background: var(--color-surface-primary); }
+  @media (max-width: 75rem) { .kit-shell { grid-template-columns: 5rem 1fr; }
+                              .kit-rail  { display: none; } }
+  @media (max-width: 48rem) { .kit-shell { grid-template-columns: 1fr; }
+                              .kit-sidebar { display: none; } }
+
+  /* --- sidebar (Sidebar.jsx) ---------------------------------------------- */
+  .kit-sidebar   { display: flex; flex-direction: column; gap: 2rem;
+                   padding: 1.5rem 1rem;
+                   background: var(--color-surface-primary);
+                   border-right: 1px solid var(--color-surface-quaternary);
+                   overflow-y: auto; }
+  .kit-brand     { display: flex; align-items: center; gap: 0.75rem;
+                   padding: 0.5rem 0.75rem; }
+  .kit-brand img { display: block; }
+  .kit-nav       { display: flex; flex-direction: column; gap: 0.25rem; }
+  .kit-navitem   { display: flex; align-items: center; gap: 0.75rem;
+                   padding: 0.75rem; border: 0; background: none;
+                   border-radius: var(--radius-md);
+                   color: var(--color-body-primary);
+                   font: inherit; font-size: var(--text-base); text-align: left;
+                   cursor: pointer;
+                   transition: background-color var(--transition-base),
+                               color var(--transition-base); }
+  .kit-navitem:hover      { background: var(--color-surface-secondary);
+                            color: var(--color-hovered); }
+  .kit-navitem[aria-current="page"] { background: var(--color-surface-secondary);
+                                      color: var(--color-hovered);
+                                      font-weight: var(--font-weight-bold); }
+  /* Icon tile lifted verbatim from header/services-list.vue: p-3 rounded-xl on
+     the tertiary surface. It is the only place a 12px radius is allowed. */
+  .kit-tile      { display: grid; place-content: center;
+                   width: 2.25rem; height: 2.25rem; flex: none;
+                   border-radius: var(--radius-md);
+                   background: var(--color-surface-tertiary);
+                   color: var(--color-action); font-size: 0.9375rem; }
+  .kit-dot       { width: 0.5rem; height: 0.5rem; flex: none;
+                   border-radius: var(--radius-pill);
+                   background: var(--color-error-400);
+                   animation: kit-pulse 2s ease-in-out infinite; }
+  @keyframes kit-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.25; } }
+  .kit-sidebar-foot { margin-top: auto; display: grid; gap: 0.75rem; }
+
+  /* --- list rail (AssistantsList.jsx) -------------------------------------- */
+  .kit-rail      { display: flex; flex-direction: column;
+                   background: var(--color-surface-primary);
+                   border-right: 1px solid var(--color-surface-quaternary);
+                   overflow: hidden; }
+  .kit-rail-head { padding: 1.5rem 1.25rem 1rem; display: grid; gap: 1rem; }
+  .kit-rail-list { flex: 1; overflow-y: auto; padding: 0 0.75rem 1.5rem;
+                   display: flex; flex-direction: column; gap: 0.5rem; }
+  .kit-rail-item { display: grid; gap: 0.375rem; padding: 1rem;
+                   border: 1px solid transparent;
+                   border-radius: var(--radius-card);
+                   background: var(--color-surface-secondary);
+                   text-align: left; font: inherit; color: inherit;
+                   cursor: pointer;
+                   transition: background-color var(--transition-base),
+                               border-color var(--transition-base); }
+  .kit-rail-item:hover { background: var(--color-surface-tertiary); }
+  .kit-rail-item[aria-selected="true"] { background: var(--color-surface-tertiary);
+                                         border-color: var(--color-action); }
+  .kit-rail-top  { display: flex; align-items: center; gap: 0.625rem; }
+  .kit-rail-name { flex: 1; font-weight: var(--font-weight-bold);
+                   font-size: var(--text-base); color: var(--color-heading); }
+  .kit-avatar    { display: grid; place-content: center;
+                   width: 2rem; height: 2rem; flex: none;
+                   border-radius: var(--radius-pill);
+                   background: var(--color-brand-670);
+                   color: var(--color-brand-200);
+                   font-size: var(--text-caption);
+                   font-weight: var(--font-weight-bold); }
+
+  /* --- workspace (ChatArea.jsx) -------------------------------------------- */
+  .kit-main      { display: flex; flex-direction: column; overflow: hidden;
+                   background: var(--color-surface-primary); }
+  .kit-main-head { display: flex; align-items: flex-start; gap: 1.5rem;
+                   padding: 1.75rem 2rem 1.25rem;
+                   border-bottom: 1px solid var(--color-surface-quaternary); }
+  .kit-main-head .eyebrow-lead { margin: 0; flex: 1; }
+  .kit-thread    { flex: 1; overflow-y: auto; padding: 2rem;
+                   display: flex; flex-direction: column; gap: 1.5rem; }
+  .kit-thread-inner { width: 100%; max-width: 52rem; margin: 0 auto;
+                      display: flex; flex-direction: column; gap: 1.5rem; }
+  .kit-daymark   { display: flex; align-items: center; gap: 1rem;
+                   color: var(--color-body-secondary);
+                   font-size: var(--text-caption); }
+  .kit-daymark::before, .kit-daymark::after {
+                   content: ""; flex: 1; height: 1px;
+                   background: var(--color-surface-quaternary); }
+
+  /* --- message (MessageBubble.jsx) ---------------------------------------- */
+  /* Messages are cards, and cards in this system never carry a shadow: 24px of
+     radius plus a hairline border is the entire elevation mechanism. */
+  .kit-msg       { display: flex; gap: 1rem; align-items: flex-start; }
+  .kit-msg-body  { flex: 1; padding: 1.25rem 1.5rem;
+                   border-radius: var(--radius-card);
+                   background: var(--color-surface-secondary);
+                   border: 1px solid var(--color-surface-quaternary); }
+  .kit-msg-meta  { display: flex; align-items: baseline; gap: 0.625rem;
+                   margin-bottom: 0.5rem; }
+  .kit-msg-who   { font-weight: var(--font-weight-bold);
+                   color: var(--color-heading); font-size: var(--text-base); }
+  .kit-msg-time  { color: var(--color-body-secondary);
+                   font-size: var(--text-caption); }
+  .kit-msg p     { margin: 0 0 0.75rem; color: var(--color-body-primary); }
+  .kit-msg p:last-child { margin-bottom: 0; }
+  /* Outgoing takes the raised surface and a violet edge — the same "violet on
+     edges only" rule the marketing site uses for tertiary buttons. */
+  .kit-msg-out .kit-msg-body { background: var(--color-surface-tertiary);
+                               border-color: var(--color-action); }
+  .kit-msg-out .kit-avatar   { background: var(--color-action);
+                               color: var(--color-brand-0); }
+  .kit-msg-list  { margin: 0.25rem 0 0; padding-left: 1.125rem;
+                   display: grid; gap: 0.375rem; }
+  .kit-msg-foot  { display: flex; flex-wrap: wrap; gap: 0.75rem;
+                   margin-top: 1rem; padding-top: 1rem;
+                   border-top: 1px solid var(--color-surface-quaternary); }
+
+  /* --- composer (InputBar.jsx) -------------------------------------------- */
+  .kit-composer  { padding: 1.25rem 2rem 1.75rem;
+                   border-top: 1px solid var(--color-surface-quaternary); }
+  .kit-composer-inner { width: 100%; max-width: 52rem; margin: 0 auto;
+                        display: grid; gap: 0.875rem; }
+  .kit-composer .field textarea { min-height: 5.5rem; }
+  .kit-composer-row { display: flex; flex-wrap: wrap; align-items: center;
+                      gap: 0.75rem; }
+  .kit-composer-row .kit-spacer { flex: 1; }
+  .kit-hint      { color: var(--color-body-secondary);
+                   font-size: var(--text-caption); }
+  .kit-hint kbd  { font-family: var(--font-mono); font-size: 0.75rem;
+                   padding: 0.125rem 0.375rem;
+                   border-radius: var(--radius-sm);
+                   background: var(--color-surface-tertiary);
+                   color: var(--color-body-primary); }
+
+  /* --- shared -------------------------------------------------------------- */
+  .kit-count     { padding: 0.125rem 0.5rem;
+                   border-radius: var(--radius-pill);
+                   background: var(--color-surface-tertiary);
+                   color: var(--color-body-secondary-lighter);
+                   font-size: 0.75rem; font-weight: var(--font-weight-bold); }
+  .kit-scroll-note { position: fixed; right: 1rem; bottom: 1rem; z-index: 5; }
+</style>
+</head>
+<body data-od-id="ui-kit-app">
+
+<div id="root"></div>
+
+<!-- Babel scopes each file separately, so every component publishes itself on
+     window. Load order matters: leaves first, App last. -->
+<script type="text/babel" src="components/GlowButton.jsx"></script>
+<script type="text/babel" src="components/MessageBubble.jsx"></script>
+<script type="text/babel" src="components/InputBar.jsx"></script>
+<script type="text/babel" src="components/AssistantsList.jsx"></script>
+<script type="text/babel" src="components/ChatArea.jsx"></script>
+<script type="text/babel" src="components/Sidebar.jsx"></script>
+<script type="text/babel" src="components/App.jsx"></script>
+
+<script type="text/babel">
+  const App = window.App;
+  const root = ReactDOM.createRoot(document.getElementById('root'));
+  root.render(<App />);
+</script>
+
+</body>
+</html>

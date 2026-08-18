@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="160" viewBox="0 0 320 160" role="img" aria-label="CODECAVE">
+  <rect width="320" height="160" rx="28" fill="#050505"/>
+  <circle cx="84" cy="80" r="38" fill="#5f20fe"/>
+  <text x="84" y="92" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="700" fill="#ffffff">C</text>
+  <text x="140" y="88" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700" fill="#e8e6f0">CODECAVE</text>
+</svg>

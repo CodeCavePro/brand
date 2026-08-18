@@ -1,0 +1,91 @@
+/* Preview chrome only — NOT part of the design system.
+ * Every card links ../colors_and_type.css first, then this file. Nothing here
+ * introduces a color: the chrome is built from the system's own tokens so a
+ * reviewer never mistakes scaffolding for brand. */
+
+body {
+  padding: 4rem var(--gutter-md) 6rem;
+}
+
+.pv-shell {
+  max-width: var(--max-width-desktop);
+  margin: 0 auto;
+}
+
+.pv-head {
+  margin-bottom: 3.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--color-surface-quaternary);
+}
+
+/* The eyebrow is violet at its signature 32px size, where #5F20FE clears the
+   3:1 large-text floor at 3.03:1. Here it runs at 14px, where the floor is
+   4.5:1 and that same violet fails. Stepping to --color-hovered (8.66:1) keeps
+   it in-palette; the component itself is left alone. See DESIGN.md §10.5. */
+.pv-head .eyebrow { font-size: var(--text-caption); letter-spacing: 0.08em;
+                    text-transform: uppercase; margin-bottom: 0.75rem;
+                    color: var(--color-hovered); }
+.pv-head h1       { font-size: var(--text-heading-md);
+                    line-height: var(--text-heading-md--line-height); }
+.pv-head p        { max-width: 62ch; margin: 1rem 0 0;
+                    color: var(--color-body-secondary-lighter);
+                    font-size: var(--text-md); line-height: var(--leading-md); }
+
+.pv-block            { margin-top: 3.5rem; }
+.pv-block > h2       { font-size: var(--text-lg); line-height: var(--leading-lg);
+                       margin-bottom: 0.5rem; }
+.pv-block > .pv-note { max-width: 70ch; margin: 0 0 1.75rem;
+                       color: var(--color-body-secondary-lighter);
+                       font-size: var(--text-caption);
+                       line-height: var(--leading-caption); }
+
+.pv-grid       { display: grid; gap: 1rem; }
+.pv-grid-2     { grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr)); }
+.pv-grid-3     { grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
+.pv-grid-4     { grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); }
+
+.pv-row        { display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem; }
+
+/* Token label pairs */
+.pv-label { display: block; color: var(--color-heading);
+            font-size: var(--text-caption); font-weight: var(--font-weight-bold); }
+/* Preview chrome recedes by size and family, not by contrast. #645F70 is
+   3.3:1 on #050505 — fine as a *specimen* of the metadata token, but it must
+   not carry label text a reviewer has to read. The lighter step is 11.8:1. */
+.pv-meta  { display: block; color: var(--color-body-secondary-lighter);
+            font-family: var(--font-mono); font-size: 0.75rem;
+            line-height: 1.4; word-break: break-all; }
+
+/* Swatches */
+.pv-swatch      { border-radius: var(--radius-md); overflow: hidden;
+                  border: 1px solid var(--color-surface-quaternary); }
+.pv-swatch-chip { height: 5rem; }
+.pv-swatch-body { padding: 0.75rem; background: var(--color-surface-secondary); }
+
+.pv-tile { padding: 1.25rem; border-radius: var(--radius-md);
+           background: var(--color-surface-secondary);
+           border: 1px solid var(--color-surface-quaternary); }
+
+table.pv-table  { width: 100%; border-collapse: collapse;
+                  font-size: var(--text-caption); }
+.pv-table th    { text-align: left; padding: 0.75rem 1rem;
+                  color: var(--color-body-secondary-lighter);
+                  font-weight: var(--font-weight-bold);
+                  border-bottom: 1px solid var(--color-surface-quaternary); }
+.pv-table td    { padding: 0.75rem 1rem; vertical-align: middle;
+                  border-bottom: 1px solid var(--color-surface-quaternary); }
+.pv-table code  { font-family: var(--font-mono); font-size: 0.8125rem;
+                  color: var(--color-hovered); }
+
+.pv-warn { padding: 1rem 1.25rem; border-radius: var(--radius-sm);
+           border: 1px solid var(--color-action);
+           color: var(--color-body-secondary-lighter);
+           font-size: var(--text-caption); line-height: var(--leading-caption); }
+.pv-warn strong { color: var(--color-heading); }
+
+.pv-back { display: inline-block; margin-bottom: 2rem;
+           color: var(--color-body-secondary-lighter);
+           font-size: var(--text-caption); text-decoration: none; }
+.pv-back:hover { color: var(--color-hovered); }
+
+@media (min-width: 1280px) { body { padding-inline: var(--gutter-xl); } }

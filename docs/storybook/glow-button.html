@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GlowButton — CODECAVE storybook</title>
+<link rel="icon" href="../build/favicon.svg">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="components.css">
+<link rel="stylesheet" href="storybook.css">
+</head>
+<body data-od-id="story-glow-button">
+<div class="sb">
+  <a class="sb-back" href="index.html">&larr; All components</a>
+
+  <header class="sb-head">
+    <p class="eyebrow">Primitive · 2 of 13</p>
+    <h1>GlowButton</h1>
+    <p>The single conversion CTA. It is the one place the system fills a large
+       area with purple, and therefore the one place text runs near-black on
+       light. There is exactly one of these per page.</p>
+    <div class="sb-tags">
+      <span class="sb-tag is-vue">Vue island</span>
+      <span class="sb-tag">src/components/common/GlowButton.vue</span>
+      <span class="sb-tag">GSAP</span>
+    </div>
+  </header>
+
+  <section class="sb-section">
+    <h2>Props</h2>
+    <table class="sb-props">
+      <thead><tr><th>Prop</th><th>Type</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>title <span class="sb-req">*</span></td><td><code>string</code></td><td>Required. The label.</td></tr>
+        <tr><td>href</td><td><code>string</code></td><td>Always renders an <code>&lt;a&gt;</code>; with no href it is a non-navigating anchor.</td></tr>
+        <tr><td>class</td><td><code>string</code></td><td>Applied to <strong>both</strong> the wrapper and the anchor — see findings.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="sb-section">
+    <h2>Stories</h2>
+    <p>The highlight tracks the pointer via GSAP in the real component. These
+       canvases show the resting state, which is where the leave tween parks the
+       orb: <code>left: 20%, top: 50%</code> after a 1s delay.</p>
+    <div class="sb-stories">
+
+      <div class="sb-story">
+        <div class="sb-canvas is-tall">
+          <span class="cc-glow-wrap">
+            <span class="cc-edge cc-edge-left"></span>
+            <a class="cc-glow" href="#"><span>Book a free consultation</span><span class="orb"></span></a>
+            <span class="cc-edge cc-edge-right"></span>
+          </span>
+        </div>
+        <div class="sb-story-body">
+          <span class="sb-story-name">Default</span>
+          <span class="sb-story-args">title="Book a free consultation"</span>
+          <span class="sb-story-note">#9980FF fill, #1B0D4E label — 5.67:1, the system's only sanctioned dark-on-light pairing.</span>
+        </div>
+      </div>
+
+      <div class="sb-story">
+        <div class="sb-canvas is-tall">
+          <span class="cc-glow-wrap" style="width:100%">
+            <span class="cc-edge cc-edge-left"></span>
+            <a class="cc-glow" href="#" style="width:100%"><span>Accept</span><span class="orb"></span></a>
+            <span class="cc-edge cc-edge-right"></span>
+          </span>
+        </div>
+        <div class="sb-story-body">
+          <span class="sb-story-name">Full width</span>
+          <span class="sb-story-args">class="w-full"</span>
+          <span class="sb-story-note">The cookie-banner usage. Press it — the anchor scales to 0.98.</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="sb-section">
+    <h2>Anatomy</h2>
+    <p>Three glow layers, not one. They stack around the anchor rather than
+       inside it, which is why the wrapper is <code>position: relative</code> and
+       the edges are pulled outside the box with <code>-left-2</code> /
+       <code>-right-2</code>.</p>
+    <table class="sb-props">
+      <thead><tr><th>Layer</th><th>Role</th><th>Behavior</th></tr></thead>
+      <tbody>
+        <tr><td>box-shadow</td><td>The static bloom</td><td>Three stacked shadows, <code>#7A58FFA8</code> / <code>#4F22FFA6</code> / <code>#5B34FA</code>. Shipped as <code>--shadow-glow-button</code>.</td></tr>
+        <tr><td>.orb</td><td>Pointer-tracked highlight</td><td>Inside the anchor, <code>overflow: hidden</code>. GSAP tweens left/top to the cursor over 0.5s.</td></tr>
+        <tr><td>.edge-glow ×2</td><td>Proximity flare</td><td>Outside the anchor. Opacity ramps in the outer 10% of the width on each side.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="sb-section">
+    <h2>Findings</h2>
+
+    <p class="sb-note is-warn"><strong><code>class</code> is applied twice.</strong>
+      The prop lands on the wrapper <code>&lt;div&gt;</code> and again on the inner
+      <code>&lt;a&gt;</code>. Layout utilities that make sense on one usually do
+      not on the other — <code>Cookies.vue</code> passes
+      <code>w-full max-w-[12.5rem]!</code>, which constrains the wrapper and then
+      re-applies the same cap to the anchor inside it. Anything positional
+      (<code>absolute</code>, <code>mx-auto</code>) will double-apply.</p>
+
+    <p class="sb-note is-warn"><strong>The reduced-motion guard does not cover it.</strong>
+      The pointer tween is GSAP, driven from JS on <code>mousemove</code>. The
+      system's <code>prefers-reduced-motion</code> block only neutralizes CSS
+      transitions and animations, so a user who has asked for reduced motion
+      still gets the full tracking glow. Guarding it needs a
+      <code>window.matchMedia('(prefers-reduced-motion: reduce)')</code> check
+      alongside the existing <code>pointer: coarse</code> one.</p>
+
+    <p class="sb-note"><strong>Touch is handled, and handled early.</strong>
+      <code>isTouchDevice</code> is resolved in <code>onMounted</code> from three
+      signals — <code>pointer: coarse</code>, <code>ontouchstart</code>,
+      <code>maxTouchPoints</code> — and every handler returns early when true. The
+      static bloom remains, so the button still reads as the CTA without the
+      tracking.</p>
+
+    <p class="sb-note"><strong>The label is unselectable by design.</strong>
+      <code>select-none</code> on the span stops a drag across the button from
+      highlighting the text mid-tween.</p>
+  </section>
+
+</div>
+</body>
+</html>

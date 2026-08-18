@@ -1,0 +1,19 @@
+/* CODECAVE — font face
+ *
+ * Only ONE real Satoshi cut ships: Regular (400). It is declared with an
+ * explicit font-weight so the browser's synthesis is deliberate rather than
+ * accidental — the production site omits the descriptor, which is why its
+ * 300 and 700 text is faux-weighted.
+ *
+ * Consequence for anything built with this system: 700 is SYNTHESIZED, not a
+ * real Bold cut. It is legitimate to use (it is what production looks like
+ * today), but do not assume access to genuine 300/500/600/900 weights.
+ */
+
+@font-face {
+  font-family: Satoshi;
+  src: url("./Satoshi-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}

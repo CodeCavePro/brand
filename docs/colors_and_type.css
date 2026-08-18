@@ -1,0 +1,788 @@
+/* ============================================================================
+ * CODECAVE Design System — color and typography foundations
+ * ----------------------------------------------------------------------------
+ * Source of truth, in order of authority:
+ *   1. codecave.pro/src/styles/global.css        (production Tailwind 4 @theme)
+ *      -> context/local-code/codecave.pro/files/src/styles/global.css
+ *   2. CodeCavePro/brand docs/tokens/*.css       (published brand token files)
+ *      -> context/github/CodeCavePro-brand/files/docs/tokens/
+ *   3. https://codecave.gay                      (live site, measured steps)
+ *
+ * Two layers. The raw --color-brand-* ramp exists ONLY so the semantic names
+ * have somewhere to point. Consume the SEMANTIC layer. Never hard-code a hex.
+ *
+ * Link this file and the tokens are live on :root — there is no provider,
+ * no theme object, and no component bundle. See SKILL.md.
+ * ========================================================================== */
+
+/* ---------------------------------------------------------------------------
+ * Font faces
+ *
+ * PROVENANCE NOTE — this differs from production on purpose.
+ * codecave.pro ships exactly ONE real cut (Satoshi-Regular.ttf, weight 400)
+ * and lets the browser synthesize 300 and 700. This package ships the real
+ * Satoshi cuts captured in the brand asset upload, so bound weights render
+ * genuinely rather than faux-bolded. Designs built here will look very
+ * slightly tighter at 700 than the live site does today.
+ * ------------------------------------------------------------------------ */
+
+@font-face {
+  font-family: Satoshi;
+  src: url("./fonts/Satoshi-Light.woff2") format("woff2"),
+       url("./fonts/Satoshi-Light.woff") format("woff");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: Satoshi;
+  src: url("./fonts/Satoshi-Regular.woff2") format("woff2"),
+       url("./fonts/Satoshi-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: Satoshi;
+  src: url("./fonts/Satoshi-Italic.woff2") format("woff2"),
+       url("./fonts/Satoshi-Italic.woff") format("woff");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: Satoshi;
+  src: url("./fonts/Satoshi-Medium.woff2") format("woff2"),
+       url("./fonts/Satoshi-Medium.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: Satoshi;
+  src: url("./fonts/Satoshi-Bold.woff2") format("woff2"),
+       url("./fonts/Satoshi-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: Satoshi;
+  src: url("./fonts/Satoshi-Black.woff2") format("woff2"),
+       url("./fonts/Satoshi-Black.woff") format("woff");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* =========================================================================
+   * RAW BRAND RAMP — 24 steps, light to dark, accents mid-ramp.
+   * Verbatim from global.css :root. Do not consume directly except where
+   * noted (brand-210 is the primary button fill; brand-660 seeds the glow).
+   * ====================================================================== */
+  --color-brand-0:   #E8E6F0;  /* headings, body text                       */
+  --color-brand-25:  #DFDDE4;  /* icon default on dark                      */
+  --color-brand-50:  #C6C4CC;  /* secondary body, lighter                   */
+  --color-brand-100: #645F70;  /* muted metadata                            */
+  --color-brand-105: #585461;  /* neutral                                   */
+  --color-brand-107: #4C4759;  /* world-map landmass stroke — imagery only  */
+  --color-brand-110: #2E2C33;  /* borders / quaternary surface              */
+  --color-brand-130: #2A2637;  /* surface hover                             */
+  --color-brand-200: #B19AFE;  /* hover foreground                          */
+  --color-brand-210: #9980FF;  /* PRIMARY BUTTON FILL (takes black text)    */
+  --color-brand-300: #8252FC;  /* gradient mid                              */
+  --color-brand-400: #20EFFE;  /* cyan — gradient + orb motifs ONLY         */
+  --color-brand-450: #077689;  /* deep cyan, card gradient wash             */
+  --color-brand-500: #5F20FE;  /* ACTION — links, borders, eyebrows         */
+  --color-brand-580: #5206E3;
+  --color-brand-600: #4004AF;  /* primary button hover                      */
+  --color-brand-620: #391398;  /* decorative orb gradient stop — art only   */
+  --color-brand-650: #33196E;
+  --color-brand-660: #281470;  /* the upward section glow                   */
+  --color-brand-670: #1B0D4E;  /* text ON the #9980FF button; outline hover */
+  --color-brand-700: #1A0452;
+  --color-brand-800: #1E113B;  /* primary button active                     */
+  --color-brand-900: #070312;
+  --color-brand-910: #0D0D0F;  /* card surface — ONE step off the page      */
+  --color-brand-920: #141319;  /* raised surface                            */
+  --color-brand-950: #050505;  /* the page                                  */
+
+  /* ---- Error ramp ---- */
+  --color-error-100: #FE9A9A;
+  --color-error-200: #FE2020;
+  --color-error-300: #B42318;
+  --color-error-400: #CA1400;
+
+  /* =========================================================================
+   * SEMANTIC LAYER — use these.
+   * ====================================================================== */
+  --color-heading:               var(--color-brand-0);
+  --color-action:                var(--color-brand-500);
+  --color-neutral:               var(--color-brand-105);
+  --color-hovered:               var(--color-brand-200);
+  --color-outline-primary-hover: var(--color-brand-670);
+
+  --color-body-primary:          var(--color-brand-0);
+  --color-body-secondary:        var(--color-brand-100);
+  --color-body-secondary-lighter:var(--color-brand-50);
+
+  --color-surface-primary:       var(--color-brand-950);
+  --color-surface-primary-transparent: hsl(from var(--color-surface-primary) h s l / 0.3);
+  --color-surface-primary-hover: var(--color-brand-130);
+  --color-surface-secondary:     var(--color-brand-910);
+  --color-surface-tertiary:      var(--color-brand-920);
+  --color-surface-quaternary:    var(--color-brand-110);
+
+  --color-default-transparent:   var(--color-brand-25);
+  --color-error:                 var(--color-error-300);
+
+  /* ---- Brand gradient — violet to near-white, left to right ---- */
+  --gradient-brand: linear-gradient(
+    to right,
+    var(--color-brand-500) 0%,
+    var(--color-brand-300) 60%,
+    var(--color-brand-200) 75%,
+    var(--color-brand-0) 100%
+  );
+
+  /* =========================================================================
+   * TYPOGRAPHY
+   * One family. Named heading sizes come from the production @theme block;
+   * the remaining steps are measured from the live site.
+   * ====================================================================== */
+  --font-sans: Satoshi, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+               "Helvetica Neue", "Noto Sans", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+               "Liberation Mono", "Courier New", monospace;
+
+  --text-heading-lg: 3.5rem;               /* 56px — hero                   */
+  --text-heading-lg--line-height: 130%;
+  --text-heading-md: 2.75rem;              /* 44px — section heading        */
+  --text-heading-md--line-height: 115%;
+  --text-heading-sm: 2rem;                 /* 32px — eyebrow + lead pair    */
+  --text-heading-sm--line-height: 110%;
+
+  --text-stat:    2.25rem;   /* 36px / 40px — stat figures                  */
+  --text-lg:      1.5rem;    /* 24px / 32px — subsection heading            */
+  --text-md:      1.25rem;   /* 20px / 28px — intro copy                    */
+  --text-sm:      1.125rem;  /* 18px / 28px — names, labels                 */
+  --text-base:    1rem;      /* 16px / 24px — body, buttons                 */
+  --text-caption: 0.875rem;  /* 14px / 20px — captions, form labels         */
+
+  --leading-stat:    2.5rem;
+  --leading-lg:      2rem;
+  --leading-md:      1.75rem;
+  --leading-sm:      1.75rem;
+  --leading-base:    1.5rem;
+  --leading-caption: 1.25rem;
+
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+
+  /* =========================================================================
+   * RADIUS — the loudest brand signal. Small corners read as off-brand.
+   * ====================================================================== */
+  --radius-sm:        0.5rem;   /*   8px — inputs, small chips              */
+  --radius-md:        0.75rem;  /*  12px — inline chips, icon tiles         */
+  --radius-card:      1.5rem;   /*  24px — DEFAULT card, dominant sitewide  */
+  --radius-article:   2.25rem;  /*  36px — article / insight cards          */
+  --radius-custom:    2.75rem;  /*  44px — feature cards (from @theme)      */
+  --radius-section:   4rem;     /*  64px — section panel, <768px            */
+  --radius-section-md:7.5rem;   /* 120px — section panel, >=768px           */
+  --radius-pill:      9999px;   /* buttons, pills, avatars                  */
+
+  /* =========================================================================
+   * LAYOUT AND RHYTHM
+   * ====================================================================== */
+  --max-width-desktop: 1280px;
+  --breakpoint-sm: 457px;
+
+  --gutter-base: 0.5rem;   /* <768px  */
+  --gutter-md:   1rem;     /* >=768px */
+  --gutter-xl:   2rem;     /* >=1280px */
+
+  --section-padding-top: 12.5rem;   /* 200px */
+  --section-padding-bottom: 7.5rem; /* 120px */
+  --card-padding: 2rem 2rem 3rem;   /* heavier bottom seats a footer action */
+
+  --control-height: 2.75rem;        /* 44px — every button and pill         */
+  --input-height: 4rem;             /* 64px — floating-label text input     */
+
+  /* =========================================================================
+   * ELEVATION — CODECAVE's light comes from BELOW.
+   * Never substitute a conventional downward drop shadow for --shadow-section.
+   * ====================================================================== */
+  --shadow-section:
+    0 -64px 64px 0 hsl(from var(--color-brand-660) h s l / 0.20),
+    0 -10px 24px 0 hsl(from var(--color-brand-660) h s l / 0.10),
+    0 -6px  6px 0 hsl(from var(--color-brand-660) h s l / 0.08);
+
+  /* The GlowButton's own halo — VERBATIM from common/GlowButton.vue.
+   * These three hues are measured production literals and deliberately are NOT
+   * ramp steps: #7A58FF and #5B34FA sit between brand-300 and brand-500, and
+   * #4F22FF is bluer than the action violet. Rounding them to the nearest token
+   * visibly changes the halo, which is the brand's most recognisable edge. */
+  --shadow-glow-button:
+    0 0 64px 0 #7A58FFA8,
+    0 0 16px 0 #4F22FFA6,
+    0 0 4px 2px #5B34FA;
+
+  /* Focused input halo (source: common/InputText.vue) */
+  --shadow-input-focus:
+    0 0 16px 0 hsl(from var(--color-brand-500) h s l / 0.5),
+    0 0 4px  0 hsl(from var(--color-brand-500) h s l / 0.6);
+  --shadow-input-error:
+    0 0 16px 0 hsl(from var(--color-error-200) h s l / 0.5),
+    0 0 4px  0 hsl(from var(--color-error-100) h s l / 0.6);
+
+  --transition-base: 200ms ease;
+  --transition-slow: 500ms ease;
+  /* Tailwind's `transition-colors`, which is what every button in production
+   * actually carries — 150ms, not the 200ms used elsewhere in this file. */
+  --transition-colors: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ---------------------------------------------------------------------------
+ * Baseline — CODECAVE is dark-first. Near-black page, near-white text.
+ * ------------------------------------------------------------------------ */
+
+html {
+  background: var(--color-surface-primary);
+}
+
+body {
+  margin: 0;
+  background: var(--color-surface-primary);
+  color: var(--color-body-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-base);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-heading);
+  font-weight: var(--font-weight-bold);
+  margin: 0;
+}
+
+h1 { font-size: var(--text-heading-lg); line-height: var(--text-heading-lg--line-height); }
+h2 { font-size: var(--text-heading-md); line-height: var(--text-heading-md--line-height); }
+h3 { font-size: var(--text-heading-sm); line-height: var(--text-heading-sm--line-height); }
+
+a { color: var(--color-action); text-underline-offset: 0.2em; }
+a:hover { color: var(--color-hovered); }
+
+/* Every focusable element gets a visible ring. */
+:focus-visible {
+  outline: 2px solid var(--color-hovered);
+  outline-offset: 2px;
+}
+
+/* ---------------------------------------------------------------------------
+ * Layout primitives — verbatim behaviour from the production stylesheet.
+ * ------------------------------------------------------------------------ */
+
+.page-container {
+  width: 100%;
+  min-height: 100%;
+  margin: 0 auto;
+  padding-left: var(--gutter-base);
+  padding-right: var(--gutter-base);
+}
+
+@media (min-width: 768px) {
+  .page-container {
+    padding-left: var(--gutter-md);
+    padding-right: var(--gutter-md);
+  }
+}
+
+@media (min-width: 1280px) {
+  .page-container {
+    max-width: var(--max-width-desktop);
+    padding-left: var(--gutter-xl);
+    padding-right: var(--gutter-xl);
+  }
+}
+
+.section-container {
+  position: relative;
+  z-index: 50;
+  background: var(--color-surface-primary);
+  border-radius: var(--radius-section);
+  box-shadow: var(--shadow-section);
+}
+
+@media (min-width: 768px) {
+  .section-container { border-radius: var(--radius-section-md); }
+}
+
+/* ---------------------------------------------------------------------------
+ * The eyebrow — the system's one typographic signature.
+ * Bold violet line over a larger light lead line. Opens nearly every section.
+ * Source: services/heading.astro, homepage/expertise.astro
+ * ------------------------------------------------------------------------ */
+
+.eyebrow {
+  display: block;
+  color: var(--color-action);
+  font-weight: var(--font-weight-bold);
+}
+
+.lead {
+  display: block;
+  color: var(--color-heading);
+  font-weight: var(--font-weight-bold);
+}
+
+/* ---------------------------------------------------------------------------
+ * Accessibility — motion is slow and continuous, and always collapses.
+ * ------------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ===========================================================================
+ * COMPONENT LAYER
+ * Geometry, color and state pairs transcribed from the production Vue/Astro
+ * components captured in source_examples/. Each block names its source file.
+ * ======================================================================== */
+
+/* ---------------------------------------------------------------------------
+ * Buttons — source: source_examples/common/Button.vue
+ * Every control is a 44px pill: h-11 px-6 py-1 rounded-full font-bold.
+ * ONE solid fill per action. Everything else is bordered, ghost or text.
+ * ------------------------------------------------------------------------ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: fit-content;
+  max-width: 100%;
+  height: var(--control-height);
+  padding: 0.25rem 1.5rem;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--color-body-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--leading-base);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color var(--transition-colors),
+              background-color var(--transition-colors),
+              border-color var(--transition-colors);
+}
+
+/* Solid violet — form submits and in-card confirmations. */
+.btn-primary            { background: var(--color-brand-500); }
+.btn-primary:hover      { background: var(--color-brand-600); }
+.btn-primary:active     { background: var(--color-brand-800); }
+
+/* Raised surface — the quiet neighbour of a primary. */
+.btn-secondary          { background: var(--color-surface-secondary); }
+.btn-secondary:hover    { background: var(--color-surface-tertiary); }
+
+/* Bordered — the workhorse. "Learn more" everywhere on the site.
+ * The border hovers DOWN to --color-outline-primary-hover (#1B0D4E): the
+ * outline recedes rather than brightening. This is what production ships and
+ * the label (#E8E6F0) never changes, so text contrast is untouched. */
+.btn-tertiary           { border: 1px solid var(--color-brand-500); }
+.btn-tertiary:hover     { border-color: var(--color-outline-primary-hover); }
+
+/* Ghost / text / inline link — nav items and tertiary entry points.
+ * Only .btn-ghost re-declares font-bold in Button.vue; the text and link
+ * variants ride the inherited regular weight. */
+.btn-ghost              { height: auto; padding: 0.5rem 1.5rem;
+                          color: var(--color-brand-0); }
+.btn-ghost:hover,
+.btn-ghost:active       { color: var(--color-hovered); }
+
+.btn-text               { height: auto; padding: 0;
+                          font-weight: var(--font-weight-regular);
+                          color: var(--color-body-secondary-lighter); }
+.btn-text:hover,
+.btn-text:active        { color: var(--color-hovered); }
+
+.btn-link               { height: auto; padding: 0;
+                          font-weight: var(--font-weight-regular);
+                          color: var(--color-hovered);
+                          text-decoration: underline; }
+
+/* Disabled is the ONLY state permitted to reduce contrast. */
+.btn:disabled,
+.btn[aria-disabled="true"],
+.btn-disabled           { opacity: 0.2; cursor: not-allowed; }
+
+/* ---------------------------------------------------------------------------
+ * Glow button — source: source_examples/common/GlowButton.vue
+ * The single highest-intent CTA. Lighter violet field (#9980FF) with the only
+ * dark text in the system, wrapped in a violet halo. At most ONE per action:
+ * a long page may repeat it once at the end, never twice in a viewport.
+ * ------------------------------------------------------------------------ */
+
+.btn-glow {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-brand-210);
+  color: var(--color-brand-670);
+  box-shadow: var(--shadow-glow-button);
+  transition: transform var(--transition-slow);
+}
+
+/* No hover fill. The fill stays #9980FF in every state — the response to the
+ * pointer is the highlight travelling under it, not a colour swap. */
+.btn-glow:active { transform: scale(0.98); }
+
+/* The travelling highlight. Production drives x/y with GSAP quickTo on
+ * pointermove; here the resting position (20% / 50%) is the default and a host
+ * may animate it by writing --glow-x, as ui_kits/app does. */
+.btn-glow::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  bottom: -50%;
+  left: var(--glow-x, 20%);
+  z-index: 0;
+  width: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  filter: blur(12px);
+  background: radial-gradient(ellipse at left center,
+    #FFFFFF 27.88%,
+    rgba(223, 212, 249, 0.76) 51.92%,
+    rgba(153, 128, 255, 0) 100%);
+}
+
+.btn-glow > span { position: relative; z-index: 2; user-select: none; }
+
+/* The edge bloom. Two blurred radial fields sit OUTSIDE the pill, 8px past each
+ * end, which is why the button is clipped (overflow: hidden) but the bloom is
+ * not — in GlowButton.vue they are siblings of the <a>, not children. The left
+ * one burns at rest and the right one is dark; production cross-fades them from
+ * pointer X across the outer 10% of the width. Wrap the button to get them:
+ *
+ *   <span class="btn-glow-field">
+ *     <a class="btn btn-glow" href="..."><span>Label</span></a>
+ *   </span>
+ *
+ * A host may drive --edge-left / --edge-right on the wrapper to reproduce the
+ * cross-fade; without JS the pair renders the resting state exactly. */
+.btn-glow-field { position: relative; display: inline-block; }
+
+.btn-glow-field::before,
+.btn-glow-field::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: 50%;
+  width: 100%;
+  height: 80%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  filter: blur(12px);
+  background: radial-gradient(55.23% 55.23% at 50% 50%,
+    #FFFFFF 27.88%,
+    rgba(223, 212, 249, 0.762963) 51.92%,
+    rgba(153, 128, 255, 0) 100%);
+  transition: opacity var(--transition-base);
+}
+
+.btn-glow-field::before { left: -0.5rem;  opacity: var(--edge-left, 1); }
+.btn-glow-field::after  { right: -0.5rem; opacity: var(--edge-right, 0); }
+
+.btn-glow-field > .btn-glow { position: relative; z-index: 1; }
+
+/* ---------------------------------------------------------------------------
+ * Cards — sources: homepage/projects.astro, common/ArticlePreview.vue,
+ *                  homepage/technology-card.vue
+ * Depth is never built from surface contrast: the card sits ONE narrow step
+ * off the page (#0D0D0F on #050505). Radius and border carry the separation.
+ * ------------------------------------------------------------------------ */
+
+.card {
+  box-sizing: border-box;
+  background: var(--color-surface-secondary);
+  border: 1px solid var(--color-surface-quaternary);
+  border-radius: var(--radius-card);
+  padding: var(--card-padding);        /* heavier bottom seats a footer action */
+  color: var(--color-body-primary);
+}
+
+.card-article { border-radius: var(--radius-article); }
+
+/* Feature card — gradient hairline drawn with mask-composite, blurred
+ * backdrop, no fill. Source: homepage/technology-card.vue */
+.card-feature {
+  position: relative;
+  box-sizing: border-box;
+  border: 0;
+  border-radius: var(--radius-custom);
+  padding: 2rem;
+  backdrop-filter: blur(14px);
+  background: linear-gradient(
+      hsl(from var(--color-brand-700) h s l / 0.1),
+      hsl(from var(--color-brand-450) h s l / 0.1),
+      hsl(from var(--color-brand-900) h s l / 0.1)) border-box;
+}
+
+.card-feature::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid transparent;
+  pointer-events: none;
+  background: linear-gradient(
+      hsl(from var(--color-brand-500) h s l / 0.35),
+      hsl(from var(--color-brand-400) h s l / 0.675),
+      var(--color-brand-500)) border-box;
+  mask: linear-gradient(#000, #000) border-box,
+        linear-gradient(#000, #000) padding-box;
+  mask-composite: subtract;
+  -webkit-mask-composite: destination-out;
+}
+
+/* Chips — source: project/project-chip.astro, common/Checkbox.vue (secondary) */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-secondary);
+  color: var(--color-body-primary);
+  font-size: var(--text-caption);
+  line-height: var(--leading-caption);
+}
+
+/* ---------------------------------------------------------------------------
+ * Text input — source: source_examples/common/InputText.vue
+ * 64px tall, 8px radius (one of only two small radii in the system), a bold
+ * 14px floating label seated in the top-left, and a violet focus halo instead
+ * of an outline. Filled, hovered and focused are all distinct.
+ * ------------------------------------------------------------------------ */
+
+.field { position: relative; width: 100%; }
+
+.field > label {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+  color: var(--color-heading);
+  font-size: var(--text-caption);
+  font-weight: var(--font-weight-bold);
+  pointer-events: none;
+}
+
+.field > label .required { color: var(--color-action); }
+
+.field input,
+.field textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 1.75rem 0.75rem 0.75rem;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-secondary);
+  color: var(--color-hovered);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-base);
+  transition: background-color var(--transition-base),
+              box-shadow var(--transition-base);
+}
+
+.field input { height: var(--input-height); }
+
+.field textarea {
+  min-height: 7.5rem;
+  padding-top: 2rem;
+  resize: vertical;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: var(--color-body-secondary);
+  font-size: var(--text-caption);
+}
+
+.field input:hover,
+.field textarea:hover { background: var(--color-surface-tertiary); }
+
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+  background: var(--color-surface-tertiary);
+  box-shadow: var(--shadow-input-focus);
+}
+
+.field.is-error input,
+.field.is-error textarea { color: var(--color-error-100);
+                           box-shadow: var(--shadow-input-error); }
+
+.field .error-message {
+  display: block;
+  margin-top: 0.375rem;
+  color: var(--color-error-100);
+  font-size: var(--text-caption);
+}
+
+/* Checkbox — source: source_examples/common/Checkbox.vue
+ * 24px, 8px radius, 2px violet-black border that brightens to --color-action. */
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--color-body-primary);
+  font-size: var(--text-caption);
+  cursor: pointer;
+}
+
+.checkbox input {
+  appearance: none;
+  -webkit-appearance: none;
+  display: grid;
+  place-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin: 0;
+  border: 2px solid var(--color-outline-primary-hover);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color var(--transition-base),
+              background-color var(--transition-base);
+}
+
+.checkbox input:hover   { border-color: var(--color-action); }
+.checkbox input:checked { background: var(--color-action);
+                          border-color: var(--color-action); }
+
+.checkbox input::before {
+  content: "";
+  width: 0.75em;
+  height: 0.75em;
+  transform: scale(0);
+  transition: transform var(--transition-base) ease-in-out;
+  background: var(--color-heading);
+  clip-path: polygon(14% 52%, 0 66%, 39% 100%, 100% 20%, 85% 8%, 37% 72%);
+}
+
+.checkbox input:checked::before { transform: scale(1); }
+
+/* ---------------------------------------------------------------------------
+ * Eyebrow + lead pair and stat figures
+ * Sources: services/heading.astro, homepage/expertise.astro, workflow/*.astro
+ * ------------------------------------------------------------------------ */
+
+.eyebrow-lead              { display: grid; gap: 0.25rem; }
+.eyebrow-lead .eyebrow     { font-size: var(--text-heading-sm);
+                             line-height: var(--text-heading-sm--line-height); }
+.eyebrow-lead .lead        { font-size: var(--text-heading-sm);
+                             line-height: var(--text-heading-sm--line-height);
+                             font-weight: var(--font-weight-regular);
+                             color: var(--color-body-secondary-lighter); }
+
+.stat        { display: grid; gap: 0.25rem; }
+.stat-figure { color: var(--color-heading);
+               font-size: var(--text-stat);
+               line-height: var(--leading-stat);
+               font-weight: var(--font-weight-bold); }
+.stat-label  { color: var(--color-body-secondary-lighter);
+               font-size: var(--text-caption);
+               line-height: var(--leading-caption); }
+
+.divider { height: 1px; border: 0; margin: 0;
+           background: var(--color-surface-quaternary); }
+
+/* ---------------------------------------------------------------------------
+ * Rule and progress — the gradient line
+ * Source: CodeCavePro/brand docs/index.html (.rule), carried forward from the
+ * previously published brand site. It is the one element the earlier docs had
+ * that this system did not, and it is kept deliberately.
+ *
+ * This is the ONLY place --gradient-brand is permitted as a field rather than
+ * as display type: a 4px pill running violet (#5F20FE) to near-white (#E8E6F0)
+ * left to right, capped at 320px. The cap matters — stretched across a full
+ * container the gradient flattens into a pale wash and stops reading as brand.
+ *
+ * .rule      static accent under a heading; carries no value
+ * .progress  determinate bar; the fill width comes from --progress
+ * ------------------------------------------------------------------------ */
+
+.rule {
+  height: 4px;
+  max-width: 320px;
+  border: 0;
+  margin: 0;
+  border-radius: var(--radius-pill);
+  background: var(--gradient-brand);
+}
+
+/* The track is a border-step surface, never a lighter fill — same rule as a
+ * card. Depth here comes from the gradient, not from lightening the ground. */
+.progress {
+  height: 4px;
+  width: 100%;
+  max-width: 320px;
+  overflow: hidden;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-quaternary);
+}
+
+.progress > .progress-value {
+  display: block;
+  height: 100%;
+  width: var(--progress, 0%);
+  border-radius: inherit;
+  background: var(--gradient-brand);
+  /* The gradient is painted at the bar's full width and then revealed, so the
+   * violet end stays anchored at 0% and the near-white end always means done.
+   * Sizing the gradient to the fill instead would show near-white at 5%. */
+  background-size: var(--progress-track-width, 320px) 100%;
+  background-repeat: no-repeat;
+  transition: width var(--transition-slow);
+}
+
+/* Indeterminate — a 40% band sweeping the track. Use only when the work has no
+ * measurable end; a determinate bar is always the better answer. */
+.progress.is-indeterminate > .progress-value {
+  width: 40%;
+  background-size: 100% 100%;
+  animation: progress-sweep 1.6s ease-in-out infinite;
+}
+
+@keyframes progress-sweep {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(250%); }
+}
+
+/* The global reduced-motion collapse above freezes animations at 0.01ms, which
+ * would strand the sweep off-screen. Fall back to a filled, quieter track. */
+@media (prefers-reduced-motion: reduce) {
+  .progress.is-indeterminate > .progress-value {
+    width: 100%;
+    transform: none;
+    opacity: 0.6;
+  }
+}

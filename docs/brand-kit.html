@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CODECAVE — Brand kit</title>
+<link rel="icon" href="build/favicon.svg">
+
+<!-- The package's own token file. It also declares the Satoshi @font-face
+     rules with paths relative to this directory, so fonts come with it.
+     Nothing on this page re-declares a colour that lives in there. -->
+<link rel="stylesheet" href="colors_and_type.css">
+
+<style>
+/* ===========================================================================
+   CODECAVE brand kit — dark first.
+
+   This page is hand-authored and is NOT part of the Open Design brand
+   pipeline. brand.html, DESIGN.md, guide.md and system/* are rendered from
+   brand.json and are rewritten wholesale on every pipeline run; this file is
+   not, which is why the dark treatment can live here permanently.
+
+   Every colour below resolves through a token in colors_and_type.css. The
+   only literal hex values are the palette specimen's own swatch chips and
+   their printed labels — a palette sheet has to render the values it
+   documents.
+   ======================================================================== */
+
+body {
+  margin: 0;
+  background: var(--color-surface-primary);
+  color: var(--color-body-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-base);
+  -webkit-font-smoothing: antialiased;
+}
+
+.bk-wrap {
+  max-width: var(--max-width-desktop);
+  margin: 0 auto;
+  padding-inline: clamp(1rem, 4vw, 2rem);
+}
+
+/* Section rhythm is asymmetric, exactly as the site sets it: 200px above,
+   120px below. Clamped so small screens stay usable. */
+.bk-section {
+  padding-top: clamp(4.5rem, 13vw, 12.5rem);
+  padding-bottom: clamp(2.7rem, 7.8vw, 7.5rem);
+}
+.bk-section + .bk-section { border-top: 1px solid var(--color-surface-quaternary); }
+
+/* --- type ---------------------------------------------------------------- */
+/* Violet at the eyebrow's signature 32px clears the 3:1 large-text floor
+   (3.03:1). At this 14px caption size the floor is 4.5:1 and it does not, so
+   this steps to the in-palette hover foreground at 8.66:1. */
+.bk-eyebrow {
+  display: block;
+  color: var(--color-hovered);
+  font-size: var(--text-caption);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;       /* caps need positive tracking to breathe */
+  margin-bottom: 0.75rem;
+}
+.bk-h1 {
+  margin: 0;
+  font-size: clamp(2.5rem, 6vw, var(--text-heading-lg));
+  line-height: 1.06;
+  letter-spacing: -0.025em;
+  font-weight: var(--font-weight-bold);
+}
+.bk-h2 {
+  margin: 0 0 1rem;
+  font-size: clamp(2rem, 4.4vw, var(--text-heading-md));
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-weight: var(--font-weight-bold);
+}
+.bk-h3 {
+  margin: 0 0 0.5rem;
+  font-size: var(--text-lg);
+  line-height: var(--leading-lg);
+  letter-spacing: -0.01em;
+  font-weight: var(--font-weight-bold);
+}
+.bk-note {
+  max-width: 62ch;
+  color: var(--color-body-secondary-lighter);
+  margin: 0 0 2rem;
+}
+.bk-note:last-child { margin-bottom: 0; }
+.bk-note code, .bk-mono {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.01em;
+}
+.bk-note code { color: var(--color-brand-200); }
+/* Metadata recedes by size and family, not by contrast — #645F70 lands at
+   3.3:1 on #050505, which is under the 4.5:1 floor for text this small. The
+   brand reserves it for placeholders; labels that carry information use the
+   lighter step at 11.8:1. Hierarchy here comes from 11px mono against 16px
+   sans, which is the same argument the brand makes about surfaces. */
+.bk-meta {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.02em;
+  color: var(--color-body-secondary-lighter);
+}
+
+/* --- masthead ------------------------------------------------------------ */
+.bk-masthead { padding-top: clamp(3rem, 7vw, 6rem); padding-bottom: clamp(3rem, 7vw, 6rem); }
+.bk-masthead-mark { display: block; width: min(320px, 68vw); height: auto; margin-bottom: 2.5rem; }
+.bk-tagline {
+  max-width: 34ch;
+  margin: 1.5rem 0 0;
+  font-size: var(--text-md);
+  line-height: var(--leading-md);
+  color: var(--color-body-secondary-lighter);
+}
+.bk-toc { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; margin-top: 2.5rem; }
+.bk-toc a {
+  color: var(--color-body-secondary-lighter);
+  text-decoration: none;
+  font-size: var(--text-caption);
+  border-bottom: 1px solid var(--color-surface-quaternary);
+  padding-bottom: 2px;
+  transition: color var(--transition-colors), border-color var(--transition-colors);
+}
+.bk-toc a:hover, .bk-toc a:focus-visible {
+  color: var(--color-heading);            /* hover raises contrast, never dims */
+  border-bottom-color: var(--color-action);
+}
+
+/* --- logo ---------------------------------------------------------------- */
+.bk-stage {
+  display: grid;
+  place-items: center;
+  min-height: 260px;
+  padding: clamp(1.5rem, 5vw, 3.5rem);
+  border: 1px solid var(--color-surface-quaternary);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-secondary);
+  transition: background-color var(--transition-base);
+}
+/* The one declared exception: black-ink artwork needs a genuinely light
+   ground. It is set per-variant in the markup, never inferred. */
+.bk-stage[data-surface="light"] { background: var(--color-brand-0); }
+.bk-stage img { max-height: 168px; max-width: 100%; object-fit: contain; }
+
+.bk-variants {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.bk-thumb {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 3;
+  padding: 0.75rem;
+  border: 1px solid var(--color-surface-quaternary);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-secondary);
+  cursor: pointer;
+  transition: border-color var(--transition-colors);
+}
+.bk-thumb[data-surface="light"] { background: var(--color-brand-0); }
+.bk-thumb img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.bk-thumb:hover { border-color: var(--color-action); }
+.bk-thumb[aria-current="true"] { border-color: var(--color-brand-200); }
+.bk-thumb:focus-visible { outline: 2px solid var(--color-brand-200); outline-offset: 2px; }
+.bk-caption { margin-top: 0.5rem; }
+
+/* --- palette ------------------------------------------------------------- */
+/* 22rem floor lands on a clean 3 x 2 at desktop instead of 4 + 2 dead cells. */
+.bk-roles { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); }
+.bk-role {
+  border: 1px solid var(--color-surface-quaternary);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  background: var(--color-surface-secondary);
+}
+/* #050505 and #0D0D0F are one hair apart from the card they sit on — which is
+   the brand's whole thesis, but a specimen still has to show a bounded field.
+   The hairline is the same one the system uses everywhere else. */
+.bk-role-chip { height: 108px; border-bottom: 1px solid var(--color-surface-quaternary); }
+.bk-role-body { padding: 1.25rem 1.25rem 1.5rem; }
+.bk-role-name { font-weight: var(--font-weight-bold); }
+.bk-role-hex {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--color-brand-200);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.bk-role-use { margin: 0.5rem 0 0; font-size: var(--text-caption); line-height: var(--leading-caption); color: var(--color-body-secondary-lighter); }
+
+.bk-ramp { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 0.5rem; margin-top: 2.5rem; }
+.bk-step { border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--color-surface-quaternary); }
+.bk-step-chip { height: 52px; }
+.bk-step-label { padding: 0.5rem 0.5rem 0.625rem; background: var(--color-surface-secondary); }
+
+/* --- typography ---------------------------------------------------------- */
+.bk-specimen {
+  border: 1px solid var(--color-surface-quaternary);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-secondary);
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+}
+.bk-aa { font-size: clamp(4rem, 15vw, 8.5rem); line-height: 1; letter-spacing: -0.03em; font-weight: var(--font-weight-bold); margin: 0; }
+.bk-charset { margin: 1.25rem 0 0; color: var(--color-body-secondary-lighter); word-break: break-word; }
+.bk-scale { width: 100%; border-collapse: collapse; margin-top: 2.5rem; }
+.bk-scale th, .bk-scale td {
+  text-align: left;
+  padding: 0.75rem 1rem 0.75rem 0;
+  border-bottom: 1px solid var(--color-surface-quaternary);
+  vertical-align: baseline;
+}
+.bk-scale th {
+  font-size: var(--text-caption);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-body-secondary-lighter);
+  font-weight: var(--font-weight-bold);
+}
+.bk-scale td:last-child { font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-body-secondary-lighter); padding-right: 0; }
+
+/* --- components ---------------------------------------------------------- */
+.bk-specimen-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--color-surface-quaternary);
+}
+.bk-specimen-row:last-child { border-bottom: 0; }
+.bk-specimen-row > .bk-meta { flex: 0 0 auto; min-width: 9rem; }
+.bk-cta-field {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(2rem, 6vw, 3.5rem) 1.5rem;
+  border-radius: var(--radius-card);
+  background: var(--color-surface-secondary);
+  margin-top: 2rem;
+}
+
+/* --- voice --------------------------------------------------------------- */
+.bk-cols { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.bk-list { list-style: none; margin: 0.75rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.bk-list li {
+  padding: 0.375rem 0.75rem;
+  border-radius: var(--radius-md);
+  font-size: var(--text-caption);
+  background: var(--color-surface-tertiary);
+  color: var(--color-body-primary);
+}
+.bk-list.is-avoid li { color: var(--color-body-secondary-lighter); text-decoration: line-through; }
+.bk-rules { margin: 0; padding: 0; list-style: none; counter-reset: rule; }
+.bk-rules li {
+  counter-increment: rule;
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--color-surface-quaternary);
+  max-width: 76ch;
+}
+.bk-rules li::before {
+  content: counter(rule, decimal-leading-zero);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-brand-200);   /* #5F20FE is 3.0:1 — too low for a numeral */
+  padding-top: 0.35rem;
+}
+.bk-rules li:last-child { border-bottom: 0; }
+
+.bk-foot { padding: 3rem 0 5rem; }
+</style>
+</head>
+
+<body data-od-id="brand-kit">
+<div class="bk-wrap">
+
+  <!-- ===================== MASTHEAD ===================== -->
+  <header class="bk-masthead" data-od-id="kit-masthead">
+    <img class="bk-masthead-mark" src="assets/codecave-wide.svg"
+         alt="CODECAVE" width="357" height="110">
+    <h1 class="bk-h1" data-od-id="kit-title">Dark, round, and violet —<br>in that order of importance.</h1>
+    <p class="bk-tagline">The brand kit for CODECAVE. There is no light theme; the
+       surfaces below are the default, not a mode.</p>
+    <nav class="bk-toc" aria-label="Sections" data-od-id="kit-toc">
+      <a href="#logo">Logo</a>
+      <a href="#palette">Palette</a>
+      <a href="#type">Typography</a>
+      <a href="#components">Components</a>
+      <a href="#voice">Voice</a>
+      <a href="#posture">Layout posture</a>
+    </nav>
+  </header>
+
+  <!-- ===================== LOGO ===================== -->
+  <section class="bk-section" id="logo" data-od-id="kit-logo">
+    <span class="bk-eyebrow">01 — Logo</span>
+    <h2 class="bk-h2">The horizontal wordmark is primary</h2>
+    <p class="bk-note">Drawn at 357&times;110. The chevron is always
+      <code>#5F20FE</code>; the wordmark paths are white, so the default pairing is
+      white-on-near-black. Clear space equals the height of the chevron. The
+      artwork predates Satoshi and is outlined Montserrat Bold — the paths are
+      vector outlines, not live text, and must never be re-typed by hand.</p>
+
+    <div class="bk-stage" id="logo-stage" data-surface="dark" data-od-id="kit-logo-stage">
+      <img id="logo-stage-img" src="assets/codecave-wide.svg" alt="CODECAVE horizontal wordmark">
+    </div>
+    <p class="bk-meta bk-caption" id="logo-caption">codecave-wide.svg &middot; primary &middot; dark ground</p>
+
+    <h3 class="bk-h3" style="margin-top:2.5rem">Wordmark variants</h3>
+    <p class="bk-note">Black-ink artwork is the brand's only light-surface
+      exception. Those four tiles carry a light ground because the ink demands
+      it — the rule is declared per variant, never derived from the page.</p>
+    <div class="bk-variants" data-od-id="kit-logo-variants">
+      <button class="bk-thumb" type="button" data-surface="dark"  aria-current="true"
+              data-src="assets/codecave-wide.svg" data-label="codecave-wide.svg &middot; primary &middot; dark ground">
+        <img src="assets/codecave-wide.svg" alt="Horizontal wordmark"></button>
+      <button class="bk-thumb" type="button" data-surface="dark"
+              data-src="assets/codecave-tall.svg" data-label="codecave-tall.svg &middot; stacked lockup &middot; dark ground">
+        <img src="assets/codecave-tall.svg" alt="Stacked wordmark"></button>
+      <button class="bk-thumb" type="button" data-surface="dark"
+              data-src="assets/codecave-wide-1024-text-white.png" data-label="codecave-wide-1024-text-white.png &middot; default pairing">
+        <img src="assets/codecave-wide-256-text-white.png" alt="Horizontal, white text"></button>
+      <button class="bk-thumb" type="button" data-surface="light"
+              data-src="assets/codecave-wide-1024-text-black.png" data-label="codecave-wide-1024-text-black.png &middot; light-surface exception">
+        <img src="assets/codecave-wide-256-text-black.png" alt="Horizontal, black text"></button>
+      <button class="bk-thumb" type="button" data-surface="dark"
+              data-src="assets/codecave-wide-1024-all-white.png" data-label="codecave-wide-1024-all-white.png &middot; one-ink printing">
+        <img src="assets/codecave-wide-256-all-white.png" alt="Horizontal, all white"></button>
+      <button class="bk-thumb" type="button" data-surface="light"
+              data-src="assets/codecave-wide-1024-all-black.png" data-label="codecave-wide-1024-all-black.png &middot; one-ink, light stock">
+        <img src="assets/codecave-wide-256-all-black.png" alt="Horizontal, all black"></button>
+      <button class="bk-thumb" type="button" data-surface="dark"
+              data-src="assets/codecave-tall-1024-text-white.png" data-label="codecave-tall-1024-text-white.png &middot; default pairing">
+        <img src="assets/codecave-tall-256-text-white.png" alt="Stacked, white text"></button>
+      <button class="bk-thumb" type="button" data-surface="light"
+              data-src="assets/codecave-tall-1024-text-black.png" data-label="codecave-tall-1024-text-black.png &middot; light-surface exception">
+        <img src="assets/codecave-tall-256-text-black.png" alt="Stacked, black text"></button>
+      <button class="bk-thumb" type="button" data-surface="dark"
+              data-src="assets/codecave-tall-1024-all-white.png" data-label="codecave-tall-1024-all-white.png &middot; one-ink printing">
+        <img src="assets/codecave-tall-256-all-white.png" alt="Stacked, all white"></button>
+      <button class="bk-thumb" type="button" data-surface="light"
+              data-src="assets/codecave-tall-1024-all-black.png" data-label="codecave-tall-1024-all-black.png &middot; one-ink, light stock">
+        <img src="assets/codecave-tall-256-all-black.png" alt="Stacked, all black"></button>
+    </div>
+
+    <h3 class="bk-h3" style="margin-top:2.5rem">Mark &amp; application icons</h3>
+    <p class="bk-note">The chevron alone. It never carries the wordmark's clear
+      space rule — an app icon is already a bounded field.</p>
+    <div class="bk-variants" data-od-id="kit-logo-icons">
+      <button class="bk-thumb" type="button" data-surface="dark"
+              data-src="assets/codecave-mark.svg" data-label="codecave-mark.svg &middot; chevron only">
+        <img src="assets/codecave-mark.svg" alt="Chevron mark"></button>
+      <button class="bk-thumb" type="button" data-surface="dark"
+              data-src="build/favicon.svg" data-label="build/favicon.svg &middot; browser tab">
+        <img src="build/favicon.svg" alt="Favicon"></button>
+      <button class="bk-thumb" type="button" data-surface="dark"
+              data-src="assets/codecave-1024x1024.png" data-label="assets/codecave-1024x1024.png &middot; square app icon">
+        <img src="assets/codecave-256x256.png" alt="Square app icon"></button>
+      <button class="bk-thumb" type="button" data-surface="dark"
+              data-src="build/apple-touch-icon.png" data-label="build/apple-touch-icon.png &middot; iOS home screen">
+        <img src="build/apple-touch-icon.png" alt="Apple touch icon"></button>
+      <button class="bk-thumb" type="button" data-surface="dark"
+              data-src="build/web-app-manifest-512x512.png" data-label="build/web-app-manifest-512x512.png &middot; PWA">
+        <img src="build/web-app-manifest-192x192.png" alt="Web app manifest icon"></button>
+      <button class="bk-thumb" type="button" data-surface="dark"
+              data-src="build/icons/512x512.png" data-label="build/icons/512x512.png &middot; desktop app">
+        <img src="build/icons/128x128.png" alt="Desktop app icon"></button>
+    </div>
+  </section>
+
+  <!-- ===================== PALETTE ===================== -->
+  <section class="bk-section" id="palette" data-od-id="kit-palette">
+    <span class="bk-eyebrow">02 — Palette</span>
+    <h2 class="bk-h2">Six roles carry the brand</h2>
+    <p class="bk-note">Depth never comes from contrast. The page is
+      <code>#050505</code> and a card is <code>#0D0D0F</code> — one hair apart.
+      What separates them is the 24px radius and a 1px <code>#2E2C33</code>
+      hairline. Violet is an edge colour: it draws links, borders, eyebrows and
+      the focus halo, and never fills a large area.</p>
+
+    <div class="bk-roles" data-od-id="kit-palette-roles">
+      <article class="bk-role" data-od-id="kit-role-surface-primary">
+        <div class="bk-role-chip" style="background:#050505"></div>
+        <div class="bk-role-body">
+          <div class="bk-role-name">Surface primary</div>
+          <div class="bk-role-hex">#050505</div>
+          <p class="bk-role-use">The page canvas — near-black, never pure black.</p>
+        </div>
+      </article>
+      <article class="bk-role" data-od-id="kit-role-heading-body">
+        <div class="bk-role-chip" style="background:#e8e6f0"></div>
+        <div class="bk-role-body">
+          <div class="bk-role-name">Heading / body</div>
+          <div class="bk-role-hex">#E8E6F0</div>
+          <p class="bk-role-use">Headings and body text — 17.6:1 on the page.</p>
+        </div>
+      </article>
+      <article class="bk-role" data-od-id="kit-role-action">
+        <div class="bk-role-chip" style="background:#5f20fe"></div>
+        <div class="bk-role-body">
+          <div class="bk-role-name">Action</div>
+          <div class="bk-role-hex">#5F20FE</div>
+          <p class="bk-role-use">Links, borders, eyebrows, focus halo — edges and marks only.</p>
+        </div>
+      </article>
+      <article class="bk-role" data-od-id="kit-role-surface-secondary">
+        <div class="bk-role-chip" style="background:#0d0d0f"></div>
+        <div class="bk-role-body">
+          <div class="bk-role-name">Surface secondary</div>
+          <div class="bk-role-hex">#0D0D0F</div>
+          <p class="bk-role-use">Cards and panels — one hair above the page.</p>
+        </div>
+      </article>
+      <article class="bk-role" data-od-id="kit-role-body-secondary">
+        <div class="bk-role-chip" style="background:#645f70"></div>
+        <div class="bk-role-body">
+          <div class="bk-role-name">Body secondary</div>
+          <div class="bk-role-hex">#645F70</div>
+          <p class="bk-role-use">Metadata and placeholders only — never long-form copy.</p>
+        </div>
+      </article>
+      <article class="bk-role" data-od-id="kit-role-surface-quaternary">
+        <div class="bk-role-chip" style="background:#2e2c33"></div>
+        <div class="bk-role-body">
+          <div class="bk-role-name">Surface quaternary</div>
+          <div class="bk-role-hex">#2E2C33</div>
+          <p class="bk-role-use">Hairline rules, dividers and card edges.</p>
+        </div>
+      </article>
+    </div>
+
+    <h3 class="bk-h3" style="margin-top:3rem">The full ramp</h3>
+    <p class="bk-note">Twenty-four steps ship in <code>colors_and_type.css</code>.
+      The six roles above are drawn from it; the rest exist for gradients, the
+      glow button, and state colours.</p>
+    <div class="bk-ramp" id="ramp" data-od-id="kit-palette-ramp"></div>
+  </section>
+
+  <!-- ===================== TYPOGRAPHY ===================== -->
+  <section class="bk-section" id="type" data-od-id="kit-type">
+    <span class="bk-eyebrow">03 — Typography</span>
+    <h2 class="bk-h2">Satoshi, two weights</h2>
+    <p class="bk-note">Regular 400 and Bold 700 carry everything. Production
+      declares a single face with no weight descriptor, so live 700 text is
+      browser-synthesized; this package binds the genuine cuts, which will read
+      marginally tighter until production ships the same files. Fallbacks:
+      <code>system-ui, -apple-system, Segoe UI, Helvetica Neue, Arial, sans-serif</code>.</p>
+
+    <div class="bk-specimen" data-od-id="kit-type-specimen">
+      <p class="bk-aa">Aa</p>
+      <p class="bk-charset">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>
+        abcdefghijklmnopqrstuvwxyz<br>
+        0123456789 &amp; @ # % — “ ” ‘ ’</p>
+    </div>
+
+    <table class="bk-scale" data-od-id="kit-type-scale">
+      <thead>
+        <tr><th scope="col">Role</th><th scope="col">Specimen</th><th scope="col">Size / leading</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="bk-meta">heading-lg</td>
+            <td style="font-size:var(--text-heading-lg);line-height:1.3;letter-spacing:-0.025em;font-weight:700">Ship it</td>
+            <td>56 / 130%</td></tr>
+        <tr><td class="bk-meta">heading-md</td>
+            <td style="font-size:var(--text-heading-md);line-height:1.15;letter-spacing:-0.02em;font-weight:700">Section heading</td>
+            <td>44 / 115%</td></tr>
+        <tr><td class="bk-meta">heading-sm</td>
+            <td style="font-size:var(--text-heading-sm);line-height:1.1;letter-spacing:-0.02em;font-weight:700">Eyebrow lead</td>
+            <td>32 / 110%</td></tr>
+        <tr><td class="bk-meta">stat</td>
+            <td style="font-size:var(--text-stat);line-height:var(--leading-stat);letter-spacing:-0.02em;font-weight:700">98%</td>
+            <td>36 / 40</td></tr>
+        <tr><td class="bk-meta">lg</td>
+            <td style="font-size:var(--text-lg);line-height:var(--leading-lg);font-weight:700">Subsection heading</td>
+            <td>24 / 32</td></tr>
+        <tr><td class="bk-meta">md</td>
+            <td style="font-size:var(--text-md);line-height:var(--leading-md)">Intro copy sits here.</td>
+            <td>20 / 28</td></tr>
+        <tr><td class="bk-meta">base</td>
+            <td style="font-size:var(--text-base);line-height:var(--leading-base)">Body text and every button label.</td>
+            <td>16 / 24</td></tr>
+        <tr><td class="bk-meta">caption</td>
+            <td style="font-size:var(--text-caption);line-height:var(--leading-caption)">Captions and form labels.</td>
+            <td>14 / 20</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="bk-h3" style="margin-top:2.5rem">The eyebrow</h3>
+    <p class="bk-note">The system's one typographic signature: a bold violet line
+      over a larger light lead line. It opens nearly every section.</p>
+    <div class="eyebrow-lead" data-od-id="kit-eyebrow-lead">
+      <span class="eyebrow">Cloud &amp; DevOps</span>
+      <span class="lead">Optimize costs without pausing delivery</span>
+    </div>
+  </section>
+
+  <!-- ===================== COMPONENTS ===================== -->
+  <section class="bk-section" id="components" data-od-id="kit-components">
+    <span class="bk-eyebrow">04 — Components</span>
+    <h2 class="bk-h2">Pill buttons, hairline cards</h2>
+    <p class="bk-note">Every control is a 44px pill: <code>padding: 4px 24px</code>,
+      <code>border-radius: 9999px</code>, 16px bold label. Nothing dims on hover —
+      hover raises contrast. Only <code>:disabled</code> reduces it, to opacity 0.2.
+      Rendered live from <code>colors_and_type.css</code>, so this row is a working
+      check on the token file rather than a picture of one.</p>
+
+    <div data-od-id="kit-button-rows">
+      <div class="bk-specimen-row">
+        <span class="bk-meta">primary</span>
+        <button class="btn btn-primary" type="button">Send request</button>
+        <span class="bk-meta">#5F20FE → #4004AF hover → #1E113B active</span>
+      </div>
+      <div class="bk-specimen-row">
+        <span class="bk-meta">secondary</span>
+        <button class="btn btn-secondary" type="button">Download the brief</button>
+        <span class="bk-meta">#0D0D0F → #141319 hover</span>
+      </div>
+      <div class="bk-specimen-row">
+        <span class="bk-meta">tertiary</span>
+        <a class="btn btn-tertiary" href="#components">Learn more</a>
+        <span class="bk-meta">1px #5F20FE → #1B0D4E hover</span>
+      </div>
+      <div class="bk-specimen-row">
+        <span class="bk-meta">ghost / text / link</span>
+        <a class="btn btn-ghost" href="#components">Services</a>
+        <a class="btn btn-text" href="#components">Privacy policy</a>
+        <a class="btn btn-link" href="#components">Read the case study</a>
+      </div>
+      <div class="bk-specimen-row">
+        <span class="bk-meta">disabled</span>
+        <button class="btn btn-primary btn-disabled" type="button" disabled>Send request</button>
+        <span class="bk-meta">opacity 0.2 — the only state allowed to lose contrast</span>
+      </div>
+    </div>
+
+    <h3 class="bk-h3" style="margin-top:2.5rem">The one violet field</h3>
+    <p class="bk-note">One primary action per page. The glow button is
+      <code>#9980FF</code> with <code>#1B0D4E</code> text at 8.0:1, and it is the
+      only place violet fills an area. Three light sources stack: a static halo,
+      a highlight travelling under the fill, and an edge bloom 8px outside each
+      end. The fill never changes colour on hover.</p>
+    <div class="bk-cta-field" data-od-id="kit-cta-field">
+      <span class="btn-glow-field" id="cta-field">
+        <a class="btn btn-glow" href="#components" id="cta" data-od-id="kit-cta-glow"><span>Discuss partnership</span></a>
+      </span>
+      <a class="btn btn-tertiary" href="#components" data-od-id="kit-cta-secondary">About us &amp; how we work</a>
+    </div>
+
+    <h3 class="bk-h3" style="margin-top:3rem">Surfaces</h3>
+    <div class="bk-cols" style="margin-top:1rem" data-od-id="kit-surfaces">
+      <div class="card" data-od-id="kit-card-default">
+        <h4 class="bk-h3" style="font-size:var(--text-md);margin-bottom:0.5rem">Default card</h4>
+        <p class="bk-note" style="margin:0">24px radius, 1px hairline, no shadow.
+          Padding is bottom-heavy — <code>2rem 2rem 3rem</code> — so a footer
+          action has room to sit.</p>
+      </div>
+      <div class="card card-article" data-od-id="kit-card-article">
+        <h4 class="bk-h3" style="font-size:var(--text-md);margin-bottom:0.5rem">Article card</h4>
+        <p class="bk-note" style="margin:0">Same surface at a 36px radius. Radius is
+          the loudest brand signal in the system.</p>
+      </div>
+      <div class="card-feature" data-od-id="kit-card-feature">
+        <h4 class="bk-h3" style="font-size:var(--text-md);margin-bottom:0.5rem">Feature card</h4>
+        <p class="bk-note" style="margin:0">44px radius, no fill — a gradient
+          hairline drawn with <code>mask-composite</code> over a blurred backdrop.</p>
+      </div>
+    </div>
+
+    <h3 class="bk-h3" style="margin-top:2.5rem">Input &amp; chips</h3>
+    <div class="bk-cols" style="margin-top:1rem;align-items:start" data-od-id="kit-inputs">
+      <div class="field">
+        <label for="kit-email">Work email <span class="required">*</span></label>
+        <input id="kit-email" type="email" placeholder="you@company.com" autocomplete="off">
+      </div>
+      <div>
+        <div class="bk-meta" style="margin-bottom:0.75rem">Project chips</div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem">
+          <span class="chip">Cloud &amp; DevOps</span>
+          <span class="chip">E-Commerce</span>
+          <span class="chip">Autodesk plugins</span>
+          <span class="chip">Automation &amp; AI</span>
+        </div>
+      </div>
+    </div>
+    <p class="bk-note" style="margin-top:1rem">Focus is a violet halo on text inputs
+      — <code>outline: none</code> plus <code>--shadow-input-focus</code> — and a 2px
+      <code>#B19AFE</code> ring on everything else. Neither may be removed.</p>
+  </section>
+
+  <!-- ===================== VOICE ===================== -->
+  <section class="bk-section" id="voice" data-od-id="kit-voice">
+    <span class="bk-eyebrow">05 — Voice &amp; tone</span>
+    <h2 class="bk-h2">A small senior team, talking straight</h2>
+    <p class="bk-note">First-person plural, present tense, short declaratives.
+      Lead with the business outcome, then name the technology. Risk, cost and
+      ownership are addressed head-on, because reassurance rather than
+      excitement is what the audience is buying.</p>
+
+    <ol class="bk-rules" data-od-id="kit-voice-pillars">
+      <li>Outcome before technology — every service is titled by what it produces, never by its stack.</li>
+      <li>Risk is named, not hidden — NDA, scope, milestones and outcomes are stated upfront.</li>
+      <li>One low-friction ask — a free consultation, requested through a single primary action per page.</li>
+      <li>Evidence over adjectives — every figure carries a named source; nothing is claimed without one.</li>
+    </ol>
+
+    <div class="bk-cols" style="margin-top:2.5rem">
+      <div data-od-id="kit-voice-use">
+        <div class="bk-meta">Use</div>
+        <ul class="bk-list">
+          <li>Discuss project for free</li>
+          <li>Get a free consultation</li>
+          <li>Discuss partnership</li>
+          <li>Learn more</li>
+          <li>Tell us about your project</li>
+          <li>Optimize costs</li>
+          <li>payback</li>
+          <li>scope, milestones and outcomes upfront</li>
+          <li>Your idea stays yours</li>
+        </ul>
+      </div>
+      <div data-od-id="kit-voice-avoid">
+        <div class="bk-meta">Avoid</div>
+        <ul class="bk-list is-avoid">
+          <li>world-class</li>
+          <li>best-in-class</li>
+          <li>cutting-edge</li>
+          <li>industry-leading</li>
+          <li>revolutionary</li>
+          <li>game-changing</li>
+          <li>synergy</li>
+          <li>paradigm</li>
+          <li>hard-sell urgency</li>
+          <li>invented metrics</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== POSTURE ===================== -->
+  <section class="bk-section" id="posture" data-od-id="kit-posture">
+    <span class="bk-eyebrow">06 — Layout posture</span>
+    <h2 class="bk-h2">Radius is the loudest signal</h2>
+    <p class="bk-note">A 4px corner does not occur anywhere in source. The scale
+      runs 8px on inputs, 12px on icon tiles, 24px on the default card, 36px on
+      articles, 44px on feature blocks, 64px on a section panel below 768px and
+      120px at and above it — and a pill on every button.</p>
+
+    <ol class="bk-rules" data-od-id="kit-posture-rules">
+      <li>Depth never comes from contrast. The page is <code>#050505</code> and a card is <code>#0D0D0F</code> — separation is radius plus a 1px <code>#2E2C33</code> hairline.</li>
+      <li>The only shadow points upward: <code>--shadow-section</code> stacks three layers with negative Y offsets seeded from <code>#281470</code>. Cards receive no shadow at all.</li>
+      <li>Violet lives on edges. <code>#5F20FE</code> never fills a large area; the one violet field is the glow button at <code>#9980FF</code> with <code>#1B0D4E</code> text.</li>
+      <li>One primary action per page. A long page may repeat the glow button once at the very end, never twice in a viewport.</li>
+      <li>Section rhythm is asymmetric: 200px of padding above, 120px below. Card padding is bottom-heavy at <code>2rem 2rem 3rem</code>.</li>
+      <li>Nothing dims on hover — hover raises contrast. Only <code>:disabled</code> reduces it, to opacity 0.2.</li>
+      <li>Focus is a violet halo on text inputs and a 2px <code>#B19AFE</code> ring everywhere else. Neither may be removed.</li>
+      <li>There is no light theme. The black-ink logo variants are a bounded exception and cannot be generalized into one.</li>
+    </ol>
+  </section>
+
+  <footer class="bk-foot" data-od-id="kit-foot">
+    <p class="bk-meta">CODECAVE brand kit · tokens in <code>colors_and_type.css</code> ·
+      component previews in <code>preview/</code> · source seed <code>brand.json</code>.
+      This page is authored, not generated — the brand pipeline does not overwrite it.</p>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---- palette ramp -----------------------------------------------------
+     Read straight off the computed custom properties so the strip can never
+     drift from the token file. */
+  var STEPS = [0, 25, 50, 100, 105, 110, 130, 200, 210, 300, 400, 450,
+               500, 580, 600, 650, 660, 670, 700, 800, 900, 910, 920, 950];
+  var root = getComputedStyle(document.documentElement);
+  var ramp = document.getElementById('ramp');
+
+  ramp.innerHTML = STEPS.map(function (step) {
+    var hex = root.getPropertyValue('--color-brand-' + step).trim();
+    return '<div class="bk-step">' +
+             '<div class="bk-step-chip" style="background:' + hex + '"></div>' +
+             '<div class="bk-step-label">' +
+               '<div class="bk-meta">brand-' + step + '</div>' +
+               '<div class="bk-meta" style="color:var(--color-body-secondary-lighter)">' + hex + '</div>' +
+             '</div>' +
+           '</div>';
+  }).join('');
+
+  /* ---- logo stage -------------------------------------------------------
+     The stage adopts the clicked variant's own declared surface. Nothing is
+     inferred from the filename; each tile states its ground in the markup. */
+  var stage = document.getElementById('logo-stage');
+  var stageImg = document.getElementById('logo-stage-img');
+  var caption = document.getElementById('logo-caption');
+  var thumbs = Array.prototype.slice.call(document.querySelectorAll('.bk-thumb'));
+
+  thumbs.forEach(function (thumb) {
+    thumb.addEventListener('click', function () {
+      thumbs.forEach(function (t) { t.removeAttribute('aria-current'); });
+      thumb.setAttribute('aria-current', 'true');
+      stageImg.src = thumb.getAttribute('data-src');
+      stageImg.alt = thumb.querySelector('img').alt;
+      stage.setAttribute('data-surface', thumb.getAttribute('data-surface'));
+      caption.innerHTML = thumb.getAttribute('data-label');
+    });
+  });
+
+  /* ---- glow CTA ---------------------------------------------------------
+     Mirrors GlowButton.vue: the highlight rests at 20% of the width and
+     tracks pointer X; the two edge blooms cross-fade across the outer 10%.
+     Production drives this with gsap.quickTo; here the CSS transitions on
+     .btn-glow-field carry the same 0.2s ease. Touch devices skip it, as in
+     source. */
+  var EDGE_ZONE = 0.1;
+  var field = document.getElementById('cta-field');
+  var cta = document.getElementById('cta');
+
+  if (field && cta && window.matchMedia('(hover: hover)').matches) {
+    field.addEventListener('mousemove', function (event) {
+      var box = cta.getBoundingClientRect();
+      var pct = (event.clientX - box.left) / box.width;
+      cta.style.setProperty('--glow-x', (pct * 100) + '%');
+
+      var left = 0, right = 0;
+      if (pct < EDGE_ZONE) left = 1 - pct / EDGE_ZONE;
+      else if (pct > 1 - EDGE_ZONE) right = (pct - (1 - EDGE_ZONE)) / EDGE_ZONE;
+      field.style.setProperty('--edge-left', left);
+      field.style.setProperty('--edge-right', right);
+    });
+
+    field.addEventListener('mouseleave', function () {
+      cta.style.removeProperty('--glow-x');
+      field.style.removeProperty('--edge-left');
+      field.style.removeProperty('--edge-right');
+    });
+  }
+})();
+</script>
+</body>
+</html>

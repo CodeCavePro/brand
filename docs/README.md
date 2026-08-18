@@ -1,0 +1,344 @@
+# CODECAVE Design System
+
+A complete, reusable design system extracted from first-party CODECAVE source —
+the `CodeCavePro/brand` repository and the production `codecave.pro` codebase.
+Every token, component rule, asset and font file in this package was read out of
+captured source, not inferred from a screenshot or a marketing page.
+
+Link one stylesheet and the system is live:
+
+```html
+<link rel="stylesheet" href="colors_and_type.css">
+```
+
+There is no build step, no package to install, no theme provider and no
+component bundle. `colors_and_type.css` declares the tokens on `:root` and ships
+a component class layer on top of them.
+
+---
+
+## Product context
+
+CODECAVE is a software delivery studio. The captured surface is its marketing and
+lead-generation site: a dark, high-contrast presentation whose entire job is to
+turn a visitor into one booked consultation.
+
+**Six services**, and the site titles every one of them by the *outcome* it
+produces rather than the technology it uses — read straight from
+`source_examples/header/menu.ts`:
+
+| Service | Outcome line, verbatim |
+|---|---|
+| Cloud & DevOps | Optimize costs. Protect your Data |
+| E-Commerce | Maximize revenue, dominate Markets |
+| Autodesk plugins | 10x efficiency with custom Plugins |
+| Automation & AI | Leverage virtual Workforce |
+| HubSpot | Aggregate data from all your Tools |
+| AR & VR | Stunning visualisations for your business |
+
+**Production stack.** Astro 7 + Vue 3 + Tailwind 4, GSAP 3.13 with ScrollTrigger,
+Lenis 1.3.11 smooth scroll, vue3-carousel, Strapi as the content backend. 61
+`.astro` files, 45 `.vue` components, zero React, no Storybook. The Tailwind 4
+`@theme` block in `src/styles/global.css` is the authoritative token source; the
+brand repository's `docs/tokens/*.css` publish the same ramp independently.
+
+**Conversion shape.** Exactly one primary action per page — a violet glow button
+reading "Get a free consultation" — supported by a consultation form that asks
+for one required field (e-mail) and treats everything else as optional. The
+voice is plain, specific and non-promotional: *"Scope, milestones and outcomes
+upfront."* / *"We are ready to sign an NDA — your idea stays yours."*
+
+**What defines the visual system** (the long version is `DESIGN.md`):
+
+1. **Depth without contrast.** The page is `#050505` and a card is `#0D0D0F` —
+   one hair apart. Separation comes from radius and a 1px `#2E2C33` border, never
+   from a lighter fill.
+2. **Enormous radii.** 24px is the *default* card corner. Feature cards take
+   44px; section panels reach 64px, and 120px above 768px. Nothing in the system
+   has a small corner.
+3. **The inverted glow.** Section panels cast violet light *upward* — every Y
+   offset in `--shadow-section` is negative. It is physically wrong and instantly
+   recognizable, and it is the single most important thing not to normalize.
+4. **Violet is rationed.** `#5F20FE` lives on edges, links and marks and never
+   fills a large area. When a violet *field* is genuinely needed the system
+   switches to `#9980FF` with `#1B0D4E` text — the only dark-on-light text
+   anywhere in the system.
+
+---
+
+## Source references
+
+| Source | Where the evidence lives | Read method |
+|---|---|---|
+| `CodeCavePro/brand` (GitHub, `main`) | `context/github/CodeCavePro-brand/` + `files/` snapshots | `git-clone` |
+| `CodeCavePro/brand` (GitHub, `development`) | `context/github/CodeCavePro-brand-development.md` — tokens, `DESIGN.md`, `ds-bundle/` | `git-clone` |
+| `CodeCavePro/brand` working clone — the binary logo/icon/favicon trees | `context/local-code/brand/` + `files/logos/`, `files/icons/`, `files/favicons/`, `files/build.sh` | `local-folder` |
+| `codecave.pro` production codebase | `context/local-code/codecave.pro/` + `files/` snapshots | `local-folder` |
+| https://codecavepro.github.io/brand | reviewed; structural confirmation only | fetched |
+| https://codecave.gay | live site, named in `.design-sync/config.json` as the measurement source | measured |
+| Figma design file | **linked but not decoded** — no snapshot captured, contributed nothing | — |
+
+**The `context/` intake tree is not published in this repository.** It is the
+capture workspace's raw evidence — full snapshots of the `codecave.pro` and
+brand-repo working trees — and the table above cites it so each claim stays
+traceable to where it was read, not because the folder ships here. The
+high-signal originals are preserved in `source_examples/` instead, so the
+evidence behind the rules can be read without re-running intake: 21 files — the
+brand repository's token CSS in `source_examples/brand-repo-tokens/`, the
+production `global.css`, and every Vue/Astro component this system documents.
+
+`tokens/` is the one derived artefact rather than a copy: `colors.ts`,
+`layout.ts` and `typography.ts` mirror `colors_and_type.css` as typed modules
+for consumers that cannot read a stylesheet — design tooling, canvas renderers,
+PDF and email builders, native apps. The CSS remains the source of truth.
+
+---
+
+## Package contents
+
+```
+├── index.html                 dark front door — start here
+├── DESIGN.md                  THE rules — canonical source of truth
+├── colors_and_type.css        THE deliverable: tokens + component class layer
+├── brand-kit.html             the brand page: lockups, palette, type scale, glow CTA
+├── README.md                  this file — package guide and preview manifest
+├── SKILL.md                   agent-facing entry point
+├── guide.md                   short orientation note
+├── tokens/                    the same tokens as typed TS modules, for non-CSS consumers
+├── brand.json                 machine-readable palette, type and voice summary
+├── assets/                    brand marks, raster lockups, UI icons, font originals
+├── build/                     runtime assets, original filenames, byte-for-byte
+├── fonts/                     6 Satoshi cuts (woff2 + woff) + fonts.css
+├── imagery/                   decorative line-and-glow art, on its #050505 ground
+│   └── source/                the same 8 SVGs untouched, byte-for-byte
+├── source_examples/           high-signal source files, the evidence behind the rules
+├── preview/                   12 focused review cards + index
+├── storybook/                 13 component stories + index
+│   └── components.css         framework-free CSS extracted from the Vue/Astro source
+├── system/                    artifact templates (deck, email, poster, landing…)
+├── ui_kits/app/               the system applied to a working interface
+└── src/                       design-system reference component
+```
+
+**`build/` is the runtime asset directory.** It holds the marks a packager or
+runtime consumes, under their original source filenames, copied byte-for-byte
+from the captured snapshots. Nothing in `build/` was redrawn, re-encoded or
+optimized.
+
+**`imagery/source/` is the same contract for the decorative art** — eight SVGs
+copied byte-for-byte out of `codecave.pro/src/assets/images/`. The seven files
+one level up in `imagery/` are the *presentation* copies: identical artwork
+with a single `#050505` ground rect added, because the originals are
+stroke-only on a transparent root and therefore do not render on a light
+canvas. Ship from `imagery/source/`; review from `imagery/`.
+
+| Group | Files | Source |
+|---|---|---|
+| Vectors | `codecave-wide.svg`, `codecave-tall.svg`, `codecave.svg` | brand repo `src/` |
+| Site marks | `logo.svg` | `codecave.pro` production |
+| Raster lockups | `logo.png`, `logo-tall.png`, `icon.png` (1024²) | brand repo `logos/` |
+| Icon ramp | `icons/16x16.png` … `icons/512x512.png` (7 sizes) | brand repo `icons/` |
+| Web runtime | `favicon.ico`, `favicon.svg`, `favicon-96x96.png`, `apple-touch-icon.png`, `web-app-manifest-192x192.png`, `web-app-manifest-512x512.png`, `site.webmanifest` | brand repo `favicons/` |
+
+**The production site's own `public/favicon.svg` is not shipped here.** As
+captured, `codecave.pro` still serves the Astro starter's default favicon — a
+stock framework glyph, not a CODECAVE mark. It is left in the evidence snapshot
+(`context/local-code/codecave.pro/files/public/favicon.svg`) and deliberately
+kept out of `build/`. Use `build/favicon.svg`, which is the real brand mark.
+
+`assets/` holds the wider brand kit: the 1024px raster lockups plus the 256px
+review cuts in all four finishes, the square 256px and 1024px app marks, the
+chevron and stacked vectors, the checkbox tick, and the original font uploads.
+
+**Every lockup exists in eight sizes × four finishes.** The brand repo's
+`build.sh` renders `src/codecave.svg`, `src/codecave-wide.svg` and
+`src/codecave-tall.svg` at 96/128/256/300/350/500/600/1024 into
+`codecave-{wide|tall}-{size}-{text-white|text-black|all-white|all-black}.png`.
+`text-white` is the default on dark; `text-black` is for genuinely light
+surfaces; the two `all-*` finishes are one-ink print. This package preserves a
+representative subset — regenerate any other size from the vectors rather than
+upscaling a PNG.
+
+**Fonts are real and bound.** `colors_and_type.css` opens with six `@font-face`
+blocks pointing at `./fonts/Satoshi-*.woff2` with `.woff` fallbacks. Nothing is
+described in prose only.
+
+---
+
+## Preview Manifest
+
+Twelve cards, one concern each. All are static HTML — open `preview/index.html`
+and work down, or open any card directly. Every card links
+`../colors_and_type.css` and renders live tokens, live components and real
+preserved files: there are no screenshots and no redrawn marks anywhere in the
+set.
+
+| Card | What to inspect | What it demonstrates |
+|---|---|---|
+| `preview/index.html` | Launcher. Confirm all eleven cards open and the lockup renders. | `build/codecave.svg`, `.divider`, `.eyebrow` |
+| `preview/colors-primary.html` | That `#5F20FE` never fills a large area, and that cyan appears nowhere as a UI color. | `--color-action`, `--color-hovered`, `--color-brand-210`, `--gradient-brand`, all 26 ramp steps (including the two imagery-only steps `-107` and `-620`), the 4-step error ramp. Source: `source_examples/styles/global.css`, `tokens/colors.css` |
+| `preview/colors-theme-dark.html` | Four surfaces one hair apart — check they still separate. Read the contrast ratios on the foreground ramp. | `--color-surface-primary/-secondary/-tertiary/-quaternary`, `--color-body-*`, `.card` in situ |
+| `preview/colors-theme-light.html` | The three light surfaces that legitimately exist, and why no light theme may be derived from them. | `--color-brand-0` as a surface, inverse lockup usage, `error-100` rationale |
+| `preview/typography-specimens.html` | Whether the six Satoshi cuts render distinctly. If they look identical, the `@font-face` binding is broken. | `fonts/Satoshi-*.woff2`, the nine-step scale at true size, `.eyebrow` / `.lead` / `.eyebrow-lead` with a counter-example. Source: `tokens/typography.css`, `homepage/expertise.astro` |
+| `preview/spacing-tokens.html` | The asymmetric section rhythm (200px above, 120px below) and bottom-heavy card padding. | `--gutter-*`, `--section-padding-top/-bottom`, `--card-padding`, `--control-height`, `--input-height`. Source: `tokens/layout.css` |
+| `preview/spacing-radius.html` | Eight radii at true size, the measured homepage census, and the same card at 4px and 0px for comparison. | `--radius-sm` → `--radius-section-md`, `.card`, live `.section-container` across the 768px breakpoint |
+| `preview/spacing-shadows.html` | The space **above** the panel — that is where the violet has to appear. Then the conventional-shadow counter-example beside it. | `--shadow-section` (three negative-Y layers), `--shadow-glow-button`, `--shadow-input-focus`, `--shadow-input-error` |
+| `preview/components-buttons.html` | Rest, hover, active, focus and disabled shown together; tab through the focus row. | `.btn` + `-glow/-primary/-secondary/-tertiary/-ghost/-text/-link/:disabled`, and the one sanctioned CTA pairing. Source: `common/Button.vue`, `common/GlowButton.vue` |
+| `preview/components-inputs.html` | Click into the fields. The floating label must never collide with the value, and focus must be a halo rather than an outline. | `.field`, `.field.is-error`, `.error-message`, `label .required`, `.checkbox`, `.chip`, radios, the assembled consultation form. Source: `common/InputText.vue`, `TextField.vue`, `Checkbox.vue`, `Radio.vue`, `homepage/contacts-form.vue` |
+| `preview/components-progress.html` | That the bar is violet at 15% and near-white only at 100%. If early progress reads near-white, the gradient is being sized to the fill instead of the track. | `.rule`, `.progress`, `.progress-value`, `.progress.is-indeterminate`, `--gradient-brand` as a field, and three counter-examples: stretched full width, gradient sized to the fill, thickened to 16px. Source: the brand repository's previously published `docs/index.html` |
+| `preview/brand-imagery.html` | Every plate must show visible strokes. A plate that reads as flat near-black means the `#050505` ground rect is missing from that file, not that the art is subtle. | The seven harvested section backgrounds on their required ground, the `0.8 / 0.65 / 0.55 / 0.45` opacity ladder that produces the falloff, the three gradient stops, and the two ramp steps recovered in the deep pass (`--color-brand-620`, `--color-brand-107`). Source: `codecave.pro/src/assets/images/` |
+| `preview/brand-assets.html` | Every frame must contain artwork. An empty frame means a missing file, not a styling bug. Check the 16px icon still reads as a chevron. | Real files from `build/` and `assets/` loaded via `<img>`, `<object>` and CSS `url(...)`: both lockups, the chevron, all four raster finishes at 256px, the seven-step `build/icons/` ramp at native size, the web runtime set (`favicon.ico`, `apple-touch-icon.png`, both PWA manifest icons), the production `logo.svg`, the 1024² app icon, and the six font specimens |
+
+The applied kit is linked from the launcher: `ui_kits/app/index.html`.
+
+---
+
+## Component Storybook
+
+Thirteen components extracted from `codecave.pro` — twelve Vue islands and one
+Astro component. Open `storybook/index.html`.
+
+`storybook/components.css` is the substantive artifact: a framework-free CSS
+implementation of each component, translated from the Tailwind utility strings
+in the `.vue` / `.astro` source and resolved against `colors_and_type.css`. It
+is the only place the component geometry exists without a build step. Where the
+source has no rule, this file has no rule — omissions are reported on the story
+page rather than silently filled in.
+
+| Group | Components |
+|---|---|
+| Primitives | `Button` (7 variants), `GlowButton`, `InputText`, `TextField`, `Checkbox` (2×2), `Radio` (2 variants) |
+| Content | `ArticlePreview`, `Review`, `TechnologyCard`, `ProjectChip`, `TypingEffect`, `PainPointsItem` |
+| Compositions | `LinkGroup` |
+
+Each story page carries the real `defineProps` signature, a variant/state
+matrix rendered live, and a findings section. **53 findings were recorded — 29
+defects and 24 design observations.** The ones that change runtime behavior:
+
+- **`--default-transition-duration` is undefined.** `Checkbox.vue`:75 and
+  `Radio.vue`:61 both use it in a `transition` shorthand. It is declared nowhere
+  in the project, so both declarations are invalid and both indicators snap.
+- **`tailwind.config.ts` is never loaded.** Tailwind 4 is configured CSS-first
+  via `@theme`; a JS config only applies when a stylesheet names it with
+  `@config`, and none does. `darkMode`, `content` and `theme.extend` are inert —
+  including the `*.stories` exclusion in the content glob.
+- **`Button`'s `isDisabled` does not disable.** It sets opacity and cursor only;
+  the `disabled` attribute is never bound.
+- **`PainPointsItem` renders unsanitized CMS markdown through `v-html`.**
+- **`TextField` syncs its model on `change`, not `input`** — so `v-model`
+  updates on blur while `InputText` in the same form updates per keystroke.
+
+The storybook is static HTML and needs no build. It is **not** a Storybook
+(`@storybook/*`) install: `codecave.pro` is linked read-only, so nothing was
+written into that repo.
+
+---
+
+## Email CTAs
+
+`system/artifacts/email.html` shipped its two CTAs as green buttons. The cause
+is a single attribute:
+
+```html
+<td align="center" bgcolor="var(--brand-color-primary)">
+```
+
+`bgcolor` is a presentational attribute, parsed with the HTML **legacy color
+rules** — a fixed-width algorithm that has no access to CSS at all, so it cannot
+resolve a custom property. It does not fail and fall back; it substitutes `0`
+for every non-hex character and reads what is left as a color. For
+`var(--brand-color-primary)` that yields **`#A0D000`**, a lime green. The
+literal string is doing the choosing, not the token.
+
+Both CTAs in `email.html` and both in `newsletter.html` are now the glow button,
+written with literals end to end:
+
+| Property | Value | Why a literal |
+| --- | --- | --- |
+| `bgcolor` / `background` | `#9980FF` | The one violet field in the system. |
+| `color` | `#1B0D4E` | The only dark-on-light text in the system — 5.67:1. |
+| `border-radius` | `9999px` | Pill, per the radius rules. |
+| `box-shadow` | `0 0 64px 0 #7A58FFA8, 0 0 16px 0 #4F22FFA6, 0 0 4px 2px #5B34FA` | The halo, verbatim from `--shadow-glow-button`. |
+| `padding` / `font-size` | `16px 32px` / `18px` | Outlook's Word engine ignores `var()`; the button would collapse to zero padding. |
+
+**Never use `var()` inside `bgcolor`, and prefer literals over tokens anywhere
+in an email artifact.** Custom properties are unsupported in Outlook on Windows
+and unreliable elsewhere; the design system's token layer stops at the inbox
+boundary.
+
+Known limits, not defects: Outlook squares the pill and drops the halo, leaving
+the flat `#9980FF` field with `#1B0D4E` text. That degradation is intentional —
+the fill and the text color are the parts that carry the brand.
+
+### Footer signature
+
+The generator emits a placeholder postal address and the brand-guide host. The
+registered line, in both email artifacts, is:
+
+```
+CODECAVE · 8 The Green, STE B, Dover DE · codecave.pro
+```
+
+The other four artifacts — `deck`, `landing`, `poster`, `form` — still carry
+`codecavepro.github.io` in 17 places. Those were left alone deliberately: that
+host really is the brand-guide site, so it may be the intended URL in a deck or
+poster footer, unlike an email signature where it should be the company site.
+
+---
+
+## Reuse workflow
+
+1. **Copy `colors_and_type.css`, `fonts/` and `build/`** into the target project,
+   keeping the relative layout — the stylesheet resolves fonts as
+   `./fonts/Satoshi-*.woff2`.
+2. **Link it once**, at the root of the document. The tokens land on `:root` and
+   the baseline sets the page to `#050505` with `#E8E6F0` text.
+3. **Consume the semantic layer**, never the raw ramp: `--color-surface-*`,
+   `--color-body-*`, `--color-heading`, `--color-action`, `--color-hovered`.
+   Exactly three raw steps are legitimate — `brand-210` (glow fill), `brand-660`
+   (the upward glow) and `brand-400` (the reserved cyan). **Never hard-code a
+   hex.**
+4. **Use the component classes** rather than re-deriving them: `.btn` + variant,
+   `.card`, `.card-article`, `.card-feature`, `.field`, `.checkbox`, `.chip`,
+   `.eyebrow`, `.lead`, `.eyebrow-lead`, `.stat`, `.divider`, `.page-container`,
+   `.section-container`. These are the public API.
+5. **Read `DESIGN.md` §9 before shipping.** The twelve anti-patterns are the
+   fastest way to catch work that has drifted off-system — a downward shadow, a
+   small radius, a second glow button, a purple wash, or a light theme.
+6. **Check §10, Known divergences.** Two rules here intentionally differ from
+   what `codecave.pro` ships today (error text contrast, real vs. synthesized
+   font weights). Each is documented with the production value if you need to
+   match live exactly. **Buttons are not among them:** the `.btn*` layer is a
+   transcription of `Button.vue` and `GlowButton.vue`, down to the halo hex
+   literals and the 150ms `transition-colors` — including the tertiary hover
+   that darkens its border to `#1B0D4E`. The only addition is the
+   `:focus-visible` ring, which production never implemented.
+7. **Start from `ui_kits/app/`** when building an application surface. It shows
+   the system carrying real product density and maps every component back to the
+   source file it came from.
+
+---
+
+## Superseded setup output
+
+`system/` and `guide.md` are artefacts of the original
+`/design-systems/create` registration run, which read the palette from the brand
+site's README rather than from source. That palette was wrong — it mapped
+`#aaccee` to the page background and `#5F20FE` to body text; `#aaccee` appears in
+no first-party file, and `#5F20FE` is the action color and is never body text.
+`DESIGN.md` §1 documents the correction in full.
+
+`system/seed.json` and `system/theme.json` were corrected to the source-backed
+values (`#5F20FE` action, `#050505` canvas, `#E8E6F0` ink, 24px radius), and the
+generator has since been re-run against them: `#aaccee` no longer appears in any
+derived artefact. `system/variables*.css`, `system/tokens.*.json`,
+`system/kit*.html`, `system/artifacts/*.html` and `guide.md` are machine output
+and still lag this package in detail — treat them as generated, not canonical.
+This package — `colors_and_type.css`, `DESIGN.md`, `tokens/`, `preview/`,
+`ui_kits/app/` — is the source of truth.
+
+## Verifying the package
+
+```bash
+"$OD_NODE_BIN" "$OD_BIN" tools connectors design-system-package-audit --path . --fail-on-warnings
+```
