@@ -7,7 +7,6 @@
     
     <link rel="stylesheet" href="../colors_and_type.css" />
     <style>
-:root { --display-family: Satoshi, system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif, var(--font-sans); }
       * { box-sizing: border-box; }
       html, body { margin: 0; padding: 0; }
       body {
@@ -22,7 +21,7 @@
       a { color: var(--color-action); text-decoration: none; }
       h1, h2, h3, h4 {
         margin: 0;
-        font-family: var(--display-family);
+        font-family: var(--font-sans);
         line-height: 1.15;
         font-weight: var(--font-weight-bold);
         color: var(--color-body-primary);
@@ -80,7 +79,7 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
 
       /* ── three type-size roles ────────────────────────────────────────── */
       .p-focal {
-        font-family: var(--display-family);
+        font-family: var(--font-sans);
         font-weight: var(--font-weight-bold);
         line-height: 1.02;
         letter-spacing: -0.025em;
@@ -108,26 +107,26 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
 
       /* header band: tiny wordmark + edition tag, like a print masthead */
       .p-head { display: flex; align-items: center; justify-content: space-between; gap: 3cqi; }
-      .p-wordmark { font-family: var(--display-family); font-weight: var(--font-weight-bold); font-size: 2.4cqi; letter-spacing: -0.01em; color: var(--color-body-primary); }
+      .p-wordmark { font-family: var(--font-sans); font-weight: var(--font-weight-bold); font-size: 2.4cqi; letter-spacing: -0.01em; color: var(--color-body-primary); }
 
       /* signature footer: logo small & confident, like a signature */
       .p-sign { display: flex; align-items: flex-end; justify-content: space-between; gap: 3cqi; }
       .p-sign-mark { display: flex; align-items: center; gap: 1.6cqi; }
       .p-sign-dot { width: 2.6cqi; height: 2.6cqi; border-radius: 50%; background: var(--color-action); flex: 0 0 auto; }
-      .p-sign-name { font-family: var(--display-family); font-weight: var(--font-weight-bold); font-size: 2.8cqi; letter-spacing: -0.01em; color: var(--color-body-primary); }
+      .p-sign-name { font-family: var(--font-sans); font-weight: var(--font-weight-bold); font-size: 2.8cqi; letter-spacing: -0.01em; color: var(--color-body-primary); }
 
       /* ── Event 5W grid ────────────────────────────────────────────────── */
       .p-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 4cqi 5cqi; margin: 0; }
       .p-fact { display: flex; flex-direction: column; gap: 1cqi; min-width: 0; }
       .p-fact-k { text-transform: uppercase; letter-spacing: 0.2em; font-size: 1.6cqi; font-weight: var(--font-weight-bold); color: var(--color-body-secondary); }
-      .p-fact-v { font-family: var(--display-family); font-weight: var(--font-weight-bold); font-size: 3.4cqi; line-height: 1.12; color: var(--color-body-primary); letter-spacing: -0.01em; }
+      .p-fact-v { font-family: var(--font-sans); font-weight: var(--font-weight-bold); font-size: 3.4cqi; line-height: 1.12; color: var(--color-body-primary); letter-spacing: -0.01em; }
       /* When + Where are the most-looked-up facts → give them more weight */
       .p-fact--lead .p-fact-v { font-size: 4cqi; }
 
       /* CTA block — one action, scan / short link, with a line-drawn code mark */
       .p-cta { display: flex; align-items: center; gap: 3.4cqi; padding-top: 4cqi; border-top: 1px solid var(--color-surface-quaternary); }
       .p-cta-copy { min-width: 0; }
-      .p-cta-action { font-family: var(--display-family); font-weight: var(--font-weight-bold); font-size: 3cqi; color: var(--color-body-primary); margin: 0 0 0.6cqi; letter-spacing: -0.01em; }
+      .p-cta-action { font-family: var(--font-sans); font-weight: var(--font-weight-bold); font-size: 3cqi; color: var(--color-body-primary); margin: 0 0 0.6cqi; letter-spacing: -0.01em; }
       .p-cta-link { font-size: 2cqi; color: var(--color-action); font-weight: var(--font-weight-bold); letter-spacing: 0.01em; }
       .p-code { flex: 0 0 auto; width: 17cqi; height: 17cqi; border: 1px solid var(--color-surface-quaternary); border-radius: 1cqi; padding: 1.8cqi; background: var(--color-surface-secondary); }
 
