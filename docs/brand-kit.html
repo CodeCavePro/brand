@@ -120,30 +120,40 @@ body {
   line-height: var(--leading-md);
   color: var(--color-body-secondary-lighter);
 }
-/* --- section nav ---------------------------------------------------------
-   The site's header idiom (header/desktop-menu.vue): nav items are ghost
-   buttons — bold, white, hover to violet — floating on the translucent
-   primary surface + blur the header's dropdown uses. Sticky, so a long kit
-   page stays navigable at any depth. */
-.bk-toc {
+/* --- top nav -------------------------------------------------------------
+   The site's actual header (header/desktop-menu.vue): a page-container bar
+   at the very top, ghost-button links split around the centred wordmark,
+   riding the translucent primary surface + blur its dropdown uses. */
+.bk-topbar {
   position: sticky;
-  top: 0.75rem;
+  top: 0;
   z-index: 10;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.25rem;
-  width: fit-content;
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 0.5rem;
-  border: 1px solid var(--color-surface-quaternary);
-  border-radius: var(--radius-pill);
+  border-bottom: 1px solid var(--color-surface-quaternary);
   background: var(--color-surface-primary-transparent);
   -webkit-backdrop-filter: blur(24px);
   backdrop-filter: blur(24px);
 }
-/* Anchor jumps land below the floating nav. */
+.bk-topbar-inner {
+  box-sizing: border-box;     /* the site resets this globally; the kit page does not */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  min-height: 0;              /* .page-container's 100% floor is for pages */
+  padding-top: 0.75rem;       /* the header's py-3 */
+  padding-bottom: 0.75rem;
+}
+.bk-topbar ul { display: flex; margin: 0; padding: 0; list-style: none; }
+.bk-topbar-logo {
+  position: absolute;         /* centred exactly as the site does it */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  transition: opacity var(--transition-base);
+}
+.bk-topbar-logo:hover { opacity: 0.8; }
+.bk-topbar-logo img { height: 1.75rem; width: auto; }
+/* Anchor jumps land below the bar. */
 .bk-section { scroll-margin-top: 5.5rem; }
 
 /* --- logo ---------------------------------------------------------------- */
@@ -380,15 +390,43 @@ body {
 
 .bk-foot { padding: 3rem 0 5rem; }
 
-/* The system's one structural break. Below 768px the nav wraps to three
-   rows; a 146px bar may not sit fixed over a phone viewport. */
+/* The system's one structural break. The site swaps to its burger sheet
+   below 768px; the kit keeps a static stacked bar instead — a wrapped bar
+   may not sit fixed over a phone viewport. */
 @media (max-width: 768px) {
-  .bk-toc { position: static; }
+  .bk-topbar { position: static; }
+  .bk-topbar-inner { flex-wrap: wrap; justify-content: center; }
+  .bk-topbar-logo {
+    position: static;
+    transform: none;
+    order: -1;
+    flex-basis: 100%;
+    justify-content: center;
+    padding: 0.5rem 0 0.75rem;
+  }
 }
 </style>
 </head>
 
 <body data-od-id="brand-kit">
+
+<nav class="bk-topbar" aria-label="Sections" data-od-id="kit-toc">
+  <div class="page-container bk-topbar-inner">
+    <ul>
+      <li><a class="btn btn-ghost" href="#logo">Logo</a></li>
+      <li><a class="btn btn-ghost" href="#palette">Palette</a></li>
+      <li><a class="btn btn-ghost" href="#type">Typography</a></li>
+    </ul>
+    <a class="bk-topbar-logo" href="#top" aria-label="Back to top">
+      <img src="assets/codecave-wide.svg" alt="CODECAVE"></a>
+    <ul>
+      <li><a class="btn btn-ghost" href="#components">Components</a></li>
+      <li><a class="btn btn-ghost" href="#voice">Voice</a></li>
+      <li><a class="btn btn-ghost" href="#posture">Layout posture</a></li>
+    </ul>
+  </div>
+</nav>
+
 <div class="bk-wrap">
 
   <!-- ===================== MASTHEAD ===================== -->
@@ -399,15 +437,6 @@ body {
     <p class="bk-tagline">The brand kit for CODECAVE. There is no light theme; the
        surfaces below are the default, not a mode.</p>
   </header>
-
-  <nav class="bk-toc" aria-label="Sections" data-od-id="kit-toc">
-    <a class="btn btn-ghost" href="#logo">Logo</a>
-    <a class="btn btn-ghost" href="#palette">Palette</a>
-    <a class="btn btn-ghost" href="#type">Typography</a>
-    <a class="btn btn-ghost" href="#components">Components</a>
-    <a class="btn btn-ghost" href="#voice">Voice</a>
-    <a class="btn btn-ghost" href="#posture">Layout posture</a>
-  </nav>
 
   <!-- ===================== LOGO ===================== -->
   <section class="bk-section" id="logo" data-od-id="kit-logo">
