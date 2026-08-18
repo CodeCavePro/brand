@@ -120,19 +120,31 @@ body {
   line-height: var(--leading-md);
   color: var(--color-body-secondary-lighter);
 }
-.bk-toc { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; margin-top: 2.5rem; }
-.bk-toc a {
-  color: var(--color-body-secondary-lighter);
-  text-decoration: none;
-  font-size: var(--text-caption);
-  border-bottom: 1px solid var(--color-surface-quaternary);
-  padding-bottom: 2px;
-  transition: color var(--transition-colors), border-color var(--transition-colors);
+/* --- section nav ---------------------------------------------------------
+   The site's header idiom (header/desktop-menu.vue): nav items are ghost
+   buttons — bold, white, hover to violet — floating on the translucent
+   primary surface + blur the header's dropdown uses. Sticky, so a long kit
+   page stays navigable at any depth. */
+.bk-toc {
+  position: sticky;
+  top: 0.75rem;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25rem;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0.5rem;
+  border: 1px solid var(--color-surface-quaternary);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-primary-transparent);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
 }
-.bk-toc a:hover, .bk-toc a:focus-visible {
-  color: var(--color-heading);            /* hover raises contrast, never dims */
-  border-bottom-color: var(--color-action);
-}
+/* Anchor jumps land below the floating nav. */
+.bk-section { scroll-margin-top: 5.5rem; }
 
 /* --- logo ---------------------------------------------------------------- */
 .bk-stage {
@@ -173,6 +185,11 @@ body {
 .bk-thumb[aria-current="true"] { border-color: var(--color-brand-200); }
 .bk-thumb:focus-visible { outline: 2px solid var(--color-brand-200); outline-offset: 2px; }
 .bk-caption { margin-top: 0.5rem; }
+/* Icon tiles carry their own legend — the artwork is identical by design,
+   so the caption is what tells the six files apart. */
+.bk-icon { display: flex; flex-direction: column; gap: 0.5rem; margin: 0; }
+.bk-icon .bk-thumb { width: 100%; }
+.bk-icon figcaption { line-height: 1.5; }
 
 /* --- palette ------------------------------------------------------------- */
 /* 22rem floor lands on a clean 3 x 2 at desktop instead of 4 + 2 dead cells. */
@@ -238,7 +255,8 @@ body {
   border-bottom: 1px solid var(--color-surface-quaternary);
 }
 .bk-specimen-row:last-child { border-bottom: 0; }
-.bk-specimen-row > .bk-meta { flex: 0 0 auto; min-width: 9rem; }
+.bk-specimen-row > .bk-meta { flex: 0 1 auto; min-width: 0; } /* annotations wrap */
+.bk-specimen-row > .bk-meta:first-child { flex: 0 0 auto; min-width: 9rem; }
 .bk-cta-field {
   display: flex;
   flex-wrap: wrap;
@@ -361,6 +379,12 @@ body {
 }
 
 .bk-foot { padding: 3rem 0 5rem; }
+
+/* The system's one structural break. Below 768px the nav wraps to three
+   rows; a 146px bar may not sit fixed over a phone viewport. */
+@media (max-width: 768px) {
+  .bk-toc { position: static; }
+}
 </style>
 </head>
 
@@ -374,15 +398,16 @@ body {
     <h1 class="bk-h1" data-od-id="kit-title">Dark, round, and violet —<br>in that order of importance.</h1>
     <p class="bk-tagline">The brand kit for CODECAVE. There is no light theme; the
        surfaces below are the default, not a mode.</p>
-    <nav class="bk-toc" aria-label="Sections" data-od-id="kit-toc">
-      <a href="#logo">Logo</a>
-      <a href="#palette">Palette</a>
-      <a href="#type">Typography</a>
-      <a href="#components">Components</a>
-      <a href="#voice">Voice</a>
-      <a href="#posture">Layout posture</a>
-    </nav>
   </header>
+
+  <nav class="bk-toc" aria-label="Sections" data-od-id="kit-toc">
+    <a class="btn btn-ghost" href="#logo">Logo</a>
+    <a class="btn btn-ghost" href="#palette">Palette</a>
+    <a class="btn btn-ghost" href="#type">Typography</a>
+    <a class="btn btn-ghost" href="#components">Components</a>
+    <a class="btn btn-ghost" href="#voice">Voice</a>
+    <a class="btn btn-ghost" href="#posture">Layout posture</a>
+  </nav>
 
   <!-- ===================== LOGO ===================== -->
   <section class="bk-section" id="logo" data-od-id="kit-logo">
@@ -400,65 +425,99 @@ body {
     <p class="bk-meta bk-caption" id="logo-caption">codecave-wide.svg &middot; primary &middot; dark ground</p>
 
     <h3 class="bk-h3" style="margin-top:2.5rem">Wordmark variants</h3>
-    <p class="bk-note">Black-ink artwork is the brand's only light-surface
-      exception. Those four tiles carry a light ground because the ink demands
-      it — the rule is declared per variant, never derived from the page.</p>
-    <div class="bk-variants" data-od-id="kit-logo-variants">
-      <button class="bk-thumb" type="button" data-surface="dark"  aria-current="true"
-              data-src="assets/codecave-wide.svg" data-label="codecave-wide.svg &middot; primary &middot; dark ground">
-        <img src="assets/codecave-wide.svg" alt="Horizontal wordmark"></button>
-      <button class="bk-thumb" type="button" data-surface="dark"
-              data-src="assets/codecave-tall.svg" data-label="codecave-tall.svg &middot; stacked lockup &middot; dark ground">
-        <img src="assets/codecave-tall.svg" alt="Stacked wordmark"></button>
-      <button class="bk-thumb" type="button" data-surface="dark"
-              data-src="assets/codecave-wide-1024-text-white.png" data-label="codecave-wide-1024-text-white.png &middot; default pairing">
-        <img src="assets/codecave-wide-256-text-white.png" alt="Horizontal, white text"></button>
-      <button class="bk-thumb" type="button" data-surface="light"
-              data-src="assets/codecave-wide-1024-text-black.png" data-label="codecave-wide-1024-text-black.png &middot; light-surface exception">
-        <img src="assets/codecave-wide-256-text-black.png" alt="Horizontal, black text"></button>
-      <button class="bk-thumb" type="button" data-surface="dark"
-              data-src="assets/codecave-wide-1024-all-white.png" data-label="codecave-wide-1024-all-white.png &middot; one-ink printing">
-        <img src="assets/codecave-wide-256-all-white.png" alt="Horizontal, all white"></button>
-      <button class="bk-thumb" type="button" data-surface="light"
-              data-src="assets/codecave-wide-1024-all-black.png" data-label="codecave-wide-1024-all-black.png &middot; one-ink, light stock">
-        <img src="assets/codecave-wide-256-all-black.png" alt="Horizontal, all black"></button>
-      <button class="bk-thumb" type="button" data-surface="dark"
-              data-src="assets/codecave-tall-1024-text-white.png" data-label="codecave-tall-1024-text-white.png &middot; default pairing">
-        <img src="assets/codecave-tall-256-text-white.png" alt="Stacked, white text"></button>
-      <button class="bk-thumb" type="button" data-surface="light"
-              data-src="assets/codecave-tall-1024-text-black.png" data-label="codecave-tall-1024-text-black.png &middot; light-surface exception">
-        <img src="assets/codecave-tall-256-text-black.png" alt="Stacked, black text"></button>
-      <button class="bk-thumb" type="button" data-surface="dark"
-              data-src="assets/codecave-tall-1024-all-white.png" data-label="codecave-tall-1024-all-white.png &middot; one-ink printing">
-        <img src="assets/codecave-tall-256-all-white.png" alt="Stacked, all white"></button>
-      <button class="bk-thumb" type="button" data-surface="light"
-              data-src="assets/codecave-tall-1024-all-black.png" data-label="codecave-tall-1024-all-black.png &middot; one-ink, light stock">
-        <img src="assets/codecave-tall-256-all-black.png" alt="Stacked, all black"></button>
+    <p class="bk-note">One row per lockup, and each row reads the same left to
+      right: vector master, then white text, black text, all-white ink, all-black
+      ink. Black-ink artwork is the brand's only light-surface exception — those
+      tiles carry a light ground because the ink demands it; the rule is declared
+      per variant, never derived from the page.</p>
+    <div data-od-id="kit-logo-variants">
+      <p class="bk-meta" style="margin-top:1.25rem">Wide &mdash; primary, 357&times;110</p>
+      <div class="bk-variants" style="margin-top:0.5rem">
+        <button class="bk-thumb" type="button" data-surface="dark" aria-current="true"
+                data-src="assets/codecave-wide.svg" data-label="codecave-wide.svg &middot; primary &middot; dark ground">
+          <img src="assets/codecave-wide.svg" alt="Horizontal wordmark"></button>
+        <button class="bk-thumb" type="button" data-surface="dark"
+                data-src="assets/codecave-wide-1024-text-white.png" data-label="codecave-wide-1024-text-white.png &middot; default pairing">
+          <img src="assets/codecave-wide-256-text-white.png" alt="Horizontal, white text"></button>
+        <button class="bk-thumb" type="button" data-surface="light"
+                data-src="assets/codecave-wide-1024-text-black.png" data-label="codecave-wide-1024-text-black.png &middot; light-surface exception">
+          <img src="assets/codecave-wide-256-text-black.png" alt="Horizontal, black text"></button>
+        <button class="bk-thumb" type="button" data-surface="dark"
+                data-src="assets/codecave-wide-1024-all-white.png" data-label="codecave-wide-1024-all-white.png &middot; one-ink printing">
+          <img src="assets/codecave-wide-256-all-white.png" alt="Horizontal, all white"></button>
+        <button class="bk-thumb" type="button" data-surface="light"
+                data-src="assets/codecave-wide-1024-all-black.png" data-label="codecave-wide-1024-all-black.png &middot; one-ink, light stock">
+          <img src="assets/codecave-wide-256-all-black.png" alt="Horizontal, all black"></button>
+      </div>
+      <p class="bk-meta" style="margin-top:1.25rem">Tall &mdash; stacked, for square and narrow fields</p>
+      <div class="bk-variants" style="margin-top:0.5rem">
+        <button class="bk-thumb" type="button" data-surface="dark"
+                data-src="assets/codecave-tall.svg" data-label="codecave-tall.svg &middot; stacked lockup &middot; dark ground">
+          <img src="assets/codecave-tall.svg" alt="Stacked wordmark"></button>
+        <button class="bk-thumb" type="button" data-surface="dark"
+                data-src="assets/codecave-tall-1024-text-white.png" data-label="codecave-tall-1024-text-white.png &middot; default pairing">
+          <img src="assets/codecave-tall-256-text-white.png" alt="Stacked, white text"></button>
+        <button class="bk-thumb" type="button" data-surface="light"
+                data-src="assets/codecave-tall-1024-text-black.png" data-label="codecave-tall-1024-text-black.png &middot; light-surface exception">
+          <img src="assets/codecave-tall-256-text-black.png" alt="Stacked, black text"></button>
+        <button class="bk-thumb" type="button" data-surface="dark"
+                data-src="assets/codecave-tall-1024-all-white.png" data-label="codecave-tall-1024-all-white.png &middot; one-ink printing">
+          <img src="assets/codecave-tall-256-all-white.png" alt="Stacked, all white"></button>
+        <button class="bk-thumb" type="button" data-surface="light"
+                data-src="assets/codecave-tall-1024-all-black.png" data-label="codecave-tall-1024-all-black.png &middot; one-ink, light stock">
+          <img src="assets/codecave-tall-256-all-black.png" alt="Stacked, all black"></button>
+      </div>
     </div>
 
     <h3 class="bk-h3" style="margin-top:2.5rem">Mark &amp; application icons</h3>
-    <p class="bk-note">The chevron alone. It never carries the wordmark's clear
-      space rule — an app icon is already a bounded field.</p>
+    <p class="bk-note">Six files, one drawing — that is deliberate. The chevron
+      is the entire icon program; the files differ in padding and raster size,
+      never in artwork, so the legend under each tile is what tells them apart.
+      The mark never carries the wordmark's clear-space rule — an app icon is
+      already a bounded field.</p>
     <div class="bk-variants" data-od-id="kit-logo-icons">
-      <button class="bk-thumb" type="button" data-surface="dark"
-              data-src="assets/codecave-mark.svg" data-label="codecave-mark.svg &middot; chevron only">
-        <img src="assets/codecave-mark.svg" alt="Chevron mark"></button>
-      <button class="bk-thumb" type="button" data-surface="dark"
-              data-src="build/favicon.svg" data-label="build/favicon.svg &middot; browser tab">
-        <img src="build/favicon.svg" alt="Favicon"></button>
-      <button class="bk-thumb" type="button" data-surface="dark"
-              data-src="assets/codecave-1024x1024.png" data-label="assets/codecave-1024x1024.png &middot; square app icon">
-        <img src="assets/codecave-256x256.png" alt="Square app icon"></button>
-      <button class="bk-thumb" type="button" data-surface="dark"
-              data-src="build/apple-touch-icon.png" data-label="build/apple-touch-icon.png &middot; iOS home screen">
-        <img src="build/apple-touch-icon.png" alt="Apple touch icon"></button>
-      <button class="bk-thumb" type="button" data-surface="dark"
-              data-src="build/web-app-manifest-512x512.png" data-label="build/web-app-manifest-512x512.png &middot; PWA">
-        <img src="build/web-app-manifest-192x192.png" alt="Web app manifest icon"></button>
-      <button class="bk-thumb" type="button" data-surface="dark"
-              data-src="build/icons/512x512.png" data-label="build/icons/512x512.png &middot; desktop app">
-        <img src="build/icons/128x128.png" alt="Desktop app icon"></button>
+      <figure class="bk-icon">
+        <button class="bk-thumb" type="button" data-surface="dark"
+                data-src="assets/codecave-mark.svg" data-label="codecave-mark.svg &middot; chevron only">
+          <img src="assets/codecave-mark.svg" alt="Chevron mark"></button>
+        <figcaption class="bk-meta">codecave-mark.svg<br>master vector &middot; source of all five</figcaption>
+      </figure>
+      <figure class="bk-icon">
+        <button class="bk-thumb" type="button" data-surface="dark"
+                data-src="build/favicon.svg" data-label="build/favicon.svg &middot; browser tab">
+          <img src="build/favicon.svg" alt="Favicon"></button>
+        <figcaption class="bk-meta">favicon.svg<br>browser tab &middot; the mark + padding</figcaption>
+      </figure>
+      <figure class="bk-icon">
+        <button class="bk-thumb" type="button" data-surface="dark"
+                data-src="assets/codecave-1024x1024.png" data-label="assets/codecave-1024x1024.png &middot; square app icon">
+          <img src="assets/codecave-256x256.png" alt="Square app icon"></button>
+        <figcaption class="bk-meta">codecave-1024x1024.png<br>1024&sup2; &middot; store listings</figcaption>
+      </figure>
+      <figure class="bk-icon">
+        <button class="bk-thumb" type="button" data-surface="dark"
+                data-src="build/apple-touch-icon.png" data-label="build/apple-touch-icon.png &middot; iOS home screen">
+          <img src="build/apple-touch-icon.png" alt="Apple touch icon"></button>
+        <figcaption class="bk-meta">apple-touch-icon.png<br>180&sup2; &middot; iOS home screen</figcaption>
+      </figure>
+      <figure class="bk-icon">
+        <button class="bk-thumb" type="button" data-surface="dark"
+                data-src="build/web-app-manifest-512x512.png" data-label="build/web-app-manifest-512x512.png &middot; PWA">
+          <img src="build/web-app-manifest-192x192.png" alt="Web app manifest icon"></button>
+        <figcaption class="bk-meta">web-app-manifest-512x512.png<br>512&sup2; &middot; PWA install</figcaption>
+      </figure>
+      <figure class="bk-icon">
+        <button class="bk-thumb" type="button" data-surface="dark"
+                data-src="build/icons/512x512.png" data-label="build/icons/512x512.png &middot; desktop app">
+          <img src="build/icons/128x128.png" alt="Desktop app icon"></button>
+        <figcaption class="bk-meta">icons/512x512.png<br>512&sup2; &middot; desktop app</figcaption>
+      </figure>
     </div>
+    <p class="bk-note" style="margin-top:1rem">Two of these are literally the same
+      file — the desktop 512 is byte-for-byte the PWA 512 — and
+      <code>favicon.svg</code> is <code>codecave-mark.svg</code> with 30 units of
+      breathing room per side. Every raster keeps a transparent ground; iOS and
+      Android composite their own plate behind it.</p>
   </section>
 
   <!-- ===================== PALETTE ===================== -->
@@ -660,24 +719,44 @@ body {
     </div>
 
     <h3 class="bk-h3" style="margin-top:2.5rem">Input &amp; chips</h3>
+    <p class="bk-note">Straight from the contact form. The label lives inside the
+      field (<code>common/InputText.vue</code>), bold at caption size with a violet
+      asterisk, and the placeholder is a full sentence, not a format hint. Nothing
+      pins the 64px height — it is 28px of top padding around one 24px text line
+      plus 12px below. The chips are checkboxes (<code>Checkbox.vue</code>,
+      secondary&thinsp;/&thinsp;small), not tags — they toggle.</p>
     <div class="bk-cols" style="margin-top:1rem;align-items:start" data-od-id="kit-inputs">
-      <div class="field">
-        <label for="kit-email">Work email <span class="required">*</span></label>
-        <input id="kit-email" type="email" placeholder="you@company.com" autocomplete="off">
-      </div>
-      <div>
-        <div class="bk-meta" style="margin-bottom:0.75rem">Project chips</div>
-        <div style="display:flex;flex-wrap:wrap;gap:0.5rem">
-          <span class="chip">Cloud &amp; DevOps</span>
-          <span class="chip">E-Commerce</span>
-          <span class="chip">Autodesk plugins</span>
-          <span class="chip">Automation &amp; AI</span>
+      <div style="display:grid;gap:0.75rem">
+        <div class="field">
+          <label for="kit-email">E-mail <span class="required">*</span></label>
+          <input id="kit-email" type="email"
+                 placeholder="The only necessary thing to get a free consultation."
+                 autocomplete="off">
+        </div>
+        <div class="field is-error">
+          <label for="kit-email-error">E-mail <span class="required">*</span></label>
+          <input id="kit-email-error" type="email" value="yaroslav@codecave"
+                 autocomplete="off" aria-invalid="true" aria-describedby="kit-email-error-msg">
+          <span class="error-message" id="kit-email-error-msg">Please enter a valid e-mail address.</span>
         </div>
       </div>
+      <fieldset style="margin:0;padding:0;border:0">
+        <legend style="padding:0 0 0 0.75rem;margin:0 0 0.75rem;color:var(--color-heading);font-size:var(--text-caption);font-weight:var(--font-weight-bold)">Services</legend>
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem">
+          <label class="checkbox checkbox-chip"><input type="checkbox" checked><span>Cloud &amp; DevOps</span></label>
+          <label class="checkbox checkbox-chip"><input type="checkbox"><span>E-Commerce</span></label>
+          <label class="checkbox checkbox-chip"><input type="checkbox"><span>Autodesk plugins</span></label>
+          <label class="checkbox checkbox-chip"><input type="checkbox"><span>Automation &amp; AI</span></label>
+          <label class="checkbox checkbox-chip"><input type="checkbox"><span>HubSpot</span></label>
+          <label class="checkbox checkbox-chip"><input type="checkbox"><span>AR &amp; VR</span></label>
+        </div>
+      </fieldset>
     </div>
-    <p class="bk-note" style="margin-top:1rem">Focus is a violet halo on text inputs
-      — <code>outline: none</code> plus <code>--shadow-input-focus</code> — and a 2px
-      <code>#B19AFE</code> ring on everything else. Neither may be removed.</p>
+    <p class="bk-note" style="margin-top:1rem">Focus is a violet halo —
+      <code>outline: none</code> plus <code>--shadow-input-focus</code> — and the
+      error state swaps the same halo red via <code>--shadow-input-error</code>.
+      Everything else gets a 2px <code>#B19AFE</code> ring. Neither may be
+      removed.</p>
   </section>
 
   <!-- ===================== VOICE ===================== -->

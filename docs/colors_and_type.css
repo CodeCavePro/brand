@@ -560,7 +560,8 @@ a:hover { color: var(--color-hovered); }
   -webkit-mask-composite: destination-out;
 }
 
-/* Chips — source: project/project-chip.astro, common/Checkbox.vue (secondary) */
+/* Static chip (tag) — source: project/project-chip.astro.
+ * The FORM chips are selectable — see .checkbox-chip further down. */
 .chip {
   display: inline-flex;
   align-items: center;
@@ -613,7 +614,8 @@ a:hover { color: var(--color-hovered); }
               box-shadow var(--transition-base);
 }
 
-.field input { height: var(--input-height); }
+/* No pinned height — InputText.vue has none. --input-height (64px) emerges
+ * from the padding: 28px above one 24px text line, 12px below. */
 
 .field textarea {
   min-height: 7.5rem;
@@ -625,6 +627,13 @@ a:hover { color: var(--color-hovered); }
 .field textarea::placeholder {
   color: var(--color-body-secondary);
   font-size: var(--text-caption);
+}
+
+/* Chrome autofill would repaint the field; the source component overrides
+ * it (InputText.vue scoped style) and so does the port. */
+.field input:-webkit-autofill {
+  box-shadow: 0 0 0 1000px var(--color-surface-tertiary) inset;
+  -webkit-text-fill-color: var(--color-heading);
 }
 
 .field input:hover,
@@ -689,6 +698,30 @@ a:hover { color: var(--color-hovered); }
 }
 
 .checkbox input:checked::before { transform: scale(1); }
+
+/* Chip checkbox — Checkbox.vue variant="secondary" size="small": the services
+ * and budget pickers on the contact form. The chip surface IS the label; the
+ * box is 16px and swaps its 2px border for an outline that disappears when
+ * checked, exactly as the Tailwind classes in source read. */
+.checkbox-chip {
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-secondary);
+}
+
+.checkbox-chip input {
+  width: 1rem;
+  height: 1rem;
+  border: 0;
+  outline: 2px solid var(--color-surface-quaternary);
+  transition: outline-color var(--transition-base),
+              background-color var(--transition-base);
+}
+
+.checkbox-chip input:hover   { outline-color: var(--color-action); }
+.checkbox-chip input:checked { outline: none; background: var(--color-action); }
+.checkbox-chip input::before { width: 0.5em; height: 0.5em; }
 
 /* ---------------------------------------------------------------------------
  * Eyebrow + lead pair and stat figures
