@@ -261,23 +261,102 @@ body {
 }
 .bk-list.is-avoid li { color: var(--color-body-secondary-lighter); text-decoration: line-through; }
 .bk-rules { margin: 0; padding: 0; list-style: none; counter-reset: rule; }
+/* The numeral is absolutely positioned, not a grid track. It used to be a grid
+   track — which silently promoted every inline <code> inside a rule to its own
+   grid item and dealt the hexes out into the 2.5rem numeral column. Harmless
+   for the voice pillars in 05, which are plain sentences; it wrecked 06, which
+   is mostly markup. Normal inline flow is the only thing that survives both. */
 .bk-rules li {
   counter-increment: rule;
-  display: grid;
-  grid-template-columns: 2.5rem 1fr;
-  gap: 1rem;
-  padding: 1rem 0;
+  position: relative;
+  padding: 1rem 0 1rem 3.5rem;
   border-bottom: 1px solid var(--color-surface-quaternary);
   max-width: 76ch;
 }
 .bk-rules li::before {
   content: counter(rule, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 1.35rem;
   font-family: var(--font-mono);
   font-size: 0.75rem;
   color: var(--color-brand-200);   /* #5F20FE is 3.0:1 — too low for a numeral */
-  padding-top: 0.35rem;
 }
 .bk-rules li:last-child { border-bottom: 0; }
+/* Rules carry hexes and token names inline. Same mono treatment as .bk-note
+   code, and a hex must never break across a line. */
+.bk-rules code {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.01em;
+  color: var(--color-brand-200);
+  white-space: nowrap;
+}
+.bk-rules strong { color: var(--color-heading); font-weight: var(--font-weight-bold); }
+
+/* --- posture ------------------------------------------------------------- */
+/* Each tile carries the real token on --r, so the corner is drawn at true size
+   rather than described in prose. */
+.bk-radii {
+  display: grid;
+  gap: 0.75rem 1rem;
+  margin-top: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
+}
+.bk-radius-tile {
+  height: 104px;
+  border: 1px solid var(--color-surface-quaternary);
+  border-radius: var(--r);
+  background: var(--color-surface-secondary);
+}
+.bk-radii .bk-meta { display: block; }
+.bk-radius-tok { margin-top: 0.625rem; color: var(--color-brand-200); }
+
+/* The hatched bands are the padding itself: this box reads the same two custom
+   properties the site's sections do, so it cannot drift from them. */
+.bk-rhythm {
+  position: relative;
+  margin-top: 1.5rem;
+  padding-top: var(--section-padding-top);
+  padding-bottom: var(--section-padding-bottom);
+  border: 1px solid var(--color-surface-quaternary);
+  border-radius: var(--radius-card);
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent 0 7px,
+    var(--color-surface-tertiary) 7px 8px);
+}
+.bk-rhythm-content {
+  padding: 1.5rem;
+  background: var(--color-surface-secondary);
+  border-block: 1px dashed var(--color-surface-quaternary);
+}
+.bk-rhythm-label { position: absolute; left: 1.5rem; }
+.bk-rhythm-label-top    { top: calc(var(--section-padding-top) / 2); transform: translateY(-50%); }
+.bk-rhythm-label-bottom { bottom: calc(var(--section-padding-bottom) / 2); transform: translateY(50%); }
+
+/* .section-container is --color-surface-primary — the same value as the page.
+   This stage sits one step lighter so a specimen has an edge to show; the real
+   site gives the panel nothing but the upward glow to find it by. */
+.bk-glow-stage {
+  display: grid;
+  gap: 4.5rem;
+  margin-top: 1.5rem;
+  padding: 4.5rem clamp(1rem, 3vw, 2rem);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-secondary);
+}
+.bk-glow-stage .section-container {
+  display: grid;
+  place-items: center;
+  min-height: 200px;
+  padding: 1.5rem;
+  text-align: center;
+}
+/* The counter-example, and the only downward shadow anywhere in the package. */
+.bk-glow-stage .section-container.is-conventional {
+  box-shadow: 0 24px 48px 0 rgb(0 0 0 / 0.7);
+}
 
 .bk-foot { padding: 3rem 0 5rem; }
 </style>
@@ -651,21 +730,102 @@ body {
   <!-- ===================== POSTURE ===================== -->
   <section class="bk-section" id="posture" data-od-id="kit-posture">
     <span class="bk-eyebrow">06 — Layout posture</span>
-    <h2 class="bk-h2">Radius is the loudest signal</h2>
-    <p class="bk-note">A 4px corner does not occur anywhere in source. The scale
-      runs 8px on inputs, 12px on icon tiles, 24px on the default card, 36px on
-      articles, 44px on feature blocks, 64px on a section panel below 768px and
-      120px at and above it — and a pill on every button.</p>
+    <h2 class="bk-h2">Round, asymmetric, lit from below</h2>
+    <p class="bk-note">How a page is <em>built</em>, as opposed to what it is coloured.
+      Every specimen below is drawn with the real token out of
+      <code>colors_and_type.css</code> — a corner rounded at true size, padding at its
+      literal value — rather than a picture of one.</p>
 
+    <h3 class="bk-h3" style="margin-top:2.5rem">The radius ladder</h3>
+    <p class="bk-note">Radius is the loudest signal in the system, and a 4px corner does
+      not occur anywhere in source. Measured census on the homepage: 24px on 42 blocks,
+      12px on 9, 44px on 8, 8px on 7, 120px on 2. Radii of 2–4px do not appear at all.</p>
+
+    <div class="bk-radii" data-od-id="kit-posture-radii">
+      <div>
+        <div class="bk-radius-tile" style="--r:var(--radius-sm)"></div>
+        <span class="bk-meta bk-radius-tok">--radius-sm · 8px</span>
+        <span class="bk-meta">inputs, small chips</span>
+      </div>
+      <div>
+        <div class="bk-radius-tile" style="--r:var(--radius-md)"></div>
+        <span class="bk-meta bk-radius-tok">--radius-md · 12px</span>
+        <span class="bk-meta">inline chips, icon tiles</span>
+      </div>
+      <div>
+        <div class="bk-radius-tile" style="--r:var(--radius-card)"></div>
+        <span class="bk-meta bk-radius-tok">--radius-card · 24px</span>
+        <span class="bk-meta">the default card — 42 blocks</span>
+      </div>
+      <div>
+        <div class="bk-radius-tile" style="--r:var(--radius-article)"></div>
+        <span class="bk-meta bk-radius-tok">--radius-article · 36px</span>
+        <span class="bk-meta">article &amp; insight cards</span>
+      </div>
+      <div>
+        <div class="bk-radius-tile" style="--r:var(--radius-custom)"></div>
+        <span class="bk-meta bk-radius-tok">--radius-custom · 44px</span>
+        <span class="bk-meta">feature &amp; testimonial cards</span>
+      </div>
+      <div>
+        <div class="bk-radius-tile" style="--r:var(--radius-pill)"></div>
+        <span class="bk-meta bk-radius-tok">--radius-pill · 9999px</span>
+        <span class="bk-meta">every button, pill and avatar</span>
+      </div>
+    </div>
+    <p class="bk-note" style="margin-top:1rem">The two section-panel steps — 64px below
+      768px, 120px at and above it — are missing from this row on purpose. They are sized
+      for a full-width panel and read as a lozenge on a tile this small; they are shown at
+      their real width two blocks down.</p>
+
+    <h3 class="bk-h3" style="margin-top:3rem">Section rhythm is asymmetric</h3>
+    <p class="bk-note">200px of padding above a section, 120px below. Sections own their
+      approach, not their exit — so vertical space never collapses into one shared symmetric
+      gap. Drawn here at true size straight from
+      <code>--section-padding-top</code> and <code>--section-padding-bottom</code>; the
+      hatched bands <em>are</em> the padding.</p>
+
+    <div class="bk-rhythm" data-od-id="kit-posture-rhythm">
+      <span class="bk-meta bk-rhythm-label bk-rhythm-label-top">200px above</span>
+      <div class="bk-rhythm-content">
+        <span class="bk-eyebrow" style="margin-bottom:0.25rem">07 — Next section</span>
+        <span class="bk-meta">the content box</span>
+      </div>
+      <span class="bk-meta bk-rhythm-label bk-rhythm-label-bottom">120px below</span>
+    </div>
+
+    <h3 class="bk-h3" style="margin-top:3rem">The light comes from below</h3>
+    <p class="bk-note">A section panel is <code>#050505</code> — the same value as the page
+      behind it. Nothing separates the two but radius and light thrown <em>upward</em>:
+      <code>--shadow-section</code> stacks three layers with negative Y offsets seeded from
+      <code>#281470</code>. It is physically wrong and instantly recognisable. The stage
+      below is one step lighter so the shoulder is visible; on the real site the glow alone
+      finds the edge.</p>
+
+    <div class="bk-glow-stage" data-od-id="kit-posture-glow">
+      <div class="section-container">
+        <span class="bk-meta">--shadow-section · 64px radius under 768px, 120px at and above</span>
+      </div>
+      <div class="section-container is-conventional">
+        <span class="bk-meta">a conventional downward drop shadow — never ship this</span>
+      </div>
+    </div>
+
+    <h3 class="bk-h3" style="margin-top:3rem">What the posture forbids</h3>
     <ol class="bk-rules" data-od-id="kit-posture-rules">
-      <li>Depth never comes from contrast. The page is <code>#050505</code> and a card is <code>#0D0D0F</code> — separation is radius plus a 1px <code>#2E2C33</code> hairline.</li>
-      <li>The only shadow points upward: <code>--shadow-section</code> stacks three layers with negative Y offsets seeded from <code>#281470</code>. Cards receive no shadow at all.</li>
-      <li>Violet lives on edges. <code>#5F20FE</code> never fills a large area; the one violet field is the glow button at <code>#9980FF</code> with <code>#1B0D4E</code> text.</li>
-      <li>One primary action per page. A long page may repeat the glow button once at the very end, never twice in a viewport.</li>
-      <li>Section rhythm is asymmetric: 200px of padding above, 120px below. Card padding is bottom-heavy at <code>2rem 2rem 3rem</code>.</li>
-      <li>Nothing dims on hover — hover raises contrast. Only <code>:disabled</code> reduces it, to opacity 0.2.</li>
-      <li>Focus is a violet halo on text inputs and a 2px <code>#B19AFE</code> ring everywhere else. Neither may be removed.</li>
-      <li>There is no light theme. The black-ink logo variants are a bounded exception and cannot be generalized into one.</li>
+      <li>Depth never comes from contrast. The page is <code>#050505</code> and a card is
+        <code>#0D0D0F</code> — one hair apart on purpose. If you are lightening a card to
+        make it read, you have made a layout mistake, not a colour one.</li>
+      <li>Only section panels are lit. Cards, inputs and buttons take no shadow at all —
+        <code>--shadow-section</code> belongs to <code>.section-container</code> and nowhere
+        else. The glow button's halo is a separate token with a separate job.</li>
+      <li>The container is fixed at <code>max-width: 1280px</code> with gutters stepping
+        8px → 16px → 32px, and <strong>768px is the one structural break</strong> in the
+        whole system. Nothing else in the layout gets a second opinion about where to bend.</li>
+      <li>One primary action per page. A long page may repeat the glow button once at the
+        very end, never twice inside a viewport.</li>
+      <li>There is no light theme. The black-ink logo variants in 01 are a bounded exception
+        for print and cannot be generalised into one.</li>
     </ol>
   </section>
 
