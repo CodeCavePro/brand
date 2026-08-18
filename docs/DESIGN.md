@@ -731,7 +731,7 @@ text color are the parts carrying the brand.
 
 The footer signature is corrected in the same pass. The generator emits a
 placeholder postal address and the brand-guide host; the registered line is
-**CODECAVE - 8 The Green, STE B, Dover DE - codecave.pro**.
+**CODECAVE - 8 The Green, STE B, 19901 Dover DE, US - codecave.pro**.
 
 Like §10.6 these are generator defects rather than seed values, so no edit to
 `brand.json` fixes them and every pipeline run reinstates them. Re-apply with

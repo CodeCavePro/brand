@@ -280,13 +280,13 @@ The generator emits a placeholder postal address and the brand-guide host. The
 registered line, in both email artifacts, is:
 
 ```
-CODECAVE · 8 The Green, STE B, Dover DE · codecave.pro
+CODECAVE · 8 The Green, STE B, 19901 Dover DE, US · codecave.pro
 ```
 
-The other four artifacts — `deck`, `landing`, `poster`, `form` — still carry
-`codecave.pro` in 17 places. Those were left alone deliberately: that
-host really is the brand-guide site, so it may be the intended URL in a deck or
-poster footer, unlike an email signature where it should be the company site.
+The other four artifacts — `deck`, `landing`, `poster`, `form` — name
+`codecave.pro` in their footers too. The generated files pointed every one of
+those at the brand-guide host instead; that host is not CODECAVE's website, so
+all six artifacts now carry the company address.
 
 ---
 
