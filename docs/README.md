@@ -284,7 +284,7 @@ CODECAVE · 8 The Green, STE B, Dover DE · codecave.pro
 ```
 
 The other four artifacts — `deck`, `landing`, `poster`, `form` — still carry
-`codecavepro.github.io` in 17 places. Those were left alone deliberately: that
+`codecave.pro` in 17 places. Those were left alone deliberately: that
 host really is the brand-guide site, so it may be the intended URL in a deck or
 poster footer, unlike an email signature where it should be the company site.
 

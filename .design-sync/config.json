@@ -3,7 +3,7 @@
   "projectName": "CODECAVE Design System",
   "shape": "foundations",
   "readmeHeader": ".design-sync/conventions.md",
-  "canonical": "https://codecavepro.github.io/brand/",
+  "canonical": "https://codecave.pro/brand/",
   "sourceOfTruth": "docs/",
   "originalProvenance": {
     "tokens": "../codecave.pro/src/styles/global.css",

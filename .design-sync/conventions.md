@@ -6,7 +6,7 @@ and Vue, so no React components ship with this project — there is no `_ds_bund
 is the whole idiom.
 
 This project **is** the CODECAVE source of truth — canonical at
-<https://codecavepro.github.io/brand/>, published from `CodeCavePro/brand`. Implementations conform
+<https://codecave.pro/brand/>, published from `CodeCavePro/brand`. Implementations conform
 to it; where the live site at <https://codecave.gay> differs, the site is what's out of date.
 
 ## Setup

@@ -3,7 +3,7 @@
 This repository contains resources for the **CODECAVE** brand such as [logos](/logos), [icons](/icons), [color palettes](#color-palettes), [fonts](#fonts) and other media.
 
 > **This repository is the source of truth for the CODECAVE brand.** The design system is published
-> at **<https://codecavepro.github.io/brand/>** from [docs/](/docs) and documented in
+> at **<https://codecave.pro/brand/>** from [docs/](/docs) and documented in
 > [docs/DESIGN.md](/docs/DESIGN.md). Implementations — including <https://codecave.gay> — conform
 > to it, not the reverse.
 
