@@ -20,7 +20,8 @@ user-invocable: true
 | `build/` | Runtime assets under their original source filenames, byte-for-byte from the captured snapshots: the three vectors (`codecave-wide.svg`, `codecave-tall.svg`, `codecave.svg`), the site header mark (`logo.svg`), rasters (`logo.png`, `logo-tall.png`, `icon.png`), the seven-step `build/icons/` ramp (`16x16.png` → `512x512.png`), and the web runtime set (`favicon.ico`, `favicon.svg`, `favicon-96x96.png`, `apple-touch-icon.png`, `web-app-manifest-192x192.png`, `web-app-manifest-512x512.png`, `site.webmanifest`). Nothing here was redrawn or re-encoded. |
 | `fonts/` | Six real Satoshi cuts in woff2 + woff, bound by `colors_and_type.css`. |
 | `source_examples/` | The high-signal originals — brand token CSS, production `global.css`, and every Vue/Astro component the system documents — copied out of `context/` so they can be read directly. |
-| `ui_kits/app/` | The system applied to a working three-column interface. React 18.3.1 via CDN, no build step. |
+| `storybook/` | One story per component, each mounting the real `.vue` single-file component with its props, variants and source path. |
+| `artifacts/` | Whole surfaces composed from the system — pitch deck, contact form, marketing email, newsletter, landing page, print poster. One self-contained file each. |
 
 ## Source context
 
@@ -80,9 +81,9 @@ exist cannot be generalized into one.
    `.card`, `.field`, `.checkbox`, `.chip`, `.eyebrow-lead`, `.section-container`.
 5. **Open `preview/index.html`** to see any rule rendered live before applying
    it. The Preview Manifest in `README.md` says what each card is for.
-6. **Open `ui_kits/app/index.html`** when the target is an application surface;
-   `ui_kits/app/README.md` maps each component back to the source file it was
-   modelled on.
+6. **Open `storybook/index.html`** when the target is a component and
+   `artifacts/index.html` when it is a whole surface. The storybook mounts the
+   genuine `.vue` files; the artifacts show the system at real page density.
 7. **Take assets from `build/` or `assets/`.** Copy them; do not regenerate them.
 8. **Check `DESIGN.md` §10** before matching production pixel-for-pixel — three
    rules here intentionally improve on what the live site ships.

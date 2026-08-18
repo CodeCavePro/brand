@@ -702,7 +702,7 @@ host-generated page and this package does not pretend otherwise.
 
 ### 10.7 Email artifacts render the CTA green
 
-`system/artifacts/email.html` ships both CTAs as lime green. The cause is one
+`artifacts/email.html` ships both CTAs as lime green. The cause is one
 attribute:
 
 ```html

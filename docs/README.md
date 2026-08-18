@@ -112,13 +112,16 @@ PDF and email builders, native apps. The CSS remains the source of truth.
 ├── imagery/                   decorative line-and-glow art, on its #050505 ground
 │   └── source/                the same 8 SVGs untouched, byte-for-byte
 ├── source_examples/           high-signal source files, the evidence behind the rules
-├── preview/                   12 focused review cards + index
-├── storybook/                 13 component stories + index
-│   └── components.css         framework-free CSS extracted from the Vue/Astro source
-├── system/                    artifact templates (deck, email, poster, landing…)
-├── ui_kits/app/               the system applied to a working interface
-└── src/                       design-system reference component
+├── preview/                   12 focused review cards + index — layer 1, foundations
+├── storybook/                 13 component stories + index — layer 2, components
+└── artifacts/                 6 whole surfaces + index — layer 3, compositions
 ```
+
+The three browsable layers answer three different questions. `preview/` asks
+whether a **token** is right, `storybook/` whether a **component** is right, and
+`artifacts/` whether the two **compose** into something a client receives.
+`DESIGN.md` and `colors_and_type.css` sit underneath all three as the rules and
+their machine-readable half.
 
 **`build/` is the runtime asset directory.** It holds the marks a packager or
 runtime consumes, under their original source filenames, copied byte-for-byte
@@ -189,7 +192,8 @@ set.
 | `preview/brand-imagery.html` | Every plate must show visible strokes. A plate that reads as flat near-black means the `#050505` ground rect is missing from that file, not that the art is subtle. | The seven harvested section backgrounds on their required ground, the `0.8 / 0.65 / 0.55 / 0.45` opacity ladder that produces the falloff, the three gradient stops, and the two ramp steps recovered in the deep pass (`--color-brand-620`, `--color-brand-107`). Source: `codecave.pro/src/assets/images/` |
 | `preview/brand-assets.html` | Every frame must contain artwork. An empty frame means a missing file, not a styling bug. Check the 16px icon still reads as a chevron. | Real files from `build/` and `assets/` loaded via `<img>`, `<object>` and CSS `url(...)`: both lockups, the chevron, all four raster finishes at 256px, the seven-step `build/icons/` ramp at native size, the web runtime set (`favicon.ico`, `apple-touch-icon.png`, both PWA manifest icons), the production `logo.svg`, the 1024² app icon, and the six font specimens |
 
-The applied kit is linked from the launcher: `ui_kits/app/index.html`.
+The launcher links onward to the two layers above these cards: `storybook/index.html`
+and `artifacts/index.html`.
 
 ---
 
@@ -236,7 +240,7 @@ written into that repo.
 
 ## Email CTAs
 
-`system/artifacts/email.html` shipped its two CTAs as green buttons. The cause
+`artifacts/email.html` shipped its two CTAs as green buttons. The cause
 is a single attribute:
 
 ```html
@@ -313,29 +317,40 @@ poster footer, unlike an email signature where it should be the company site.
    literals and the 150ms `transition-colors` — including the tertiary hover
    that darkens its border to `#1B0D4E`. The only addition is the
    `:focus-visible` ring, which production never implemented.
-7. **Start from `ui_kits/app/`** when building an application surface. It shows
-   the system carrying real product density and maps every component back to the
-   source file it came from.
+7. **Start from `artifacts/`** when building a whole surface rather than a
+   control. Those six files show the system carrying real page density, which is
+   where the 200/120 rhythm and the one-primary-action rule actually get tested.
 
 ---
 
 ## Superseded setup output
 
-`system/` and `guide.md` are artefacts of the original
+`guide.md` and the former `system/` tree are artefacts of the original
 `/design-systems/create` registration run, which read the palette from the brand
 site's README rather than from source. That palette was wrong — it mapped
 `#aaccee` to the page background and `#5F20FE` to body text; `#aaccee` appears in
 no first-party file, and `#5F20FE` is the action color and is never body text.
 `DESIGN.md` §1 documents the correction in full.
 
-`system/seed.json` and `system/theme.json` were corrected to the source-backed
-values (`#5F20FE` action, `#050505` canvas, `#E8E6F0` ink, 24px radius), and the
-generator has since been re-run against them: `#aaccee` no longer appears in any
-derived artefact. `system/variables*.css`, `system/tokens.*.json`,
-`system/kit*.html`, `system/artifacts/*.html` and `guide.md` are machine output
-and still lag this package in detail — treat them as generated, not canonical.
+`brand.json` was then corrected to the source-backed values (`#5F20FE` action,
+`#050505` canvas, `#E8E6F0` ink, 24px radius) and the generator re-run against
+them. The seed is right; **the generator's derivation is not.** Feeding it
+`#5F20FE` produced a ten-step palette whose primary is `#7040da`, and the
+resulting token layer — `system/variables*.css`, `system/tokens.*.json`,
+`system/theme.json`, `system/kit*.html` and `system/index.html` — contained
+**zero occurrences of `#5F20FE`**. It also shipped a light theme, which this
+brand does not have. That layer has been removed rather than corrected: a second
+set of custom properties on a different primary is worse than none, because a
+consumer who links it gets a brand that is not CODECAVE and no error to tell
+them so.
+
+What survived the removal is `artifacts/`, promoted to the top level and re-based
+on `colors_and_type.css`. `brand.json` and `guide.md` stay — both are on the real
+palette — though `guide.md` remains a short generated orientation note and lags
+this package in detail.
+
 This package — `colors_and_type.css`, `DESIGN.md`, `tokens/`, `preview/`,
-`ui_kits/app/` — is the source of truth.
+`storybook/`, `artifacts/` — is the source of truth.
 
 ## Verifying the package
 
