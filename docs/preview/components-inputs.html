@@ -140,7 +140,10 @@
     <p class="pv-note">Default: 24px box, 8px radius, 2px <code>#1B0D4E</code> border brightening to
        <code>--color-action</code> on hover. Secondary is the chip form used for service selection —
        a 16px box seated in a <code>#0F0F15</code> pill. The tick scales <code>0 &rarr; 1</code> on
-       both hover and check.</p>
+       both hover and check. The chip box takes a 4px corner rather than the 8px the default
+       carries: 8px on a 16px box is half its side, which draws a circle, and a circular
+       tick-box reads as a radio — as pick-one when the chips are pick-any. Source ships the
+       8px; WEBSITE-REVIEW.md &sect;4 files it.</p>
     <div class="pv-grid pv-grid-2">
       <div class="pv-tile" style="display:grid;gap:1rem;justify-items:start">
         <span class="pv-label">Default</span>

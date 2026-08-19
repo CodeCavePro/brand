@@ -8,8 +8,10 @@ math computed against the current palette (page ground `#0A0A0B`, card ground
 `#0F0F15`).
 
 The design system in this repo now **follows the site** — nothing below was
-"fixed" in the DS. Each remark names the source file so it can be addressed
-where it lives. Severity: **P0** = ship-blocking (security or accessibility
+"fixed" in the DS unless the remark says so in as many words, and only two do
+(4 · checkbox squash, 4 · circular chip box), both because the defect made the
+documentation itself render wrong. Each remark names the source file so it can
+be addressed where it lives. Severity: **P0** = ship-blocking (security or accessibility
 failure), **P1** = incorrect behavior or broken contract, **P2** = hygiene and
 polish.
 
@@ -122,6 +124,20 @@ section's own heading and flatten the document outline.
 - **Gradient ring can fill solid** (`technology-card.vue`): only the standard
   `mask-composite: subtract` is declared; engines still needing
   `-webkit-mask-composite: xor` paint the pseudo-element as a violet block.
+- **Checkbox squashes next to a wrapping label** (`common/Checkbox.vue`): the
+  box is sized with `w-6 h-6` and nothing else, and a Tailwind width is not a
+  floor — as a flex item beside a label long enough to wrap, it gives up width
+  while keeping its height and renders as a tall rounded slot. Any consumer with
+  a sentence-length label (the newsletter opt-in on the contact form is one)
+  hits it. Add `shrink-0`. *Fixed ahead in the port (`flex: none`) because it
+  made the brand documentation render a broken control.*
+- **The small chip checkbox is a perfect circle** (`common/Checkbox.vue`,
+  `size="small"`): `w-4 h-4` with `border-radius: var(--radius-sm)` is 8px on a
+  16px box — exactly half the side — so the services and budget pickers read as
+  radio buttons, i.e. as pick-one when they are pick-any. Shape is the only
+  signal carrying that distinction and it does not survive the size reduction.
+  Give the small variant a smaller corner (4px reads unambiguously as a box).
+  *Fixed ahead in the port for the same reason.*
 - **Checkbox/Radio animate against a variable the project never defines**:
   `transition: var(--default-transition-duration) transform ease-in-out`
   resolves to 150ms only because Tailwind's default theme happens to emit it.
