@@ -8,7 +8,6 @@ import TypingEffect from "../common/TypingEffect.vue";
 import TechnologyCard from "./technology-card.vue";
 import type { Technology } from "../../lib/strapi/types";
 import { paths } from "../../helpers/paths.ts";
-import { transform } from "astro:schema";
 
 const props = defineProps<{
   technologies: Technology[]
@@ -51,17 +50,17 @@ const config = computed<Partial<CarouselConfig>>(() => ({
 
 <template>
   <section :class="`page-container
-          ${hideSelected ? 'pt-8' : 'flex flex-col pt-4 md:pt-14 pb-20 xl:pb-0 swipe-over'}`" style="contain: layout style;">
+          ${hideSelected ? 'pt-8' : 'flex flex-col pt-4 md:pt-14 pb-20 xl:pb-0 swipe-over'}`">
     <div v-if="!hideSelected" class="flex flex-col items-center text-center">
       <div class="space-y-3">
         <div class="flex justify-center gap-6 font-bold text-xl">
           <div class="flex flex-col xl:flex-row xl:gap-2">
             <span class="text-body-primary">15+</span>
-            <span class="text-body-secondary">Years of experience</span>
+            <span class="text-body-secondary-lighter">Years of experience</span>
           </div>
           <div class="flex flex-col xl:flex-row xl:gap-2">
             <span class="text-body-primary">4.8</span>
-            <span class="text-body-secondary">Average rating</span>
+            <span class="text-body-secondary-lighter">Average rating</span>
           </div>
         </div>
         <TypingEffect
@@ -91,7 +90,6 @@ const config = computed<Partial<CarouselConfig>>(() => ({
         <TechnologyCard
             :name="item.name"
             :active="activeIndex === index"
-            :style="`transform: translateZ(${index * 10}px); will-change: position, contents;`"
             className="w-72 h-72"
             :index="index"
         />
@@ -103,11 +101,11 @@ const config = computed<Partial<CarouselConfig>>(() => ({
         class="-mx-4 xl:mx-0 xl:hidden"
     >
       <Slide v-for="(item, index) in technologies" :key="index">
-        <div class="flex items-center w-47.5 h-55">
+        <div class="flex items-center w-[190px] h-[220px]">
         <TechnologyCard
             :name="item.name"
             :active="activeIndex === index"
-            :className="`w-full h-full ${activeIndex === index ? 'max-h-full' : 'max-h-47.5'}`"
+            :className="`w-full h-full ${activeIndex === index ? 'max-h-full' : 'max-h-[190px]'}`"
         />
         </div>
       </Slide>

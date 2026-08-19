@@ -6,6 +6,7 @@ const props = defineProps<{
   label: string
   name: string
   isChecked?: boolean
+  modelValue?: string
   variant?: 'primary' | 'secondary'
 }>()
 const baseLabelClass = 'w-fit flex items-center cursor-pointer text-body-primary transition-colors'
@@ -17,6 +18,8 @@ const labelClass = computed(() => {
       return `${baseLabelClass} gap-2 py-2 px-3 bg-surface-secondary rounded-lg`
   }
 })
+
+defineEmits(['update:modelValue'])
 </script>
 
 <template>
@@ -31,6 +34,7 @@ const labelClass = computed(() => {
         :value="id"
         class="bg-transparent border-[2px] border-surface-quaternary checked:border-action rounded-full hover:border-action"
         :checked="isChecked"
+        @change="$emit('update:modelValue', id)"
     />
     <span class="text-xs whitespace-nowrap">
       {{ label }}

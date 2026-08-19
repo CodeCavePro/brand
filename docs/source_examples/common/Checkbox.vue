@@ -44,16 +44,8 @@ const inputVariantClass = computed(() => {
 </script>
 
 <template>
-  <label
-      :for="id"
-      :class="labelVariantClass"
-  >
-    <input
-        :id="id"
-        type="checkbox"
-        :autocomplete="id"
-        :class="inputVariantClass"
-    />
+  <label :for="id" :class="labelVariantClass">
+    <input :id="id" type="checkbox" :autocomplete="id" :class="inputVariantClass" />
     <span>
       {{ label }}
     </span>

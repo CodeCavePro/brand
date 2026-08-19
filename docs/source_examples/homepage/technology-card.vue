@@ -26,19 +26,19 @@ const translate = [
   'xl:-translate-y-1/2',
   'xl:-translate-y-1/2',
 ]
-const getTechnologyUrl = (name: string)=> {
+const getTechnologyUrl = (name: string) => {
   switch (name) {
-    case 'AR & VR': 
+    case 'AR & VR':
       return paths.arVr
-    case 'Autodesk plugins': 
+    case 'Autodesk plugins':
       return paths.autodesk
-    case 'Automation & AI': 
+    case 'Automation & AI':
       return paths.automation
-    case 'Cloud & DevOps': 
+    case 'Cloud & DevOps':
       return paths.devops
-    case 'E-Commerce': 
+    case 'E-Commerce':
       return paths.ecommerce
-    case 'HubSpot': 
+    case 'HubSpot':
       return paths.hubspot
     default:
       return ''
@@ -53,23 +53,17 @@ const getTechnologyUrl = (name: string)=> {
       <h2 class="max-w-[8rem] text-center text-xl font-bold text-heading text-balance">
         {{ name }}
       </h2>
-      <Button
-          as="link"
-          :href="getTechnologyUrl(name)"
-          title="Learn more"
-          variant="tertiary"
-          :class="`${active ? 'block' : 'hidden xl:block xl:opacity-0'}`"
-      />
+      <Button as="link" :href="getTechnologyUrl(name)" title="Explore service" variant="tertiary" :class="`${active ? 'block' : 'hidden xl:block xl:opacity-0'}`" />
     </div>
   </div>
 </template>
 
 <style scoped>
 .card-wrapper {
-  background: linear-gradient(
-      hsl(from var(--color-primary-700) h s l / 0.1),
-      hsl(from var(--color-primary-450) h s l / 0.1),
-      hsl(from var(--color-primary-900) h s l / 0.1)) border-box;
+  background:
+    linear-gradient(hsl(from var(--color-technology-gradient-25) h s l / 0.1),
+      hsl(from var(--color-technology-gradient-0) h s l / 0.1),
+      hsl(from var(--color-technology-gradient-50) h s l / 0.1)) border-box;
 }
 
 .card {
@@ -91,12 +85,11 @@ const getTechnologyUrl = (name: string)=> {
   outline: 1px solid transparent;
   -webkit-backface-visibility: hidden;
   transform: translate3d(0, 0, 0);
-  background: linear-gradient(
-      hsl(from var(--color-brand-500) h s l / 0.35),
+  background: linear-gradient(hsl(from var(--color-brand-500) h s l / 0.35),
       hsl(from var(--color-brand-400) h s l / 0.675),
       var(--color-brand-500)) border-box;
   mask: linear-gradient(black, black) border-box,
-  linear-gradient(black, black) padding-box;
+    linear-gradient(black, black) padding-box;
   mask-composite: subtract;
 }
 </style>

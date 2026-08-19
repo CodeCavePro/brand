@@ -4,26 +4,75 @@ import InputText from "../common/InputText.vue";
 import Checkbox from "../common/Checkbox.vue";
 import Radio from "../common/Radio.vue";
 import TextField from "../common/TextField.vue";
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import SuccessIcon from "../../assets/icons/success-icon.vue";
 import CloseIcon from "../../assets/icons/close-icon.vue";
 import gsap from "gsap";
+import { getCollection, getEntry } from 'astro:content';
 
-const services = [
-  {id: 'ar', label: 'AR & VR'},
-  {id: 'cloud', label: 'Cloud & DevOps'},
-  {id: 'ecommerce', label: 'E-commerce'},
-  {id: 'hubspot', label: 'HubSpot'},
-  {id: 'automation', label: 'Automation & AI'},
-  {id: 'autocad', label: 'AutoCAD plugins'},
-]
+import { hubspotSubmitForm, getHubspotutk, type HubspotFormData } from "../../lib/hubspot/hubspot.ts";
 
-const budget = [
-  {id: 'low', label: '$5,000 or less'},
-  {id: 'medium', label: '$5,000-$30,000'},
-  {id: 'large', label: 'More than $30,000'},
-]
+const props = defineProps<{
+  contactUsForm: HubspotFormData
+}>()
+
+const emailField = props.contactUsForm.fieldGroups.flatMap(fg => fg.fields).filter(f => f.name === "email")[0];
+const firstNameField = props.contactUsForm.fieldGroups.flatMap(fg => fg.fields).filter(f => f.name === "firstname")[0];
+const lastNameField = props.contactUsForm.fieldGroups.flatMap(fg => fg.fields).filter(f => f.name === "lastname")[0];
+const companyNameField = props.contactUsForm.fieldGroups.flatMap(fg => fg.fields).filter(f => f.name === "name")[0];
+const linkedinCompanyField = props.contactUsForm.fieldGroups.flatMap(fg => fg.fields).filter(f => f.name === "linkedin_company_page")[0];
+const servicesField = props.contactUsForm.fieldGroups.flatMap(fg => fg.fields).filter(f => f.name === "buying_intent")[0];
+const descriptionField = props.contactUsForm.fieldGroups.flatMap(fg => fg.fields).filter(f => f.name === "description")[0];
+
+const services = servicesField
+  .options?.sort(o => o.displayOrder)
+  .map(o => 
+  {
+    return {
+      id: o.value, 
+      label: o.label.replaceAll("&amp;", "&").replaceAll("&quot;", "\"")
+    }
+  });
+
+const formData = ref({
+  email: {
+    value: '',
+    error: '',
+    hubspotLabel: 'email'
+  },
+  companyName: {
+    value: '',
+    error: '',
+    hubspotLabel: 'name'
+  },
+  description: {
+    value: '',
+    error: '',
+    hubspotLabel: 'description'
+  },
+  firstname: {
+    value: '',
+    error: '',
+    hubspotLabel: 'firstname'
+  },
+  lastname: {
+    value: '',
+    error: '',
+    hubspotLabel: 'lastname'
+  },
+  linkedinCompanyPage: {
+    value: '',
+    error: '',
+    hubspotLabel: 'linkedin_company_page'
+  },
+  services: {
+    value: '',
+    error: '',
+    hubspotLabel: 'buying_intent'
+  },
+})
 const isAlertVisible = ref(false)
+
 const showAlert = () => {
   if (isAlertVisible.value) return
 
@@ -32,12 +81,121 @@ const showAlert = () => {
     isAlertVisible.value = false
   }, 10000)
 }
-const submitContactsForm = () => {
-  //validate form
-  //send form
-  //show alert if success
-  showAlert()
+
+const validateForm = () => {
+  let isValid = true;
+
+  if (emailField.required && !formData.value.email.value) 
+  {
+    isValid = false;
+    formData.value.email.error = "This field is required";
+  }
+  else {
+    formData.value.email.error = "";
+  }
+
+  if (firstNameField.required && !formData.value.firstname.value) 
+  {
+    isValid = false;
+    formData.value.firstname.error = "This field is required";
+  }
+  else {
+    formData.value.firstname.error = "";
+  }
+
+  if (lastNameField.required && !formData.value.lastname.value) 
+  {
+    isValid = false;
+    formData.value.lastname.error = "This field is required";
+  }
+  else {
+    formData.value.lastname.error = "";
+  }
+
+  if (companyNameField.required && !formData.value.companyName.value) 
+  {
+    isValid = false;
+    formData.value.companyName.error = "This field is required";
+  }
+  else {
+    formData.value.companyName.error = "";
+  }
+
+  if (linkedinCompanyField.required && !formData.value.linkedinCompanyPage.value) 
+  {
+    isValid = false;
+    formData.value.linkedinCompanyPage.error = "This field is required";
+  }
+  else {
+    formData.value.linkedinCompanyPage.error = "";
+  }
+
+  if (servicesField.required && !formData.value.services.value) 
+  {
+    isValid = false;
+    formData.value.services.error = "This field is required";
+  }
+  else {
+    formData.value.services.error = "";
+  }
+
+  if (descriptionField.required && !formData.value.description.value) 
+  {
+    isValid = false;
+    formData.value.description.error = "This field is required";
+  }
+  else {
+    formData.value.description.error = "";
+  }
+
+  return isValid;
 }
+
+const resetForm = () => {
+  formData.value.companyName.value = '';
+  formData.value.description.value = '';
+  formData.value.email.value = '';
+  formData.value.firstname.value = '';
+  formData.value.lastname.value = '';
+  formData.value.linkedinCompanyPage.value = '';
+  formData.value.services.value = '';
+}
+
+const submitContactsForm = async () => {
+  //validate form
+  // console.log(formData);
+  if (!validateForm()){
+    return;
+  }
+  
+  const hutk = getHubspotutk();
+  const hubspotForm = Object.entries(formData.value).map(kv => {return {hubspotLabel: kv[1].hubspotLabel, value: kv[1].value}});
+  const hubspotFields = props.contactUsForm.fieldGroups.flatMap(fg => fg.fields);
+
+  const body = {
+    fields: hubspotFields.map(f => ({
+      objectTypeId: f.objectTypeId,
+      name: f.name,
+      value: hubspotForm.find(hf => hf.hubspotLabel == f.name)?.value
+    })),
+    context: {
+      hutk: hutk,
+    }
+  }
+  try {
+ 
+    const response = await hubspotSubmitForm
+    .post(`/${import.meta.env.PUBLIC_HUBSPOT_CONTACTUS_FORM_ID}`, body);
+
+    if (response.status === 200) resetForm();
+
+    showAlert()
+  }
+  catch (error: any) {
+    console.log("request err>>", error);
+  }
+}
+
 watch(isAlertVisible, () => {
   gsap.timeline()
       .from('.form-alert', {
@@ -45,68 +203,92 @@ watch(isAlertVisible, () => {
         duration: 0.5,
       })
 })
+
 </script>
 
 <template>
-  <form class="flex flex-col gap-14 relative">
+  <form ref="" class="flex flex-col gap-14 relative">
     <div class="space-y-5">
       <fieldset class="space-y-2">
         <InputText
             id="email"
-            isRequired
-            label="E-mail"
+            v-model="formData.email.value"
+            :isRequired=emailField.required
+            :label=emailField.label
             type="email"
-            placeholder="The only necessary thing to get a free consultation."
+            :isError="!!formData.email.error"
+            :errorMessage="formData.email.error"
+            :placeholder="emailField.placeholder ?? ''"
             autocomplete="email"
         />
         <div class="flex flex-col xl:flex-row gap-2">
           <InputText
-              id="name"
-              label="Name"
+              id="firstname"
+              v-model="formData.firstname.value"
+              :isRequired=firstNameField.required
+              :label=firstNameField.label
               type="text"
-              placeholder="How should we address you?"
-              autocomplete="name"
+              :isError="!!formData.firstname.error"
+              :errorMessage="formData.firstname.error"
+              :placeholder="firstNameField.placeholder ?? ''"
+              autocomplete="given-name"
           />
           <InputText
-              id="companyName"
-              label="Company name"
+              id="lastname"
+              v-model="formData.lastname.value"
+              :isRequired=lastNameField.required
+              :label=lastNameField.label
               type="text"
-              placeholder="So we know your domain in advance."
+              :isError="!!formData.lastname.error"
+              :errorMessage="formData.lastname.error"
+              :placeholder="lastNameField.placeholder ?? ''"
+              autocomplete="family-name"
+          />
+        </div>
+         <div class="flex flex-col xl:flex-row gap-2">
+          <InputText
+              id="companyName"
+              v-model="formData.companyName.value"
+              :isRequired=companyNameField.required
+              :label=companyNameField.label
+              type="text"
+              :isError="!!formData.companyName.error"
+              :errorMessage="formData.companyName.error"
+              :placeholder="companyNameField.placeholder ?? ''"
+          />
+          <InputText
+              id="linkedinCompanyPage"
+              v-model="formData.linkedinCompanyPage.value"
+              :isRequired=linkedinCompanyField.required
+              :label=linkedinCompanyField.label
+              type="text"
+              :isError="!!formData.linkedinCompanyPage.error"
+              :errorMessage="formData.linkedinCompanyPage.error"
+              :placeholder="linkedinCompanyField.placeholder ?? ''"
           />
         </div>
       </fieldset>
       <fieldset class="space-y-3">
-        <legend class="pl-3 text-sm text-heading font-bold">Services</legend>
+        <legend class="pl-3 text-sm text-heading font-bold">{{ servicesField.label }}</legend>
         <div class="flex flex-wrap gap-2">
-          <Checkbox
-              v-for="service in services"
-              :key="service.id"
-              :id="service.id"
-              :label="service.label"
-              variant="secondary"
-              size="small"
-          />
-        </div>
-      </fieldset>
-      <fieldset class="space-y-3">
-        <legend class="pl-3 text-sm text-heading font-bold">Budget</legend>
-        <div class="space-y-2">
-          <div class="flex flex-wrap gap-2">
-            <Radio
-                v-for="item in budget"
+          <Radio
+                v-for="item in services"
                 :key="item.id"
                 :id="item.id"
                 :label="item.label"
-                name="budget"
-                isChecked
+                v-model="formData.services.value"
+                name="services"
             />
-          </div>
+        </div>
+      </fieldset>
+       <fieldset class="space-y-3">
           <TextField
               id="project"
-              label="Describe project or an issue you want to discuss"
-              placeholder="Even a few words could make our consultation more constructive."
+              v-model="formData.description.value"
+              :isRequired=descriptionField.required
+              :label=descriptionField.label
+              :placeholder="descriptionField.placeholder ?? ''"
           />
-        </div>
       </fieldset>
       <div class="space-y-2">
         <Checkbox id="privacy" label="I agree with the privacy policy" />
@@ -144,12 +326,4 @@ watch(isAlertVisible, () => {
   0 -10px 24px 0 #2814701A,
   0 -6px 6px 0 #28147014;
 }
-</style>
-
-<style scoped>
-  /* GSAP tween targets: promote to compositor layers up-front so the
-     first animation frame does not pay for layer creation */
-  .form-alert {
-    will-change: transform, opacity;
-  }
 </style>

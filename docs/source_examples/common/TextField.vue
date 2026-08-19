@@ -5,6 +5,7 @@ defineProps<{
   id: string
   label: string
   placeholder: string
+  modelValue?: string
 }>()
 
 const textareaRef = ref(null)
@@ -14,6 +15,8 @@ const autoResize = () => {
     textareaRef.value.style.height = textareaRef.value.scrollHeight + 'px'
   }
 }
+
+defineEmits(['update:modelValue'])
 </script>
 
 <template>
@@ -29,6 +32,8 @@ const autoResize = () => {
         ref="textareaRef"
         :id="id"
         :placeholder="placeholder"
+        :value="modelValue"
+        @change="$emit('update:modelValue', ($event.target as HTMLTextAreaElement).value)"
         class="w-full flex-grow resize-none overflow-hidden placeholder:pt-1.5 placeholder:text-xs placeholder:text-body-secondary outline-none"
     />
   </div>
