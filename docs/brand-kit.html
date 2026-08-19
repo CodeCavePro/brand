@@ -125,13 +125,20 @@ body {
    The site's actual header (header/desktop-menu.vue): a page-container bar
    at the very top, ghost-button links split around the centred wordmark,
    riding the translucent primary surface + blur its dropdown uses. */
+/* The two bars stick as ONE element rather than as two bars that have to agree
+   on a number. This used to be `.bk-topbar { top: var(--ds-nav-height) }`, which
+   is correct only while that token equals the bar's real rendered height — and
+   any disagreement shows up as the section bar sliding under the global one on
+   the first scroll and back out on the way up, which is what "the menu shrinks
+   when I scroll" was. Sticking the pair means there is no number to disagree
+   with: whatever the global bar measures, the section bar is directly under it,
+   at rest and while stuck. It also survives a browser holding a stale copy of
+   ds-nav.css, because the rule and the markup it needs both arrive with this
+   document. */
+.ds-nav-stack { position: sticky; top: 0; z-index: 20; }
 .bk-topbar {
-  position: sticky;
-  /* Rides directly under the package-wide bar in ds-nav.css, which owns top: 0.
-     The two read as one stacked header: global destinations, then this page's
-     sections. */
-  top: var(--ds-nav-height);
-  z-index: 10;
+  /* Placed by the stack above, not by an offset of its own. */
+  position: static;
   border-bottom: 1px solid var(--color-surface-quaternary);
   background: var(--color-surface-primary-transparent);
   -webkit-backdrop-filter: blur(24px);
@@ -392,13 +399,21 @@ body {
    below 768px; the kit keeps a static stacked bar instead — a wrapped bar
    may not sit fixed over a phone viewport. */
 @media (max-width: 768px) {
-  .bk-topbar { position: static; }
+  /* display:contents removes the wrapper's box entirely, so .ds-nav is a direct
+     child of <body> again and sticks to the viewport on its own — while the
+     section bar, which is static, scrolls away as it should on a phone. Setting
+     the wrapper to position:static instead would not do: .ds-nav's containing
+     block would still be the wrapper, and it would stop sticking the moment the
+     wrapper scrolled past. */
+  .ds-nav-stack { display: contents; }
   .bk-topbar-inner { flex-wrap: wrap; justify-content: center; }
 }
 </style>
 </head>
 
 <body data-od-id="brand-kit">
+
+<div class="ds-nav-stack">
 
 <nav class="ds-nav" aria-label="Design system">
   <div class="page-container ds-nav-inner">
@@ -430,6 +445,8 @@ body {
     </ul>
   </div>
 </nav>
+
+</div><!-- /.ds-nav-stack -->
 
 <div class="bk-wrap">
 
