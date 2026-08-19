@@ -202,12 +202,17 @@ and `artifacts/index.html`.
 Thirteen components extracted from `codecave.pro` — twelve Vue islands and one
 Astro component. Open `storybook/index.html`.
 
-`storybook/components.css` is the substantive artifact: a framework-free CSS
-implementation of each component, translated from the Tailwind utility strings
-in the `.vue` / `.astro` source and resolved against `colors_and_type.css`. It
-is the only place the component geometry exists without a build step. Where the
-source has no rule, this file has no rule — omissions are reported on the story
-page rather than silently filled in.
+The stories **mount the real components**: `tools/build-storybook.mjs`
+compiles each `.vue` source verbatim (vue/compiler-sfc + esbuild) into
+`storybook/compiled/`, and generates `storybook/tw-bridge.css` — the site's
+own Tailwind theme plus every utility the components use, scoped to the story
+canvases with a preflight equivalent. Pages render them with the vendored Vue
+and GSAP runtimes; no external network, no build step at view time. The one
+`.astro` component cannot run in a browser, so `storybook/components.css`
+survives only as its hand-translated port (`.cc-chip`). Where the storybook
+deviates from production — Strapi-hosted images swapped for local
+placeholders, positioning stages for absolutely-positioned cards — the gap is
+written on the story page rather than silently papered over.
 
 | Group | Components |
 |---|---|
@@ -216,12 +221,15 @@ page rather than silently filled in.
 | Compositions | `LinkGroup` |
 
 Each story page carries the real `defineProps` signature, a variant/state
-matrix rendered live, and a findings section. **53 findings were recorded — 29
-defects and 24 design observations.** The ones that change runtime behavior:
+matrix rendered live, and a findings section. **55 findings were recorded — 30
+defects and 25 design observations.** The ones that change runtime behavior:
 
-- **`--default-transition-duration` is undefined.** `Checkbox.vue`:75 and
-  `Radio.vue`:61 both use it in a `transition` shorthand. It is declared nowhere
-  in the project, so both declarations are invalid and both indicators snap.
+- **`--default-transition-duration` is not the project's variable.**
+  `Checkbox.vue`:75 and `Radio.vue`:61 both use it in a `transition` shorthand.
+  It appears nowhere in the project's own code — it resolves to 150ms from
+  Tailwind's default theme, emitted because `transition-colors` is in use.
+  Inside a Tailwind build the indicators ease; lift either component out and
+  the shorthand collapses and they snap.
 - **`tailwind.config.ts` is never loaded.** Tailwind 4 is configured CSS-first
   via `@theme`; a JS config only applies when a stylesheet names it with
   `@config`, and none does. `darkMode`, `content` and `theme.extend` are inert —
