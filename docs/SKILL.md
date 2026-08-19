@@ -75,7 +75,7 @@ exist cannot be generalized into one.
 3. **Consume the semantic tokens**: `--color-surface-primary/-secondary/
    -tertiary/-quaternary`, `--color-body-primary/-secondary/-secondary-lighter`,
    `--color-heading`, `--color-action`, `--color-hovered`, `--color-error*`.
-   Only `brand-210`, `brand-660` and `brand-400` may be consumed raw. Never
+   Only `glow-25`, `shadow-0` and `progress-0` may be consumed raw. Never
    hard-code a hex.
 4. **Use the component classes** rather than rebuilding them — `.btn` + variant,
    `.card`, `.field`, `.checkbox`, `.chip`, `.eyebrow-lead`, `.section-container`.
@@ -85,13 +85,14 @@ exist cannot be generalized into one.
    `artifacts/index.html` when it is a whole surface. The storybook mounts the
    genuine `.vue` files; the artifacts show the system at real page density.
 7. **Take assets from `build/` or `assets/`.** Copy them; do not regenerate them.
-8. **Check `DESIGN.md` §10** before matching production pixel-for-pixel — three
-   rules here intentionally improve on what the live site ships.
+8. **Check `DESIGN.md` §10** before matching production pixel-for-pixel — a
+   few rules here intentionally improve on what the live site ships, and one
+   former divergence (§10.1) is retired back to production behavior.
 
 ## Design system highlights
 
-- **Four surfaces, one hair apart.** `#050505` page → `#0D0D0F` card → `#141319`
-  raised → `#2E2C33` hairline. Depth comes from radius and border, never from a
+- **Four surfaces, one hair apart.** `#0A0A0B` page → `#0F0F15` card → `#1C1C27`
+  raised → `#2B2848` hairline. Depth comes from radius and border, never from a
   lighter fill.
 - **Enormous radii.** 24px is the *default* card corner; 36px for articles, 44px
   for feature cards, 64px for section panels and 120px above 768px. A 4px corner

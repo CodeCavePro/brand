@@ -53,9 +53,10 @@ body {
 .bk-section + .bk-section { border-top: 1px solid var(--color-surface-quaternary); }
 
 /* --- type ---------------------------------------------------------------- */
-/* Violet at the eyebrow's signature 32px clears the 3:1 large-text floor
-   (3.03:1). At this 14px caption size the floor is 4.5:1 and it does not, so
-   this steps to the in-palette hover foreground at 8.66:1. */
+/* Violet used to clear the 3:1 large-text floor at the eyebrow's signature
+   32px; on the rebuilt #0A0A0B page it measures 2.94:1 and no longer does
+   (DESIGN.md sect. 10.5). Chrome eyebrows therefore step to the in-palette
+   hover foreground at 8.41:1. */
 .bk-eyebrow {
   display: block;
   color: var(--color-hovered);
@@ -98,11 +99,11 @@ body {
   letter-spacing: 0.01em;
 }
 .bk-note code { color: var(--color-brand-200); }
-/* Metadata recedes by size and family, not by contrast — #645F70 lands at
-   3.3:1 on #050505, which is under the 4.5:1 floor for text this small. The
-   brand reserves it for placeholders; labels that carry information use the
-   lighter step at 11.8:1. Hierarchy here comes from 11px mono against 16px
-   sans, which is the same argument the brand makes about surfaces. */
+/* Metadata recedes by size and family, not by contrast. Since the rebuild
+   --color-body-secondary is #9595BB — 6.87:1 on the page, comfortably over
+   the 4.5:1 floor — and the lighter step lands at 11.9:1. Hierarchy here
+   comes from 11px mono against 16px sans, which is the same argument the
+   brand makes about surfaces. */
 .bk-meta {
   font-family: var(--font-mono);
   font-size: 0.6875rem;
@@ -210,7 +211,7 @@ body {
   overflow: hidden;
   background: var(--color-surface-secondary);
 }
-/* #050505 and #0D0D0F are one hair apart from the card they sit on — which is
+/* #0A0A0B and #0F0F15 are one hair apart from the card they sit on — which is
    the brand's whole thesis, but a specimen still has to show a bounded field.
    The hairline is the same one the system uses everywhere else. */
 .bk-role-chip { height: 108px; border-bottom: 1px solid var(--color-surface-quaternary); }
@@ -310,7 +311,7 @@ body {
   top: 1.35rem;
   font-family: var(--font-mono);
   font-size: 0.75rem;
-  color: var(--color-brand-200);   /* #5F20FE is 3.0:1 — too low for a numeral */
+  color: var(--color-brand-200);   /* #5F20FE is 2.94:1 — too low for a numeral */
 }
 .bk-rules li:last-child { border-bottom: 0; }
 /* Rules carry hexes and token names inline. Same mono treatment as .bk-note
@@ -554,26 +555,26 @@ body {
     <span class="bk-eyebrow">02 — Palette</span>
     <h2 class="bk-h2">Six roles carry the brand</h2>
     <p class="bk-note">Depth never comes from contrast. The page is
-      <code>#050505</code> and a card is <code>#0D0D0F</code> — one hair apart.
-      What separates them is the 24px radius and a 1px <code>#2E2C33</code>
+      <code>#0A0A0B</code> and a card is <code>#0F0F15</code> — one hair apart.
+      What separates them is the 24px radius and a 1px <code>#2B2848</code>
       hairline. Violet is an edge colour: it draws links, borders, eyebrows and
       the focus halo, and never fills a large area.</p>
 
     <div class="bk-roles" data-od-id="kit-palette-roles">
       <article class="bk-role" data-od-id="kit-role-surface-primary">
-        <div class="bk-role-chip" style="background:#050505"></div>
+        <div class="bk-role-chip" style="background:#0a0a0b"></div>
         <div class="bk-role-body">
           <div class="bk-role-name">Surface primary</div>
-          <div class="bk-role-hex">#050505</div>
+          <div class="bk-role-hex">#0A0A0B</div>
           <p class="bk-role-use">The page canvas — near-black, never pure black.</p>
         </div>
       </article>
       <article class="bk-role" data-od-id="kit-role-heading-body">
-        <div class="bk-role-chip" style="background:#e8e6f0"></div>
+        <div class="bk-role-chip" style="background:#f4f4f6"></div>
         <div class="bk-role-body">
           <div class="bk-role-name">Heading / body</div>
-          <div class="bk-role-hex">#E8E6F0</div>
-          <p class="bk-role-use">Headings and body text — 17.6:1 on the page.</p>
+          <div class="bk-role-hex">#F4F4F6</div>
+          <p class="bk-role-use">Headings and body text — 18.0:1 on the page.</p>
         </div>
       </article>
       <article class="bk-role" data-od-id="kit-role-action">
@@ -585,35 +586,36 @@ body {
         </div>
       </article>
       <article class="bk-role" data-od-id="kit-role-surface-secondary">
-        <div class="bk-role-chip" style="background:#0d0d0f"></div>
+        <div class="bk-role-chip" style="background:#0f0f15"></div>
         <div class="bk-role-body">
           <div class="bk-role-name">Surface secondary</div>
-          <div class="bk-role-hex">#0D0D0F</div>
+          <div class="bk-role-hex">#0F0F15</div>
           <p class="bk-role-use">Cards and panels — one hair above the page.</p>
         </div>
       </article>
       <article class="bk-role" data-od-id="kit-role-body-secondary">
-        <div class="bk-role-chip" style="background:#645f70"></div>
+        <div class="bk-role-chip" style="background:#9595bb"></div>
         <div class="bk-role-body">
           <div class="bk-role-name">Body secondary</div>
-          <div class="bk-role-hex">#645F70</div>
+          <div class="bk-role-hex">#9595BB</div>
           <p class="bk-role-use">Metadata and placeholders only — never long-form copy.</p>
         </div>
       </article>
       <article class="bk-role" data-od-id="kit-role-surface-quaternary">
-        <div class="bk-role-chip" style="background:#2e2c33"></div>
+        <div class="bk-role-chip" style="background:#2b2848"></div>
         <div class="bk-role-body">
           <div class="bk-role-name">Surface quaternary</div>
-          <div class="bk-role-hex">#2E2C33</div>
+          <div class="bk-role-hex">#2B2848</div>
           <p class="bk-role-use">Hairline rules, dividers and card edges.</p>
         </div>
       </article>
     </div>
 
     <h3 class="bk-h3" style="margin-top:3rem">The full ramp</h3>
-    <p class="bk-note">Twenty-four steps ship in <code>colors_and_type.css</code>.
-      The six roles above are drawn from it; the rest exist for gradients, the
-      glow button, and state colours.</p>
+    <p class="bk-note">Two ramps ship in <code>colors_and_type.css</code> — twelve
+      violet brand steps and thirteen grays, verbatim from the site's 2026
+      rebuild — plus single-use accents for the glow button, the gradient and
+      the section glow. The six roles above are drawn from them.</p>
     <div class="bk-ramp" id="ramp" data-od-id="kit-palette-ramp"></div>
   </section>
 
@@ -680,8 +682,10 @@ body {
     <span class="bk-eyebrow">04 — Components</span>
     <h2 class="bk-h2">Pill buttons, hairline cards</h2>
     <p class="bk-note">Every control is a 44px pill: <code>padding: 4px 24px</code>,
-      <code>border-radius: 9999px</code>, 16px bold label. Nothing dims on hover —
-      hover raises contrast. Only <code>:disabled</code> reduces it, to opacity 0.2.
+      <code>border-radius: 9999px</code>, 16px bold label. Hover raises contrast
+      everywhere except the tertiary border, which production dims to
+      <code>#4004AF</code> — reproduced faithfully, flagged in WEBSITE-REVIEW.md.
+      Only <code>:disabled</code> reduces the label, to opacity 0.2.
       Rendered live from <code>colors_and_type.css</code>, so this row is a working
       check on the token file rather than a picture of one.</p>
 
@@ -694,12 +698,12 @@ body {
       <div class="bk-specimen-row">
         <span class="bk-meta">secondary</span>
         <button class="btn btn-secondary" type="button">Download the brief</button>
-        <span class="bk-meta">#0D0D0F → #141319 hover</span>
+        <span class="bk-meta">#1E113B → #1C1C27 hover</span>
       </div>
       <div class="bk-specimen-row">
         <span class="bk-meta">tertiary</span>
         <a class="btn btn-tertiary" href="#components">Learn more</a>
-        <span class="bk-meta">1px #5F20FE → #1B0D4E hover</span>
+        <span class="bk-meta">1px #5F20FE → #4004AF hover</span>
       </div>
       <div class="bk-specimen-row">
         <span class="bk-meta">ghost / text / link</span>
@@ -716,7 +720,7 @@ body {
 
     <h3 class="bk-h3" style="margin-top:2.5rem">The one violet field</h3>
     <p class="bk-note">One primary action per page. The glow button is
-      <code>#9980FF</code> with <code>#1B0D4E</code> text at 8.0:1, and it is the
+      <code>#9980FF</code> with <code>#1B0D4E</code> text at 5.67:1, and it is the
       only place violet fills an area. Three light sources stack: a static halo,
       a highlight travelling under the fill, and an edge bloom 8px outside each
       end. The fill never changes colour on hover.</p>
@@ -905,7 +909,7 @@ body {
     </div>
 
     <h3 class="bk-h3" style="margin-top:3rem">The light comes from below</h3>
-    <p class="bk-note">A section panel is <code>#050505</code> — the same value as the page
+    <p class="bk-note">A section panel is <code>#0A0A0B</code> — the same value as the page
       behind it. Nothing separates the two but radius and light thrown <em>upward</em>:
       <code>--shadow-section</code> stacks three layers with negative Y offsets seeded from
       <code>#281470</code>. It is physically wrong and instantly recognisable. The stage
@@ -923,8 +927,8 @@ body {
 
     <h3 class="bk-h3" style="margin-top:3rem">What the posture forbids</h3>
     <ol class="bk-rules" data-od-id="kit-posture-rules">
-      <li>Depth never comes from contrast. The page is <code>#050505</code> and a card is
-        <code>#0D0D0F</code> — one hair apart on purpose. If you are lightening a card to
+      <li>Depth never comes from contrast. The page is <code>#0A0A0B</code> and a card is
+        <code>#0F0F15</code> — one hair apart on purpose. If you are lightening a card to
         make it read, you have made a layout mistake, not a colour one.</li>
       <li>Only section panels are lit. Cards, inputs and buttons take no shadow at all —
         <code>--shadow-section</code> belongs to <code>.section-container</code> and nowhere
@@ -954,20 +958,25 @@ body {
   /* ---- palette ramp -----------------------------------------------------
      Read straight off the computed custom properties so the strip can never
      drift from the token file. */
-  var STEPS = [0, 25, 50, 100, 105, 110, 130, 200, 210, 300, 400, 450,
-               500, 580, 600, 650, 660, 670, 700, 800, 900, 910, 920, 950];
+  var STEPS = [
+    ['brand', [25, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950]],
+    ['gray',  [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950, 1000, 1100]]
+  ];
   var root = getComputedStyle(document.documentElement);
   var ramp = document.getElementById('ramp');
 
-  ramp.innerHTML = STEPS.map(function (step) {
-    var hex = root.getPropertyValue('--color-brand-' + step).trim();
-    return '<div class="bk-step">' +
-             '<div class="bk-step-chip" style="background:' + hex + '"></div>' +
-             '<div class="bk-step-label">' +
-               '<div class="bk-meta">brand-' + step + '</div>' +
-               '<div class="bk-meta" style="color:var(--color-body-secondary-lighter)">' + hex + '</div>' +
-             '</div>' +
-           '</div>';
+  ramp.innerHTML = STEPS.map(function (group) {
+    var name = group[0];
+    return group[1].map(function (step) {
+      var hex = root.getPropertyValue('--color-' + name + '-' + step).trim();
+      return '<div class="bk-step">' +
+               '<div class="bk-step-chip" style="background:' + hex + '"></div>' +
+               '<div class="bk-step-label">' +
+                 '<div class="bk-meta">' + name + '-' + step + '</div>' +
+                 '<div class="bk-meta" style="color:var(--color-body-secondary-lighter)">' + hex + '</div>' +
+               '</div>' +
+             '</div>';
+    }).join('');
   }).join('');
 
   /* ---- logo stage -------------------------------------------------------

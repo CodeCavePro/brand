@@ -74,22 +74,22 @@ line-and-glow layer), [system/](/docs/system) (deck, email, poster and landing t
 | Web Colors | Color | HEX value | Token |
 |---|---|---|---|
 | Brand Purple | ![#5F20FE](https://www.singlecolorimage.com/get/5F20FE/32x32) | `#5F20FE` | `--color-action` |
-| Purple Fill  | ![#9980FF](https://www.singlecolorimage.com/get/9980FF/32x32) | `#9980FF` | `--color-brand-210` |
-| Cyan Accent  | ![#20EFFE](https://www.singlecolorimage.com/get/20EFFE/32x32) | `#20EFFE` | `--color-brand-400` |
-| Page         | ![#050505](https://www.singlecolorimage.com/get/050505/32x32) | `#050505` | `--color-surface-primary` |
-| Card         | ![#0D0D0F](https://www.singlecolorimage.com/get/0D0D0F/32x32) | `#0D0D0F` | `--color-surface-secondary` |
-| Border       | ![#2E2C33](https://www.singlecolorimage.com/get/2E2C33/32x32) | `#2E2C33` | `--color-surface-quaternary` |
-| Text         | ![#E8E6F0](https://www.singlecolorimage.com/get/E8E6F0/32x32) | `#E8E6F0` | `--color-body-primary` |
-| Muted        | ![#645F70](https://www.singlecolorimage.com/get/645F70/32x32) | `#645F70` | `--color-body-secondary` |
+| Purple Fill  | ![#9980FF](https://www.singlecolorimage.com/get/9980FF/32x32) | `#9980FF` | `--color-glow-25` |
+| Cyan Wash    | ![#077689](https://www.singlecolorimage.com/get/077689/32x32) | `#077689` | `--color-technology-gradient-0` |
+| Page         | ![#0A0A0B](https://www.singlecolorimage.com/get/0A0A0B/32x32) | `#0A0A0B` | `--color-surface-primary` |
+| Card         | ![#0F0F15](https://www.singlecolorimage.com/get/0F0F15/32x32) | `#0F0F15` | `--color-surface-secondary` |
+| Border       | ![#2B2848](https://www.singlecolorimage.com/get/2B2848/32x32) | `#2B2848` | `--color-surface-quaternary` |
+| Text         | ![#F4F4F6](https://www.singlecolorimage.com/get/F4F4F6/32x32) | `#F4F4F6` | `--color-body-primary` |
+| Muted        | ![#9595BB](https://www.singlecolorimage.com/get/9595BB/32x32) | `#9595BB` | `--color-body-secondary` |
 
-The full 26-step ramp is in [docs/DESIGN.md → Colors](/docs/DESIGN.md#3-color). Two of those steps
-(`--color-brand-107` and `--color-brand-620`) are imagery-only and must never be used for UI or
-text.
+The full ramps — 12 violet brand steps and 13 grays, verbatim from the site's 2026 palette
+rebuild — are in [docs/DESIGN.md → Colors](/docs/DESIGN.md#3-color). Two measured art literals
+(`#391398` and `#4C4759`) are imagery-only and must never be used for UI or text.
 
 Violet is rationed: `#5F20FE` edges, links and marks, and never fills a large area. When a purple
 *field* is genuinely needed the system switches to `#9980FF` with `#1B0D4E` text — the only
-dark-on-light text anywhere in the brand. `#20EFFE` is a gradient and orb motif only, never a UI
-colour.
+dark-on-light text anywhere in the brand. Bright cyan `#20EFFE` lives only in the decorative orb
+art since the rebuild; the token layer's sole cyan is the deep technology wash above.
 
 > Superseded: this table previously listed `#9D26FF`, `#212121`, `#ABB4BD`, `#CFD4DA` and
 > `#F3F6F9`. None of those appear anywhere in the brand — they predate the current dark theme.

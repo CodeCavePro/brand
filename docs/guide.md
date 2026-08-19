@@ -8,12 +8,12 @@ Extracted from https://codecavepro.github.io/brand.
 
 ## Color roles
 
-- **Surface primary** (`#050505`) — background: the page canvas — near-black, never pure black
-- **Heading / body** (`#e8e6f0`) — foreground: headings and body text — 17.6:1 on the page
+- **Surface primary** (`#0a0a0b`) — background: the page canvas — near-black, never pure black
+- **Heading / body** (`#f4f4f6`) — foreground: headings and body text — 18.0:1 on the page
 - **Action** (`#5f20fe`) — accent: links, borders, eyebrows, focus halo — edges and marks only, never a large fill
-- **Surface secondary** (`#0d0d0f`) — surface: cards and panels — one hair above the page; depth comes from radius and border, not contrast
-- **Body secondary** (`#645f70`) — muted: metadata and placeholders only — never long-form copy
-- **Surface quaternary** (`#2e2c33`) — border: hairline rules, dividers and card edges
+- **Surface secondary** (`#0f0f15`) — surface: cards and panels — one hair above the page; depth comes from radius and border, not contrast
+- **Body secondary** (`#9595bb`) — muted: metadata and placeholders only — never long-form copy
+- **Surface quaternary** (`#2b2848`) — border: hairline rules, dividers and card edges
 
 ## Typography
 

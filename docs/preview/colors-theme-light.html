@@ -8,10 +8,10 @@
 <link rel="stylesheet" href="../colors_and_type.css">
 <link rel="stylesheet" href="preview.css">
 <style>
-  .light-plate { background: #E8E6F0; color: var(--color-brand-670);
+  .light-plate { background: #F4F4F6; color: var(--color-brand-800);
                  border-radius: var(--radius-card); padding: 2rem;
                  display: grid; gap: 1rem; place-items: start; }
-  .light-plate .pv-meta { color: var(--color-brand-105); }
+  .light-plate .pv-meta { color: var(--color-neutral); }
 </style>
 </head>
 <body data-od-id="preview-colors-theme-light">
@@ -35,29 +35,29 @@
   <section class="pv-block" data-od-id="light-exception-cta">
     <h2>Exception 1 — the glow CTA field</h2>
     <p class="pv-note">
-      <code>#9980FF</code> with <code>#1B0D4E</code> text: <strong>8.0:1</strong>. This is the only
+      <code>#9980FF</code> with <code>#1B0D4E</code> text: <strong>5.67:1</strong>. This is the only
       dark-on-light text in the entire system, and it exists on exactly one control.
       Source: <code>source_examples/common/GlowButton.vue</code>.
     </p>
     <div class="pv-row">
       <span class="btn-glow-field"><a class="btn btn-glow" href="#" data-od-id="light-glow-cta"><span>Discuss project for free</span></a></span>
-      <span class="pv-meta">fill --color-brand-210 · text --color-brand-670<br>44px pill · halo, not a drop shadow</span>
+      <span class="pv-meta">fill --color-glow-25 · text --color-brand-800<br>44px pill · halo, not a drop shadow</span>
     </div>
   </section>
 
   <section class="pv-block" data-od-id="light-exception-type">
     <h2>Exception 2 — the near-white type ramp</h2>
     <p class="pv-note">Light <em>ink</em>, not a light surface. Included here so the distinction is
-       explicit: <code>#E8E6F0</code> and <code>#C6C4CC</code> are foregrounds and never become
+       explicit: <code>#F4F4F6</code> and <code>#C7C7DB</code> are foregrounds and never become
        page fills.</p>
     <div class="pv-grid pv-grid-2">
       <div class="pv-tile">
-        <span style="color:var(--color-heading);font-size:var(--text-lg);font-weight:700">#E8E6F0 as ink</span>
-        <span class="pv-meta" style="margin-top:0.5rem">correct — foreground on #050505</span>
+        <span style="color:var(--color-heading);font-size:var(--text-lg);font-weight:700">#F4F4F6 as ink</span>
+        <span class="pv-meta" style="margin-top:0.5rem">correct — foreground on #0A0A0B</span>
       </div>
-      <div class="pv-tile" style="background:#E8E6F0">
-        <span style="color:var(--color-brand-670);font-size:var(--text-lg);font-weight:700">#E8E6F0 as a field</span>
-        <span class="pv-meta" style="margin-top:0.5rem;color:var(--color-brand-105)">off-system — do not build pages on this</span>
+      <div class="pv-tile" style="background:#F4F4F6">
+        <span style="color:var(--color-brand-800);font-size:var(--text-lg);font-weight:700">#F4F4F6 as a field</span>
+        <span class="pv-meta" style="margin-top:0.5rem;color:var(--color-neutral)">off-system — do not build pages on this</span>
       </div>
     </div>
   </section>

@@ -18,10 +18,10 @@ body {
   border-bottom: 1px solid var(--color-surface-quaternary);
 }
 
-/* The eyebrow is violet at its signature 32px size, where #5F20FE clears the
-   3:1 large-text floor at 3.03:1. Here it runs at 14px, where the floor is
-   4.5:1 and that same violet fails. Stepping to --color-hovered (8.66:1) keeps
-   it in-palette; the component itself is left alone. See DESIGN.md §10.5. */
+/* The eyebrow used to clear the 3:1 large-text floor at its signature 32px;
+   on the rebuilt #0A0A0B page #5F20FE is 2.94:1 and no longer does. Chrome
+   eyebrows step to --color-hovered (8.41:1) to stay in-palette; the component
+   itself is left as production ships it. See DESIGN.md sect. 10.5. */
 .pv-head .eyebrow { font-size: var(--text-caption); letter-spacing: 0.08em;
                     text-transform: uppercase; margin-bottom: 0.75rem;
                     color: var(--color-hovered); }
@@ -49,9 +49,9 @@ body {
 /* Token label pairs */
 .pv-label { display: block; color: var(--color-heading);
             font-size: var(--text-caption); font-weight: var(--font-weight-bold); }
-/* Preview chrome recedes by size and family, not by contrast. #645F70 is
-   3.3:1 on #050505 — fine as a *specimen* of the metadata token, but it must
-   not carry label text a reviewer has to read. The lighter step is 11.8:1. */
+/* Preview chrome recedes by size and family, not by contrast. Labels stay
+   on the lighter secondary step (11.9:1); plain --color-body-secondary
+   (#9595BB, 6.87:1 since the rebuild) is left to the metadata specimens. */
 .pv-meta  { display: block; color: var(--color-body-secondary-lighter);
             font-family: var(--font-mono); font-size: 0.75rem;
             line-height: 1.4; word-break: break-all; }

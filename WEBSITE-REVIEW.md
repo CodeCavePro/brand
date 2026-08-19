@@ -57,8 +57,11 @@ consider a less drastic disabled treatment than 20% opacity.
   error-200 `#FE2020` (5.13:1).
 
 ### 2.4 Action violet used as small text (`common/Review.vue` and eyebrows)
-`#5F20FE` measures **2.94:1** on `#0A0A0B` (2.84:1 on cards) — fine for large
-display type and decorative borders, a failure for body-size text. The Review
+`#5F20FE` measures **2.94:1** on `#0A0A0B` (2.84:1 on cards) — that is under
+the 4.5:1 floor for body text **and**, by a 0.06 hair, under the 3:1 floor for
+large/bold display type, so even the signature 32px eyebrows now miss AA. Any
+slightly lighter violet clears the large-text floor; body-size usages need
+more. The Review
 component's "verification" row uses it at caption size, and it is the trust
 signal of a testimonial. `--color-hovered` `#B19AFE` (8.41:1) is the in-palette
 fix.

@@ -3,18 +3,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CODECAVE — Primary color and the brand ramp</title>
+<title>CODECAVE — Primary color and the raw ramps</title>
 <link rel="icon" href="../build/favicon.svg">
 <link rel="stylesheet" href="../colors_and_type.css">
 <link rel="stylesheet" href="preview.css">
 <style>
-  /* The bottom of the ramp is within a few points of the page itself, so every
-     chip carries a hairline — without it brand-900/910/920/950 read as one block. */
-  .pv-swatch-chip { box-shadow: inset 0 0 0 1px hsl(from #E8E6F0 h s l / 0.14); }
+  /* The dark tail of both ramps is within a few points of the page itself, so
+     every chip carries a hairline — without it brand-900/950 and gray-950/1000/1100
+     read as one block. */
+  .pv-swatch-chip { box-shadow: inset 0 0 0 1px hsl(from #F4F4F6 h s l / 0.14); }
   [data-od-id="colors-primary-action"] .pv-swatch-chip { height: 7rem; }
   [data-od-id="colors-primary-ramp"]   .pv-swatch-chip { height: 4rem; }
   [data-od-id="colors-primary-error"]  .pv-swatch-chip { height: 3.5rem; }
-  /* Reserved cyan: shown against the page, never against a card, so reviewers
+  /* Cyan wash: shown against the page, never against a card, so reviewers
      see the value at the luminance it actually occurs at. */
   [data-od-id="colors-primary-cyan"] .pv-swatch-chip { height: 5rem; }
 </style>
@@ -26,10 +27,11 @@
 
   <header class="pv-head" data-od-id="colors-primary-head">
     <span class="eyebrow">Color · card 1 of 3</span>
-    <h1>Primary violet and the 24-step brand ramp</h1>
-    <p>Verbatim from <code>codecave.pro/src/styles/global.css</code>. The ramp exists only so the
-       semantic names have somewhere to point — consume the semantic layer, never a raw step,
-       with the three documented exceptions below.</p>
+    <h1>Primary violet and the raw ramps</h1>
+    <p>Verbatim from <code>codecave.pro/src/styles/global.css</code> after the 2026 palette
+       rebuild — a violet brand ramp, a gray ramp, and single-use accents. The ramps exist only
+       so the semantic names have somewhere to point — consume the semantic layer, never a raw
+       step, with the three documented exceptions below.</p>
   </header>
 
   <section class="pv-block" data-od-id="colors-primary-action">
@@ -48,10 +50,10 @@
         </div>
       </div>
       <div class="pv-swatch">
-        <div class="pv-swatch-chip" style="background:var(--color-brand-210);color:var(--color-brand-670);display:grid;place-content:center;font-weight:700">Aa</div>
+        <div class="pv-swatch-chip" style="background:var(--color-glow-25);color:var(--color-brand-800);display:grid;place-content:center;font-weight:700">Aa</div>
         <div class="pv-swatch-body">
           <span class="pv-label">Action field</span>
-          <span class="pv-meta">--color-brand-210<br>#9980FF + #1B0D4E text<br>the single glow CTA only</span>
+          <span class="pv-meta">--color-glow-25<br>#9980FF + #1B0D4E text<br>the single glow CTA only</span>
         </div>
       </div>
       <div class="pv-swatch">
@@ -65,66 +67,80 @@
         <div class="pv-swatch-chip" style="background:var(--gradient-brand)"></div>
         <div class="pv-swatch-body">
           <span class="pv-label">Brand gradient</span>
-          <span class="pv-meta">--gradient-brand<br>#5F20FE &rarr; #8252FC &rarr; #B19AFE &rarr; #E8E6F0<br>display type · rule accents</span>
+          <span class="pv-meta">--gradient-brand<br>#5F20FE &rarr; #8252FC &rarr; #B19AFE &rarr; #E8E6F0<br>mid stop is progress-0, not brand-300<br>display type · rule accents</span>
         </div>
       </div>
     </div>
   </section>
 
   <section class="pv-block" data-od-id="colors-primary-cyan">
-    <h2>The reserved cyan</h2>
-    <p class="pv-note">Inspect this and confirm it never appears as a UI color anywhere else in the package.</p>
+    <h2>Where the cyan went</h2>
+    <p class="pv-note">The 2026 rebuild removed bright cyan <code>#20EFFE</code> from the ramp —
+       it survives only inside the decorative SVGs (see the imagery card). The token layer keeps
+       one deep cyan, and only inside the technology-card wash.</p>
     <div class="pv-row">
       <div class="pv-swatch" style="width:15rem">
-        <div class="pv-swatch-chip" style="background:var(--color-brand-400)"></div>
+        <div class="pv-swatch-chip" style="background:var(--color-technology-gradient-0)"></div>
         <div class="pv-swatch-body">
-          <span class="pv-label">Cyan</span>
-          <span class="pv-meta">--color-brand-400 · #20EFFE</span>
+          <span class="pv-label">Technology wash</span>
+          <span class="pv-meta">--color-technology-gradient-0 · #077689<br>always at 0.1 alpha</span>
         </div>
       </div>
       <p class="pv-warn" style="flex:1;min-width:20rem">
-        <strong>Reserved.</strong> <code>#20EFFE</code> appears only inside gradient and orb motifs —
-        the technology card blends <code>brand-500 &rarr; brand-400 &rarr; brand-500</code> at low
-        alpha (<code>homepage/technology-card.vue</code>). Never a CTA, body color, large field, or
-        photographic grade. It is a light effect, not a UI color.
+        <strong>Reserved.</strong> The technology card blends
+        <code>brand-500 &rarr; brand-400 &rarr; brand-500</code> at low alpha for its ring —
+        and since the rebuild <code>brand-400</code> is the violet <code>#5F3ABD</code>, so the
+        ring reads violet end to end. Cyan is never a CTA, body color, large field, or
+        photographic grade. It is a light effect in the art, not a UI color.
       </p>
     </div>
   </section>
 
   <section class="pv-block" data-od-id="colors-primary-ramp">
-    <h2>Raw ramp — 24 steps</h2>
+    <h2>Raw ramps — 12 violet steps, 13 grays</h2>
     <p class="pv-note">
-      Light to dark, accents mid-ramp. Only three steps are legitimately consumed raw:
-      <code>brand-210</code> (glow-button fill), <code>brand-660</code> (the upward glow), and
-      <code>brand-400</code> (the cyan).
+      Light to dark. Only three raw values are legitimately consumed directly, because that is
+      what production does: <code>glow-25</code> (glow-button fill), <code>shadow-0</code> (the
+      upward glow), and <code>progress-0</code> (the gradient mid stop). Two quirks are upstream
+      facts: <code>gray-1100</code> (the card) is <em>lighter</em> than <code>gray-1000</code>,
+      and <code>brand-500</code> is lighter than <code>brand-400</code>.
     </p>
+    <h3 class="pv-label" style="margin:0 0 0.75rem">Brand — violet</h3>
     <div class="pv-grid pv-grid-4">
-      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-0)"></div><div class="pv-swatch-body"><span class="pv-label">brand-0</span><span class="pv-meta">#E8E6F0 · headings, body</span></div></div>
-      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-25)"></div><div class="pv-swatch-body"><span class="pv-label">brand-25</span><span class="pv-meta">#DFDDE4 · resting icon</span></div></div>
-      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-50)"></div><div class="pv-swatch-body"><span class="pv-label">brand-50</span><span class="pv-meta">#C6C4CC · long-form copy</span></div></div>
-      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-100)"></div><div class="pv-swatch-body"><span class="pv-label">brand-100</span><span class="pv-meta">#645F70 · metadata</span></div></div>
-      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-105)"></div><div class="pv-swatch-body"><span class="pv-label">brand-105</span><span class="pv-meta">#585461 · neutral</span></div></div>
-      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-107)"></div><div class="pv-swatch-body"><span class="pv-label">brand-107</span><span class="pv-meta">#4C4759 · imagery only</span></div></div>
-      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-110)"></div><div class="pv-swatch-body"><span class="pv-label">brand-110</span><span class="pv-meta">#2E2C33 · borders</span></div></div>
-      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-130)"></div><div class="pv-swatch-body"><span class="pv-label">brand-130</span><span class="pv-meta">#2A2637 · surface hover</span></div></div>
+      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-25)"></div><div class="pv-swatch-body"><span class="pv-label">brand-25</span><span class="pv-meta">#E8E6F0 · gradient endpoint</span></div></div>
+      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-50)"></div><div class="pv-swatch-body"><span class="pv-label">brand-50</span><span class="pv-meta">#BBB9CB</span></div></div>
+      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-100)"></div><div class="pv-swatch-body"><span class="pv-label">brand-100</span><span class="pv-meta">#B8AFDB</span></div></div>
       <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-200)"></div><div class="pv-swatch-body"><span class="pv-label">brand-200</span><span class="pv-meta">#B19AFE · hover fg</span></div></div>
-      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-210)"></div><div class="pv-swatch-body"><span class="pv-label">brand-210</span><span class="pv-meta">#9980FF · CTA fill</span></div></div>
-      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-300)"></div><div class="pv-swatch-body"><span class="pv-label">brand-300</span><span class="pv-meta">#8252FC · gradient mid</span></div></div>
-      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-400)"></div><div class="pv-swatch-body"><span class="pv-label">brand-400</span><span class="pv-meta">#20EFFE · reserved</span></div></div>
-      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-450)"></div><div class="pv-swatch-body"><span class="pv-label">brand-450</span><span class="pv-meta">#077689 · card wash</span></div></div>
+      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-300)"></div><div class="pv-swatch-body"><span class="pv-label">brand-300</span><span class="pv-meta">#735CAB · muted violet</span></div></div>
+      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-400)"></div><div class="pv-swatch-body"><span class="pv-label">brand-400</span><span class="pv-meta">#5F3ABD · ring mid-stop (was cyan)</span></div></div>
       <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-500)"></div><div class="pv-swatch-body"><span class="pv-label">brand-500</span><span class="pv-meta">#5F20FE · ACTION</span></div></div>
-      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-580)"></div><div class="pv-swatch-body"><span class="pv-label">brand-580</span><span class="pv-meta">#5206E3</span></div></div>
-      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-600)"></div><div class="pv-swatch-body"><span class="pv-label">brand-600</span><span class="pv-meta">#4004AF · primary hover</span></div></div>
-      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-620)"></div><div class="pv-swatch-body"><span class="pv-label">brand-620</span><span class="pv-meta">#391398 · imagery only</span></div></div>
-      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-650)"></div><div class="pv-swatch-body"><span class="pv-label">brand-650</span><span class="pv-meta">#33196E</span></div></div>
-      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-660)"></div><div class="pv-swatch-body"><span class="pv-label">brand-660</span><span class="pv-meta">#281470 · the glow</span></div></div>
-      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-670)"></div><div class="pv-swatch-body"><span class="pv-label">brand-670</span><span class="pv-meta">#1B0D4E · text on CTA</span></div></div>
-      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-700)"></div><div class="pv-swatch-body"><span class="pv-label">brand-700</span><span class="pv-meta">#1A0452</span></div></div>
-      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-800)"></div><div class="pv-swatch-body"><span class="pv-label">brand-800</span><span class="pv-meta">#1E113B · primary active</span></div></div>
-      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-900)"></div><div class="pv-swatch-body"><span class="pv-label">brand-900</span><span class="pv-meta">#070312</span></div></div>
-      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-910)"></div><div class="pv-swatch-body"><span class="pv-label">brand-910</span><span class="pv-meta">#0D0D0F · card</span></div></div>
-      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-920)"></div><div class="pv-swatch-body"><span class="pv-label">brand-920</span><span class="pv-meta">#141319 · raised</span></div></div>
-      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-950)"></div><div class="pv-swatch-body"><span class="pv-label">brand-950</span><span class="pv-meta">#050505 · the page</span></div></div>
+      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-600)"></div><div class="pv-swatch-body"><span class="pv-label">brand-600</span><span class="pv-meta">#4705ED</span></div></div>
+      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-700)"></div><div class="pv-swatch-body"><span class="pv-label">brand-700</span><span class="pv-meta">#4004AF · primary hover</span></div></div>
+      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-800)"></div><div class="pv-swatch-body"><span class="pv-label">brand-800</span><span class="pv-meta">#1B0D4E · text on CTA</span></div></div>
+      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-900)"></div><div class="pv-swatch-body"><span class="pv-label">brand-900</span><span class="pv-meta">#1E113B · primary active · secondary fill</span></div></div>
+      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-brand-950)"></div><div class="pv-swatch-body"><span class="pv-label">brand-950</span><span class="pv-meta">#0A0A0B · THE PAGE</span></div></div>
+    </div>
+    <h3 class="pv-label" style="margin:1.75rem 0 0.75rem">Gray</h3>
+    <div class="pv-grid pv-grid-4">
+      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-gray-50)"></div><div class="pv-swatch-body"><span class="pv-label">gray-50</span><span class="pv-meta">#F4F4F6 · headings, body</span></div></div>
+      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-gray-100)"></div><div class="pv-swatch-body"><span class="pv-label">gray-100</span><span class="pv-meta">#DCDCE5 · resting icon</span></div></div>
+      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-gray-200)"></div><div class="pv-swatch-body"><span class="pv-label">gray-200</span><span class="pv-meta">#D5D5DD · long-form copy</span></div></div>
+      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-gray-300)"></div><div class="pv-swatch-body"><span class="pv-label">gray-300</span><span class="pv-meta">#C7C7DB · secondary, lighter</span></div></div>
+      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-gray-400)"></div><div class="pv-swatch-body"><span class="pv-label">gray-400</span><span class="pv-meta">#A3A3C2</span></div></div>
+      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-gray-500)"></div><div class="pv-swatch-body"><span class="pv-label">gray-500</span><span class="pv-meta">#9595BB · metadata, placeholders</span></div></div>
+      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-gray-600)"></div><div class="pv-swatch-body"><span class="pv-label">gray-600</span><span class="pv-meta">#6B6699 · neutral · large text only</span></div></div>
+      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-gray-700)"></div><div class="pv-swatch-body"><span class="pv-label">gray-700</span><span class="pv-meta">#2B2848 · borders</span></div></div>
+      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-gray-800)"></div><div class="pv-swatch-body"><span class="pv-label">gray-800</span><span class="pv-meta">#232339 · surface hover</span></div></div>
+      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-gray-900)"></div><div class="pv-swatch-body"><span class="pv-label">gray-900</span><span class="pv-meta">#1C1C27 · raised card</span></div></div>
+      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-gray-950)"></div><div class="pv-swatch-body"><span class="pv-label">gray-950</span><span class="pv-meta">#15151E</span></div></div>
+      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-gray-1000)"></div><div class="pv-swatch-body"><span class="pv-label">gray-1000</span><span class="pv-meta">#050505 · failureproof ground</span></div></div>
+      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-gray-1100)"></div><div class="pv-swatch-body"><span class="pv-label">gray-1100</span><span class="pv-meta">#0F0F15 · card — lighter than gray-1000</span></div></div>
+    </div>
+    <h3 class="pv-label" style="margin:1.75rem 0 0.75rem">Single-use accents</h3>
+    <div class="pv-grid pv-grid-4">
+      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-glow-25)"></div><div class="pv-swatch-body"><span class="pv-label">glow-25</span><span class="pv-meta">#9980FF · glow-button fill</span></div></div>
+      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-shadow-0)"></div><div class="pv-swatch-body"><span class="pv-label">shadow-0</span><span class="pv-meta">#281470 · the upward glow</span></div></div>
+      <div class="pv-swatch"><div class="pv-swatch-chip" style="background:var(--color-progress-0)"></div><div class="pv-swatch-body"><span class="pv-label">progress-0</span><span class="pv-meta">#8252FC · gradient mid</span></div></div>
     </div>
   </section>
 

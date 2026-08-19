@@ -49,17 +49,17 @@
   "colors": [
     {
       "role": "background",
-      "hex": "#050505",
-      "oklch": "oklch(0.1149 0 89.9)",
+      "hex": "#0a0a0b",
+      "oklch": "oklch(0.1452 0.0021 286.1)",
       "name": "Surface primary",
       "usage": "the page canvas — near-black, never pure black"
     },
     {
       "role": "foreground",
-      "hex": "#e8e6f0",
-      "oklch": "oklch(0.9294 0.0136 295.3)",
+      "hex": "#f4f4f6",
+      "oklch": "oklch(0.9677 0.0027 286.4)",
       "name": "Heading / body",
-      "usage": "headings and body text — 17.6:1 on the page"
+      "usage": "headings and body text — 18.0:1 on the page"
     },
     {
       "role": "accent",
@@ -70,22 +70,22 @@
     },
     {
       "role": "surface",
-      "hex": "#0d0d0f",
-      "oklch": "oklch(0.1600 0.0042 285.9)",
+      "hex": "#0f0f15",
+      "oklch": "oklch(0.1714 0.0124 285.0)",
       "name": "Surface secondary",
       "usage": "cards and panels — one hair above the page; depth comes from radius and border, not contrast"
     },
     {
       "role": "muted",
-      "hex": "#645f70",
-      "oklch": "oklch(0.4962 0.0274 298.8)",
+      "hex": "#9595bb",
+      "oklch": "oklch(0.6832 0.0556 284.8)",
       "name": "Body secondary",
       "usage": "metadata and placeholders only — never long-form copy"
     },
     {
       "role": "border",
-      "hex": "#2e2c33",
-      "oklch": "oklch(0.2980 0.0128 298.7)",
+      "hex": "#2b2848",
+      "oklch": "oklch(0.2965 0.0572 286.6)",
       "name": "Surface quaternary",
       "usage": "hairline rules, dividers and card edges"
     }

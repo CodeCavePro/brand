@@ -14,10 +14,10 @@
   .var-row:last-child { border-bottom: 0; }
   .forced { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
   /* Forced-state clones so a reviewer can see hover/active without a pointer. */
-  .force-hover.btn-primary   { background: var(--color-brand-600); }
-  .force-active.btn-primary  { background: var(--color-brand-800); }
+  .force-hover.btn-primary   { background: var(--color-brand-700); }
+  .force-active.btn-primary  { background: var(--color-brand-900); }
   .force-hover.btn-secondary { background: var(--color-surface-tertiary); }
-  .force-hover.btn-tertiary  { border-color: var(--color-outline-primary-hover); }
+  .force-hover.btn-tertiary  { border-color: var(--color-brand-700); }
   .force-hover.btn-ghost,
   .force-hover.btn-text      { color: var(--color-hovered); }
   /* The glow button has no hover fill. What responds to the pointer is the
@@ -64,7 +64,7 @@
     <div class="pv-tile">
       <div class="var-row">
         <span><span class="pv-label">.btn-glow-field &gt; .btn .btn-glow</span>
-              <span class="pv-meta">fill brand-210 · text brand-670 · halo · edge bloom</span></span>
+              <span class="pv-meta">fill glow-25 · text brand-800 · halo · edge bloom</span></span>
         <div class="forced">
           <span><span class="btn-glow-field"><a class="btn btn-glow" href="#"><span>Discuss project for free</span></a></span><span class="state-tag">rest — hover me</span></span>
           <span><span class="btn-glow-field force-hover"><a class="btn btn-glow" href="#"><span>Discuss project for free</span></a></span><span class="state-tag">pointer at the right end</span></span>
@@ -95,8 +95,8 @@
         <span><span class="pv-label">.btn .btn-secondary</span>
               <span class="pv-meta">raised surface · the quiet neighbour of a primary</span></span>
         <div class="forced">
-          <span><button class="btn btn-secondary">Download the brief</button><span class="state-tag">rest · #0D0D0F</span></span>
-          <span><button class="btn btn-secondary force-hover">Download the brief</button><span class="state-tag">hover · #141319</span></span>
+          <span><button class="btn btn-secondary">Download the brief</button><span class="state-tag">rest · #1E113B</span></span>
+          <span><button class="btn btn-secondary force-hover">Download the brief</button><span class="state-tag">hover · #1C1C27</span></span>
         </div>
       </div>
       <div class="var-row" data-od-id="button-tertiary-row">
@@ -104,14 +104,14 @@
               <span class="pv-meta">bordered · the workhorse, used dozens of times per page</span></span>
         <div class="forced">
           <span><a class="btn btn-tertiary" href="#">Learn more</a><span class="state-tag">rest · 1px #5F20FE</span></span>
-          <span><a class="btn btn-tertiary force-hover" href="#">Learn more</a><span class="state-tag">hover · border #1B0D4E</span></span>
+          <span><a class="btn btn-tertiary force-hover" href="#">Learn more</a><span class="state-tag">hover · border #4004AF</span></span>
         </div>
       </div>
       <div class="var-row" data-od-id="button-ghost-row">
         <span><span class="pv-label">.btn .btn-ghost</span>
               <span class="pv-meta">nav items · no box, bold label</span></span>
         <div class="forced">
-          <span><a class="btn btn-ghost" href="#">Services</a><span class="state-tag">rest · #E8E6F0</span></span>
+          <span><a class="btn btn-ghost" href="#">Services</a><span class="state-tag">rest · #F4F4F6</span></span>
           <span><a class="btn btn-ghost force-hover" href="#">Services</a><span class="state-tag">hover · #B19AFE</span></span>
         </div>
       </div>
@@ -119,7 +119,7 @@
         <span><span class="pv-label">.btn .btn-text</span>
               <span class="pv-meta">footer and inline tertiary entry points</span></span>
         <div class="forced">
-          <span><a class="btn btn-text" href="#">Privacy policy</a><span class="state-tag">rest · #C6C4CC</span></span>
+          <span><a class="btn btn-text" href="#">Privacy policy</a><span class="state-tag">rest · #C7C7DB</span></span>
           <span><a class="btn btn-text force-hover" href="#">Privacy policy</a><span class="state-tag">hover · #B19AFE</span></span>
         </div>
       </div>

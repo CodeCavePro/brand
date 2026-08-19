@@ -50,8 +50,8 @@ upfront."* / *"We are ready to sign an NDA — your idea stays yours."*
 
 **What defines the visual system** (the long version is `DESIGN.md`):
 
-1. **Depth without contrast.** The page is `#050505` and a card is `#0D0D0F` —
-   one hair apart. Separation comes from radius and a 1px `#2E2C33` border, never
+1. **Depth without contrast.** The page is `#0A0A0B` and a card is `#0F0F15` —
+   one hair apart. Separation comes from radius and a 1px `#2B2848` border, never
    from a lighter fill.
 2. **Enormous radii.** 24px is the *default* card corner. Feature cards take
    44px; section panels reach 64px, and 120px above 768px. Nothing in the system
@@ -179,9 +179,9 @@ set.
 | Card | What to inspect | What it demonstrates |
 |---|---|---|
 | `preview/index.html` | Launcher. Confirm all eleven cards open and the lockup renders. | `build/codecave.svg`, `.divider`, `.eyebrow` |
-| `preview/colors-primary.html` | That `#5F20FE` never fills a large area, and that cyan appears nowhere as a UI color. | `--color-action`, `--color-hovered`, `--color-brand-210`, `--gradient-brand`, all 26 ramp steps (including the two imagery-only steps `-107` and `-620`), the 4-step error ramp. Source: `source_examples/styles/global.css`, `tokens/colors.css` |
+| `preview/colors-primary.html` | That `#5F20FE` never fills a large area, and that cyan appears nowhere as a UI color. | `--color-action`, `--color-hovered`, `--color-glow-25`, `--gradient-brand`, the 12-step brand ramp, the 13-step gray ramp, the single-use accents, the technology wash, the 4-step error ramp. Source: `source_examples/styles/global.css`, `tokens/colors.css` |
 | `preview/colors-theme-dark.html` | Four surfaces one hair apart — check they still separate. Read the contrast ratios on the foreground ramp. | `--color-surface-primary/-secondary/-tertiary/-quaternary`, `--color-body-*`, `.card` in situ |
-| `preview/colors-theme-light.html` | The three light surfaces that legitimately exist, and why no light theme may be derived from them. | `--color-brand-0` as a surface, inverse lockup usage, `error-100` rationale |
+| `preview/colors-theme-light.html` | The three light surfaces that legitimately exist, and why no light theme may be derived from them. | `gray-50` as ink vs. as a field, inverse lockup usage, `error-100` rationale |
 | `preview/typography-specimens.html` | Whether the six Satoshi cuts render distinctly. If they look identical, the `@font-face` binding is broken. | `fonts/Satoshi-*.woff2`, the nine-step scale at true size, `.eyebrow` / `.lead` / `.eyebrow-lead` with a counter-example. Source: `tokens/typography.css`, `homepage/expertise.astro` |
 | `preview/spacing-tokens.html` | The asymmetric section rhythm (200px above, 120px below) and bottom-heavy card padding. | `--gutter-*`, `--section-padding-top/-bottom`, `--card-padding`, `--control-height`, `--input-height`. Source: `tokens/layout.css` |
 | `preview/spacing-radius.html` | Eight radii at true size, the measured homepage census, and the same card at 4px and 0px for comparison. | `--radius-sm` → `--radius-section-md`, `.card`, live `.section-container` across the 768px breakpoint |
@@ -189,7 +189,7 @@ set.
 | `preview/components-buttons.html` | Rest, hover, active, focus and disabled shown together; tab through the focus row. | `.btn` + `-glow/-primary/-secondary/-tertiary/-ghost/-text/-link/:disabled`, and the one sanctioned CTA pairing. Source: `common/Button.vue`, `common/GlowButton.vue` |
 | `preview/components-inputs.html` | Click into the fields. The floating label must never collide with the value, and focus must be a halo rather than an outline. | `.field`, `.field.is-error`, `.error-message`, `label .required`, `.checkbox`, `.chip`, radios, the assembled consultation form. Source: `common/InputText.vue`, `TextField.vue`, `Checkbox.vue`, `Radio.vue`, `homepage/contacts-form.vue` |
 | `preview/components-progress.html` | That the bar is violet at 15% and near-white only at 100%. If early progress reads near-white, the gradient is being sized to the fill instead of the track. | `.rule`, `.progress`, `.progress-value`, `.progress.is-indeterminate`, `--gradient-brand` as a field, and three counter-examples: stretched full width, gradient sized to the fill, thickened to 16px. Source: the brand repository's previously published `docs/index.html` |
-| `preview/brand-imagery.html` | Every plate must show visible strokes. A plate that reads as flat near-black means the `#050505` ground rect is missing from that file, not that the art is subtle. | The seven harvested section backgrounds on their required ground, the `0.8 / 0.65 / 0.55 / 0.45` opacity ladder that produces the falloff, the three gradient stops, and the two ramp steps recovered in the deep pass (`--color-brand-620`, `--color-brand-107`). Source: `codecave.pro/src/assets/images/` |
+| `preview/brand-imagery.html` | Every plate must show visible strokes. A plate that reads as flat near-black means the `#050505` ground rect is missing from that file, not that the art is subtle. | The seven harvested section backgrounds on their required ground, the `0.8 / 0.65 / 0.55 / 0.45` opacity ladder that produces the falloff, the three gradient stops, and the two imagery-only literals recovered in the deep pass (`#391398`, `#4C4759`). Source: `codecave.pro/src/assets/images/` |
 | `preview/brand-assets.html` | Every frame must contain artwork. An empty frame means a missing file, not a styling bug. Check the 16px icon still reads as a chevron. | Real files from `build/` and `assets/` loaded via `<img>`, `<object>` and CSS `url(...)`: both lockups, the chevron, all four raster finishes at 256px, the seven-step `build/icons/` ramp at native size, the web runtime set (`favicon.ico`, `apple-touch-icon.png`, both PWA manifest icons), the production `logo.svg`, the 1024² app icon, and the six font specimens |
 
 The launcher links onward to the two layers above these cards: `storybook/index.html`
@@ -304,11 +304,11 @@ all six artifacts now carry the company address.
    keeping the relative layout — the stylesheet resolves fonts as
    `./fonts/Satoshi-*.woff2`.
 2. **Link it once**, at the root of the document. The tokens land on `:root` and
-   the baseline sets the page to `#050505` with `#E8E6F0` text.
+   the baseline sets the page to `#0A0A0B` with `#F4F4F6` text.
 3. **Consume the semantic layer**, never the raw ramp: `--color-surface-*`,
    `--color-body-*`, `--color-heading`, `--color-action`, `--color-hovered`.
-   Exactly three raw steps are legitimate — `brand-210` (glow fill), `brand-660`
-   (the upward glow) and `brand-400` (the reserved cyan). **Never hard-code a
+   Exactly three raw values are legitimate — `glow-25` (glow fill), `shadow-0`
+   (the upward glow) and `progress-0` (the gradient mid). **Never hard-code a
    hex.**
 4. **Use the component classes** rather than re-deriving them: `.btn` + variant,
    `.card`, `.card-article`, `.card-feature`, `.field`, `.checkbox`, `.chip`,
@@ -341,8 +341,8 @@ no first-party file, and `#5F20FE` is the action color and is never body text.
 `DESIGN.md` §1 documents the correction in full.
 
 `brand.json` was then corrected to the source-backed values (`#5F20FE` action,
-`#050505` canvas, `#E8E6F0` ink, 24px radius) and the generator re-run against
-them. The seed is right; **the generator's derivation is not.** Feeding it
+near-black canvas, near-white ink, 24px radius — re-seeded again after the
+2026 palette rebuild) and the generator re-run against them. The seed is right; **the generator's derivation is not.** Feeding it
 `#5F20FE` produced a ten-step palette whose primary is `#7040da`, and the
 resulting token layer — `system/variables*.css`, `system/tokens.*.json`,
 `system/theme.json`, `system/kit*.html` and `system/index.html` — contained

@@ -3,12 +3,12 @@ name: "CODECAVE"
 category: Brands
 surface: web
 colors:
-  surface-primary: "#050505"
-  heading-body: "#e8e6f0"
+  surface-primary: "#0a0a0b"
+  heading-body: "#f4f4f6"
   action: "#5f20fe"
-  surface-secondary: "#0d0d0f"
-  body-secondary: "#645f70"
-  surface-quaternary: "#2e2c33"
+  surface-secondary: "#0f0f15"
+  body-secondary: "#9595bb"
+  surface-quaternary: "#2b2848"
 ---
 
 # CODECAVE Design System
@@ -68,14 +68,34 @@ in the first-party source. `#5F20FE` is the *action* color — links, borders,
 eyebrows — and is never used for body text. The palette in section 3 replaces
 it and is taken verbatim from `global.css`.
 
+### The 2026 palette rebuild
+
+In August 2026 production rebuilt its palette wholesale, and this package
+re-based onto it (the standing policy: **the package matches the live site;
+site-side problems go to `WEBSITE-REVIEW.md`, not into a fork**). What moved:
+
+- The page ground lightened from `#050505` to **`#0A0A0B`**, and every text
+  color moved from the old violet-tinted steps to a new **gray ramp**
+  (headings `#F4F4F6`, secondary `#9595BB`).
+- **Cyan left the ramp.** `brand-400` is now a violet (`#5F3ABD`); the bright
+  `#20EFFE` survives only inside the decorative SVGs (§8), and the deep
+  `#077689` only inside the technology-card wash tokens.
+- The ramp was renumbered, and several step names were **re-used with
+  different hexes** — old `brand-300` `#8252FC` vs new `brand-300` `#735CAB`,
+  old `brand-600` `#4004AF` vs new `brand-600` `#4705ED`. Never map old and
+  new tokens by step name; map by hex or by role.
+
+Every value in this document reflects the rebuilt palette. Where a contrast
+verdict changed with the ground (§10.2, §10.5), the section says so.
+
 ---
 
 ## 2. Visual foundations — the four decisions
 
 Everything else follows from these.
 
-1. **Depth is not built from contrast.** The page is `#050505`; cards rise one
-   barely-perceptible step to `#0D0D0F`. That narrow separation is deliberate.
+1. **Depth is not built from contrast.** The page is `#0A0A0B`; cards rise one
+   barely-perceptible step to `#0F0F15`. That narrow separation is deliberate.
    If you find yourself lightening a card to make it read, you have made a
    layout mistake, not a color mistake.
 2. **Corners are enormous.** 24px is the *default* card. Feature cards run
@@ -93,60 +113,82 @@ Everything else follows from these.
 
 ## 3. Color
 
-Two layers. The raw ramp exists only so the semantic names have somewhere to
-point. **Always consume the semantic layer; never hard-code a hex.**
+Two layers. The raw ramps — a violet brand ramp and a gray ramp — exist only
+so the semantic names have somewhere to point. **Always consume the semantic layer; never hard-code a hex.**
 
 ### Semantic tokens — use these
 
 | Token | Value | Use |
 |---|---|---|
-| `--color-surface-primary` | `#050505` | the page |
-| `--color-surface-secondary` | `#0D0D0F` | cards |
-| `--color-surface-tertiary` | `#141319` | raised / hovered card, icon tiles |
-| `--color-surface-quaternary` | `#2E2C33` | borders, dividers, checkbox outline |
-| `--color-surface-primary-hover` | `#2A2637` | surface hover |
-| `--color-surface-primary-transparent` | `#050505` @ 30% | backdrop-blur dropdown |
-| `--color-heading` | `#E8E6F0` | headings |
-| `--color-body-primary` | `#E8E6F0` | body text |
-| `--color-body-secondary-lighter` | `#C6C4CC` | descriptions, long-form copy |
-| `--color-body-secondary` | `#645F70` | metadata, timestamps, placeholders |
-| `--color-action` | `#5F20FE` | links, eyebrows, borders, focus glow — 3.03:1, so **not for text below ~19px** (§10.5) |
+| `--color-surface-primary` | `#0A0A0B` | the page |
+| `--color-surface-secondary` | `#0F0F15` | cards |
+| `--color-surface-tertiary` | `#1C1C27` | raised / hovered card, icon tiles |
+| `--color-surface-quaternary` | `#2B2848` | borders, dividers, checkbox outline |
+| `--color-surface-primary-hover` | `#232339` | surface hover |
+| `--color-surface-primary-transparent` | `#0A0A0B` @ 30% | backdrop-blur dropdown |
+| `--color-heading` | `#F4F4F6` | headings |
+| `--color-body-primary` | `#F4F4F6` | body text |
+| `--color-text-body-primary` | `#D5D5DD` | long-form article copy |
+| `--color-body-secondary-lighter` | `#C7C7DB` | descriptions, secondary copy |
+| `--color-body-secondary` | `#9595BB` | metadata, timestamps, placeholders |
+| `--color-neutral` | `#6B6699` | muted metadata — 3.76:1, large text only |
+| `--color-action` | `#5F20FE` | links, eyebrows, borders, focus glow — 2.94:1, so **not for text at any size** (§10.5) |
 | `--color-hovered` | `#B19AFE` | hover foreground, focus ring |
-| `--color-outline-primary-hover` | `#1B0D4E` | outline-button hover border; text on `#9980FF` |
-| `--color-default-transparent` | `#DFDDE4` | resting icon color on dark |
+| `--color-outline-primary-hover` | `#1B0D4E` | checkbox resting border; text on `#9980FF` |
+| `--color-default-transparent` | `#DCDCE5` | resting icon color on dark |
+| `--color-failureproof-0` | `#050505` | one full-black section ground |
 | `--color-error` | `#B42318` | error text |
 
-### Raw ramp — 26 steps
+### Raw ramps
 
-`--color-brand-0` `#E8E6F0` · `-25` `#DFDDE4` · `-50` `#C6C4CC` · `-100`
-`#645F70` · `-105` `#585461` · `-107` `#4C4759` · `-110` `#2E2C33` · `-130`
-`#2A2637` · `-200` `#B19AFE` · `-210` `#9980FF` · `-300` `#8252FC` · `-400`
-`#20EFFE` · `-450` `#077689` · `-500` `#5F20FE` · `-580` `#5206E3` · `-600`
-`#4004AF` · `-620` `#391398` · `-650` `#33196E` · `-660` `#281470` · `-670`
-`#1B0D4E` · `-700` `#1A0452` · `-800` `#1E113B` · `-900` `#070312` · `-910`
-`#0D0D0F` · `-920` `#141319` · `-950` `#050505`
+Verbatim from `global.css` after the 2026 rebuild — a violet brand ramp, a
+gray ramp, and a handful of single-use accents.
 
-Three ramp steps are legitimately consumed raw because no semantic name exists:
-`--color-brand-210` (the primary button fill), `--color-brand-660` (the glow),
-and `--color-brand-400` (the cyan, see below).
+**Brand (violet):** `-25` `#E8E6F0` · `-50` `#BBB9CB` · `-100` `#B8AFDB` ·
+`-200` `#B19AFE` · `-300` `#735CAB` · `-400` `#5F3ABD` · `-500` `#5F20FE` ·
+`-600` `#4705ED` · `-700` `#4004AF` · `-800` `#1B0D4E` · `-900` `#1E113B` ·
+`-950` `#0A0A0B`
 
-**`-107` and `-620` are imagery-only and were added in the deep extraction
-pass.** Both were measured out of the decorative SVGs in
-`src/assets/images/`, where they had been carrying real brand art while going
-unrecorded by every token file. `#391398` is the mid stop of the orb gradients;
-`#4C4759` is the landmass stroke in `world-map.svg`. They are placed at 620 and
-107 because that is where they fall by relative luminance (`0.0360` between
-`-600` at `0.0427` and `-650` at `0.0252`; `0.0676` between `-105` at `0.0928`
-and `-110` at `0.0262`). **Neither may be used for UI or text** — they exist so
-that decorative art can be reproduced exactly rather than eyeballed.
+**Gray:** `-50` `#F4F4F6` · `-100` `#DCDCE5` · `-200` `#D5D5DD` · `-300`
+`#C7C7DB` · `-400` `#A3A3C2` · `-500` `#9595BB` · `-600` `#6B6699` · `-700`
+`#2B2848` · `-800` `#232339` · `-900` `#1C1C27` · `-950` `#15151E` · `-1000`
+`#050505` · `-1100` `#0F0F15`
+
+**Single-use accents:** `glow-25` `#9980FF` (the glow-button fill) ·
+`shadow-0` `#281470` (the upward section glow) · `progress-0` `#8252FC` (the
+brand-gradient mid stop). These three are the only values legitimately
+consumed raw, because that is exactly how production consumes them.
+
+**Technology-card wash:** `technology-gradient-0` `#077689` · `-25` `#1A0452`
+· `-50` `#070312` — always at 0.1 alpha, and the only cyan left in the token
+layer (see below).
+
+**Error:** `-100` `#FE9A9A` · `-200` `#FE2020` · `-300` `#B42318` · `-400`
+`#CA1400`
+
+Two quirks are upstream facts, not package errors (WEBSITE-REVIEW.md §5): the
+gray ramp is **non-monotonic past 950** — `gray-1100` `#0F0F15`, the card
+surface, is *lighter* than `gray-1000` `#050505` — and `brand-500` is lighter
+than `brand-400`. The semantic layer hides both, which is one more reason
+never to consume the ramps raw.
+
+**`#391398` and `#4C4759` are imagery-only.** Both were measured out of the
+decorative SVGs in `src/assets/images/` — `#391398` is the mid stop of the orb
+gradients, `#4C4759` the landmass stroke in `world-map.svg`. The rebuilt ramp
+gives them no token name, so they remain what they always were: art literals,
+documented in §8. **Neither may be used for UI or text.**
 
 ### The cyan
 
-`#20EFFE` is real and it is reserved. It appears only in gradient and orb
-motifs — the technology card's border gradient blends `brand-500 → brand-400 →
-brand-500` at low alpha (`homepage/technology-card.vue`). **Never use it for
+Bright cyan `#20EFFE` survives only in the decorative orb SVGs (§8). The 2026
+rebuild removed it from the ramp entirely: the technology card's border
+gradient still blends `brand-500 → brand-400 → brand-500` at low alpha
+(`homepage/technology-card.vue`), but `brand-400` is now the violet `#5F3ABD`,
+so the ring reads violet end to end. The only cyan in the token layer is the
+deep `#077689` inside the technology-card *wash*
+(`--color-technology-gradient-0`, 0.1 alpha). **Never use cyan for
 photographic grading, body text, a CTA, or a large field.** It is a light
-effect, not a UI color.
+effect in the art, not a UI color.
 
 ### The brand gradient
 
@@ -155,7 +197,9 @@ effect, not a UI color.
   #5F20FE 0%, #8252FC 60%, #B19AFE 75%, #E8E6F0 100%);
 ```
 
-Left-to-right violet resolving into near-white. Used for display type and rule
+Left-to-right violet resolving into near-white. The mid stop is the once-used
+`progress-0` accent, **not** `brand-300` — the rebuilt ramp's `brand-300`
+(`#735CAB`) is a different, muted violet. Used for display type and rule
 accents, not as a page wash.
 
 The gradient is permitted as a *field* in exactly one component — the rule and
@@ -167,7 +211,7 @@ The system is dark-first and ships no light mode. Three light-surface
 *exceptions* exist and they are the complete set:
 
 1. The primary button field `#9980FF` with `#1B0D4E` text.
-2. The near-white type ramp (`#E8E6F0` / `#C6C4CC`) on dark.
+2. The near-white type ramp (`#F4F4F6` / `#C7C7DB`) on dark.
 3. The `codecave-*-text-black` wordmark variants, for print and genuinely light
    third-party surfaces only.
 
@@ -259,8 +303,9 @@ Measured radius census on the homepage: 24px on 42 blocks, 12px on 9, 44px on
 ### Breakpoints
 
 A census of every `@media` rule in the captured source returns exactly two
-width breakpoints: **768px** (6 occurrences) and **1280px** (3). The only other
-media query in the system is `prefers-reduced-motion: reduce` (3).
+width breakpoints: **768px** (6 occurrences) and **1280px** (3). An earlier
+revision of the source also carried `prefers-reduced-motion: reduce` (3
+occurrences); the current source ships none — see §7 and WEBSITE-REVIEW.md §2.
 
 That is the whole responsive contract, and it is deliberately coarse:
 
@@ -308,16 +353,18 @@ minimum.
 | Variant | Rest | Hover | Active |
 |---|---|---|---|
 | `glow` (the one true CTA) | fill `#9980FF`, text `#1B0D4E`, halo | cursor-tracked white glow sweep | `scale(0.98)` |
-| `primary` | fill `#5F20FE`, text `#E8E6F0` | fill `#4004AF` | fill `#1E113B` |
-| `secondary` | fill `#0D0D0F`, text `#E8E6F0` | fill `#141319` | — |
-| `tertiary` | 1px border `#5F20FE`, transparent | border `#1B0D4E` | — |
-| `ghost` | text `#E8E6F0`, no box | text `#B19AFE` | text `#B19AFE` |
-| `text` | text `#C6C4CC` | text `#B19AFE` | text `#B19AFE` |
+| `primary` | fill `#5F20FE`, text `#F4F4F6` | fill `#4004AF` | fill `#1E113B` |
+| `secondary` | fill `#1E113B`, text `#F4F4F6` | fill `#1C1C27` | — |
+| `tertiary` | 1px border `#5F20FE`, transparent | border `#4004AF` | — |
+| `ghost` | text `#F4F4F6`, no box | text `#B19AFE` | text `#B19AFE` |
+| `text` | text `#C7C7DB` | text `#B19AFE` | text `#B19AFE` |
 | `link` | text `#B19AFE`, underlined | — | — |
 | disabled | `opacity: 0.2`, `cursor: not-allowed` | none | none |
 
-Every hover moves *toward* more contrast or more saturation. No hover state in
-this system dims its foreground.
+Every hover moves *toward* more contrast or more saturation — with one shipped
+exception: the `tertiary` border hovers *down* to `#4004AF` (~1.75:1 on the
+page). This package reproduces it faithfully (§10.1) and WEBSITE-REVIEW.md §4
+flags the direction for a designer decision.
 
 **One action, one primary.** The homepage repeats *"Learn more"* as the
 bordered `tertiary` variant many times and reserves the glow button for the
@@ -356,8 +403,8 @@ selection): wrapped in a `--color-surface-secondary` pill with
 
 | Card | Radius | Fill | Hover | Source |
 |---|---|---|---|---|
-| Default | 24px | `#0D0D0F` | `#141319` | sitewide |
-| Article | 36px | `#0D0D0F` | `#141319` | `common/ArticlePreview.vue` |
+| Default | 24px | `#0F0F15` | `#1C1C27` | sitewide |
+| Article | 36px | `#0F0F15` | `#1C1C27` | `common/ArticlePreview.vue` |
 | Testimonial | 44px | transparent + `blur(32px)` | — | `common/Review.vue` |
 | Technology | 24px | transparent + `blur(14px)`, 1px gradient border | rotates upright | `homepage/technology-card.vue` |
 
@@ -452,14 +499,18 @@ together on `--transition-colors` so a hover can never land half-applied — the
 one case where an inconsistent duration would be visible as a color tear.
 Nothing in the system animates `opacity` and `transform` on different clocks.
 
-Everything collapses under `prefers-reduced-motion: reduce`, which the source
-enforces globally with `!important` on animation, transition, and scroll
-behavior — `animation-duration: 0.01ms`, `animation-iteration-count: 1`,
-`transition-duration: 0.01ms`, `scroll-behavior: auto`. That last declaration
-is load-bearing: it is what disables the Lenis smooth scroll, so removing the
-block does not merely shorten transitions, it re-enables scroll hijacking for
-users who asked for neither. This block is non-negotiable and ships in
-`colors_and_type.css`.
+Everything collapses under `prefers-reduced-motion: reduce` — in **this
+package**. `colors_and_type.css` ships a global collapse with `!important` on
+animation, transition, and scroll behavior — `animation-duration: 0.01ms`,
+`animation-iteration-count: 1`, `transition-duration: 0.01ms`,
+`scroll-behavior: auto`. That last declaration is load-bearing: it is what
+disables the Lenis smooth scroll, so the block does not merely shorten
+transitions, it stops scroll hijacking for users who asked for neither. An
+earlier revision of `global.css` shipped the same block; the 2026 rebuild
+dropped it, and production currently honors the preference **nowhere**
+(WEBSITE-REVIEW.md §2, P0). This is the one place the package deliberately
+keeps what the site lost — a best-practice floor, not a stylistic fork. The
+block is non-negotiable and ships in `colors_and_type.css`.
 
 ---
 
@@ -565,15 +616,17 @@ Ship-blocking, in rough order of how often they get attempted.
 1. **A conventional drop shadow on a section panel.** The glow is inverted.
    Positive Y offsets destroy the single most recognizable thing in the system.
 2. **Small radii.** Anything under 8px. 2–4px reads as generic admin UI.
-3. **Lightening cards to create depth.** `#0D0D0F` against `#050505` is the
+3. **Lightening cards to create depth.** `#0F0F15` against `#0A0A0B` is the
    point. Reach for radius, border, and the glow instead.
 4. **`#5F20FE` as a large fill.** It edges, links, and marks. Purple *fields*
    are `#9980FF` with `#1B0D4E` text.
-5. **Cyan as a UI color.** `#20EFFE` is a gradient and orb motif only.
+5. **Cyan as a UI color.** `#20EFFE` lives only in the decorative orb art;
+   the token layer's sole cyan is the technology-wash `#077689` at 0.1 alpha.
 6. **A second glow button in one viewport.** One action, one primary. Secondary
    entry points are the bordered `tertiary` variant.
 7. **Hover states that dim.** Never move a foreground toward `--color-body-
-   secondary` on hover. Every hover in source gains contrast or saturation.
+   secondary` on hover. Every hover in source gains contrast or saturation —
+   except the tertiary border (§10.1), which is documented, not endorsed.
 8. **A light theme.** None exists. Do not derive one.
 9. **A second typographic flourish.** The eyebrow is the whole vocabulary.
 10. **Invented metrics.** *15+ years*, *4.8 average rating* are real and
@@ -591,36 +644,32 @@ Ship-blocking, in rough order of how often they get attempted.
 
 ## 10. Known divergences
 
-Three places where this package deliberately does **not** match what
-`codecave.pro` ships today. Each is a considered correction, not a transcription
-error, and each is reversible if the production behavior is preferred.
+The places where this package deliberately does **not** match what
+`codecave.pro` ships today. Each is a considered correction, not a
+transcription error, and each is reversible if the production behavior is
+preferred. (One former entry, §10.1, has been retired back to production
+behavior under the site-wins policy.)
 
-### 10.1 `.btn-tertiary` hover
+### 10.1 `.btn-tertiary` hover — retired divergence
 
-| | Production | This package |
-|---|---|---|
-| Border, rest | `#5F20FE` | `#5F20FE` |
-| Border, hover | `#1B0D4E` (`--color-outline-primary-hover`) | `#B19AFE` |
-| Surface, hover | unchanged | lifts to `--color-surface-secondary` |
-
-`Button.vue` hovers the bordered variant's edge *down* to `brand-670`, which on
-the `#050505` page is a 1.4:1 border — the affordance nearly disappears at the
-moment the pointer confirms it. The bordered button is the workhorse of the site,
-used dozens of times per page, so this is not a marginal case.
-
-The package brightens the border to `--color-hovered` and lifts the surface, in
-line with the system's own rule that **nothing dims on hover**. `#1B0D4E` is
-still exported as `--color-outline-primary-hover` for anyone reproducing the live
-behavior exactly.
+An earlier revision of this package brightened the tertiary border on hover to
+`--color-hovered`, against production's hover-*down*. Under the standing
+policy — **the package matches the live site; site-side problems go to the
+designer report** — that fork is retired. `.btn-tertiary:hover` now ships
+exactly what `Button.vue` does: the border drops to `brand-700` `#4004AF`,
+~1.75:1 on the page, so the affordance dims at the moment the pointer confirms
+it. The bordered button is the workhorse of the site, used dozens of times per
+page, which is why WEBSITE-REVIEW.md §4 flags the direction for a designer
+decision. If a brighter hover lands upstream, this package follows it.
 
 ### 10.2 Error text color
 
-`--color-error` is `#B42318` (`error-300`), which measures **3.2:1** on
-`#050505` — below the 4.5:1 floor for body text. The production site uses it for
+`--color-error` is `#B42318` (`error-300`), which measures **3.01:1** on
+`#0A0A0B` — below the 4.5:1 floor for body text. The production site uses it for
 form error messaging.
 
 This package keeps `#B42318` for icons, rules and non-text marks, and renders
-error *messages* in `--color-error-100` `#FE9A9A` (**8.4:1**). The error halo
+error *messages* in `--color-error-100` `#FE9A9A` (**9.71:1**). The error halo
 still uses `error-200`/`error-100` exactly as `InputText.vue` defines it, so the
 field itself is unchanged. See `preview/components-inputs.html`.
 
@@ -651,30 +700,33 @@ absent from `build/`, so nothing in this package can ship it by accident. The
 real mark is `build/favicon.svg`, generated from `src/codecave.svg`. The fix
 upstream is to replace the site's favicon with it.
 
-### 10.5 The eyebrow is only accessible at its signature size
+### 10.5 The eyebrow now fails contrast at every size
 
-Measured in the deep pass. `--color-action` `#5F20FE` is **3.03:1** on
-`#050505` — and the eyebrow is bold, so which floor applies depends entirely on
-its size:
+`--color-action` `#5F20FE` measured **3.03:1** on the old `#050505` page —
+enough, barely, for large bold type. The 2026 rebuild lightened the page to
+`#0A0A0B`, and the same violet now measures **2.94:1** — a hair *under* the
+3:1 large-text floor:
 
 | Usage | Size | Floor | Result |
 |---|---|---|---|
-| `.eyebrow-lead .eyebrow` — the signature pair | 32px bold | 3:1 (large) | **3.03:1 — passes, barely** |
-| `.eyebrow` at caption size | 14px bold | 4.5:1 (normal) | **3.03:1 — fails** |
+| `.eyebrow-lead .eyebrow` — the signature pair | 32px bold | 3:1 (large) | **2.94:1 — fails, barely** |
+| `.eyebrow` at caption size | 14px bold | 4.5:1 (normal) | **2.94:1 — fails** |
 
-The brand's signature usage is therefore fine, and `.eyebrow` in
-`colors_and_type.css` is **left exactly as production ships it**. What fails is
-the *small* eyebrow, which is a pattern this package introduced in its own
-chrome rather than something inherited from the site.
+The signature pair used to be the one place violet-on-black was defensible;
+since the rebuild it no longer is, at any size. `.eyebrow` in
+`colors_and_type.css` is still **left exactly as production ships it** — the
+site wins on values — and the shortfall is recorded in WEBSITE-REVIEW.md §2
+for a designer: the deficit is 0.06, so any slightly lighter violet clears it.
 
-So the fix is scoped to the chrome: `.pv-head .eyebrow` and `.bk-eyebrow` now
-render in `--color-hovered` `#B19AFE` (**8.66:1**), which is already the
-system's foreground accent and keeps the mark in-palette. The rule to carry
-forward: **an eyebrow below ~19px must not be `--color-action`.**
+The package's own chrome does not inherit the problem: `.pv-head .eyebrow` and
+`.bk-eyebrow` render in `--color-hovered` `#B19AFE` (**8.41:1**), which is
+already the system's foreground accent. The rule to carry forward: **an
+eyebrow in `--color-action` currently fails WCAG at every size; chrome and new
+surfaces should use `--color-hovered`.**
 
-This is the same shape of problem as §10.2 and is resolved the same way — keep
-the brand value where it is legible, substitute the in-palette lighter step
-where it is not, and write down which is which.
+This is the same shape of problem as §10.2 and is resolved the same way —
+keep production's value in the components, substitute the in-palette lighter
+step in the package's own chrome, and write down which is which.
 
 ### 10.6 The host-generated `brand.html` is not shipped
 
@@ -759,20 +811,21 @@ is an Ant-derived *approximation* of CODECAVE rather than CODECAVE:
 | Token | Generated | Corrected | Why |
 |---|---|---|---|
 | `--brand-color-primary` | `#7040da` | `#9980FF` | duller and bluer than the brand violet, and only 3.18:1 as text; `#9980FF` is the real primary and matches the button fill |
-| `--brand-color-primary-bg` | `#0e0725` | `#0D0D0F` | the hero panel. `#0e0725` belongs to no ramp step and reads as navy against the `#050505` card; brand-910 is the documented card surface, one step off the page |
-| `--brand-color-link` | `#7040da` | `#B19AFE` | brand-200, 8.25:1 |
-| `--brand-color-text` | `#c6c4cd` | `#E8E6F0` | brand-0 |
-| `--brand-color-text-secondary` | `#99979e` | `#C6C4CC` | brand-50 |
-| `--brand-color-text-tertiary` | `#6b6a6f` | `#99979E` | was 3.62:1 - below AA |
-| `--brand-color-text-quaternary` | `#3e3d40` | `#99979E` | was **1.9:1**, and it is the line carrying the postal address |
+| `--brand-color-primary-bg` | `#0e0725` | `#0F0F15` | the hero panel. `#0e0725` belongs to no ramp step and reads as navy against the `#0A0A0B` page; gray-1100 is the documented card surface, one step off the page |
+| `--brand-color-link` | `#7040da` | `#B19AFE` | brand-200, 8.41:1 |
+| `--brand-color-text` | `#c6c4cd` | `#F4F4F6` | gray-50 |
+| `--brand-color-text-secondary` | `#99979e` | `#C7C7DB` | gray-300 |
+| `--brand-color-text-tertiary` | `#6b6a6f` | `#9595BB` | gray-500, 6.87:1; the generated value was 3.62:1 - below AA |
+| `--brand-color-text-quaternary` | `#3e3d40` | `#9595BB` | was **1.9:1**, and it is the line carrying the postal address |
 
 Every text-on-background pair in the corrected file was then measured against
 its true nesting context. All 9 distinct pairs pass AA; the lowest is the
 button itself at 5.67:1.
 
-`newsletter.html` is left on the token layer deliberately - it was reviewed and
-approved as it renders. It shares the same `var()` exposure, so if it is ever
-sent rather than used as a reference, run the same flattening over it.
+`newsletter.html` has since been flattened the same way - both artifacts now
+carry literals end to end, updated to the rebuilt palette (page `#0A0A0B`,
+panel `#0F0F15`, text `#F4F4F6` / `#C7C7DB` / `#9595BB`, borders `#2B2848`,
+and the unchanged `#9980FF` / `#1B0D4E` CTA).
 
 ---
 
@@ -802,9 +855,10 @@ sent rather than used as a reference, run the same flattening over it.
 - The ground color of `work-process-img-*.jpg` is **unmeasured** — no raster
   decoder was available in this environment. Those files were excluded from
   `imagery.samples` on semantic role, not on a contrast measurement.
-- `--color-brand-107` and `--color-brand-620` are *measured* from production
-  SVGs but their **ramp positions are inferred** from relative luminance. They
-  had no upstream token name to read, because upstream never named them.
+- `#4C4759` and `#391398` are *measured* from production SVGs. An earlier
+  revision carried them as inferred ramp steps (`brand-107`/`brand-620`); the
+  rebuilt ramp has no place for them, so they are recorded as imagery
+  literals only (§3, §8). Upstream still never named them.
 - The breakpoint census covers the captured source only. It is complete for
   what was captured, which is the homepage, workflow, project and header
   component set — not every route on the site.

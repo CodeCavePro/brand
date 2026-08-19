@@ -15,12 +15,13 @@
               grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); }
   .art-plate { border: 1px solid var(--color-surface-quaternary);
                border-radius: var(--radius-card); overflow: hidden;
-               background: var(--color-surface-primary); }
+               background: var(--color-failureproof-0); }
   .art-frame { display: block; width: 100%; aspect-ratio: 16 / 10;
-               background: var(--color-surface-primary); }
+               background: var(--color-failureproof-0); }
   /* contain, not cover: a specimen has to show the whole plate. The letterbox
      is invisible because the frame and the SVG's own ground rect are both
-     #050505, so the art reads as one continuous field. */
+     #050505 (--color-failureproof-0 — the page itself is #0A0A0B since the
+     rebuild), so the art reads as one continuous field. */
   .art-frame img { width: 100%; height: 100%; object-fit: contain; display: block; }
   .art-body { padding: 1.25rem 1.25rem 1.5rem;
               border-top: 1px solid var(--color-surface-quaternary); }
@@ -77,14 +78,15 @@
        three:</p>
     <div class="stops" data-od-id="imagery-gradient-stops">
       <span class="stop"><i style="background:#5F20FE"></i><code>#5F20FE · brand-500 · action</code></span>
-      <span class="stop"><i style="background:#20EFFE"></i><code>#20EFFE · brand-400 · the cyan</code></span>
-      <span class="stop"><i style="background:#391398"></i><code>#391398 · brand-620 · NEW</code></span>
+      <span class="stop"><i style="background:#20EFFE"></i><code>#20EFFE · the cyan — imagery-only since the rebuild</code></span>
+      <span class="stop"><i style="background:#391398"></i><code>#391398 · imagery-only</code></span>
     </div>
     <p class="pv-note" style="margin-top:1rem"><code>#391398</code> and <code>#4C4759</code>
-       (the <code>world-map.svg</code> landmass stroke) were carrying production art while going
-       unrecorded by every token file. They were added to the ramp in this pass as
-       <code>--color-brand-620</code> and <code>--color-brand-107</code>, positioned by relative
-       luminance. Both are <strong>imagery-only</strong> — never UI, never text.</p>
+       (the <code>world-map.svg</code> landmass stroke) carry production art while going
+       unrecorded by every token file — and the 2026 rebuild, which removed cyan from the ramp
+       entirely, still gives them no name. They are recorded here as <strong>art
+       literals</strong> — never UI, never text. Cyan's only token-layer survivor is the deep
+       <code>#077689</code> in the technology-card wash.</p>
   </section>
 
   <section class="pv-block" data-od-id="imagery-plates">
