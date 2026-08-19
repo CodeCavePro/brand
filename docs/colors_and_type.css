@@ -8,8 +8,9 @@
  *      -> context/github/CodeCavePro-brand/files/docs/tokens/
  *   3. https://codecave.gay                      (live site, measured steps)
  *
- * Two layers. The raw --color-brand-* ramp exists ONLY so the semantic names
- * have somewhere to point. Consume the SEMANTIC layer. Never hard-code a hex.
+ * Two layers. The raw ramps (brand violet + gray, verbatim from the site's
+ * 2026 palette rebuild) exist ONLY so the semantic names have somewhere to
+ * point. Consume the SEMANTIC layer. Never hard-code a hex.
  *
  * Link this file and the tokens are live on :root — there is no provider,
  * no theme object, and no component bundle. See SKILL.md.
@@ -82,36 +83,52 @@
 
 :root {
   /* =========================================================================
-   * RAW BRAND RAMP — 24 steps, light to dark, accents mid-ramp.
-   * Verbatim from global.css :root. Do not consume directly except where
-   * noted (brand-210 is the primary button fill; brand-660 seeds the glow).
+   * RAW RAMPS — verbatim from global.css :root after the 2026 palette
+   * rebuild. A violet brand ramp, a gray ramp, and single-use accents.
+   * Do not consume directly except where noted (glow-25 is the glow-button
+   * fill; progress-0 is the gradient mid; shadow-0 seeds the section glow).
    * ====================================================================== */
-  --color-brand-0:   #E8E6F0;  /* headings, body text                       */
-  --color-brand-25:  #DFDDE4;  /* icon default on dark                      */
-  --color-brand-50:  #C6C4CC;  /* secondary body, lighter                   */
-  --color-brand-100: #645F70;  /* muted metadata                            */
-  --color-brand-105: #585461;  /* neutral                                   */
-  --color-brand-107: #4C4759;  /* world-map landmass stroke — imagery only  */
-  --color-brand-110: #2E2C33;  /* borders / quaternary surface              */
-  --color-brand-130: #2A2637;  /* surface hover                             */
-  --color-brand-200: #B19AFE;  /* hover foreground                          */
-  --color-brand-210: #9980FF;  /* PRIMARY BUTTON FILL (takes black text)    */
-  --color-brand-300: #8252FC;  /* gradient mid                              */
-  --color-brand-400: #20EFFE;  /* cyan — gradient + orb motifs ONLY         */
-  --color-brand-450: #077689;  /* deep cyan, card gradient wash             */
-  --color-brand-500: #5F20FE;  /* ACTION — links, borders, eyebrows         */
-  --color-brand-580: #5206E3;
-  --color-brand-600: #4004AF;  /* primary button hover                      */
-  --color-brand-620: #391398;  /* decorative orb gradient stop — art only   */
-  --color-brand-650: #33196E;
-  --color-brand-660: #281470;  /* the upward section glow                   */
-  --color-brand-670: #1B0D4E;  /* text ON the #9980FF button; outline hover */
-  --color-brand-700: #1A0452;
-  --color-brand-800: #1E113B;  /* primary button active                     */
-  --color-brand-900: #070312;
-  --color-brand-910: #0D0D0F;  /* card surface — ONE step off the page      */
-  --color-brand-920: #141319;  /* raised surface                            */
-  --color-brand-950: #050505;  /* the page                                  */
+
+  /* ---- Brand (violet) ---- */
+  --color-brand-25:  #E8E6F0;  /* near-white tint — gradient endpoint         */
+  --color-brand-50:  #BBB9CB;
+  --color-brand-100: #B8AFDB;
+  --color-brand-200: #B19AFE;  /* hover foreground                            */
+  --color-brand-300: #735CAB;
+  --color-brand-400: #5F3ABD;  /* feature-card ring mid-stop (was cyan)       */
+  --color-brand-500: #5F20FE;  /* ACTION — links, borders, eyebrows           */
+  --color-brand-600: #4705ED;
+  --color-brand-700: #4004AF;  /* primary button hover; tertiary border hover */
+  --color-brand-800: #1B0D4E;  /* text ON the glow button; outline hover      */
+  --color-brand-900: #1E113B;  /* primary button active; secondary fill       */
+  --color-brand-950: #0A0A0B;  /* THE PAGE — a neutral black kept in the
+                                  brand ramp; see WEBSITE-REVIEW.md sect. 5   */
+
+  /* ---- Gray ---- */
+  --color-gray-50:   #F4F4F6;  /* headings, body text                         */
+  --color-gray-100:  #DCDCE5;
+  --color-gray-200:  #D5D5DD;  /* long-form body copy                         */
+  --color-gray-300:  #C7C7DB;  /* secondary body, lighter                     */
+  --color-gray-400:  #A3A3C2;
+  --color-gray-500:  #9595BB;  /* secondary body, placeholders                */
+  --color-gray-600:  #6B6699;  /* neutral — muted metadata, LARGE TEXT ONLY   */
+  --color-gray-700:  #2B2848;  /* borders / quaternary surface                */
+  --color-gray-800:  #232339;  /* surface hover                               */
+  --color-gray-900:  #1C1C27;  /* tertiary surface                            */
+  --color-gray-950:  #15151E;
+  --color-gray-1000: #050505;  /* one dark section ground ("failureproof")    */
+  --color-gray-1100: #0F0F15;  /* card surface — NOTE: lighter than gray-1000;
+                                  the ramp is non-monotonic past 950          */
+
+  /* ---- Single-use accents (global.css calls them "once used") ---- */
+  --color-glow-25:    #9980FF; /* GLOW BUTTON FILL (takes dark text)          */
+  --color-shadow-0:   #281470; /* the upward section glow                     */
+  --color-progress-0: #8252FC; /* gradient mid — .rule / .progress            */
+
+  /* ---- Technology-card wash — the only place cyan survives ---- */
+  --color-technology-gradient-0:  #077689; /* deep cyan                       */
+  --color-technology-gradient-25: #1A0452;
+  --color-technology-gradient-50: #070312;
 
   /* ---- Error ramp ---- */
   --color-error-100: #FE9A9A;
@@ -120,35 +137,39 @@
   --color-error-400: #CA1400;
 
   /* =========================================================================
-   * SEMANTIC LAYER — use these.
+   * SEMANTIC LAYER — use these. Mapping verbatim from the production @theme.
    * ====================================================================== */
-  --color-heading:               var(--color-brand-0);
+  --color-heading:               var(--color-gray-50);
   --color-action:                var(--color-brand-500);
-  --color-neutral:               var(--color-brand-105);
+  --color-neutral:               var(--color-gray-600);
   --color-hovered:               var(--color-brand-200);
-  --color-outline-primary-hover: var(--color-brand-670);
+  --color-outline-primary-hover: var(--color-brand-800);
 
-  --color-body-primary:          var(--color-brand-0);
-  --color-body-secondary:        var(--color-brand-100);
-  --color-body-secondary-lighter:var(--color-brand-50);
+  --color-body-primary:          var(--color-gray-50);
+  --color-text-body-primary:     var(--color-gray-200); /* long-form copy     */
+  --color-body-secondary:        var(--color-gray-500);
+  --color-body-secondary-lighter:var(--color-gray-300);
 
   --color-surface-primary:       var(--color-brand-950);
   --color-surface-primary-transparent: hsl(from var(--color-surface-primary) h s l / 0.3);
-  --color-surface-primary-hover: var(--color-brand-130);
-  --color-surface-secondary:     var(--color-brand-910);
-  --color-surface-tertiary:      var(--color-brand-920);
-  --color-surface-quaternary:    var(--color-brand-110);
+  --color-surface-primary-hover: var(--color-gray-800);
+  --color-surface-secondary:     var(--color-gray-1100);
+  --color-surface-tertiary:      var(--color-gray-900);
+  --color-surface-quaternary:    var(--color-gray-700);
 
-  --color-default-transparent:   var(--color-brand-25);
+  --color-failureproof-0:        var(--color-gray-1000);
+  --color-default-transparent:   var(--color-gray-100);
   --color-error:                 var(--color-error-300);
 
-  /* ---- Brand gradient — violet to near-white, left to right ---- */
+  /* ---- Brand gradient — violet to near-white, left to right.
+   * The mid stop is the once-used progress accent (#8252FC), NOT brand-300:
+   * the rebuilt ramp's brand-300 (#735CAB) is a different, muted violet. ---- */
   --gradient-brand: linear-gradient(
     to right,
     var(--color-brand-500) 0%,
-    var(--color-brand-300) 60%,
+    var(--color-progress-0) 60%,
     var(--color-brand-200) 75%,
-    var(--color-brand-0) 100%
+    var(--color-brand-25) 100%
   );
 
   /* =========================================================================
@@ -219,13 +240,14 @@
    * Never substitute a conventional downward drop shadow for --shadow-section.
    * ====================================================================== */
   --shadow-section:
-    0 -64px 64px 0 hsl(from var(--color-brand-660) h s l / 0.20),
-    0 -10px 24px 0 hsl(from var(--color-brand-660) h s l / 0.10),
-    0 -6px  6px 0 hsl(from var(--color-brand-660) h s l / 0.08);
+    0 -64px 64px 0 hsl(from var(--color-shadow-0) h s l / 0.20),
+    0 -10px 24px 0 hsl(from var(--color-shadow-0) h s l / 0.10),
+    0 -6px  6px 0 hsl(from var(--color-shadow-0) h s l / 0.08);
 
   /* The GlowButton's own halo — VERBATIM from common/GlowButton.vue.
    * These three hues are measured production literals and deliberately are NOT
-   * ramp steps: #7A58FF and #5B34FA sit between brand-300 and brand-500, and
+   * ramp steps: #7A58FF and #5B34FA sit between the progress accent and the
+ * action violet, and
    * #4F22FF is bluer than the action violet. Rounding them to the nearest token
    * visibly changes the halo, which is the brand's most recognisable edge. */
   --shadow-glow-button:
@@ -393,25 +415,27 @@ a:hover { color: var(--color-hovered); }
 
 /* Solid violet — form submits and in-card confirmations. */
 .btn-primary            { background: var(--color-brand-500); }
-.btn-primary:hover      { background: var(--color-brand-600); }
-.btn-primary:active     { background: var(--color-brand-800); }
+.btn-primary:hover      { background: var(--color-brand-700); }
+.btn-primary:active     { background: var(--color-brand-900); }
 
-/* Raised surface — the quiet neighbour of a primary. */
-.btn-secondary          { background: var(--color-surface-secondary); }
+/* Deep-violet fill — the quiet neighbour of a primary. Source fills with
+ * brand-900 (#1E113B) and hovers to the tertiary surface. */
+.btn-secondary          { background: var(--color-brand-900); }
 .btn-secondary:hover    { background: var(--color-surface-tertiary); }
 
 /* Bordered — the workhorse. "Learn more" everywhere on the site.
- * The border hovers DOWN to --color-outline-primary-hover (#1B0D4E): the
+ * The border hovers DOWN to brand-700 (#4004AF, ~1.75:1 on the page): the
  * outline recedes rather than brightening. This is what production ships and
- * the label (#E8E6F0) never changes, so text contrast is untouched. */
+ * the label (#F4F4F6) never changes, so text contrast is untouched.
+ * WEBSITE-REVIEW.md sect. 4 flags the direction for a designer decision. */
 .btn-tertiary           { border: 1px solid var(--color-brand-500); }
-.btn-tertiary:hover     { border-color: var(--color-outline-primary-hover); }
+.btn-tertiary:hover     { border-color: var(--color-brand-700); }
 
 /* Ghost / text / inline link — nav items and tertiary entry points.
  * Only .btn-ghost re-declares font-bold in Button.vue; the text and link
  * variants ride the inherited regular weight. */
 .btn-ghost              { height: auto; padding: 0.5rem 1.5rem;
-                          color: var(--color-brand-0); }
+                          color: var(--color-body-primary); }
 .btn-ghost:hover,
 .btn-ghost:active       { color: var(--color-hovered); }
 
@@ -441,8 +465,8 @@ a:hover { color: var(--color-hovered); }
 .btn-glow {
   position: relative;
   overflow: hidden;
-  background: var(--color-brand-210);
-  color: var(--color-brand-670);
+  background: var(--color-glow-25);
+  color: var(--color-brand-800);
   box-shadow: var(--shadow-glow-button);
   transition: transform var(--transition-slow);
 }
@@ -514,7 +538,7 @@ a:hover { color: var(--color-hovered); }
  * Cards — sources: homepage/projects.astro, common/ArticlePreview.vue,
  *                  homepage/technology-card.vue
  * Depth is never built from surface contrast: the card sits ONE narrow step
- * off the page (#0D0D0F on #050505). Radius and border carry the separation.
+ * off the page (#0F0F15 on #0A0A0B). Radius and border carry the separation.
  * ------------------------------------------------------------------------ */
 
 .card {
@@ -529,7 +553,9 @@ a:hover { color: var(--color-hovered); }
 .card-article { border-radius: var(--radius-article); }
 
 /* Feature card — gradient hairline drawn with mask-composite, blurred
- * backdrop, no fill. Source: homepage/technology-card.vue */
+ * backdrop, no fill. Source: homepage/technology-card.vue.
+ * Since the rebuild brand-400 is violet (#5F3ABD), so the ring reads violet
+ * end to end; cyan survives only in the wash tokens above. */
 .card-feature {
   position: relative;
   box-sizing: border-box;
@@ -538,9 +564,9 @@ a:hover { color: var(--color-hovered); }
   padding: 2rem;
   backdrop-filter: blur(14px);
   background: linear-gradient(
-      hsl(from var(--color-brand-700) h s l / 0.1),
-      hsl(from var(--color-brand-450) h s l / 0.1),
-      hsl(from var(--color-brand-900) h s l / 0.1)) border-box;
+      hsl(from var(--color-technology-gradient-25) h s l / 0.1),
+      hsl(from var(--color-technology-gradient-0) h s l / 0.1),
+      hsl(from var(--color-technology-gradient-50) h s l / 0.1)) border-box;
 }
 
 .card-feature::before {
