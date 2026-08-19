@@ -104,6 +104,14 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
       .s-title { font-family: var(--font-sans); font-size: 4.6cqi; line-height: 1.1; letter-spacing: -0.02em; margin: 0; color: var(--color-body-primary); max-width: 82cqi; }
       .s-mega { font-family: var(--font-sans); font-size: 8cqi; line-height: 1.02; letter-spacing: -0.025em; margin: 0; color: var(--color-body-primary); }
       .s-lede { font-size: 1.95cqi; line-height: 1.5; color: var(--color-body-secondary-lighter); max-width: 66cqi; margin: 2.4cqi 0 0; }
+      /* Line breaking, decided by the browser rather than by hand. Display type
+         balances (every line about the same length, so a heading never ends on a
+         single stranded word — "…mapped / out." was doing exactly that); prose
+         gets `pretty`, which only pulls a word down to keep the LAST line from
+         being an orphan. Both are copy-length agnostic, so an editor can rewrite
+         a slide without re-breaking it manually. */
+      .s-mega, .s-title, .s-quote, .s-card h3 { text-wrap: balance; }
+      .s-lede, .s-eyebrow, .s-card p, .s-ask .item { text-wrap: pretty; }
       .s-accent { color: var(--color-hovered); }
 
       .s-grid { display: grid; gap: 2cqi; margin-top: 4cqi; }
@@ -161,7 +169,9 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
       .s-byline .r { font-size: 1.45cqi; color: var(--color-body-secondary); }
 
       /* ask checklist */
-      .s-ask { display: flex; flex-direction: column; gap: 1.8cqi; margin-top: 3.6cqi; max-width: 70cqi; }
+      /* 82cqi, the same measure .s-title uses. At 70cqi the longest item ran two
+         words past the line and left "us." stranded on a line of its own. */
+      .s-ask { display: flex; flex-direction: column; gap: 1.8cqi; margin-top: 3.6cqi; max-width: 82cqi; }
       .s-ask .item { display: flex; align-items: flex-start; gap: 1.8cqi; font-size: 2cqi; line-height: 1.4; color: var(--color-body-primary); }
       .s-ask .item .b { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; width: 3.4cqi; height: 3.4cqi; border-radius: 0.9cqi; background: var(--color-brand-800); color: var(--color-hovered); margin-top: 0.2cqi; }
       .s-ask .item .b svg { width: 1.9cqi; height: 1.9cqi; }
@@ -170,8 +180,18 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
          cannot be .btn - that class is pinned to 44px/16px and would be a speck
          on a 16:9 frame - so it takes the glow button's three defining values
          instead: the #9980FF field, the #1B0D4E text that only this button
-         carries anywhere in the system, and the halo, all at container scale. */
-      .s-cta { display: inline-flex; align-items: center; gap: 1.4cqi; margin-top: 4cqi; height: 6cqi; padding: 0 3.4cqi; border-radius: var(--radius-pill); background: var(--color-glow-25); color: var(--color-brand-800); box-shadow: var(--shadow-glow-button); font-family: var(--font-sans); font-weight: var(--font-weight-bold); font-size: 2.1cqi; letter-spacing: -0.01em; }
+         carries anywhere in the system, and the halo, all at container scale.
+         The halo needs room BELOW the pill: .f-body clips (overflow:hidden is the
+         no-clip guarantee for the fit runtime), and with the button as the last
+         thing in the slide the bloom was being sliced off flat, which read as a
+         rectangular seam under the button rather than as light. So the button is
+         block-level (an inline-flex box's bottom margin would not have counted
+         toward .f-fit's height, and the fit runtime measures that height) with a
+         40px reserve — px, not cqi, because --shadow-glow-button's 64px blur is
+         itself px: it reaches ~34px past the edge at any frame size, and the
+         .f-fit scale shrinks reserve and halo together.
+         DO NOT change this to inline-flex or drop the margin. */
+      .s-cta { display: flex; width: fit-content; align-items: center; gap: 1.4cqi; margin: 4cqi 0 40px; height: 6cqi; padding: 0 3.4cqi; border-radius: var(--radius-pill); background: var(--color-glow-25); color: var(--color-brand-800); box-shadow: var(--shadow-glow-button); font-family: var(--font-sans); font-weight: var(--font-weight-bold); font-size: 2.1cqi; letter-spacing: -0.01em; }
       .s-cta svg { width: 2cqi; height: 2cqi; }
 
       /* product wireframe motif (div/SVG, no screenshots) */
