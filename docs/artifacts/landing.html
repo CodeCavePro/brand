@@ -18,7 +18,9 @@
         -webkit-font-smoothing: antialiased;
         text-rendering: optimizeLegibility;
       }
-      a { color: var(--color-action); text-decoration: none; }
+      /* #5F20FE is 2.94:1 on this page; inline links carry the readable
+         violet. DESIGN.md sect. 10.5. */
+      a { color: var(--color-hovered); text-decoration: none; }
       h1, h2, h3, h4 {
         margin: 0;
         font-family: var(--font-sans);
@@ -30,22 +32,26 @@
       p { margin: 0; overflow-wrap: break-word; }
       img, svg { max-width: 100%; display: block; }
       .wrap { max-width: 1120px; margin: 0 auto; padding-left: clamp(20px, 4vw, 40px); padding-right: clamp(20px, 4vw, 40px); }
+      /* #5F20FE is 2.94:1 on this page — below every WCAG floor at any size.
+         Kickers carry --color-hovered (8.41:1), as the docs chrome does.
+         DESIGN.md sect. 10.5. */
       .kicker {
         display: block;
         text-transform: uppercase;
         letter-spacing: 0.14em;
         font-size: var(--text-caption);
         font-weight: var(--font-weight-bold);
-        color: var(--color-action);
+        color: var(--color-hovered);
         margin-bottom: 0.75rem;
       }
       .clamp-2, .clamp-3 { display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
       .clamp-2 { -webkit-line-clamp: 2; }
       .clamp-3 { -webkit-line-clamp: 3; }
-      a[role="button"]{transition:filter .15s ease,transform .15s ease}
-a[role="button"]:hover{filter:brightness(1.07)}
-a[role="button"]:active{filter:brightness(.95);transform:translateY(0.5px)}
-input:focus,textarea:focus,select:focus{border-color:var(--color-action)!important;box-shadow:0 0 0 3px var(--color-brand-800);outline:none}
+      /* Every control on this page is now .btn from colors_and_type.css — the
+         44px pill, not the generator's 64px rounded-rect. The one page-level
+         addition is a full-width modifier for the CTA that seats a pricing
+         card; .btn is width:fit-content by default. */
+      .btn-block { width: 100%; }
 details.kit-acc>summary{list-style:none;cursor:pointer}
 details.kit-acc>summary::-webkit-details-marker{display:none}
 details.kit-acc .kit-acc-icon{transition:transform .18s ease}
@@ -84,7 +90,9 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
           <a href="#faq">FAQ</a>
         </nav>
         <div style="display:flex;gap:0.75rem;align-items:center;">
-          <a role="button" tabindex="0" style="display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;cursor:pointer;white-space:nowrap;user-select:none;font-family:var(--font-sans);font-weight:var(--font-weight-bold);line-height:1;text-decoration:none;transition:all 200ms cubic-bezier(0.4, 0, 0.2, 1);height:var(--control-height);padding:0 0.5rem;font-size:var(--text-caption);border-radius:var(--radius-card);border:1px solid transparent;background:var(--color-action);color:#fff;border-color:var(--color-action);box-shadow:0 2px 0 var(--color-brand-800)">Discuss project for free</a>
+          <!-- Bordered, not glow: the sticky header shares a viewport with the
+               hero, and two glow buttons in one viewport is anti-pattern 6. -->
+          <a class="btn btn-tertiary" href="#pricing">Discuss project for free</a>
         </div>
       </div>
     </header>
@@ -93,17 +101,23 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
     <main>
     <section class="wrap" style="padding-top:clamp(56px, 9vw, 108px);text-align:center;">
       <div style="max-width:860px;margin:0 auto;">
-        <span style="display:inline-flex;align-items:center;height:var(--control-height);padding:0 0.5rem;font-family:var(--font-sans);font-size:var(--text-caption);line-height:1;color:var(--color-action);background:var(--color-brand-800);border:1px solid var(--color-brand-800);border-radius:var(--radius-md)">Plain · Specific · Senior</span>
+        <span style="display:inline-flex;align-items:center;height:var(--control-height);padding:0 0.5rem;font-family:var(--font-sans);font-size:var(--text-caption);line-height:1;color:var(--color-hovered);background:var(--color-brand-800);border:1px solid var(--color-brand-800);border-radius:var(--radius-md)">Plain · Specific · Senior</span>
         <h1 style="font-size:clamp(36px, 5.6vw, 64px);letter-spacing:-0.025em;line-height:1.06;margin:1.5rem auto 1.25rem;max-width:20ch;">Fifteen years of senior engineers, pointed at whatever is slowing you down.</h1>
         <p style="font-size:var(--text-lg);color:var(--color-body-secondary-lighter);max-width:62ch;margin:0 auto 2rem;line-height:1.5;">A software delivery studio working across cloud and DevOps, e-commerce, Autodesk plugins, automation and AI, HubSpot and AR/VR. Every service is named for what it produces, not for the stack it runs on.</p>
-        <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;">
-          <a role="button" tabindex="0" style="display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;cursor:pointer;white-space:nowrap;user-select:none;font-family:var(--font-sans);font-weight:var(--font-weight-bold);line-height:1;text-decoration:none;transition:all 200ms cubic-bezier(0.4, 0, 0.2, 1);height:var(--input-height);padding:0 1.5rem;font-size:var(--text-md);border-radius:var(--radius-card);border:1px solid transparent;background:var(--color-action);color:#fff;border-color:var(--color-action);box-shadow:0 2px 0 var(--color-brand-800)">Discuss project for free</a>
-          <a role="button" tabindex="0" style="display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;cursor:pointer;white-space:nowrap;user-select:none;font-family:var(--font-sans);font-weight:var(--font-weight-bold);line-height:1;text-decoration:none;transition:all 200ms cubic-bezier(0.4, 0, 0.2, 1);height:var(--input-height);padding:0 1.5rem;font-size:var(--text-md);border-radius:var(--radius-card);border:1px solid transparent;background:var(--color-surface-secondary);color:var(--color-body-primary);border-color:var(--color-surface-quaternary)">See our workflow</a>
+        <!-- The one true CTA. .btn-glow-field carries the edge bloom that lives
+             outside the clipped pill; the inner <span> clears the travelling
+             highlight. Repeated once at the very end of the page, never twice
+             in a viewport. -->
+        <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;align-items:center;">
+          <span class="btn-glow-field"><a class="btn btn-glow" href="#pricing"><span>Discuss project for free</span></a></span>
+          <a class="btn btn-tertiary" href="#how">See our workflow</a>
         </div>
         <p style="margin-top:1.25rem;font-size:var(--text-caption);color:var(--color-body-secondary);">Free consultation · Fifteen minutes · No strings attached</p>
       </div>
       <div style="max-width:980px;margin:clamp(40px, 6vw, 68px) auto 0;">
-      <div style="border:1px solid var(--color-surface-quaternary);border-radius:var(--radius-md);overflow:hidden;background:var(--color-surface-secondary);box-shadow:0 32px 80px -24px var(--color-surface-tertiary);">
+      <!-- --shadow-section, not a downward drop: CODECAVE's light comes from
+           below. A positive Y offset here is anti-pattern 1. -->
+      <div style="border:1px solid var(--color-surface-quaternary);border-radius:var(--radius-article);overflow:hidden;background:var(--color-surface-secondary);box-shadow:var(--shadow-section);">
         <div style="display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--color-surface-quaternary);background:var(--color-surface-primary);">
           <span style="width:10px;height:10px;border-radius:50%;background:var(--color-error-200);opacity:.55;"></span>
           <span style="width:10px;height:10px;border-radius:50%;background:var(--color-brand-200);opacity:.55;"></span>
@@ -209,18 +223,18 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
         <p style="color:var(--color-body-secondary-lighter);font-size:var(--text-md);">Three commitments CODECAVE makes before any contract does.</p>
       </div>
         <div class="pillars">
-        <div style="background:var(--color-surface-secondary);border:1px solid var(--color-surface-quaternary);border-radius:var(--radius-article);padding:2rem;box-shadow:0 1px 2px var(--color-surface-primary);display:flex;flex-direction:column;">
-          <div style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:var(--radius-md);background:var(--color-brand-800);color:var(--color-action);margin-bottom:1.25rem;"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" style="display:block;"><path d="M5 12l4 4 10-10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div style="background:var(--color-surface-secondary);border:1px solid var(--color-surface-quaternary);border-radius:var(--radius-article);padding:2rem;display:flex;flex-direction:column;">
+          <div style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:var(--radius-md);background:var(--color-brand-800);color:var(--color-hovered);margin-bottom:1.25rem;"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" style="display:block;"><path d="M5 12l4 4 10-10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <h3 class="clamp-2" style="font-size:var(--text-lg);margin-bottom:0.5rem;">Outcome before technology</h3>
           <p class="clamp-3" style="color:var(--color-body-secondary-lighter);">Every service is titled by what it produces, never by its stack.</p>
         </div>
-        <div style="background:var(--color-surface-secondary);border:1px solid var(--color-surface-quaternary);border-radius:var(--radius-article);padding:2rem;box-shadow:0 1px 2px var(--color-surface-primary);display:flex;flex-direction:column;">
-          <div style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:var(--radius-md);background:var(--color-brand-800);color:var(--color-action);margin-bottom:1.25rem;"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" style="display:block;"><path d="M12 3v18M3 12h18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div style="background:var(--color-surface-secondary);border:1px solid var(--color-surface-quaternary);border-radius:var(--radius-article);padding:2rem;display:flex;flex-direction:column;">
+          <div style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:var(--radius-md);background:var(--color-brand-800);color:var(--color-hovered);margin-bottom:1.25rem;"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" style="display:block;"><path d="M12 3v18M3 12h18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <h3 class="clamp-2" style="font-size:var(--text-lg);margin-bottom:0.5rem;">Risk is named, not hidden</h3>
           <p class="clamp-3" style="color:var(--color-body-secondary-lighter);">NDA, scope, milestones and outcomes are stated upfront.</p>
         </div>
-        <div style="background:var(--color-surface-secondary);border:1px solid var(--color-surface-quaternary);border-radius:var(--radius-article);padding:2rem;box-shadow:0 1px 2px var(--color-surface-primary);display:flex;flex-direction:column;">
-          <div style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:var(--radius-md);background:var(--color-brand-800);color:var(--color-action);margin-bottom:1.25rem;"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" style="display:block;"><circle cx="11" cy="11" r="6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 20l-4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div style="background:var(--color-surface-secondary);border:1px solid var(--color-surface-quaternary);border-radius:var(--radius-article);padding:2rem;display:flex;flex-direction:column;">
+          <div style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:var(--radius-md);background:var(--color-brand-800);color:var(--color-hovered);margin-bottom:1.25rem;"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" style="display:block;"><circle cx="11" cy="11" r="6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 20l-4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <h3 class="clamp-2" style="font-size:var(--text-lg);margin-bottom:0.5rem;">One specialist or a whole team</h3>
           <p class="clamp-3" style="color:var(--color-body-secondary-lighter);">Hire one senior specialist, a small squad, or a full delivery team. Same people either way.</p>
         </div>
@@ -241,7 +255,7 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
           <div style="aspect-ratio:124/108;border:1px solid var(--color-surface-quaternary);border-radius:var(--radius-article);background:var(--color-surface-primary);padding:1.5rem;"><svg viewBox="0 0 124 108" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><rect x="14" y="40" width="92" height="9" rx="4.5" fill="var(--color-surface-quaternary)"/><rect x="14" y="58" width="58" height="9" rx="4.5" fill="var(--color-surface-quaternary)"/><rect x="14" y="80" width="40" height="14" rx="7" fill="var(--color-action)"/></svg></div>
           <div>
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
-              <span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--color-action);color:#fff;font-size:var(--text-caption);font-weight:var(--font-weight-bold);">1</span>
+              <span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--color-action);color:var(--color-heading);font-size:var(--text-caption);font-weight:var(--font-weight-bold);">1</span>
               <h3 style="font-size:var(--text-lg);">Talk</h3>
             </div>
             <p style="color:var(--color-body-secondary-lighter);max-width:34ch;">Fifteen minutes, free, no strings. Tell us what is not working.</p>
@@ -251,7 +265,7 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
           <div style="aspect-ratio:124/108;border:1px solid var(--color-surface-quaternary);border-radius:var(--radius-article);background:var(--color-surface-primary);padding:1.5rem;"><svg viewBox="0 0 124 108" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><rect x="14" y="38" width="44" height="38" rx="6" fill="none" stroke="var(--color-surface-quaternary)" stroke-width="2"/><rect x="66" y="38" width="44" height="38" rx="6" fill="none" stroke="var(--color-action)" stroke-width="2"/><rect x="14" y="84" width="96" height="9" rx="4.5" fill="var(--color-surface-quaternary)"/></svg></div>
           <div>
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
-              <span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--color-action);color:#fff;font-size:var(--text-caption);font-weight:var(--font-weight-bold);">2</span>
+              <span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--color-action);color:var(--color-heading);font-size:var(--text-caption);font-weight:var(--font-weight-bold);">2</span>
               <h3 style="font-size:var(--text-lg);">Scope</h3>
             </div>
             <p style="color:var(--color-body-secondary-lighter);max-width:34ch;">You leave with next steps mapped out — whether or not you hire us.</p>
@@ -261,7 +275,7 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
           <div style="aspect-ratio:124/108;border:1px solid var(--color-surface-quaternary);border-radius:var(--radius-article);background:var(--color-surface-primary);padding:1.5rem;"><svg viewBox="0 0 124 108" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path d="M16 70l20 16 28-44" fill="none" stroke="var(--color-action)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><rect x="72" y="44" width="38" height="9" rx="4.5" fill="var(--color-surface-quaternary)"/><rect x="72" y="64" width="26" height="9" rx="4.5" fill="var(--color-surface-quaternary)"/></svg></div>
           <div>
             <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
-              <span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--color-action);color:#fff;font-size:var(--text-caption);font-weight:var(--font-weight-bold);">3</span>
+              <span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--color-action);color:var(--color-heading);font-size:var(--text-caption);font-weight:var(--font-weight-bold);">3</span>
               <h3 style="font-size:var(--text-lg);">Deliver</h3>
             </div>
             <p style="color:var(--color-body-secondary-lighter);max-width:34ch;">Scope, milestones and outcomes in writing before anyone starts.</p>
@@ -278,7 +292,7 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
           <h3 style="font-size:clamp(20px,2.4vw,26px);letter-spacing:-0.01em;">Book the fifteen minutes</h3>
           <p style="color:var(--color-body-secondary-lighter);margin-top:0.25rem;">Free consultation · No strings attached</p>
         </div>
-        <a role="button" tabindex="0" style="display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;cursor:pointer;white-space:nowrap;user-select:none;font-family:var(--font-sans);font-weight:var(--font-weight-bold);line-height:1;text-decoration:none;transition:all 200ms cubic-bezier(0.4, 0, 0.2, 1);height:var(--input-height);padding:0 1.5rem;font-size:var(--text-md);border-radius:var(--radius-card);border:1px solid transparent;background:var(--color-action);color:#fff;border-color:var(--color-action);box-shadow:0 2px 0 var(--color-brand-800)">Discuss project for free</a>
+        <a class="btn btn-primary" href="#pricing">Discuss project for free</a>
       </div>
     </section>
 
@@ -295,10 +309,10 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
             <h3 style="font-size:clamp(22px,2.6vw,30px);letter-spacing:-0.015em;margin-bottom:0.75rem;">Cloud &amp; DevOps</h3>
             <p style="color:var(--color-body-secondary-lighter);font-size:var(--text-md);max-width:46ch;">Optimize costs. Protect your data. Ship without holding your breath.</p>
             <div style="margin-top:1.5rem;">
-              <a role="button" tabindex="0" style="display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;cursor:pointer;white-space:nowrap;user-select:none;font-family:var(--font-sans);font-weight:var(--font-weight-bold);line-height:1;text-decoration:none;transition:all 200ms cubic-bezier(0.4, 0, 0.2, 1);height:var(--control-height);padding:0 1rem;font-size:var(--text-base);border-radius:var(--radius-card);border:1px solid transparent;background:transparent;color:var(--color-action);border-color:transparent">Learn more</a>
+              <a class="btn btn-text" href="#pricing">Learn more</a>
             </div>
-          </div><div class="zig-visual" style="border:1px solid var(--color-surface-quaternary);border-radius:var(--radius-article);background:var(--color-surface-secondary);box-shadow:0 8px 28px -16px var(--color-surface-tertiary);padding:2rem;min-height:240px;display:flex;flex-direction:column;gap:1.25rem;">
-            <div style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:var(--radius-md);background:var(--color-brand-800);color:var(--color-action);"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" style="display:block;"><path d="M4 13l5 5L20 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7l3 3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div><div class="zig-visual" style="border:1px solid var(--color-surface-quaternary);border-radius:var(--radius-article);background:var(--color-surface-secondary);padding:2rem;min-height:240px;display:flex;flex-direction:column;gap:1.25rem;">
+            <div style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:var(--radius-md);background:var(--color-brand-800);color:var(--color-hovered);"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" style="display:block;"><path d="M4 13l5 5L20 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 7l3 3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
             <div style="height:12px;width:70%;border-radius:var(--radius-sm);background:var(--color-surface-tertiary);"></div>
             <div style="height:12px;width:52%;border-radius:var(--radius-sm);background:var(--color-surface-secondary);"></div>
             <div style="margin-top:auto;display:flex;gap:0.75rem;">
@@ -306,8 +320,8 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
               <div style="flex:1;height:64px;border-radius:var(--radius-card);border:1px solid var(--color-surface-quaternary);"></div>
             </div>
           </div></div>
-        <div class="zig"><div class="zig-visual" style="border:1px solid var(--color-surface-quaternary);border-radius:var(--radius-article);background:var(--color-surface-secondary);box-shadow:0 8px 28px -16px var(--color-surface-tertiary);padding:2rem;min-height:240px;display:flex;flex-direction:column;gap:1.25rem;">
-            <div style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:var(--radius-md);background:var(--color-brand-800);color:var(--color-action);"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" style="display:block;"><rect x="4" y="4" width="16" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 12h6M12 9v6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="zig"><div class="zig-visual" style="border:1px solid var(--color-surface-quaternary);border-radius:var(--radius-article);background:var(--color-surface-secondary);padding:2rem;min-height:240px;display:flex;flex-direction:column;gap:1.25rem;">
+            <div style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:var(--radius-md);background:var(--color-brand-800);color:var(--color-hovered);"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" style="display:block;"><rect x="4" y="4" width="16" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 12h6M12 9v6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
             <div style="height:12px;width:70%;border-radius:var(--radius-sm);background:var(--color-surface-tertiary);"></div>
             <div style="height:12px;width:52%;border-radius:var(--radius-sm);background:var(--color-surface-secondary);"></div>
             <div style="margin-top:auto;display:flex;gap:0.75rem;">
@@ -319,7 +333,7 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
             <h3 style="font-size:clamp(22px,2.6vw,30px);letter-spacing:-0.015em;margin-bottom:0.75rem;">Automation &amp; AI</h3>
             <p style="color:var(--color-body-secondary-lighter);font-size:var(--text-md);max-width:46ch;">Leverage a virtual workforce instead of hiring twice for the same task.</p>
             <div style="margin-top:1.5rem;">
-              <a role="button" tabindex="0" style="display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;cursor:pointer;white-space:nowrap;user-select:none;font-family:var(--font-sans);font-weight:var(--font-weight-bold);line-height:1;text-decoration:none;transition:all 200ms cubic-bezier(0.4, 0, 0.2, 1);height:var(--control-height);padding:0 1rem;font-size:var(--text-base);border-radius:var(--radius-card);border:1px solid transparent;background:transparent;color:var(--color-action);border-color:transparent">Learn more</a>
+              <a class="btn btn-text" href="#pricing">Learn more</a>
             </div>
           </div></div>
         <div class="zig"><div>
@@ -327,10 +341,10 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
             <h3 style="font-size:clamp(22px,2.6vw,30px);letter-spacing:-0.015em;margin-bottom:0.75rem;">HubSpot</h3>
             <p style="color:var(--color-body-secondary-lighter);font-size:var(--text-md);max-width:46ch;">Aggregate data from all your tools into one CRM you can trust.</p>
             <div style="margin-top:1.5rem;">
-              <a role="button" tabindex="0" style="display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;cursor:pointer;white-space:nowrap;user-select:none;font-family:var(--font-sans);font-weight:var(--font-weight-bold);line-height:1;text-decoration:none;transition:all 200ms cubic-bezier(0.4, 0, 0.2, 1);height:var(--control-height);padding:0 1rem;font-size:var(--text-base);border-radius:var(--radius-card);border:1px solid transparent;background:transparent;color:var(--color-action);border-color:transparent">Learn more</a>
+              <a class="btn btn-text" href="#pricing">Learn more</a>
             </div>
-          </div><div class="zig-visual" style="border:1px solid var(--color-surface-quaternary);border-radius:var(--radius-article);background:var(--color-surface-secondary);box-shadow:0 8px 28px -16px var(--color-surface-tertiary);padding:2rem;min-height:240px;display:flex;flex-direction:column;gap:1.25rem;">
-            <div style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:var(--radius-md);background:var(--color-brand-800);color:var(--color-action);"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" style="display:block;"><path d="M12 2l3 6 7 .9-5 4.7 1.3 6.9L12 18l-6.3 3.5L7 14.6 2 9.9 9 9z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          </div><div class="zig-visual" style="border:1px solid var(--color-surface-quaternary);border-radius:var(--radius-article);background:var(--color-surface-secondary);padding:2rem;min-height:240px;display:flex;flex-direction:column;gap:1.25rem;">
+            <div style="display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:var(--radius-md);background:var(--color-brand-800);color:var(--color-hovered);"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" style="display:block;"><path d="M12 2l3 6 7 .9-5 4.7 1.3 6.9L12 18l-6.3 3.5L7 14.6 2 9.9 9 9z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
             <div style="height:12px;width:70%;border-radius:var(--radius-sm);background:var(--color-surface-tertiary);"></div>
             <div style="height:12px;width:52%;border-radius:var(--radius-sm);background:var(--color-surface-secondary);"></div>
             <div style="margin-top:auto;display:flex;gap:0.75rem;">
@@ -341,24 +355,28 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
       </div>
     </section>
 
-    <!-- 8 · PROOF — stat band + testimonials -->
-    <section style="background:var(--color-action);padding:clamp(48px,6vw,64px) 0;">
+    <!-- 8 · PROOF — stat band + testimonials
+         The generator filled this band with #5F20FE and set white type on it.
+         That is anti-pattern 4: the action violet edges, links and marks, it is
+         not a field. The band keeps its emphasis from scale and from the
+         readable violet (--color-hovered, 8.41:1) instead of from a fill. -->
+    <section style="background:var(--color-surface-secondary);border-top:1px solid var(--color-surface-quaternary);border-bottom:1px solid var(--color-surface-quaternary);padding:clamp(48px,6vw,64px) 0;">
       <div class="wrap" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:2rem;">
         <div style="text-align:center;">
-          <div style="font-family:var(--font-sans);font-size:clamp(30px,3.6vw,46px);font-weight:var(--font-weight-bold);line-height:1.05;color:#fff;letter-spacing:-0.02em;">15</div>
-          <div style="margin-top:0.25rem;font-size:var(--text-caption);color:rgba(255,255,255,0.78);">Years delivering</div>
+          <div style="font-family:var(--font-sans);font-size:clamp(30px,3.6vw,46px);font-weight:var(--font-weight-bold);line-height:1.05;color:var(--color-hovered);letter-spacing:-0.02em;">15</div>
+          <div style="margin-top:0.25rem;font-size:var(--text-caption);color:var(--color-body-secondary);">Years delivering</div>
         </div>
         <div style="text-align:center;">
-          <div style="font-family:var(--font-sans);font-size:clamp(30px,3.6vw,46px);font-weight:var(--font-weight-bold);line-height:1.05;color:#fff;letter-spacing:-0.02em;">40+</div>
-          <div style="margin-top:0.25rem;font-size:var(--text-caption);color:rgba(255,255,255,0.78);">Customers</div>
+          <div style="font-family:var(--font-sans);font-size:clamp(30px,3.6vw,46px);font-weight:var(--font-weight-bold);line-height:1.05;color:var(--color-hovered);letter-spacing:-0.02em;">40+</div>
+          <div style="margin-top:0.25rem;font-size:var(--text-caption);color:var(--color-body-secondary);">Customers</div>
         </div>
         <div style="text-align:center;">
-          <div style="font-family:var(--font-sans);font-size:clamp(30px,3.6vw,46px);font-weight:var(--font-weight-bold);line-height:1.05;color:#fff;letter-spacing:-0.02em;">50+</div>
-          <div style="margin-top:0.25rem;font-size:var(--text-caption);color:rgba(255,255,255,0.78);">Projects shipped</div>
+          <div style="font-family:var(--font-sans);font-size:clamp(30px,3.6vw,46px);font-weight:var(--font-weight-bold);line-height:1.05;color:var(--color-hovered);letter-spacing:-0.02em;">50+</div>
+          <div style="margin-top:0.25rem;font-size:var(--text-caption);color:var(--color-body-secondary);">Projects shipped</div>
         </div>
         <div style="text-align:center;">
-          <div style="font-family:var(--font-sans);font-size:clamp(30px,3.6vw,46px);font-weight:var(--font-weight-bold);line-height:1.05;color:#fff;letter-spacing:-0.02em;">6</div>
-          <div style="margin-top:0.25rem;font-size:var(--text-caption);color:rgba(255,255,255,0.78);">Service lines</div>
+          <div style="font-family:var(--font-sans);font-size:clamp(30px,3.6vw,46px);font-weight:var(--font-weight-bold);line-height:1.05;color:var(--color-hovered);letter-spacing:-0.02em;">6</div>
+          <div style="margin-top:0.25rem;font-size:var(--text-caption);color:var(--color-body-secondary);">Service lines</div>
         </div>
       </div>
     </section>
@@ -371,11 +389,11 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
         <p style="color:var(--color-body-secondary-lighter);font-size:var(--text-md);">Risk is named, not hidden. This is what that means in practice.</p>
       </div>
         <div class="grid-3">
-        <div style="display:flex;flex-direction:column;background:var(--color-surface-secondary);border:1px solid var(--color-surface-quaternary);border-radius:var(--radius-article);overflow:hidden;font-family:var(--font-sans);color:var(--color-body-primary);box-shadow:0 1px 2px var(--color-surface-primary)"><div style="padding:1.5rem;font-size:var(--text-base);line-height:var(--leading-base);color:var(--color-body-secondary-lighter);flex:1"><p style="margin:0 0 1.5rem;font-size:var(--text-md);line-height:1.6;color:var(--color-body-primary)">The consultation is free and carries no obligation. Fifteen minutes, and you leave with your next steps mapped out.</p>
+        <div style="display:flex;flex-direction:column;background:var(--color-surface-secondary);border:1px solid var(--color-surface-quaternary);border-radius:var(--radius-article);overflow:hidden;font-family:var(--font-sans);color:var(--color-body-primary)"><div style="padding:1.5rem;font-size:var(--text-base);line-height:var(--leading-base);color:var(--color-body-secondary-lighter);flex:1"><p style="margin:0 0 1.5rem;font-size:var(--text-md);line-height:1.6;color:var(--color-body-primary)">The consultation is free and carries no obligation. Fifteen minutes, and you leave with your next steps mapped out.</p>
   <div style="font-size:var(--text-caption);color:var(--color-body-secondary);">Before the first call</div></div></div>
-        <div style="display:flex;flex-direction:column;background:var(--color-surface-secondary);border:1px solid var(--color-surface-quaternary);border-radius:var(--radius-article);overflow:hidden;font-family:var(--font-sans);color:var(--color-body-primary);box-shadow:0 1px 2px var(--color-surface-primary)"><div style="padding:1.5rem;font-size:var(--text-base);line-height:var(--leading-base);color:var(--color-body-secondary-lighter);flex:1"><p style="margin:0 0 1.5rem;font-size:var(--text-md);line-height:1.6;color:var(--color-body-primary)">An NDA is signed before anything sensitive is discussed — not after, and not on request.</p>
+        <div style="display:flex;flex-direction:column;background:var(--color-surface-secondary);border:1px solid var(--color-surface-quaternary);border-radius:var(--radius-article);overflow:hidden;font-family:var(--font-sans);color:var(--color-body-primary)"><div style="padding:1.5rem;font-size:var(--text-base);line-height:var(--leading-base);color:var(--color-body-secondary-lighter);flex:1"><p style="margin:0 0 1.5rem;font-size:var(--text-md);line-height:1.6;color:var(--color-body-primary)">An NDA is signed before anything sensitive is discussed — not after, and not on request.</p>
   <div style="font-size:var(--text-caption);color:var(--color-body-secondary);">Before anything is shared</div></div></div>
-        <div style="display:flex;flex-direction:column;background:var(--color-surface-secondary);border:1px solid var(--color-surface-quaternary);border-radius:var(--radius-article);overflow:hidden;font-family:var(--font-sans);color:var(--color-body-primary);box-shadow:0 1px 2px var(--color-surface-primary)"><div style="padding:1.5rem;font-size:var(--text-base);line-height:var(--leading-base);color:var(--color-body-secondary-lighter);flex:1"><p style="margin:0 0 1.5rem;font-size:var(--text-md);line-height:1.6;color:var(--color-body-primary)">Scope, milestones and outcomes are written down before anyone opens an editor.</p>
+        <div style="display:flex;flex-direction:column;background:var(--color-surface-secondary);border:1px solid var(--color-surface-quaternary);border-radius:var(--radius-article);overflow:hidden;font-family:var(--font-sans);color:var(--color-body-primary)"><div style="padding:1.5rem;font-size:var(--text-base);line-height:var(--leading-base);color:var(--color-body-secondary-lighter);flex:1"><p style="margin:0 0 1.5rem;font-size:var(--text-md);line-height:1.6;color:var(--color-body-primary)">Scope, milestones and outcomes are written down before anyone opens an editor.</p>
   <div style="font-size:var(--text-caption);color:var(--color-body-secondary);">Before the work starts</div></div></div>
         </div>
       </div>
@@ -390,23 +408,23 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
         
       </div>
         <div><details class="kit-acc" open style="border-bottom:1px solid var(--color-surface-quaternary)">
-    <summary style="display:flex;align-items:center;justify-content:space-between;gap:1.25rem;padding:1.25rem 0;font-family:var(--font-sans);font-size:var(--text-md);font-weight:var(--font-weight-bold);color:var(--color-body-primary)"><span style="min-width:0;">What is CODECAVE?</span><span class="kit-acc-icon" style="flex:0 0 auto;color:var(--color-action);font-size:var(--text-lg);line-height:1;font-weight:400">+</span></summary>
+    <summary style="display:flex;align-items:center;justify-content:space-between;gap:1.25rem;padding:1.25rem 0;font-family:var(--font-sans);font-size:var(--text-md);font-weight:var(--font-weight-bold);color:var(--color-body-primary)"><span style="min-width:0;">What is CODECAVE?</span><span class="kit-acc-icon" style="flex:0 0 auto;color:var(--color-hovered);font-size:var(--text-lg);line-height:1;font-weight:400">+</span></summary>
     <div style="padding:0 0 1.25rem;font-family:var(--font-sans);font-size:var(--text-base);line-height:var(--leading-base);color:var(--color-body-secondary-lighter);max-width:70ch">A software delivery studio. Fifteen years, 40+ customers, 50+ projects across cloud and DevOps, e-commerce, Autodesk plugins, automation and AI, HubSpot and AR/VR.</div>
   </details>
 <details class="kit-acc" style="border-bottom:1px solid var(--color-surface-quaternary)">
-    <summary style="display:flex;align-items:center;justify-content:space-between;gap:1.25rem;padding:1.25rem 0;font-family:var(--font-sans);font-size:var(--text-md);font-weight:var(--font-weight-bold);color:var(--color-body-primary)"><span style="min-width:0;">How long does it take to get started?</span><span class="kit-acc-icon" style="flex:0 0 auto;color:var(--color-action);font-size:var(--text-lg);line-height:1;font-weight:400">+</span></summary>
+    <summary style="display:flex;align-items:center;justify-content:space-between;gap:1.25rem;padding:1.25rem 0;font-family:var(--font-sans);font-size:var(--text-md);font-weight:var(--font-weight-bold);color:var(--color-body-primary)"><span style="min-width:0;">How long does it take to get started?</span><span class="kit-acc-icon" style="flex:0 0 auto;color:var(--color-hovered);font-size:var(--text-lg);line-height:1;font-weight:400">+</span></summary>
     <div style="padding:0 0 1.25rem;font-family:var(--font-sans);font-size:var(--text-base);line-height:var(--leading-base);color:var(--color-body-secondary-lighter);max-width:70ch">The first call is fifteen minutes. What happens after that depends on what you need built; you will have the next steps written down before you decide anything.</div>
   </details>
 <details class="kit-acc" style="border-bottom:1px solid var(--color-surface-quaternary)">
-    <summary style="display:flex;align-items:center;justify-content:space-between;gap:1.25rem;padding:1.25rem 0;font-family:var(--font-sans);font-size:var(--text-md);font-weight:var(--font-weight-bold);color:var(--color-body-primary)"><span style="min-width:0;">Do I have to commit to anything?</span><span class="kit-acc-icon" style="flex:0 0 auto;color:var(--color-action);font-size:var(--text-lg);line-height:1;font-weight:400">+</span></summary>
+    <summary style="display:flex;align-items:center;justify-content:space-between;gap:1.25rem;padding:1.25rem 0;font-family:var(--font-sans);font-size:var(--text-md);font-weight:var(--font-weight-bold);color:var(--color-body-primary)"><span style="min-width:0;">Do I have to commit to anything?</span><span class="kit-acc-icon" style="flex:0 0 auto;color:var(--color-hovered);font-size:var(--text-lg);line-height:1;font-weight:400">+</span></summary>
     <div style="padding:0 0 1.25rem;font-family:var(--font-sans);font-size:var(--text-base);line-height:var(--leading-base);color:var(--color-body-secondary-lighter);max-width:70ch">The consultation is free and carries no strings. If the next steps we map out are something you would rather do yourself, that is a fine outcome.</div>
   </details>
 <details class="kit-acc" style="border-bottom:1px solid var(--color-surface-quaternary)">
-    <summary style="display:flex;align-items:center;justify-content:space-between;gap:1.25rem;padding:1.25rem 0;font-family:var(--font-sans);font-size:var(--text-md);font-weight:var(--font-weight-bold);color:var(--color-body-primary)"><span style="min-width:0;">How do you charge?</span><span class="kit-acc-icon" style="flex:0 0 auto;color:var(--color-action);font-size:var(--text-lg);line-height:1;font-weight:400">+</span></summary>
+    <summary style="display:flex;align-items:center;justify-content:space-between;gap:1.25rem;padding:1.25rem 0;font-family:var(--font-sans);font-size:var(--text-md);font-weight:var(--font-weight-bold);color:var(--color-body-primary)"><span style="min-width:0;">How do you charge?</span><span class="kit-acc-icon" style="flex:0 0 auto;color:var(--color-hovered);font-size:var(--text-lg);line-height:1;font-weight:400">+</span></summary>
     <div style="padding:0 0 1.25rem;font-family:var(--font-sans);font-size:var(--text-base);line-height:var(--leading-base);color:var(--color-body-secondary-lighter);max-width:70ch">By the shape of the engagement — one specialist, a small squad or a full delivery team. It is scoped after the call, in writing, before work starts.</div>
   </details>
 <details class="kit-acc" style="border-bottom:1px solid var(--color-surface-quaternary)">
-    <summary style="display:flex;align-items:center;justify-content:space-between;gap:1.25rem;padding:1.25rem 0;font-family:var(--font-sans);font-size:var(--text-md);font-weight:var(--font-weight-bold);color:var(--color-body-primary)"><span style="min-width:0;">What about security and privacy?</span><span class="kit-acc-icon" style="flex:0 0 auto;color:var(--color-action);font-size:var(--text-lg);line-height:1;font-weight:400">+</span></summary>
+    <summary style="display:flex;align-items:center;justify-content:space-between;gap:1.25rem;padding:1.25rem 0;font-family:var(--font-sans);font-size:var(--text-md);font-weight:var(--font-weight-bold);color:var(--color-body-primary)"><span style="min-width:0;">What about security and privacy?</span><span class="kit-acc-icon" style="flex:0 0 auto;color:var(--color-hovered);font-size:var(--text-lg);line-height:1;font-weight:400">+</span></summary>
     <div style="padding:0 0 1.25rem;font-family:var(--font-sans);font-size:var(--text-base);line-height:var(--leading-base);color:var(--color-body-secondary-lighter);max-width:70ch">An NDA is signed before anything sensitive changes hands. Your data stays yours, and access is limited to the people actually on your project.</div>
   </details></div>
       </div>
@@ -421,7 +439,7 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
         <p style="color:var(--color-body-secondary-lighter);font-size:var(--text-md);">Same senior people either way. The shape is scoped after the call.</p>
       </div>
         <div class="grid-3" style="max-width:1000px;margin:0 auto;">
-        <div style="display:flex;flex-direction:column;position:relative;background:var(--color-surface-secondary);border:1px solid var(--color-surface-quaternary);border-radius:var(--radius-article);padding:2rem;font-family:var(--font-sans);box-shadow:0 1px 2px var(--color-surface-primary)">
+        <div style="display:flex;flex-direction:column;position:relative;background:var(--color-surface-secondary);border:1px solid var(--color-surface-quaternary);border-radius:var(--radius-article);padding:2rem;font-family:var(--font-sans)">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
       <span style="font-weight:var(--font-weight-bold);font-size:var(--text-md);color:var(--color-body-primary);">One specialist</span>
       
@@ -431,23 +449,23 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
       <span style="font-size:var(--text-heading-md);font-weight:var(--font-weight-bold);color:var(--color-body-primary);line-height:1;letter-spacing:-0.01em;">1</span>
       <span style="color:var(--color-body-secondary);font-size:var(--text-caption);">person</span>
     </div>
-    <ul style="list-style:none;margin:0 0 2rem;padding:0;flex:1;"><li style="display:flex;gap:0.5rem;align-items:flex-start;padding:0.25rem 0;font-size:var(--text-base);line-height:var(--leading-base);color:var(--color-body-secondary-lighter)"><span style="color:var(--color-action);font-weight:var(--font-weight-bold);flex:0 0 auto;">&#10003;</span><span>A single, well-bounded problem</span></li><li style="display:flex;gap:0.5rem;align-items:flex-start;padding:0.25rem 0;font-size:var(--text-base);line-height:var(--leading-base);color:var(--color-body-secondary-lighter)"><span style="color:var(--color-action);font-weight:var(--font-weight-bold);flex:0 0 auto;">&#10003;</span><span>Works inside your process</span></li><li style="display:flex;gap:0.5rem;align-items:flex-start;padding:0.25rem 0;font-size:var(--text-base);line-height:var(--leading-base);color:var(--color-body-secondary-lighter)"><span style="color:var(--color-action);font-weight:var(--font-weight-bold);flex:0 0 auto;">&#10003;</span><span>Scoped in writing before starting</span></li></ul>
-    <div style="display:flex;flex-direction:column;"><a role="button" tabindex="0" style="display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;cursor:pointer;white-space:nowrap;user-select:none;font-family:var(--font-sans);font-weight:var(--font-weight-bold);line-height:1;text-decoration:none;transition:all 200ms cubic-bezier(0.4, 0, 0.2, 1);height:var(--control-height);padding:0 1rem;font-size:var(--text-base);border-radius:var(--radius-card);border:1px solid transparent;background:var(--color-surface-secondary);color:var(--color-body-primary);border-color:var(--color-surface-quaternary)">Discuss project for free</a></div>
+    <ul style="list-style:none;margin:0 0 2rem;padding:0;flex:1;"><li style="display:flex;gap:0.5rem;align-items:flex-start;padding:0.25rem 0;font-size:var(--text-base);line-height:var(--leading-base);color:var(--color-body-secondary-lighter)"><span style="color:var(--color-hovered);font-weight:var(--font-weight-bold);flex:0 0 auto;">&#10003;</span><span>A single, well-bounded problem</span></li><li style="display:flex;gap:0.5rem;align-items:flex-start;padding:0.25rem 0;font-size:var(--text-base);line-height:var(--leading-base);color:var(--color-body-secondary-lighter)"><span style="color:var(--color-hovered);font-weight:var(--font-weight-bold);flex:0 0 auto;">&#10003;</span><span>Works inside your process</span></li><li style="display:flex;gap:0.5rem;align-items:flex-start;padding:0.25rem 0;font-size:var(--text-base);line-height:var(--leading-base);color:var(--color-body-secondary-lighter)"><span style="color:var(--color-hovered);font-weight:var(--font-weight-bold);flex:0 0 auto;">&#10003;</span><span>Scoped in writing before starting</span></li></ul>
+    <div style="display:flex;flex-direction:column;"><a class="btn btn-tertiary btn-block" href="#pricing">Discuss project for free</a></div>
   </div>
-        <div style="display:flex;flex-direction:column;position:relative;background:var(--color-surface-secondary);border:2px solid var(--color-action);border-radius:var(--radius-article);padding:2rem;font-family:var(--font-sans);box-shadow:0 12px 32px var(--color-brand-800)">
+        <div style="display:flex;flex-direction:column;position:relative;background:var(--color-surface-secondary);border:2px solid var(--color-action);border-radius:var(--radius-article);padding:2rem;font-family:var(--font-sans);box-shadow:var(--shadow-section)">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
       <span style="font-weight:var(--font-weight-bold);font-size:var(--text-md);color:var(--color-body-primary);">A squad</span>
-      <span style="display:inline-flex;align-items:center;height:var(--control-height);padding:0 0.5rem;font-family:var(--font-sans);font-size:var(--text-caption);line-height:1;color:var(--color-action);background:var(--color-brand-800);border:1px solid var(--color-brand-800);border-radius:var(--radius-md)">Most common</span>
+      <span style="display:inline-flex;align-items:center;height:var(--control-height);padding:0 0.5rem;font-family:var(--font-sans);font-size:var(--text-caption);line-height:1;color:var(--color-hovered);background:var(--color-brand-800);border:1px solid var(--color-brand-800);border-radius:var(--radius-md)">Most common</span>
     </div>
     <p style="margin:0 0 1.25rem;font-size:var(--text-caption);color:var(--color-body-secondary);">A small team with a delivery lead.</p>
     <div style="display:flex;align-items:baseline;gap:0.25rem;margin-bottom:1.5rem;">
       <span style="font-size:var(--text-heading-md);font-weight:var(--font-weight-bold);color:var(--color-body-primary);line-height:1;letter-spacing:-0.01em;">2&ndash;4</span>
       <span style="color:var(--color-body-secondary);font-size:var(--text-caption);">people</span>
     </div>
-    <ul style="list-style:none;margin:0 0 2rem;padding:0;flex:1;"><li style="display:flex;gap:0.5rem;align-items:flex-start;padding:0.25rem 0;font-size:var(--text-base);line-height:var(--leading-base);color:var(--color-body-secondary-lighter)"><span style="color:var(--color-action);font-weight:var(--font-weight-bold);flex:0 0 auto;">&#10003;</span><span>A delivery lead who owns the schedule</span></li><li style="display:flex;gap:0.5rem;align-items:flex-start;padding:0.25rem 0;font-size:var(--text-base);line-height:var(--leading-base);color:var(--color-body-secondary-lighter)"><span style="color:var(--color-action);font-weight:var(--font-weight-bold);flex:0 0 auto;">&#10003;</span><span>Milestones and outcomes in writing</span></li><li style="display:flex;gap:0.5rem;align-items:flex-start;padding:0.25rem 0;font-size:var(--text-base);line-height:var(--leading-base);color:var(--color-body-secondary-lighter)"><span style="color:var(--color-action);font-weight:var(--font-weight-bold);flex:0 0 auto;">&#10003;</span><span>One weekly account of where it stands</span></li><li style="display:flex;gap:0.5rem;align-items:flex-start;padding:0.25rem 0;font-size:var(--text-base);line-height:var(--leading-base);color:var(--color-body-secondary-lighter)"><span style="color:var(--color-action);font-weight:var(--font-weight-bold);flex:0 0 auto;">&#10003;</span><span>Handover, not a dependency</span></li></ul>
-    <div style="display:flex;flex-direction:column;"><a role="button" tabindex="0" style="display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;cursor:pointer;white-space:nowrap;user-select:none;font-family:var(--font-sans);font-weight:var(--font-weight-bold);line-height:1;text-decoration:none;transition:all 200ms cubic-bezier(0.4, 0, 0.2, 1);height:var(--control-height);padding:0 1rem;font-size:var(--text-base);border-radius:var(--radius-card);border:1px solid transparent;background:var(--color-action);color:#fff;border-color:var(--color-action);box-shadow:0 2px 0 var(--color-brand-800)">Discuss project for free</a></div>
+    <ul style="list-style:none;margin:0 0 2rem;padding:0;flex:1;"><li style="display:flex;gap:0.5rem;align-items:flex-start;padding:0.25rem 0;font-size:var(--text-base);line-height:var(--leading-base);color:var(--color-body-secondary-lighter)"><span style="color:var(--color-hovered);font-weight:var(--font-weight-bold);flex:0 0 auto;">&#10003;</span><span>A delivery lead who owns the schedule</span></li><li style="display:flex;gap:0.5rem;align-items:flex-start;padding:0.25rem 0;font-size:var(--text-base);line-height:var(--leading-base);color:var(--color-body-secondary-lighter)"><span style="color:var(--color-hovered);font-weight:var(--font-weight-bold);flex:0 0 auto;">&#10003;</span><span>Milestones and outcomes in writing</span></li><li style="display:flex;gap:0.5rem;align-items:flex-start;padding:0.25rem 0;font-size:var(--text-base);line-height:var(--leading-base);color:var(--color-body-secondary-lighter)"><span style="color:var(--color-hovered);font-weight:var(--font-weight-bold);flex:0 0 auto;">&#10003;</span><span>One weekly account of where it stands</span></li><li style="display:flex;gap:0.5rem;align-items:flex-start;padding:0.25rem 0;font-size:var(--text-base);line-height:var(--leading-base);color:var(--color-body-secondary-lighter)"><span style="color:var(--color-hovered);font-weight:var(--font-weight-bold);flex:0 0 auto;">&#10003;</span><span>Handover, not a dependency</span></li></ul>
+    <div style="display:flex;flex-direction:column;"><a class="btn btn-primary btn-block" href="#pricing">Discuss project for free</a></div>
   </div>
-        <div style="display:flex;flex-direction:column;position:relative;background:var(--color-surface-secondary);border:1px solid var(--color-surface-quaternary);border-radius:var(--radius-article);padding:2rem;font-family:var(--font-sans);box-shadow:0 1px 2px var(--color-surface-primary)">
+        <div style="display:flex;flex-direction:column;position:relative;background:var(--color-surface-secondary);border:1px solid var(--color-surface-quaternary);border-radius:var(--radius-article);padding:2rem;font-family:var(--font-sans)">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
       <span style="font-weight:var(--font-weight-bold);font-size:var(--text-md);color:var(--color-body-primary);">A delivery team</span>
       
@@ -457,8 +475,8 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
       <span style="font-size:var(--text-heading-md);font-weight:var(--font-weight-bold);color:var(--color-body-primary);line-height:1;letter-spacing:-0.01em;">5+</span>
       
     </div>
-    <ul style="list-style:none;margin:0 0 2rem;padding:0;flex:1;"><li style="display:flex;gap:0.5rem;align-items:flex-start;padding:0.25rem 0;font-size:var(--text-base);line-height:var(--leading-base);color:var(--color-body-secondary-lighter)"><span style="color:var(--color-action);font-weight:var(--font-weight-bold);flex:0 0 auto;">&#10003;</span><span>More than one service line at once</span></li><li style="display:flex;gap:0.5rem;align-items:flex-start;padding:0.25rem 0;font-size:var(--text-base);line-height:var(--leading-base);color:var(--color-body-secondary-lighter)"><span style="color:var(--color-action);font-weight:var(--font-weight-bold);flex:0 0 auto;">&#10003;</span><span>Named specialists per domain</span></li><li style="display:flex;gap:0.5rem;align-items:flex-start;padding:0.25rem 0;font-size:var(--text-base);line-height:var(--leading-base);color:var(--color-body-secondary-lighter)"><span style="color:var(--color-action);font-weight:var(--font-weight-bold);flex:0 0 auto;">&#10003;</span><span>Contracts and SLA to match</span></li></ul>
-    <div style="display:flex;flex-direction:column;"><a role="button" tabindex="0" style="display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;cursor:pointer;white-space:nowrap;user-select:none;font-family:var(--font-sans);font-weight:var(--font-weight-bold);line-height:1;text-decoration:none;transition:all 200ms cubic-bezier(0.4, 0, 0.2, 1);height:var(--control-height);padding:0 1rem;font-size:var(--text-base);border-radius:var(--radius-card);border:1px solid transparent;background:var(--color-surface-secondary);color:var(--color-body-primary);border-color:var(--color-surface-quaternary)">Discuss project for free</a></div>
+    <ul style="list-style:none;margin:0 0 2rem;padding:0;flex:1;"><li style="display:flex;gap:0.5rem;align-items:flex-start;padding:0.25rem 0;font-size:var(--text-base);line-height:var(--leading-base);color:var(--color-body-secondary-lighter)"><span style="color:var(--color-hovered);font-weight:var(--font-weight-bold);flex:0 0 auto;">&#10003;</span><span>More than one service line at once</span></li><li style="display:flex;gap:0.5rem;align-items:flex-start;padding:0.25rem 0;font-size:var(--text-base);line-height:var(--leading-base);color:var(--color-body-secondary-lighter)"><span style="color:var(--color-hovered);font-weight:var(--font-weight-bold);flex:0 0 auto;">&#10003;</span><span>Named specialists per domain</span></li><li style="display:flex;gap:0.5rem;align-items:flex-start;padding:0.25rem 0;font-size:var(--text-base);line-height:var(--leading-base);color:var(--color-body-secondary-lighter)"><span style="color:var(--color-hovered);font-weight:var(--font-weight-bold);flex:0 0 auto;">&#10003;</span><span>Contracts and SLA to match</span></li></ul>
+    <div style="display:flex;flex-direction:column;"><a class="btn btn-tertiary btn-block" href="#pricing">Discuss project for free</a></div>
   </div>
         </div>
         <p style="text-align:center;margin-top:1.5rem;font-size:var(--text-caption);color:var(--color-body-secondary);">Nothing here is a price list. The engagement is scoped after the call, in writing.</p>
@@ -466,19 +484,25 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
     </section>
     </main>
 
-    <!-- 11 · FINAL CTA — the page's strongest accent -->
+    <!-- 11 · FINAL CTA — the page's strongest accent
+         Not a violet panel with white type on it: the accent is the glow button,
+         and nothing else in the section is allowed to compete with it. The panel
+         is the ordinary card ground (one step off the page, hairline, 36px
+         radius) lit from below by --shadow-section. The two blurred orbs stay,
+         because the decorative layer is part of the brand -- they just sit in
+         brand-900/800 under the surface instead of on top of a violet field. -->
     <section class="wrap" style="padding-bottom:clamp(64px,9vw,104px);">
-      <div style="background:var(--color-action);border-radius:clamp(24px,2.4vw,36px);padding:clamp(48px,7vw,84px) clamp(24px,5vw,64px);text-align:center;position:relative;overflow:hidden;">
-        <div style="position:absolute;top:-100px;right:-90px;width:320px;height:320px;border-radius:50%;background:var(--color-brand-700);opacity:0.5;"></div>
-        <div style="position:absolute;bottom:-120px;left:-80px;width:260px;height:260px;border-radius:50%;background:var(--color-brand-900);opacity:0.45;"></div>
+      <div style="background:var(--color-surface-secondary);border:1px solid var(--color-surface-quaternary);border-radius:var(--radius-article);box-shadow:var(--shadow-section);padding:clamp(48px,7vw,84px) clamp(24px,5vw,64px);text-align:center;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:-140px;right:-110px;width:340px;height:340px;border-radius:50%;background:var(--color-brand-900);filter:blur(24px);opacity:0.85;"></div>
+        <div style="position:absolute;bottom:-150px;left:-100px;width:280px;height:280px;border-radius:50%;background:var(--color-brand-800);filter:blur(28px);opacity:0.7;"></div>
         <div style="position:relative;">
-          <h2 style="color:#fff;font-size:clamp(28px,4vw,46px);letter-spacing:-0.02em;line-height:1.08;margin-bottom:1.25rem;max-width:20ch;margin-left:auto;margin-right:auto;">Fifteen minutes. Free. No strings attached.</h2>
-          <p class="clamp-2" style="color:rgba(255,255,255,0.88);font-size:var(--text-md);max-width:540px;margin:0 auto 2rem;">Let us connect and build a solid IT foundation for your business.</p>
-          <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;">
-            <a role="button" tabindex="0" style="display:inline-flex;align-items:center;justify-content:center;cursor:pointer;white-space:nowrap;user-select:none;font-family:var(--font-sans);font-weight:var(--font-weight-bold);line-height:1;text-decoration:none;height:var(--input-height);padding:0 1.5rem;font-size:var(--text-md);border-radius:var(--radius-card);background:#fff;color:var(--color-action);border:none;">Discuss project for free</a>
-            <a href="#" style="display:inline-flex;align-items:center;height:var(--input-height);color:rgba(255,255,255,0.92);font-weight:var(--font-weight-bold);padding:0 1.25rem;">Talk to us &rarr;</a>
+          <h2 style="color:var(--color-heading);font-size:clamp(28px,4vw,46px);letter-spacing:-0.02em;line-height:1.08;margin-bottom:1.25rem;max-width:20ch;margin-left:auto;margin-right:auto;">Fifteen minutes. Free. No strings attached.</h2>
+          <p class="clamp-2" style="color:var(--color-body-secondary-lighter);font-size:var(--text-md);max-width:540px;margin:0 auto 2rem;">Let us connect and build a solid IT foundation for your business.</p>
+          <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;align-items:center;">
+            <span class="btn-glow-field"><a class="btn btn-glow" href="#pricing"><span>Discuss project for free</span></a></span>
+            <a class="btn btn-ghost" href="#">Talk to us &rarr;</a>
           </div>
-          <p style="margin-top:1.25rem;font-size:var(--text-caption);color:rgba(255,255,255,0.72);">Fifteen minutes · No obligation</p>
+          <p style="margin-top:1.25rem;font-size:var(--text-caption);color:var(--color-body-secondary);">Fifteen minutes · No obligation</p>
         </div>
       </div>
     </section>
