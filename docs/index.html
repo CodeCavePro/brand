@@ -11,11 +11,12 @@
   <link rel="stylesheet" href="colors_and_type.css" />
   <link rel="stylesheet" href="ds-nav.css" />
   <style>
-    body { padding: 4rem var(--gutter-md) 6rem; }
-    .shell { max-width: var(--max-width-desktop); margin: 0 auto; }
+    /* Top padding lives on .shell, not body: the global nav is body's first
+       child, and padding above it would push the sticky bar off the top edge. */
+    body { padding: 0 var(--gutter-md) 6rem; }
+    .shell { max-width: var(--max-width-desktop); margin: 0 auto; padding-top: 4rem; }
     @media (min-width: 1280px) { body { padding-inline: var(--gutter-xl); } }
 
-    .mark { height: 34px; width: auto; display: block; margin-bottom: 2.5rem; }
 
     .eyebrow { margin: 0 0 0.75rem; color: var(--color-hovered);
                font-size: var(--text-caption); font-weight: var(--font-weight-bold);
@@ -111,8 +112,6 @@
 </nav>
 
 <div class="shell">
-
-  <img class="mark" src="build/codecave-wide.svg" alt="CODECAVE" />
 
   <p class="eyebrow">Open Design system</p>
   <h1>CODECAVE is dark, round,<br />and <em>violet</em>.</h1>

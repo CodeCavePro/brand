@@ -114,7 +114,6 @@ body {
 
 /* --- masthead ------------------------------------------------------------ */
 .bk-masthead { padding-top: clamp(3rem, 7vw, 6rem); padding-bottom: clamp(3rem, 7vw, 6rem); }
-.bk-masthead-mark { display: block; width: min(320px, 68vw); height: auto; margin-bottom: 2.5rem; }
 .bk-tagline {
   max-width: 34ch;
   margin: 1.5rem 0 0;
@@ -151,9 +150,7 @@ body {
   padding-bottom: 0.75rem;
 }
 .bk-topbar ul { display: flex; margin: 0; padding: 0; list-style: none; }
-/* The global bar directly above owns the wordmark now; a second copy one row
-   down was the same mark twice in 100px of header. */
-.bk-topbar-logo { display: none; }
+/* The global bar directly above owns the wordmark; this bar is links only. */
 /* Anchor jumps land below BOTH bars. */
 .bk-section { scroll-margin-top: 9rem; }
 
@@ -397,14 +394,6 @@ body {
 @media (max-width: 768px) {
   .bk-topbar { position: static; }
   .bk-topbar-inner { flex-wrap: wrap; justify-content: center; }
-  .bk-topbar-logo {
-    position: static;
-    transform: none;
-    order: -1;
-    flex-basis: 100%;
-    justify-content: center;
-    padding: 0.5rem 0 0.75rem;
-  }
 }
 </style>
 </head>
@@ -434,8 +423,6 @@ body {
       <li><a class="btn btn-ghost" href="#palette">Palette</a></li>
       <li><a class="btn btn-ghost" href="#type">Typography</a></li>
     </ul>
-    <a class="bk-topbar-logo" href="#top" aria-label="Back to top">
-      <img src="assets/codecave-wide.svg" alt="CODECAVE"></a>
     <ul>
       <li><a class="btn btn-ghost" href="#components">Components</a></li>
       <li><a class="btn btn-ghost" href="#voice">Voice</a></li>
@@ -448,8 +435,6 @@ body {
 
   <!-- ===================== MASTHEAD ===================== -->
   <header class="bk-masthead" data-od-id="kit-masthead">
-    <img class="bk-masthead-mark" src="assets/codecave-wide.svg"
-         alt="CODECAVE" width="357" height="110">
     <h1 class="bk-h1" data-od-id="kit-title">Dark, round, and violet —<br>in that order of importance.</h1>
     <p class="bk-tagline">The brand kit for CODECAVE. There is no light theme; the
        surfaces below are the default, not a mode.</p>
