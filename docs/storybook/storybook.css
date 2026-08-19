@@ -6,14 +6,17 @@
  *  the one Astro port.)
  */
 
-/* Top padding lives on .sb, not body: the global nav is body's first child,
-   and padding above it holds the sticky bar off the top edge — it then jumps
-   to 0 on first scroll, and its only gap to the content below came from that
-   same padding. Same fix as index.html. 4rem matches the other doc sections;
-   this was 3rem. */
-body { padding: 0 var(--gutter-md) 6rem; }
-.sb { max-width: var(--max-width-desktop); margin: 0 auto; padding-top: 4rem; }
-@media (min-width: 1280px) { body { padding-inline: var(--gutter-xl); } }
+/* body carries no padding at all — top padding would sit above the sticky nav
+   (body's first child) and side padding would inset the bar's own background
+   and hairline. Both belong on the shell. The gutter ladder below is
+   .page-container's, repeated verbatim so the shell's content lines up with
+   the nav's; .ds-nav-inner IS a .page-container and is border-box, so this
+   one has to be too. */
+body { padding: 0 0 6rem; }
+.sb  { box-sizing: border-box; max-width: var(--max-width-desktop);
+       margin: 0 auto; padding: 4rem var(--gutter-base) 0; }
+@media (min-width: 768px)  { .sb { padding-inline: var(--gutter-md); } }
+@media (min-width: 1280px) { .sb { padding-inline: var(--gutter-xl); } }
 
 .sb-back { display: inline-block; margin-bottom: 2rem;
            color: var(--color-body-secondary-lighter);

@@ -18,8 +18,14 @@
 
 :root {
   /* Published so a page with its own sticky element can stack below the bar
-     instead of underneath it — the brand kit's section bar does exactly that. */
-  --ds-nav-height: 3.5rem;
+     instead of underneath it — the brand kit's section bar does exactly that.
+     Derived from the bar's own parts rather than guessed, because a guess drifts:
+     this was a flat 3.5rem (56px) against a bar that renders 65px, so the brand
+     kit's section bar stuck 9px too high and looked like it shrank on the first
+     scroll and grew back on the way up. */
+  --ds-nav-row: 2.5rem;   /* .btn-ghost is height:auto — 0.5 + 1.5 line box + 0.5 */
+  --ds-nav-pad: 0.75rem;  /* the header's py-3 */
+  --ds-nav-height: calc(var(--ds-nav-row) + 2 * var(--ds-nav-pad) + 1px);
 }
 
 .ds-nav {
@@ -38,10 +44,12 @@
   justify-content: space-between;
   align-items: center;
   position: relative;
-  min-height: 0;            /* .page-container's 100% floor is for pages, not bars */
+  /* Overrides .page-container's 100% floor (that is for pages, not bars) and
+     pins the row, so --ds-nav-height above is a guarantee and not a guess. */
+  min-height: calc(var(--ds-nav-row) + 2 * var(--ds-nav-pad));
   max-width: var(--max-width-desktop);
-  padding-top: 0.75rem;     /* the header's py-3 */
-  padding-bottom: 0.75rem;
+  padding-top: var(--ds-nav-pad);
+  padding-bottom: var(--ds-nav-pad);
 }
 
 .ds-nav ul {
