@@ -83,7 +83,19 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
          separate sheets rather than as one scroll. */
       .frame--surface { background: var(--color-surface-primary); }
 
-      .f-head { display: flex; justify-content: space-between; align-items: center; gap: 2cqi; padding: 3cqi 5cqi 0; color: var(--color-neutral); font-size: 1.35cqi; }
+      /* The clearance below the masthead (and above the foot) is a full lockup
+         height. Both bands used to end flush against .f-body, which was survivable
+         while the masthead was a line of type — a text line carries its own optical
+         space above and below the letters — but the SVG's artwork runs to the edge
+         of its box, so the slide kicker was arriving right under the wordmark.
+         The space belongs on the BANDS, not on .f-body: the fit runtime measures
+         .f-body's clientHeight, which counts its own padding, so padding there
+         would let a shrunk slide scale straight back into the gap. Padding here
+         takes the height out of the body's flex share instead, where the runtime
+         sees it. That height is not free — it deepens the shrink on the five dense
+         slides — so the outer padding gives a little back: the bands sit slightly
+         closer to the frame edge and the clearance goes where it is being read. */
+      .f-head { display: flex; justify-content: space-between; align-items: center; gap: 2cqi; padding: 2.6cqi 5cqi 2.4cqi; color: var(--color-neutral); font-size: 1.35cqi; }
       /* The wordmark is the logo file, not the six letters retyped in Satoshi.
          The lockup is drawn — the mark, the letter spacing, the violet — and
          none of that survives being set as text, which is what every slide was
@@ -100,7 +112,7 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
          flex:none keeps its natural (unshrunk) height so the runtime can
          measure the true overflow instead of a flex-shrunk box. */
       .f-fit { flex: none; width: 100%; transform-origin: center center; will-change: transform; }
-      .f-foot { display: flex; justify-content: space-between; align-items: center; gap: 2cqi; padding: 0 5cqi 3cqi; color: var(--color-neutral); font-size: 1.25cqi; }
+      .f-foot { display: flex; justify-content: space-between; align-items: center; gap: 2cqi; padding: 1.8cqi 5cqi 2.6cqi; color: var(--color-neutral); font-size: 1.25cqi; }
       .f-foot .rule { flex: 1; height: 1px; background: var(--color-surface-quaternary); }
 
       /* #5F20FE is 2.94:1 on this ground, so the kicker TEXT carries the readable
