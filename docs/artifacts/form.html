@@ -57,8 +57,13 @@
       .form-brand ul { list-style: none; margin: 0; padding: 0; }
       .form-brand li { display: flex; gap: 0.75rem; align-items: flex-start; padding: 0.5rem 0; font-size: var(--text-md); line-height: 1.45; }
       .form-brand li svg { flex: 0 0 auto; margin-top: 4px; color: var(--color-hovered); }
-      .form-brand .mark { display: inline-flex; width: 30px; height: 30px; border-radius: var(--radius-sm); background: var(--color-brand-800); color: var(--color-hovered); align-items: center; justify-content: center; }
-      .form-brand .wordmark { font-weight: var(--font-weight-bold); font-size: var(--text-md); letter-spacing: -0.01em; color: var(--color-heading); }
+      /* The logo file, not the name set in Satoshi beside an invented tick-in-a-
+         box. That pairing was a lockup this brand does not have, and the letters
+         are outlined vector that must never be re-typed (DESIGN.md sect. 8).
+         1.75rem is the height the site header gives it. align-self because the
+         panel is a column flex box: a stretched img box would centre the lockup
+         in the panel instead of setting it against the left margin. */
+      .form-brand .wordmark { display: block; align-self: flex-start; height: 1.75rem; width: auto; aspect-ratio: 357 / 110; }
       .form-brand .foot { display: flex; align-items: flex-start; gap: 0.75rem; color: var(--color-body-secondary); font-size: var(--text-caption); line-height: var(--leading-caption); }
       /* The one place the action violet appears on this panel: an 8px dot. A
          mark, not a field. */
@@ -136,12 +141,7 @@
         <svg class="grain" width="220" height="220" viewBox="0 0 220 220" fill="none" aria-hidden="true"><defs><pattern id="fdot" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.6" fill="currentColor"/></pattern></defs><rect width="220" height="220" fill="url(#fdot)"/></svg>
         <div class="orb"></div>
 
-        <div style="display:flex;align-items:center;gap:0.75rem;">
-          <span class="mark">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M1.5 7l3.5 3.5L12.5 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </span>
-          <span class="wordmark">CODECAVE</span>
-        </div>
+        <img class="wordmark" src="../assets/codecave-wide.svg" alt="CODECAVE">
 
         <div style="max-width:42ch;">
           <h1>My consultation is free. No strings attached.</h1>

@@ -89,9 +89,13 @@
       /* the single accent mark that sits on the focal */
       .p-rule { width: 12cqi; height: 0.7cqi; background: var(--color-action); border-radius: var(--radius-pill); }
 
-      /* header band: tiny wordmark + edition tag, like a print masthead */
+      /* header band: small logo + edition tag, like a print masthead. Both this
+         and the sign-off below were the name set in Satoshi; the wordmark is a
+         drawn lockup and print is the last place to approximate it. Sized by
+         height, with the file's proportion declared so the band does not reflow
+         when the SVG lands. */
       .p-head { display: flex; align-items: center; justify-content: space-between; gap: 3cqi; }
-      .p-wordmark { font-weight: var(--font-weight-bold); font-size: 2.4cqi; letter-spacing: -0.01em; color: var(--color-heading); }
+      .p-wordmark { display: block; height: 3.4cqi; width: auto; aspect-ratio: 357 / 110; }
 
       /* one action, on its own ruled band — the poster's equivalent of the page's
          single CTA. No button: a printed sheet has nothing to press. */
@@ -99,18 +103,19 @@
       .p-cta-action { font-weight: var(--font-weight-bold); font-size: 3cqi; letter-spacing: -0.01em; color: var(--color-heading); }
       .p-cta-link { font-size: 2.4cqi; font-weight: var(--font-weight-bold); letter-spacing: 0.01em; color: var(--color-hovered); white-space: nowrap; }
 
-      /* signature footer: logo small & confident, like a signature */
+      /* signature footer: the logo, larger than the masthead's, as the sign-off.
+         The violet dot that used to stand beside the typed name was a mark this
+         brand does not have — the real one is drawn into the file, on the left
+         of the lockup, where the dot was trying to be. */
       .p-sign { display: flex; align-items: flex-end; justify-content: space-between; gap: 3cqi; }
-      .p-sign-mark { display: flex; align-items: center; gap: 1.6cqi; }
-      .p-sign-dot { width: 2.6cqi; height: 2.6cqi; border-radius: 50%; background: var(--color-action); flex: 0 0 auto; }
-      .p-sign-name { font-weight: var(--font-weight-bold); font-size: 2.8cqi; letter-spacing: -0.01em; color: var(--color-heading); }
+      .p-sign-logo { display: block; height: 5cqi; width: auto; aspect-ratio: 357 / 110; }
     </style>
   </head>
   <body>
     <div class="poster-stage">
     <div class="poster">
       <header class="p-head">
-        <span class="p-wordmark">CODECAVE</span>
+        <img class="p-wordmark" src="../assets/codecave-wide.svg" alt="CODECAVE">
         <span class="p-meta">codecave.pro</span>
       </header>
 
@@ -126,10 +131,7 @@
       </div>
 
       <footer class="p-sign">
-        <span class="p-sign-mark">
-          <span class="p-sign-dot"></span>
-          <span class="p-sign-name">CODECAVE</span>
-        </span>
+        <img class="p-sign-logo" src="../assets/codecave-wide.svg" alt="CODECAVE">
         <span class="p-meta" style="text-align:right;max-width:40cqi;">Plain · Specific</span>
       </footer>
     </div>
