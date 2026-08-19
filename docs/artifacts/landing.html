@@ -193,7 +193,9 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
     </section>
 
     <!-- 3 · SOCIAL PROOF — hugs the hero -->
-    <section class="wrap" style="padding:clamp(40px,6vw,64px) 0 8px;">
+    <!-- padding-block, not the padding shorthand: .wrap's gutter IS padding-inline,
+         so a shorthand here resets it to 0 and the section runs to the viewport edge. -->
+    <section class="wrap" style="padding-top:clamp(40px,6vw,64px);padding-bottom:8px;">
       <div class="hero-trust" style="margin-bottom:1.5rem;">
         <span style="font-size:var(--text-caption);color:var(--color-body-secondary-lighter);">15 years &middot; 40+ customers &middot; 50+ projects delivered</span>
       </div>
@@ -320,7 +322,7 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
     </section>
 
     <!-- recurring CTA (~every 1.5 screens) — calm, the loud one is reserved for module 11 -->
-    <section class="wrap" style="padding:0 0 clamp(56px,8vw,88px);">
+    <section class="wrap" style="padding-top:0;padding-bottom:clamp(56px,8vw,88px);">
       <div style="border:1px solid var(--color-brand-800);background:var(--color-brand-800);border-radius:clamp(12px,2vw,24px);padding:clamp(24px,4vw,36px) clamp(24px,5vw,48px);display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;">
         <div style="min-width:0;">
           <h3 style="font-size:clamp(20px,2.4vw,26px);letter-spacing:-0.01em;">Book the fifteen minutes</h3>
