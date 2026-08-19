@@ -53,7 +53,9 @@
                         background var(--transition-colors); }
     .card:hover { background: var(--color-surface-tertiary);
                   border-color: var(--color-action); }
-    .card .k { color: var(--color-action); font-size: var(--text-caption);
+    /* --color-hovered, not --color-action: #5F20FE is 2.94:1 on this ground and
+       this is 14px uppercase type. DESIGN.md §10.5. */
+    .card .k { color: var(--color-hovered); font-size: var(--text-caption);
                font-weight: var(--font-weight-bold); letter-spacing: 0.08em;
                text-transform: uppercase; }
     .card strong { color: var(--color-heading); font-size: var(--text-lg);
