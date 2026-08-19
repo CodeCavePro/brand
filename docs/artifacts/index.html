@@ -10,8 +10,10 @@
   <link rel="stylesheet" href="../colors_and_type.css" />
   <link rel="stylesheet" href="../ds-nav.css" />
   <style>
-    body { padding: 4rem var(--gutter-md) 6rem; }
-    .shell { max-width: var(--max-width-desktop); margin: 0 auto; }
+    /* Top padding lives on .shell, not body: the global nav is body's first
+       child, and padding above it would push the sticky bar off the top edge. */
+    body { padding: 0 var(--gutter-md) 6rem; }
+    .shell { max-width: var(--max-width-desktop); margin: 0 auto; padding-top: 4rem; }
     @media (min-width: 1280px) { body { padding-inline: var(--gutter-xl); } }
 
     .back { display: inline-block; margin-bottom: 2.5rem; text-decoration: none;

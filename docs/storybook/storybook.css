@@ -6,8 +6,13 @@
  *  the one Astro port.)
  */
 
-body { padding: 3rem var(--gutter-md) 6rem; }
-.sb { max-width: var(--max-width-desktop); margin: 0 auto; }
+/* Top padding lives on .sb, not body: the global nav is body's first child,
+   and padding above it holds the sticky bar off the top edge — it then jumps
+   to 0 on first scroll, and its only gap to the content below came from that
+   same padding. Same fix as index.html. 4rem matches the other doc sections;
+   this was 3rem. */
+body { padding: 0 var(--gutter-md) 6rem; }
+.sb { max-width: var(--max-width-desktop); margin: 0 auto; padding-top: 4rem; }
 @media (min-width: 1280px) { body { padding-inline: var(--gutter-xl); } }
 
 .sb-back { display: inline-block; margin-bottom: 2rem;

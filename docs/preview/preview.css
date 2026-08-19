@@ -3,13 +3,19 @@
  * introduces a color: the chrome is built from the system's own tokens so a
  * reviewer never mistakes scaffolding for brand. */
 
+/* Top padding lives on .pv-shell, not body: the global nav is body's first
+   child, and padding above it holds the sticky bar 4rem off the top edge —
+   it then jumps to 0 on first scroll, and its only gap to the content below
+   came from that same padding, so the page opened with the bar touching the
+   eyebrow. Same fix as index.html. */
 body {
-  padding: 4rem var(--gutter-md) 6rem;
+  padding: 0 var(--gutter-md) 6rem;
 }
 
 .pv-shell {
   max-width: var(--max-width-desktop);
   margin: 0 auto;
+  padding-top: 4rem;
 }
 
 .pv-head {
