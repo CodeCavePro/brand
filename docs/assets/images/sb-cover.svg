@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="132" height="132" viewBox="0 0 132 132">
+  <!-- Storybook placeholder article cover. Palette: gray-900 / brand-800 / brand-500 / brand-200. -->
+  <rect width="132" height="132" fill="#1C1C27"/>
+  <circle cx="98" cy="34" r="42" fill="#1B0D4E"/>
+  <rect x="-24" y="88" width="130" height="110" rx="24" transform="rotate(-8 41 143)" fill="#5F20FE" opacity="0.55"/>
+  <circle cx="28" cy="30" r="9" fill="#B19AFE"/>
+</svg>

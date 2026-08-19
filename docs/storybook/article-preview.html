@@ -6,15 +6,17 @@
 <title>ArticlePreview — CODECAVE storybook</title>
 <link rel="icon" href="../build/favicon.svg">
 <link rel="stylesheet" href="../colors_and_type.css">
-<link rel="stylesheet" href="components.css">
+<link rel="stylesheet" href="tw-bridge.css">
 <link rel="stylesheet" href="storybook.css">
-<style>
-  /* Story-only: the cover is Strapi-hosted, so these canvases use a flat token
-     block in its place rather than shipping an invented image. */
-  .ph { background: var(--color-surface-tertiary); display: grid;
-        place-content: center; color: var(--color-body-secondary);
-        font-family: var(--font-mono); font-size: 0.625rem; }
-</style>
+<script type="importmap">
+{
+  "imports": {
+    "vue": "../vendor/vue.esm-browser.prod.js",
+    "gsap": "../vendor/gsap/index.js",
+    "gsap/dist/SplitText": "../vendor/gsap/SplitText.js"
+  }
+}
+</script>
 </head>
 <body data-od-id="story-article-preview">
 <div class="sb">
@@ -29,6 +31,7 @@
     <div class="sb-tags">
       <span class="sb-tag is-vue">Vue island</span>
       <span class="sb-tag">src/components/common/ArticlePreview.vue</span>
+      <span class="sb-tag">rendered live from compiled/ArticlePreview.js</span>
       <span class="sb-tag">Strapi</span>
     </div>
   </header>
@@ -46,25 +49,13 @@
 
   <section class="sb-section">
     <h2>Stories</h2>
-    <p>Hover to see the card lift #0D0D0F → #141319. The whole card is one
-       anchor.</p>
+    <p>The whole card is one anchor. Hovering changes nothing — in current
+       source the hover state re-applies the resting surface (see findings).</p>
     <div class="sb-stories is-wide">
 
       <div class="sb-story">
         <div class="sb-canvas is-block">
-          <a class="cc-article" href="#">
-            <div class="head">
-              <div class="ph" style="width:132px;height:132px;border-radius:0.75rem;flex:none">cover</div>
-              <div>
-                <time datetime="2026-04-18">18 April 2026</time>
-                <h3>Cutting a BIM export step out of the delivery loop</h3>
-              </div>
-            </div>
-            <div>
-              <p class="excerpt">A manual Revit export sat between the model and the ERP. We replaced it with an Autodesk plugin that round-trips the data, and the weekly reconciliation went from four hours to none.</p>
-              <p class="rt">Reading time: 6 m.</p>
-            </div>
-          </a>
+          <div id="story-art1"></div>
         </div>
         <div class="sb-story-body">
           <span class="sb-story-name">Default</span>
@@ -75,19 +66,7 @@
 
       <div class="sb-story">
         <div class="sb-canvas is-block">
-          <a class="cc-article" href="#">
-            <div class="head">
-              <div class="ph" style="width:132px;height:132px;border-radius:0.75rem;flex:none">cover</div>
-              <div>
-                <time datetime="2026-02-02">2 February 2026</time>
-                <h3>Why we title services by outcome</h3>
-              </div>
-            </div>
-            <div>
-              <p class="excerpt">Short excerpt.</p>
-              <p class="rt">Reading time: 2 m.</p>
-            </div>
-          </a>
+          <div id="story-art2"></div>
         </div>
         <div class="sb-story-body">
           <span class="sb-story-name">Short excerpt</span>
@@ -107,9 +86,16 @@
       override it. On the insights index every card emits an <code>h2</code>,
       which sit as siblings of the page's own section headings and flatten the
       document outline. In a carousel of six, a screen reader reports six
-      same-level headings with no grouping. The stories above use
-      <code>h3</code> so this page's own outline stays valid — that is a
-      deviation from source, and it is the deviation being reported.</p>
+      same-level headings with no grouping. The mounted cards above really do
+      emit <code>h2</code>s — this page inherits the flattened outline it is
+      reporting.</p>
+
+    <p class="sb-note is-warn"><strong>The hover lift is a no-op.</strong>
+      The anchor carries <code>bg-surface-secondary hover:bg-surface-secondary</code>
+      — the hover re-applies the resting token, so <code>transition-colors</code>
+      and <code>cursor-pointer</code> promise an affordance that never comes.
+      An earlier revision lifted to a lighter surface on hover; either restore
+      that (<code>hover:bg-surface-tertiary</code>) or drop the transition.</p>
 
     <p class="sb-note is-warn"><strong><code>cover.name</code> is used as alt text.</strong>
       <code>:alt="article.cover.name"</code> puts the CMS filename into the
@@ -119,10 +105,11 @@
       correct than a filename read aloud.</p>
 
     <p class="sb-note"><strong>The date can render empty.</strong>
-      <code>article.date?.toString()</code> is optional-chained for the
-      <code>datetime</code> attribute, but <code>formattedDate(locale, date)</code>
-      is called unguarded. An article with no date reaches the formatter as
-      <code>undefined</code>.</p>
+      <code>formattedDate</code> now guards its inputs — it returns <code>''</code>
+      when <code>locale</code> or <code>date</code> is missing (an earlier revision
+      let <code>undefined</code> reach the formatter). An article with no date
+      therefore renders an empty <code>&lt;time&gt;</code> element rather than
+      throwing: silent, but structurally odd markup.</p>
 
     <p class="sb-note"><strong>Radius 2.25rem is undeclared as a token.</strong>
       It is written inline as <code>rounded-[2.25rem]</code>. The system has this
@@ -130,5 +117,42 @@
   </section>
 
 </div>
+
+<script type="module">
+  import { createApp } from 'vue';
+  import ArticlePreview from './compiled/ArticlePreview.js';
+
+  createApp(ArticlePreview, {
+    article: {
+      slug: 'bim-export-loop',
+      cover: { url: '/uploads/bim-export-hero.png', name: 'bim-export-hero.png' },
+      date: '2026-04-18',
+      locale: 'en-GB',
+      title: 'Cutting a BIM export step out of the delivery loop',
+      excerpt: 'A manual Revit export sat between the model and the ERP. We replaced it with an Autodesk plugin that round-trips the data, and the weekly reconciliation went from four hours to none.',
+      readingtime: 6,
+    },
+  }).mount('#story-art1');
+
+  createApp(ArticlePreview, {
+    article: {
+      slug: 'outcome-titles',
+      cover: { url: '/uploads/outcome-titles.png', name: 'outcome-titles.png' },
+      date: '2026-02-02',
+      locale: 'en-GB',
+      title: 'Why we title services by outcome',
+      excerpt: 'Short excerpt.',
+      readingtime: 2,
+    },
+  }).mount('#story-art2');
+
+  // getImageUrl() prefixes every media path with the Strapi host
+  // (lib/strapi.ts), so the covers the component requests live on the CMS.
+  // The storybook swaps in a local placeholder after mount; everything else
+  // about the <img> — classes, object-cover, alt wiring — is the component's.
+  for (const img of document.querySelectorAll('.sb-canvas img')) {
+    img.src = '../assets/images/sb-cover.svg';
+  }
+</script>
 </body>
 </html>

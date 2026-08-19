@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <!-- Storybook placeholder avatar (fictional person). Palette: gray-900 / gray-500. -->
+  <clipPath id="c"><circle cx="32" cy="32" r="32"/></clipPath>
+  <g clip-path="url(#c)">
+    <rect width="64" height="64" fill="#1C1C27"/>
+    <circle cx="32" cy="25" r="10" fill="#9595BB"/>
+    <ellipse cx="32" cy="54" rx="17" ry="12" fill="#9595BB"/>
+  </g>
+</svg>
