@@ -10,6 +10,7 @@
      rules with paths relative to this directory, so fonts come with it.
      Nothing on this page re-declares a colour that lives in there. -->
 <link rel="stylesheet" href="colors_and_type.css">
+<link rel="stylesheet" href="ds-nav.css" />
 
 <style>
 /* ===========================================================================
@@ -127,7 +128,10 @@ body {
    riding the translucent primary surface + blur its dropdown uses. */
 .bk-topbar {
   position: sticky;
-  top: 0;
+  /* Rides directly under the package-wide bar in ds-nav.css, which owns top: 0.
+     The two read as one stacked header: global destinations, then this page's
+     sections. */
+  top: var(--ds-nav-height);
   z-index: 10;
   border-bottom: 1px solid var(--color-surface-quaternary);
   background: var(--color-surface-primary-transparent);
@@ -137,7 +141,9 @@ body {
 .bk-topbar-inner {
   box-sizing: border-box;     /* the site resets this globally; the kit page does not */
   display: flex;
-  justify-content: space-between;
+  /* The wordmark moved up to the global bar, so the two link groups no longer
+     split around anything — they close up and read as one centred row. */
+  justify-content: center;
   align-items: center;
   position: relative;
   min-height: 0;              /* .page-container's 100% floor is for pages */
@@ -145,17 +151,11 @@ body {
   padding-bottom: 0.75rem;
 }
 .bk-topbar ul { display: flex; margin: 0; padding: 0; list-style: none; }
-.bk-topbar-logo {
-  position: absolute;         /* centred exactly as the site does it */
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  transition: opacity var(--transition-base);
-}
-.bk-topbar-logo:hover { opacity: 0.8; }
-.bk-topbar-logo img { height: 1.75rem; width: auto; }
-/* Anchor jumps land below the bar. */
-.bk-section { scroll-margin-top: 5.5rem; }
+/* The global bar directly above owns the wordmark now; a second copy one row
+   down was the same mark twice in 100px of header. */
+.bk-topbar-logo { display: none; }
+/* Anchor jumps land below BOTH bars. */
+.bk-section { scroll-margin-top: 9rem; }
 
 /* --- logo ---------------------------------------------------------------- */
 .bk-stage {
@@ -410,6 +410,22 @@ body {
 </head>
 
 <body data-od-id="brand-kit">
+
+<nav class="ds-nav" aria-label="Design system">
+  <div class="page-container ds-nav-inner">
+    <ul>
+      <li><a class="btn btn-ghost" href="brand-kit.html" aria-current="page">Brand kit</a></li>
+      <li><a class="btn btn-ghost" href="preview/index.html">Specimens</a></li>
+    </ul>
+    <a class="ds-nav-logo" href="index.html" aria-label="CODECAVE design system — documentation home">
+      <img src="assets/codecave-wide.svg" alt="CODECAVE"></a>
+    <ul>
+      <li><a class="btn btn-ghost" href="storybook/index.html">Storybooks</a></li>
+      <li><a class="btn btn-ghost" href="artifacts/index.html">Artifacts</a></li>
+    </ul>
+  </div>
+</nav>
+
 
 <nav class="bk-topbar" aria-label="Sections" data-od-id="kit-toc">
   <div class="page-container bk-topbar-inner">

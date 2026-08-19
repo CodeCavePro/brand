@@ -1,0 +1,80 @@
+/* CODECAVE design system — the global documentation bar.
+ *
+ * One bar, every documentation page. It is the brand kit's top bar promoted to
+ * package chrome, and it keeps that bar's provenance: the site's own header
+ * (header/desktop-menu.vue) — ghost-button links split around the centred
+ * wordmark, riding the translucent primary surface and the blur the site's
+ * dropdown uses.
+ *
+ * Linked AFTER colors_and_type.css on every page; it owns no colors of its own,
+ * only token references, so a palette change moves it with the rest of the
+ * system.
+ *
+ * Deliberately absent from the artifact specimens (artifacts/deck, email, form,
+ * landing, newsletter, poster). Those pages ARE the deliverable being shown —
+ * an HTML email with a documentation bar welded to the top is no longer a valid
+ * email. Their gallery, artifacts/index.html, carries the bar instead.
+ */
+
+:root {
+  /* Published so a page with its own sticky element can stack below the bar
+     instead of underneath it — the brand kit's section bar does exactly that. */
+  --ds-nav-height: 3.5rem;
+}
+
+.ds-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid var(--color-surface-quaternary);
+  background: var(--color-surface-primary-transparent);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+}
+
+.ds-nav-inner {
+  box-sizing: border-box;   /* the site resets this globally; these pages do not */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  min-height: 0;            /* .page-container's 100% floor is for pages, not bars */
+  max-width: var(--max-width-desktop);
+  padding-top: 0.75rem;     /* the header's py-3 */
+  padding-bottom: 0.75rem;
+}
+
+.ds-nav ul {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ds-nav-logo {
+  position: absolute;       /* centred exactly as the site does it */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  transition: opacity var(--transition-base);
+}
+.ds-nav-logo:hover { opacity: 0.8; }
+.ds-nav-logo img { height: 1.75rem; width: auto; }
+
+/* The page you are on. The hovered violet — not a new color, and not a
+   background: the bar stays quiet. */
+.ds-nav a[aria-current="page"] { color: var(--color-hovered); }
+
+@media (max-width: 767px) {
+  .ds-nav-inner { flex-wrap: wrap; justify-content: center; }
+  .ds-nav ul { flex: 1; justify-content: center; }
+  .ds-nav-logo {
+    position: static;
+    transform: none;
+    order: -1;
+    flex-basis: 100%;
+    justify-content: center;
+    padding: 0.5rem 0 0.75rem;
+  }
+}

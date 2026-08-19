@@ -9,6 +9,7 @@
        whose `body` rule sets background: var(--color-surface-primary). There is
        no local color literal to drift, and nothing here to re-render. -->
   <link rel="stylesheet" href="colors_and_type.css" />
+  <link rel="stylesheet" href="ds-nav.css" />
   <style>
     body { padding: 4rem var(--gutter-md) 6rem; }
     .shell { max-width: var(--max-width-desktop); margin: 0 auto; }
@@ -93,6 +94,22 @@
   </style>
 </head>
 <body data-od-id="system-front-door">
+
+<nav class="ds-nav" aria-label="Design system">
+  <div class="page-container ds-nav-inner">
+    <ul>
+      <li><a class="btn btn-ghost" href="brand-kit.html">Brand kit</a></li>
+      <li><a class="btn btn-ghost" href="preview/index.html">Specimens</a></li>
+    </ul>
+    <a class="ds-nav-logo" href="index.html" aria-label="CODECAVE design system — documentation home">
+      <img src="assets/codecave-wide.svg" alt="CODECAVE"></a>
+    <ul>
+      <li><a class="btn btn-ghost" href="storybook/index.html">Storybooks</a></li>
+      <li><a class="btn btn-ghost" href="artifacts/index.html">Artifacts</a></li>
+    </ul>
+  </div>
+</nav>
+
 <div class="shell">
 
   <img class="mark" src="build/codecave-wide.svg" alt="CODECAVE" />
