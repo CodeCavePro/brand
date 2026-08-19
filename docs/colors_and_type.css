@@ -746,13 +746,14 @@ a:hover { color: var(--color-hovered); }
 .checkbox-chip input {
   width: 1rem;
   height: 1rem;
-  /* 4px, not the inherited 8px. --radius-sm on a 16px box is exactly half its
-   * side, so the small variant renders as a perfect circle and every reader
-   * takes the group for radio buttons — i.e. for a pick-one when it is a
-   * pick-any. Shape is the only thing carrying that distinction, so it has to
-   * survive the size. This is not the "no radii under 8px" anti-pattern, which
-   * is about panels and cards; a 16px control at 8px has no corner left.
-   * Filed against the source in WEBSITE-REVIEW.md sect. 4. */
+  /* 4px literal, NOT var(--radius-sm) — and this is a name collision, not a
+   * disagreement with the site. Checkbox.vue asks for --radius-sm; the site's
+   * @theme never declares one, so on the live site the box takes Tailwind's
+   * default 0.25rem and renders at 4px. Here --radius-sm is this system's own
+   * 8px (inputs, small chips), which on a 16px box is exactly half the side —
+   * a perfect circle, i.e. a radio button, i.e. pick-one where the group is
+   * pick-any. Pinning the number keeps this specimen showing what the site
+   * shows. Do not "fix" it back to the token. */
   border-radius: 0.25rem;
   border: 0;
   outline: 2px solid var(--color-surface-quaternary);

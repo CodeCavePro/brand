@@ -131,13 +131,19 @@ section's own heading and flatten the document outline.
   a sentence-length label (the newsletter opt-in on the contact form is one)
   hits it. Add `shrink-0`. *Fixed ahead in the port (`flex: none`) because it
   made the brand documentation render a broken control.*
-- **The small chip checkbox is a perfect circle** (`common/Checkbox.vue`,
-  `size="small"`): `w-4 h-4` with `border-radius: var(--radius-sm)` is 8px on a
-  16px box — exactly half the side — so the services and budget pickers read as
-  radio buttons, i.e. as pick-one when they are pick-any. Shape is the only
-  signal carrying that distinction and it does not survive the size reduction.
-  Give the small variant a smaller corner (4px reads unambiguously as a box).
-  *Fixed ahead in the port for the same reason.*
+- **`Checkbox.vue` depends on a `--radius-sm` the project never sets** — worth a
+  note rather than a fix. Its scoped style says `border-radius: var(--radius-sm)`,
+  and `@theme` in `global.css` does not declare one, so the value comes from
+  Tailwind's default theme: **0.25rem / 4px**. That happens to be the right
+  corner for a 16px box, so the small chips read correctly on the site today —
+  but the component is one `@theme` line away from changing shape, and lifted out
+  of a Tailwind build it takes whatever `--radius-sm` it lands next to. Same
+  class of dependency as the `--default-transition-duration` item below. Declare
+  the radius the component actually wants. *(In the design-system port
+  `--radius-sm` is 8px, which on a 16px box is exactly half the side — a perfect
+  circle that reads as a radio button. The port pins 4px for the small variant
+  so its documentation matches what the site renders; nothing to change on the
+  site for that.)*
 - **Checkbox/Radio animate against a variable the project never defines**:
   `transition: var(--default-transition-duration) transform ease-in-out`
   resolves to 150ms only because Tailwind's default theme happens to emit it.

@@ -141,9 +141,11 @@
        <code>--color-action</code> on hover. Secondary is the chip form used for service selection —
        a 16px box seated in a <code>#0F0F15</code> pill. The tick scales <code>0 &rarr; 1</code> on
        both hover and check. The chip box takes a 4px corner rather than the 8px the default
-       carries: 8px on a 16px box is half its side, which draws a circle, and a circular
-       tick-box reads as a radio — as pick-one when the chips are pick-any. Source ships the
-       8px; WEBSITE-REVIEW.md &sect;4 files it.</p>
+       carries, which is what the site renders: <code>Checkbox.vue</code> asks for
+       <code>--radius-sm</code>, the site's <code>@theme</code> never declares one, so it falls
+       through to Tailwind's default 4px. This system's own <code>--radius-sm</code> is 8px, and
+       8px on a 16px box is half its side — a circle, which reads as a radio, as pick-one when
+       the chips are pick-any. The number is pinned here so the specimen matches the site.</p>
     <div class="pv-grid pv-grid-2">
       <div class="pv-tile" style="display:grid;gap:1rem;justify-items:start">
         <span class="pv-label">Default</span>
