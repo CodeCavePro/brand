@@ -1,6 +1,6 @@
 /* GENERATED from source_examples/common/Checkbox.vue by tools/build-storybook.mjs — do not edit. */
 
-// docs/source_examples/common/Checkbox.vue
+// source_examples/common/Checkbox.vue
 import { defineComponent as _defineComponent } from "vue";
 import { normalizeClass as _normalizeClass, createElementVNode as _createElementVNode, toDisplayString as _toDisplayString, openBlock as _openBlock, createElementBlock as _createElementBlock } from "vue";
 import { computed } from "vue";

@@ -1,10 +1,10 @@
 /* GENERATED from source_examples/common/Review.vue by tools/build-storybook.mjs — do not edit. */
 
-// docs/source_examples/common/Review.vue
+// source_examples/common/Review.vue
 import { defineComponent as _defineComponent } from "vue";
 import { unref as _unref, openBlock as _openBlock3, createElementBlock as _createElementBlock3, createCommentVNode as _createCommentVNode, toDisplayString as _toDisplayString, createElementVNode as _createElementVNode3, resolveDynamicComponent as _resolveDynamicComponent, createBlock as _createBlock, createVNode as _createVNode, normalizeClass as _normalizeClass } from "vue";
 
-// docs/source_examples/assets/icons/linkedin-icon.vue
+// source_examples/assets/icons/linkedin-icon.vue
 import { createElementVNode as _createElementVNode, openBlock as _openBlock, createElementBlock as _createElementBlock } from "vue";
 var _hoisted_1 = {
   width: "21",
@@ -49,7 +49,7 @@ var __sfc__ = { render };
 __sfc__.__file = "source_examples/assets/icons/linkedin-icon.vue";
 var linkedin_icon_default = __sfc__;
 
-// docs/source_examples/assets/icons/verified-icon.vue
+// source_examples/assets/icons/verified-icon.vue
 import { createElementVNode as _createElementVNode2, openBlock as _openBlock2, createElementBlock as _createElementBlock2 } from "vue";
 var _hoisted_12 = {
   width: "17",
@@ -78,15 +78,15 @@ var __sfc__2 = { render: render2 };
 __sfc__2.__file = "source_examples/assets/icons/verified-icon.vue";
 var verified_icon_default = __sfc__2;
 
-// docs/source_examples/lib/strapi.ts
+// source_examples/lib/strapi.ts
 var strapiUrl = "https://strapi.azure.codecave.network";
 
-// docs/source_examples/helpers/image-url.ts
+// source_examples/helpers/image-url.ts
 var getImageUrl = (url) => {
   return `${strapiUrl}/${url}`;
 };
 
-// docs/source_examples/common/Review.vue
+// source_examples/common/Review.vue
 var _hoisted_13 = { class: "flex flex-col lg:flex-row gap-5 lg:items-center" };
 var _hoisted_2 = ["src", "alt"];
 var _hoisted_3 = { class: "flex items-center gap-2" };

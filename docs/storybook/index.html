@@ -6,6 +6,7 @@
 <title>CODECAVE — Component storybook</title>
 <link rel="icon" href="../build/favicon.svg">
 <link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="tw-bridge.css">
 <link rel="stylesheet" href="components.css">
 <link rel="stylesheet" href="storybook.css">
 <style>
@@ -17,8 +18,22 @@
                    line-height: var(--leading-lg); }
   .sb-group > p { margin: 0 0 1.5rem; color: var(--color-body-secondary-lighter);
                   font-size: var(--text-caption); line-height: var(--leading-caption); }
-  .mini { transform: scale(0.72); transform-origin: center; }
+  /* Thumbnail stage for mounted components that are too big for an 8rem thumb:
+     a fixed-width, non-shrinking wrapper scaled down as a whole. */
+  .mini { flex: none; transform-origin: center; }
+  /* TechnologyCard positions itself absolutely from its six-slot table; inside
+     a thumb there is no stage to land on, so pin it back into the flow. */
+  .thumb .card-wrapper { position: static !important; }
 </style>
+<script type="importmap">
+{
+  "imports": {
+    "vue": "../vendor/vue.esm-browser.prod.js",
+    "gsap": "../vendor/gsap/index.js",
+    "gsap/dist/SplitText": "../vendor/gsap/SplitText.js"
+  }
+}
+</script>
 </head>
 <body data-od-id="storybook-index">
 <div class="sb">
@@ -27,15 +42,17 @@
   <header class="sb-head">
     <p class="eyebrow">Component storybook</p>
     <h1>13 components, extracted from codecave.pro</h1>
-    <p class="sb-lead">Every story renders from <code>components.css</code> — a
-       framework-free translation of the Tailwind utility strings in the
-       <code>.vue</code> and <code>.astro</code> source, resolved against the
-       system tokens. No screenshots, no redrawn marks, and no invented states:
-       where the source has no rule, the story has no rule, and the gap is
-       written down.</p>
+    <p class="sb-lead">Twelve of the thirteen stories mount the real components —
+       the verbatim <code>.vue</code> sources compiled by
+       <code>tools/build-storybook.mjs</code> and rendered by the vendored Vue and
+       GSAP runtimes against the site's own Tailwind theme
+       (<code>tw-bridge.css</code>). The thumbnails below are those same mounts,
+       miniaturized. The one <code>.astro</code> component is a hand-translated
+       HTML port, and every gap between this storybook and production is written
+       down on its page.</p>
     <div class="sb-tags">
-      <span class="sb-tag is-vue">12 Vue islands</span>
-      <span class="sb-tag is-astro">1 Astro component</span>
+      <span class="sb-tag is-vue">12 live Vue mounts</span>
+      <span class="sb-tag is-astro">1 Astro port (HTML)</span>
       <span class="sb-tag">Astro 6 · Vue 3.5 · Tailwind 4.1</span>
     </div>
   </header>
@@ -45,84 +62,74 @@
     <p>The reusable controls. Everything else on the site is built from these.</p>
     <div class="sb-cat">
 
-      <a href="button.html">
-        <span class="thumb">
-          <span class="cc-btn cc-btn-primary" style="height:2.25rem;padding:0.25rem 1.25rem;font-size:0.8125rem">Primary</span>
-          <span class="cc-btn cc-btn-tertiary" style="height:2.25rem;padding:0.25rem 1.25rem;font-size:0.8125rem">Tertiary</span>
-        </span>
-        <span class="meta">
+      <div class="sb-card">
+        <div class="thumb sb-mount" inert>
+          <div id="t-btn1"></div>
+          <div id="t-btn2"></div>
+        </div>
+        <a class="meta" href="button.html">
           <strong>Button</strong>
           <span>Seven variants off one prop — four pills and three bare text links that share no box.</span>
           <code>common/Button.vue</code>
-        </span>
-      </a>
+        </a>
+      </div>
 
-      <a href="glow-button.html">
-        <span class="thumb">
-          <span class="cc-glow-wrap mini">
-            <span class="cc-edge cc-edge-left"></span>
-            <span class="cc-glow"><span>Book a call</span><span class="orb"></span></span>
-            <span class="cc-edge cc-edge-right"></span>
-          </span>
-        </span>
-        <span class="meta">
+      <div class="sb-card">
+        <div class="thumb sb-mount" inert>
+          <div id="t-glow" class="mini" style="transform:scale(0.8)"></div>
+        </div>
+        <a class="meta" href="glow-button.html">
           <strong>GlowButton</strong>
           <span>The single conversion CTA. Pointer-tracked glow, GSAP-driven.</span>
           <code>common/GlowButton.vue</code>
-        </span>
-      </a>
+        </a>
+      </div>
 
-      <a href="input-text.html">
-        <span class="thumb">
-          <span class="cc-field" style="max-width:15rem">
-            <span style="position:absolute;padding-left:0.75rem;padding-top:0.75rem;font-weight:700;color:var(--color-heading);font-size:0.75rem">Email</span>
-            <input type="text" placeholder="you@company.com" tabindex="-1" style="font-size:0.8125rem">
-          </span>
-        </span>
-        <span class="meta">
+      <div class="sb-card">
+        <div class="thumb sb-mount" inert>
+          <div id="t-input" class="mini" style="width:15rem;transform:scale(0.85)"></div>
+        </div>
+        <a class="meta" href="input-text.html">
           <strong>InputText</strong>
           <span>Stacked label over the field. Focus is a halo, never an outline.</span>
           <code>common/InputText.vue</code>
-        </span>
-      </a>
+        </a>
+      </div>
 
-      <a href="text-field.html">
-        <span class="thumb">
-          <span class="cc-textfield" style="max-width:15rem;min-height:5rem;width:100%">
-            <span style="font-weight:700;font-size:0.75rem">Message</span>
-            <span style="font-size:0.75rem;color:var(--color-body-secondary);padding-top:0.375rem">Tell us about your project</span>
-          </span>
-        </span>
-        <span class="meta">
+      <div class="sb-card">
+        <div class="thumb sb-mount" inert>
+          <div id="t-textfield" class="mini" style="width:18rem;transform:scale(0.7)"></div>
+        </div>
+        <a class="meta" href="text-field.html">
           <strong>TextField</strong>
           <span>Auto-resizing textarea; halo on the wrapper via <code>:focus-within</code>.</span>
           <code>common/TextField.vue</code>
-        </span>
-      </a>
+        </a>
+      </div>
 
-      <a href="checkbox.html">
-        <span class="thumb">
-          <span class="cc-check cc-check-primary" style="pointer-events:none"><input type="checkbox" checked tabindex="-1"><span style="font-size:0.8125rem">I agree</span></span>
-          <span class="cc-check cc-check-secondary" style="pointer-events:none"><input type="checkbox" tabindex="-1"><span style="font-size:0.8125rem">Cloud</span></span>
-        </span>
-        <span class="meta">
+      <div class="sb-card">
+        <div class="thumb sb-mount" inert>
+          <div id="t-cb1"></div>
+          <div id="t-cb2"></div>
+        </div>
+        <a class="meta" href="checkbox.html">
           <strong>Checkbox</strong>
           <span>Two variants × two sizes. Stateless — no <code>v-model</code>, no emit.</span>
           <code>common/Checkbox.vue</code>
-        </span>
-      </a>
+        </a>
+      </div>
 
-      <a href="radio.html">
-        <span class="thumb">
-          <span class="cc-radio cc-radio-primary" style="pointer-events:none"><input type="radio" checked tabindex="-1"><span>$10–25k</span></span>
-          <span class="cc-radio cc-radio-primary" style="pointer-events:none"><input type="radio" tabindex="-1"><span>$25–50k</span></span>
-        </span>
-        <span class="meta">
+      <div class="sb-card">
+        <div class="thumb sb-mount" inert>
+          <div id="t-r1"></div>
+          <div id="t-r2"></div>
+        </div>
+        <a class="meta" href="radio.html">
           <strong>Radio</strong>
           <span>Variant names are inverted relative to Checkbox — same word, opposite treatment.</span>
           <code>common/Radio.vue</code>
-        </span>
-      </a>
+        </a>
+      </div>
 
     </div>
   </section>
@@ -132,87 +139,72 @@
     <p>Cards and blocks, mostly fed from Strapi.</p>
     <div class="sb-cat">
 
-      <a href="article-preview.html">
-        <span class="thumb">
-          <span style="width:100%;max-width:15rem;padding:0.875rem;border-radius:1.25rem;background:var(--color-surface-secondary);display:flex;gap:0.75rem;align-items:center">
-            <span style="width:44px;height:44px;border-radius:0.5rem;background:var(--color-surface-tertiary);flex:none"></span>
-            <span>
-              <span style="display:block;font-size:0.625rem;color:var(--color-body-secondary)">18 April 2026</span>
-              <span style="display:block;font-size:0.8125rem;font-weight:700;color:var(--color-heading);line-height:1.3">Cutting a BIM export step</span>
-            </span>
-          </span>
-        </span>
-        <span class="meta">
+      <div class="sb-card">
+        <div class="thumb sb-mount" inert style="align-items:flex-start">
+          <div id="t-article" class="mini" style="width:20rem;transform:scale(0.55);transform-origin:top center"></div>
+        </div>
+        <a class="meta" href="article-preview.html">
           <strong>ArticlePreview</strong>
           <span>The insight card, at a 2.25rem radius that exists nowhere else.</span>
           <code>common/ArticlePreview.vue</code>
-        </span>
-      </a>
+        </a>
+      </div>
 
-      <a href="review.html">
-        <span class="thumb" style="background:var(--color-surface-primary) url('../imagery/partnership-background.svg') center/cover no-repeat">
-          <span style="backdrop-filter:blur(32px);border-radius:1.5rem;padding:1rem 1.25rem;max-width:15rem">
-            <span style="display:block;font-size:0.8125rem;color:var(--color-heading)">Marta Feld</span>
-            <span style="display:block;font-size:0.625rem;color:var(--color-body-secondary)">CTO, Northwind</span>
-          </span>
-        </span>
-        <span class="meta">
+      <div class="sb-card">
+        <div class="thumb sb-mount" inert style="background:var(--color-surface-primary) url('../imagery/partnership-background.svg') center/cover no-repeat">
+          <div id="t-review" class="mini" style="width:24rem;transform:scale(0.5)"></div>
+        </div>
+        <a class="meta" href="review.html">
           <strong>Review</strong>
           <span>No background of its own — only a 32px backdrop blur. Judge it on art.</span>
           <code>common/Review.vue</code>
-        </span>
-      </a>
+        </a>
+      </div>
 
-      <a href="technology-card.html">
-        <span class="thumb">
-          <span class="cc-tech" style="width:7rem;height:7rem"><span class="inner"><span style="font-size:0.875rem;font-weight:700;color:var(--color-heading);text-align:center">Cloud &amp; DevOps</span></span></span>
-        </span>
-        <span class="meta">
+      <div class="sb-card">
+        <div class="thumb sb-mount" inert>
+          <div id="t-tech"></div>
+        </div>
+        <a class="meta" href="technology-card.html">
           <strong>TechnologyCard</strong>
-          <span>The only component that uses the cyan — as a masked gradient stroke.</span>
+          <span>A masked gradient stroke around a transparent fill — violet end to end since the palette rebuild; the teal survives only in the 10% body wash.</span>
           <code>homepage/technology-card.vue</code>
-        </span>
-      </a>
+        </a>
+      </div>
 
-      <a href="project-chip.html">
-        <span class="thumb">
+      <div class="sb-card">
+        <div class="thumb" inert>
           <span class="cc-chip" style="padding:0.5rem 1rem;font-size:0.8125rem">Autodesk Revit</span>
           <span class="cc-chip" style="padding:0.5rem 1rem;font-size:0.8125rem">Azure</span>
-        </span>
-        <span class="meta">
+        </div>
+        <a class="meta" href="project-chip.html">
           <strong>ProjectChip</strong>
-          <span>The smallest component in the system: one div, one slot, no props.</span>
+          <span>The smallest component in the system: one div, one slot, no props. The one HTML port — Astro doesn't run in a browser.</span>
           <code>project/project-chip.astro</code>
-        </span>
-      </a>
+        </a>
+      </div>
 
-      <a href="typing-effect.html">
-        <span class="thumb">
-          <span style="text-align:center;font-weight:700;line-height:1.3">
-            <span style="display:block;font-size:1rem;color:var(--color-heading)">We build software</span>
-            <span style="display:block;font-size:1rem;color:var(--color-action)">that survives contact</span>
-          </span>
-        </span>
-        <span class="meta">
+      <div class="sb-card">
+        <div class="thumb sb-mount" inert>
+          <div id="t-typing" class="mini" style="width:34rem;transform:scale(0.45)"></div>
+        </div>
+        <a class="meta" href="typing-effect.html">
           <strong>TypingEffect</strong>
           <span>Two-line display heading; a sanctioned large-text use of <code>#5F20FE</code>.</span>
           <code>common/TypingEffect.vue</code>
-        </span>
-      </a>
+        </a>
+      </div>
 
-      <a href="pain-points-item.html">
-        <span class="thumb">
-          <span style="width:9rem;padding:0.875rem;border-radius:1rem;background:var(--color-surface-secondary)">
-            <span style="display:block;width:1.5rem;height:1.5rem;border-radius:0.5rem;background:var(--color-surface-tertiary);margin-bottom:0.75rem"></span>
-            <span style="display:block;font-size:0.75rem;color:var(--color-body-secondary-lighter)">Manual exports between Revit and the ERP.</span>
-          </span>
-        </span>
-        <span class="meta">
+      <div class="sb-card">
+        <div class="thumb sb-mount" inert style="align-items:flex-start">
+          <div id="t-pain" class="mini" style="transform:scale(0.6);transform-origin:top center"></div>
+        </div>
+        <a class="meta" href="pain-points-item.html">
           <strong>PainPointsItem</strong>
           <span>CMS markdown through <code>v-html</code> with a custom <code>marked</code> renderer.</span>
           <code>project/pain-points-item.vue</code>
-        </span>
-      </a>
+        </a>
+      </div>
 
     </div>
   </section>
@@ -223,40 +215,34 @@
        that lives nowhere else.</p>
     <div class="sb-cat">
 
-      <a href="link-group.html">
-        <span class="thumb">
-          <span class="cc-linkgroup">
-            <span class="group-name" style="display:block;margin-bottom:0.5rem">Services</span>
-            <span style="display:flex;flex-direction:column;gap:0.25rem;font-size:0.75rem">
-              <span class="cc-btn-text">Cloud &amp; DevOps</span>
-              <span class="cc-btn-text">E-Commerce</span>
-              <span class="cc-btn-text">AR &amp; VR</span>
-            </span>
-          </span>
-        </span>
-        <span class="meta">
+      <div class="sb-card">
+        <div class="thumb sb-mount" inert>
+          <div id="t-links"></div>
+        </div>
+        <a class="meta" href="link-group.html">
           <strong>LinkGroup</strong>
           <span>Heading plus N <code>Button variant="text"</code> — the footer's link styling.</span>
           <code>footer/link-group.vue</code>
-        </span>
-      </a>
+        </a>
+      </div>
 
     </div>
   </section>
 
   <section class="sb-group">
     <h2>What this storybook found</h2>
-    <p>53 findings across the thirteen components — 29 defects and 24 design
+    <p>55 findings across the thirteen components — 30 defects and 25 design
        observations — each recorded on its own story page. The six that would
        change behavior in production:</p>
 
-    <p class="sb-note is-warn"><strong>Two components animate against an undefined variable.</strong>
+    <p class="sb-note is-warn"><strong>Two components animate against a variable they never define.</strong>
       <code>Checkbox.vue</code>:75 and <code>Radio.vue</code>:61 both declare
-      <code>transition: var(--default-transition-duration) transform ease-in-out;</code>.
-      That property is defined nowhere in the project — not in
-      <code>global.css</code>, not in <code>@theme</code>, not in
-      <code>tailwind.config.ts</code> — so both declarations are invalid and both
-      indicators snap instead of easing.</p>
+      <code>transition: var(--default-transition-duration) transform ease-in-out;</code>,
+      and <code>--default-transition-duration</code> appears nowhere in the
+      project's own code. It resolves anyway — to 150ms from Tailwind's default
+      theme, which the build emits because <code>transition-colors</code> is in
+      use. Lift either component out of a Tailwind build and the shorthand
+      collapses, snapping the indicator instead of easing it.</p>
 
     <p class="sb-note is-warn"><strong><code>tailwind.config.ts</code> is never loaded.</strong>
       The project is Tailwind 4.1.13 configured CSS-first
@@ -288,5 +274,84 @@
   </section>
 
 </div>
+
+<script type="module">
+  import { createApp } from 'vue';
+  import Button from './compiled/Button.js';
+  import GlowButton from './compiled/GlowButton.js';
+  import InputText from './compiled/InputText.js';
+  import TextField from './compiled/TextField.js';
+  import Checkbox from './compiled/Checkbox.js';
+  import Radio from './compiled/Radio.js';
+  import ArticlePreview from './compiled/ArticlePreview.js';
+  import Review from './compiled/Review.js';
+  import TechnologyCard from './compiled/technology-card.js';
+  import TypingEffect from './compiled/TypingEffect.js';
+  import PainPointsItem from './compiled/pain-points-item.js';
+  import LinkGroup from './compiled/link-group.js';
+
+  // Every thumbnail is the real component at real size (scaled wrappers where
+  // it wouldn't fit). The thumbs are `inert` — the card's one control is the
+  // stretched .meta link. Full stories and args live on each component's page.
+  const mounts = [
+    [Button,    't-btn1', { title: 'Primary', class: 'h-11 px-6 py-1' }],
+    [Button,    't-btn2', { title: 'Tertiary', variant: 'tertiary' }],
+    [GlowButton,'t-glow', { title: 'Book a call' }],
+    [InputText, 't-input', { id: 't-input-el', label: 'Email', type: 'email',
+                             placeholder: 'you@company.com' }],
+    [TextField, 't-textfield', { id: 't-tf-el', label: 'Message',
+                                 placeholder: 'Tell us about your project' }],
+    [Checkbox,  't-cb1', { id: 't-cb1-el', label: 'I agree',
+                           variant: 'primary', size: 'small' }],
+    [Checkbox,  't-cb2', { id: 't-cb2-el', label: 'Cloud & DevOps',
+                           variant: 'secondary', size: 'small' }],
+    [Radio,     't-r1', { id: 't-r1-el', label: '$10–25k', name: 't-budget',
+                          isChecked: true, variant: 'primary' }],
+    [Radio,     't-r2', { id: 't-r2-el', label: '$25–50k', name: 't-budget',
+                          variant: 'primary' }],
+    [ArticlePreview, 't-article', { article: {
+      slug: 'bim-export-loop',
+      cover: { url: '/uploads/bim-export-hero.png', name: 'bim-export-hero.png' },
+      date: '2026-04-18',
+      locale: 'en-GB',
+      title: 'Cutting a BIM export step out of the delivery loop',
+      excerpt: 'A manual Revit export sat between the model and the ERP.',
+      readingtime: 6,
+    } }],
+    [Review, 't-review', { item: {
+      photo: { name: 'marta-feld.png', url: '/uploads/marta-feld.png' },
+      name: 'Marta Feld',
+      position: 'CTO, Northwind Logistics',
+      review: 'They scoped the smallest thing that would prove the integration worked.',
+      linkedinurl: '#!',
+      verification: 'Verified on Clutch',
+    }, className: '' }],
+    [TechnologyCard, 't-tech', { name: 'Cloud & DevOps', active: false,
+                                 index: 0, className: 'w-28 h-28' }],
+    [TypingEffect, 't-typing', { text1: 'We build software',
+                                 text2: 'that survives contact with your business.' }],
+    [PainPointsItem, 't-pain', { item: {
+      image: { url: '/uploads/pain-icon.svg', name: 'pain-icon.svg' },
+      content: 'Manual exports between Revit and the ERP.',
+    } }],
+    [LinkGroup, 't-links', { groupName: 'Services', items: [
+      { name: 'Cloud services', href: '/services/devops' },
+      { name: 'E-commerce', href: '/services/ecommerce' },
+      { name: 'AR & VR', href: '/services/ar-vr' },
+    ] }],
+  ];
+  for (const [comp, el, props] of mounts) createApp(comp, props).mount('#' + el);
+
+  // Checkbox exposes no checked state (see its findings) — set on the DOM node.
+  document.getElementById('t-cb1-el').checked = true;
+
+  // getImageUrl() prefixes media paths with the Strapi host, so swap in the
+  // local placeholders after mount — same as on the story pages.
+  const swaps = [['t-article', 'sb-cover'], ['t-review', 'sb-avatar'], ['t-pain', 'sb-icon']];
+  for (const [id, ph] of swaps) {
+    const img = document.querySelector('#' + id + ' img');
+    if (img) img.src = '../assets/images/' + ph + '.svg';
+  }
+</script>
 </body>
 </html>

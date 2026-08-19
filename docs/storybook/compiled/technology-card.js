@@ -1,10 +1,10 @@
 /* GENERATED from source_examples/homepage/technology-card.vue by tools/build-storybook.mjs — do not edit. */
 
-// docs/source_examples/homepage/technology-card.vue
+// source_examples/homepage/technology-card.vue
 import { defineComponent as _defineComponent2 } from "vue";
 import { toDisplayString as _toDisplayString2, createElementVNode as _createElementVNode2, normalizeClass as _normalizeClass2, createVNode as _createVNode, openBlock as _openBlock2, createElementBlock as _createElementBlock2 } from "vue";
 
-// docs/source_examples/helpers/paths.ts
+// source_examples/helpers/paths.ts
 var services = "/services";
 var paths = {
   home: "/",
@@ -25,7 +25,7 @@ var paths = {
   toolsAndTechnologies: "/workflow/#tools-and-technologies"
 };
 
-// docs/source_examples/common/Button.vue
+// source_examples/common/Button.vue
 import { defineComponent as _defineComponent } from "vue";
 import { toDisplayString as _toDisplayString, createElementVNode as _createElementVNode, renderSlot as _renderSlot, normalizeClass as _normalizeClass, openBlock as _openBlock, createElementBlock as _createElementBlock, createTextVNode as _createTextVNode } from "vue";
 import { computed } from "vue";
@@ -102,7 +102,7 @@ w-fit max-w-full rounded-full text-body-primary font-bold transition-colors`;
 __sfc__.__file = "source_examples/common/Button.vue";
 var Button_default = __sfc__;
 
-// docs/source_examples/homepage/technology-card.vue
+// source_examples/homepage/technology-card.vue
 var _hoisted_12 = { class: "card flex flex-col items-center justify-around" };
 var _hoisted_2 = { class: "max-w-[8rem] text-center text-xl font-bold text-heading text-balance" };
 var __sfc__2 = /* @__PURE__ */ _defineComponent2({

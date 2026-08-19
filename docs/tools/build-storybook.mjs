@@ -56,6 +56,8 @@ const ENTRIES = [
   'common/Review.vue',
   'common/ArticlePreview.vue',
   'homepage/technology-card.vue',
+  'footer/link-group.vue',
+  'project/pain-points-item.vue',
 ];
 
 /* ---- .vue -> JS(TS) transform, one compile path for every SFC ------------ */
@@ -150,6 +152,9 @@ for (const entry of ENTRIES) {
     format: 'esm',
     outfile: path.join(OUT, `${name}.js`),
     external: ['vue', 'gsap', 'gsap/*'],
+    // Bare imports (e.g. pain-points-item's `marked`) resolve from the SITE's
+    // node_modules — source_examples lives in the brand repo, which has none.
+    nodePaths: [path.join(siteDir, 'node_modules')],
     plugins: [vuePlugin],
     banner: {
       js: `/* GENERATED from source_examples/${entry} by tools/build-storybook.mjs — do not edit. */`,
@@ -175,9 +180,49 @@ if (!rootBlock) throw new Error('no :root block found in source_examples/styles/
  * palette (oklch grays) into the utilities instead of the site's. Every
  * runtime var() resolves through the canvas scope emitted below, exactly
  * as the site's own unlayered :root out-cascades its theme layer. */
-const input = `@layer theme, utilities;
+const input = `@layer base, theme, utilities;
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/utilities.css" layer(utilities);
+@layer base {
+  /* Preflight-equivalent, canvas-scoped. The site imports full Tailwind
+   * preflight; the bridge imports only theme+utilities, so without this the
+   * UA stylesheet leaks into mounted components — ButtonFace fills on
+   * buttons, white textareas, 2px inset input borders, 1em <p> margins —
+   * none of which exist in production. This reproduces the preflight rules
+   * the mounted components actually rely on, scoped to the canvases.
+   * Utilities still win — base is a lower layer. */
+  :is(.sb-canvas, .sb-mount) *,
+  :is(.sb-canvas, .sb-mount) ::before,
+  :is(.sb-canvas, .sb-mount) ::after {
+    box-sizing: border-box; margin: 0; padding: 0; border: 0 solid;
+  }
+  .sb-canvas a, .sb-mount a { color: inherit; text-decoration: inherit; }
+  :is(.sb-canvas, .sb-mount) :is(h1, h2, h3, h4, h5, h6) {
+    font-size: inherit; font-weight: inherit;
+  }
+  :is(.sb-canvas, .sb-mount) :is(ol, ul, menu) { list-style: none; }
+  :is(.sb-canvas, .sb-mount) :is(img, svg, video, canvas, audio, iframe, embed, object) {
+    display: block; vertical-align: middle;
+  }
+  :is(.sb-canvas, .sb-mount) :is(img, video) { max-width: 100%; height: auto; }
+  :is(.sb-canvas, .sb-mount) :is(button, input, select, optgroup, textarea) {
+    font: inherit; font-feature-settings: inherit; font-variation-settings: inherit;
+    letter-spacing: inherit; color: inherit; border-radius: 0;
+    background-color: transparent; opacity: 1;
+  }
+  :is(.sb-canvas, .sb-mount) :is(button, input:where([type='button'], [type='reset'], [type='submit'])) {
+    appearance: button;
+  }
+  :is(.sb-canvas, .sb-mount) ::placeholder {
+    opacity: 1; color: color-mix(in oklab, currentColor 50%, transparent);
+  }
+  :is(.sb-canvas, .sb-mount) textarea { resize: vertical; }
+  :is(.sb-canvas, .sb-mount) :is(b, strong) { font-weight: bolder; }
+  :is(.sb-canvas, .sb-mount) small { font-size: 80%; }
+  :is(.sb-canvas, .sb-mount) table {
+    text-indent: 0; border-color: inherit; border-collapse: collapse;
+  }
+}
 ${themeBlock[0]}`;
 
 const twCompiler = await twNode.compile(input, {

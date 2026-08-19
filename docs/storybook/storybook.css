@@ -1,7 +1,9 @@
 /* Storybook chrome only — NOT part of the design system and NOT part of the
  * extracted component layer. Built from the system's own tokens so a reviewer
  * never mistakes scaffolding for brand. Load order per page:
- *   ../colors_and_type.css  →  components.css  →  storybook.css
+ *   ../colors_and_type.css  →  tw-bridge.css  →  storybook.css
+ * (index.html and project-chip.html also load components.css for .cc-chip,
+ *  the one Astro port.)
  */
 
 body { padding: 3rem var(--gutter-md) 6rem; }
@@ -60,6 +62,23 @@ body { padding: 3rem var(--gutter-md) 6rem; }
              min-height: 9rem; padding: 2rem;
              background: var(--color-surface-primary); }
 .sb-canvas.is-tall  { min-height: 15rem; }
+
+/* colors_and_type.css paints docs-chrome anchors violet with an UNLAYERED
+   `a` rule, which out-cascades every layered utility a mounted component
+   carries (unlayered beats @layer regardless of specificity). Inside the
+   canvases, roll anchor color back to the layered world so the component's
+   own classes decide — falling back to the bridge's preflight-equivalent
+   `color: inherit` when no utility is present. */
+.sb-canvas a, .sb-mount a,
+.sb-canvas a:hover, .sb-mount a:hover { color: revert-layer; }
+/* Same story for headings: the docs baseline sizes h1–h3 with unlayered
+   element rules that production's global.css does not have. Roll them back
+   so a mounted component's own text-* utilities decide. */
+.sb-canvas :is(h1, h2, h3, h4, h5, h6),
+.sb-mount :is(h1, h2, h3, h4, h5, h6) {
+  color: revert-layer; font-size: revert-layer;
+  font-weight: revert-layer; line-height: revert-layer;
+}
 .sb-canvas.is-start { justify-content: flex-start; align-items: flex-start; }
 .sb-canvas.is-block { display: block; }
 
@@ -107,11 +126,18 @@ table.sb-props { width: 100%; border-collapse: collapse;
 /* ---- catalog (index) ----------------------------------------------------- */
 .sb-cat { display: grid; gap: 1rem;
           grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); }
-.sb-cat a { display: flex; flex-direction: column; text-decoration: none;
-            border-radius: var(--radius-card); overflow: hidden;
-            border: 1px solid var(--color-surface-quaternary);
-            transition: border-color var(--transition-colors); }
-.sb-cat a:hover { border-color: var(--color-action); }
+/* A card used to be one big <a>, but the thumbs now MOUNT the real
+   components — several of which render anchors of their own, and anchors
+   cannot nest. So the card is a <div>: the .meta anchor stretches itself
+   over the whole card with ::after, and the thumb carries `inert` because
+   it is decoration, not a second set of controls. */
+.sb-cat .sb-card { position: relative; display: flex; flex-direction: column;
+                   border-radius: var(--radius-card); overflow: hidden;
+                   border: 1px solid var(--color-surface-quaternary);
+                   transition: border-color var(--transition-colors); }
+.sb-cat .sb-card:hover { border-color: var(--color-action); }
+.sb-cat a.meta { text-decoration: none; }
+.sb-cat a.meta::after { content: ""; position: absolute; inset: 0; }
 .sb-cat .thumb { display: flex; align-items: center; justify-content: center;
                  gap: 0.5rem; flex-wrap: wrap;
                  height: 8rem; padding: 1rem;

@@ -1,10 +1,10 @@
 /* GENERATED from source_examples/common/ArticlePreview.vue by tools/build-storybook.mjs — do not edit. */
 
-// docs/source_examples/common/ArticlePreview.vue
+// source_examples/common/ArticlePreview.vue
 import { defineComponent as _defineComponent } from "vue";
 import { unref as _unref, createElementVNode as _createElementVNode, toDisplayString as _toDisplayString, normalizeClass as _normalizeClass, openBlock as _openBlock, createElementBlock as _createElementBlock } from "vue";
 
-// docs/source_examples/helpers/date-formatter.ts
+// source_examples/helpers/date-formatter.ts
 var formattedDate = (locale, date) => {
   if (!locale || !date) return "";
   const newDate = new Date(date);
@@ -15,15 +15,15 @@ var formattedDate = (locale, date) => {
   }).format(newDate);
 };
 
-// docs/source_examples/lib/strapi.ts
+// source_examples/lib/strapi.ts
 var strapiUrl = "https://strapi.azure.codecave.network";
 
-// docs/source_examples/helpers/image-url.ts
+// source_examples/helpers/image-url.ts
 var getImageUrl = (url) => {
   return `${strapiUrl}/${url}`;
 };
 
-// docs/source_examples/helpers/paths.ts
+// source_examples/helpers/paths.ts
 var services = "/services";
 var paths = {
   home: "/",
@@ -44,7 +44,7 @@ var paths = {
   toolsAndTechnologies: "/workflow/#tools-and-technologies"
 };
 
-// docs/source_examples/common/ArticlePreview.vue
+// source_examples/common/ArticlePreview.vue
 var _hoisted_1 = ["href"];
 var _hoisted_2 = { class: "flex flex-col sm:flex-row gap-5 sm:gap-8 h-fit" };
 var _hoisted_3 = ["src", "alt"];
