@@ -6,14 +6,45 @@
     <meta name="color-scheme" content="dark" />
     <meta name="supported-color-schemes" content="dark" />
     <title>CODECAVE is dark, round, and violet — in that order of importance — from CODECAVE</title>
-    
+
     <style>
-* { box-sizing: border-box; }
+/* ---------------------------------------------------------------------------
+ * SHARED EMAIL CONTRACT — this file and newsletter.html use the same numbers.
+ *
+ * These two are the only artifacts that cannot link ../colors_and_type.css: a
+ * mail client strips external stylesheets, so every value is inlined. They are
+ * still token values, transcribed literally — change one here and change it in
+ * newsletter.html too, or the pair drifts apart again.
+ *
+ *   type      body 16/24 · lede 20/28 · h1 32/1.10 · h2 24/32 · sm 18/28
+ *             caption 14/20 · headings 700 (--font-weight-bold)
+ *   color     page #0A0A0B · card #0F0F15 · hairline #2B2848
+ *             heading #F4F4F6 · body #C7C7DB · muted #9595BB
+ *             text accent #B19AFE (brand-200) · rules/graphics #5F20FE (action)
+ *             #9980FF is the glow BUTTON FILL and takes dark text — never a
+ *             text color on the dark ground.
+ *   spacing   outer 32/20 · gutter 32 · block 24 · hero 32/24 · tail 32
+ *   alignment masthead, CTA and footer centered; hero and body left. A ninety-
+ *             word lede is not centered — measure beats symmetry.
+ * ------------------------------------------------------------------------- */
+@font-face {
+  font-family: Satoshi;
+  src: url("../fonts/Satoshi-Regular.woff2") format("woff2"),
+       url("../fonts/Satoshi-Regular.woff") format("woff");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: Satoshi;
+  src: url("../fonts/Satoshi-Bold.woff2") format("woff2"),
+       url("../fonts/Satoshi-Bold.woff") format("woff");
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+      * { box-sizing: border-box; }
       html, body { margin: 0; padding: 0; }
       body {
         font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;
-        font-size: 14px;
-        line-height: 1.5714285714285714;
+        font-size: 16px;
+        line-height: 24px;
         color: #F4F4F6;
         background: #0A0A0B;
         -webkit-font-smoothing: antialiased;
@@ -23,34 +54,26 @@
       h1, h2, h3, h4 {
         margin: 0;
         font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;
-        line-height: 1.25;
-        font-weight: 600;
+        line-height: 1.15;
+        font-weight: 700;
         color: #F4F4F6;
         overflow-wrap: break-word;
       }
       p { margin: 0; overflow-wrap: break-word; }
       img, svg { max-width: 100%; display: block; }
-      .wrap { max-width: 1120px; margin: 0 auto; padding-left: clamp(20px, 4vw, 40px); padding-right: clamp(20px, 4vw, 40px); }
       .kicker {
         display: block;
         text-transform: uppercase;
-        letter-spacing: 0.14em;
-        font-size: 12px;
-        font-weight: 600;
-        color: #9980FF;
+        letter-spacing: 0.16em;
+        font-size: 14px;
+        line-height: 20px;
+        font-weight: 700;
+        color: #B19AFE;
         margin-bottom: 12px;
       }
-      .clamp-2, .clamp-3 { display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
-      .clamp-2 { -webkit-line-clamp: 2; }
-      .clamp-3 { -webkit-line-clamp: 3; }
       a[role="button"]{transition:filter .15s ease,transform .15s ease}
 a[role="button"]:hover{filter:brightness(1.07)}
 a[role="button"]:active{filter:brightness(.95);transform:translateY(0.5px)}
-input:focus,textarea:focus,select:focus{border-color:#9980FF!important;box-shadow:0 0 0 3px #0F0F15;outline:none}
-details.kit-acc>summary{list-style:none;cursor:pointer}
-details.kit-acc>summary::-webkit-details-marker{display:none}
-details.kit-acc .kit-acc-icon{transition:transform .18s ease}
-details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
       img{border:0;outline:none;text-decoration:none;}table{border-spacing:0;}
     </style>
   </head>
@@ -63,94 +86,106 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
     <table bgcolor="#0A0A0B" role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#0A0A0B;margin:0;padding:0;">
       <tr>
         <td align="center" style="padding:32px 20px;">
-          <table bgcolor="#0A0A0B" role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:600px;background:#0A0A0B;border:1px solid #0F0F15;border-radius:36px;overflow:hidden;">
+          <!-- The card rises one step off the page — #0F0F15 on #0A0A0B, hairline
+               #2B2848, 36px (--radius-article). Same shell as newsletter.html. -->
+          <table bgcolor="#0F0F15" role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;background:#0F0F15;border:1px solid #2B2848;border-radius:36px;overflow:hidden;">
 
-            <!-- Header: logo only, generous whitespace, no nav -->
+            <!-- Masthead: wordmark only, centered, no nav -->
             <tr>
-              <td style="padding:24px 32px;text-align:center;border-bottom:1px solid #0F0F15;">
-                <span style="font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-weight:600;font-size:18px;letter-spacing:-0.01em;color:#F4F4F6;white-space:nowrap;">CODECAVE</span>
+              <td style="padding:24px 32px;text-align:center;border-bottom:1px solid #2B2848;">
+                <span style="font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-weight:700;font-size:18px;line-height:28px;letter-spacing:-0.01em;color:#F4F4F6;white-space:nowrap;">CODECAVE</span>
               </td>
             </tr>
 
-            <!-- Hero: inverted pyramid — conclusion first, then why it matters, then the one CTA -->
+            <!-- Hero: inverted pyramid — conclusion first, then why it matters -->
             <tr>
-              <td bgcolor="#0F0F15" style="padding:48px 32px 24px;text-align:center;background:#0F0F15;">
-                <p style="margin:0 0 12px;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;text-transform:uppercase;letter-spacing:0.16em;font-size:12px;font-weight:600;color:#9980FF;">Plain</p>
-                <h1 style="margin:0 0 20px;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:32px;line-height:1.15;letter-spacing:-0.015em;color:#F4F4F6;">CODECAVE is dark, round, and violet — in that order of importance.</h1>
-                <p style="margin:0 auto 32px;max-width:46ch;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:18px;line-height:1.55;color:#C7C7DB;">CODECAVE is a software delivery studio. Its public surface is a marketing and lead-generation site whose entire job is to turn a visitor into one booked consultation. Six services are offered — Cloud &amp; DevOps, E-Commerce, Autodesk plugins, Automation &amp; AI, HubSpot, and AR &amp; VR — and each is titled by the outcome it produces rather than the technology it uses. The stack is Astro 7, Vue 3 and Tailwind 4, with GSAP for entrance motion, Lenis for smooth scroll and Strapi as the content backend.</p>
-                <!-- the one primary CTA, above the fold -->
+              <td style="padding:32px 32px 24px;">
+                <p style="margin:0 0 12px;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;text-transform:uppercase;letter-spacing:0.16em;font-size:14px;line-height:20px;font-weight:700;color:#B19AFE;">Plain</p>
+                <h1 style="margin:0 0 16px;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:32px;line-height:1.1;letter-spacing:-0.015em;font-weight:700;color:#F4F4F6;">CODECAVE is dark, round, and violet — in that order of importance.</h1>
+                <p style="margin:0;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:20px;line-height:28px;color:#C7C7DB;">CODECAVE is a software delivery studio. Its public surface is a marketing and lead-generation site whose entire job is to turn a visitor into one booked consultation. Six services are offered — Cloud &amp; DevOps, E-Commerce, Autodesk plugins, Automation &amp; AI, HubSpot, and AR &amp; VR — and each is titled by the outcome it produces rather than the technology it uses. The stack is Astro 7, Vue 3 and Tailwind 4, with GSAP for entrance motion, Lenis for smooth scroll and Strapi as the content backend.</p>
+              </td>
+            </tr>
+
+            <!-- the one primary CTA, above the fold -->
+            <tr>
+              <td style="padding:0 32px 32px;text-align:center;">
                 <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 auto;border-collapse:separate;line-height:100%;">
-                    <tr>
-                      <td align="center" bgcolor="#9980FF" style="border-radius:9999px;box-shadow:0 0 64px 0 #7A58FFA8, 0 0 16px 0 #4F22FFA6, 0 0 4px 2px #5B34FA;"><a href="#" target="_blank" style="display:inline-block;min-width:200px;padding:16px 32px;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:18px;font-weight:600;line-height:1.1;color:#1B0D4E;background:#9980FF;text-decoration:none;text-align:center;border-radius:9999px;border:2px solid #9980FF;">Get started with CODECAVE</a></td>
-                    </tr>
-                  </table>
+                  <tr>
+                    <td align="center" bgcolor="#9980FF" style="border-radius:9999px;box-shadow:0 0 64px 0 #7A58FFA8, 0 0 16px 0 #4F22FFA6, 0 0 4px 2px #5B34FA;"><a href="#" target="_blank" style="display:inline-block;min-width:200px;padding:16px 32px;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:18px;font-weight:700;line-height:1.1;color:#1B0D4E;background:#9980FF;text-decoration:none;text-align:center;border-radius:9999px;border:2px solid #9980FF;">Get started with CODECAVE</a></td>
+                  </tr>
+                </table>
               </td>
             </tr>
+
+            <tr><td><div style="height:1px;background:#2B2848;margin:0 32px;"></div></td></tr>
 
             <!-- Body: scannable, human, one idea per block -->
             <tr>
-              <td style="padding:32px 32px 12px;">
-                <p style="margin:0 0 20px;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:16px;line-height:1.6;color:#F4F4F6;">Hi there,</p>
-                <p style="margin:0 0 24px;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:16px;line-height:1.6;color:#C7C7DB;">Here is what CODECAVE gives your team from the first day — no migration project, no setup tax:</p>
+              <td style="padding:24px 32px;">
+                <p style="margin:0 0 16px;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:16px;line-height:24px;color:#F4F4F6;">Hi there,</p>
+                <p style="margin:0 0 8px;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:16px;line-height:24px;color:#C7C7DB;">Here is what CODECAVE gives your team from the first day — no migration project, no setup tax:</p>
 
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
 <tr>
                 <td valign="top" style="width:40px;padding:12px 12px 12px 0;"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;" aria-hidden="true"><circle cx="10" cy="10" r="9" stroke="#9980FF" stroke-width="1.5" opacity="0.45"/><path d="M6 10.2l2.6 2.6L14.2 7.4" stroke="#9980FF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
                 <td valign="top" style="padding:12px 0;">
-                  <p style="margin:0 0 4px;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:18px;font-weight:600;color:#F4F4F6;line-height:1.3;">Outcome before technology</p>
-                  <p style="margin:0;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:16px;color:#C7C7DB;line-height:1.55;">Every service is titled by what it produces, never by its stack.</p>
+                  <p style="margin:0 0 4px;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:18px;font-weight:700;color:#F4F4F6;line-height:28px;">Outcome before technology</p>
+                  <p style="margin:0;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:16px;color:#C7C7DB;line-height:24px;">Every service is titled by what it produces, never by its stack.</p>
                 </td>
               </tr>
 <tr>
                 <td valign="top" style="width:40px;padding:12px 12px 12px 0;"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;" aria-hidden="true"><circle cx="10" cy="10" r="9" stroke="#9980FF" stroke-width="1.5" opacity="0.45"/><path d="M6 10.2l2.6 2.6L14.2 7.4" stroke="#9980FF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
                 <td valign="top" style="padding:12px 0;">
-                  <p style="margin:0 0 4px;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:18px;font-weight:600;color:#F4F4F6;line-height:1.3;">Risk is named, not hidden</p>
-                  <p style="margin:0;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:16px;color:#C7C7DB;line-height:1.55;">NDA, scope, milestones and outcomes are stated upfront.</p>
+                  <p style="margin:0 0 4px;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:18px;font-weight:700;color:#F4F4F6;line-height:28px;">Risk is named, not hidden</p>
+                  <p style="margin:0;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:16px;color:#C7C7DB;line-height:24px;">NDA, scope, milestones and outcomes are stated upfront.</p>
                 </td>
               </tr>
 <tr>
                 <td valign="top" style="width:40px;padding:12px 12px 12px 0;"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;" aria-hidden="true"><circle cx="10" cy="10" r="9" stroke="#9980FF" stroke-width="1.5" opacity="0.45"/><path d="M6 10.2l2.6 2.6L14.2 7.4" stroke="#9980FF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></td>
                 <td valign="top" style="padding:12px 0;">
-                  <p style="margin:0 0 4px;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:18px;font-weight:600;color:#F4F4F6;line-height:1.3;">One low-friction ask</p>
-                  <p style="margin:0;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:16px;color:#C7C7DB;line-height:1.55;">A free consultation, requested through a single primary action per page.</p>
+                  <p style="margin:0 0 4px;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:18px;font-weight:700;color:#F4F4F6;line-height:28px;">One low-friction ask</p>
+                  <p style="margin:0;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:16px;color:#C7C7DB;line-height:24px;">A free consultation, requested through a single primary action per page.</p>
                 </td>
               </tr>
                 </table>
               </td>
             </tr>
 
-            <!-- One named proof point: a person beats a paragraph of adjectives -->
+            <!-- One named proof point: a person beats a paragraph of adjectives.
+                 Recessed to #0A0A0B — the quote sits *below* the card, not above. -->
             <tr>
               <td style="padding:0 32px 24px;">
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                   <tr>
-                    <td bgcolor="#0A0A0B" style="padding:24px;background:#0A0A0B;border-left:3px solid #9980FF;border-radius:24px;">
-                      <p style="margin:0 0 12px;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:18px;line-height:1.55;color:#F4F4F6;">&ldquo;CODECAVE is the first tool here that actually feels plain. It was part of our daily flow inside a week.&rdquo;</p>
-                      <p style="margin:0;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:12px;color:#C7C7DB;"><strong style="color:#F4F4F6;font-weight:600;">Maya Chen</strong> &middot; Head of Design, Northwind</p>
+                    <td bgcolor="#0A0A0B" style="padding:24px;background:#0A0A0B;border-left:3px solid #5F20FE;border-radius:24px;">
+                      <p style="margin:0 0 12px;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:18px;line-height:28px;color:#F4F4F6;">&ldquo;CODECAVE is the first tool here that actually feels plain. It was part of our daily flow inside a week.&rdquo;</p>
+                      <p style="margin:0;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:14px;line-height:20px;color:#C7C7DB;"><strong style="color:#F4F4F6;font-weight:700;">Maya Chen</strong> &middot; Head of Design, Northwind</p>
                     </td>
                   </tr>
                 </table>
               </td>
             </tr>
 
+            <tr><td><div style="height:1px;background:#2B2848;margin:0 32px;"></div></td></tr>
+
             <!-- CTA repeated once near the end — same single action -->
             <tr>
-              <td style="padding:12px 32px 32px;text-align:center;">
+              <td style="padding:24px 32px 32px;text-align:center;">
                 <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 auto;border-collapse:separate;line-height:100%;">
                     <tr>
-                      <td align="center" bgcolor="#9980FF" style="border-radius:9999px;box-shadow:0 0 64px 0 #7A58FFA8, 0 0 16px 0 #4F22FFA6, 0 0 4px 2px #5B34FA;"><a href="#" target="_blank" style="display:inline-block;min-width:200px;padding:16px 32px;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:18px;font-weight:600;line-height:1.1;color:#1B0D4E;background:#9980FF;text-decoration:none;text-align:center;border-radius:9999px;border:2px solid #9980FF;">Get started with CODECAVE</a></td>
+                      <td align="center" bgcolor="#9980FF" style="border-radius:9999px;box-shadow:0 0 64px 0 #7A58FFA8, 0 0 16px 0 #4F22FFA6, 0 0 4px 2px #5B34FA;"><a href="#" target="_blank" style="display:inline-block;min-width:200px;padding:16px 32px;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:18px;font-weight:700;line-height:1.1;color:#1B0D4E;background:#9980FF;text-decoration:none;text-align:center;border-radius:9999px;border:2px solid #9980FF;">Get started with CODECAVE</a></td>
                     </tr>
                   </table>
-                <p style="margin:20px 0 0;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:12px;color:#C7C7DB;line-height:1.5;">Questions? Just reply to this email — a real person reads every message.</p>
+                <p style="margin:16px 0 0;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:14px;line-height:20px;color:#C7C7DB;">Questions? Just reply to this email — a real person reads every message.</p>
               </td>
             </tr>
 
             <!-- Footer: working unsubscribe + registered address + brand -->
 <tr>
-            <td bgcolor="#0A0A0B" style="padding:32px 32px;background:#0A0A0B;border-top:1px solid #0F0F15;text-align:center;">
-              <p style="margin:0 0 8px;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:12px;color:#C7C7DB;line-height:1.5;">You are receiving this because you signed up to hear from CODECAVE.</p>
-              <p style="margin:0 0 8px;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:12px;color:#C7C7DB;line-height:1.5;"><a href="#" target="_blank" style="color:#C7C7DB;text-decoration:underline;">Update preferences</a> &nbsp;&middot;&nbsp; <a href="#" target="_blank" style="color:#C7C7DB;text-decoration:underline;">Unsubscribe</a></p>
-              <p style="margin:0;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:12px;color:#C7C7DB;line-height:1.5;">CODECAVE &middot; 8 The Green, STE B, 19901 Dover DE, US &middot; codecave.pro</p>
+            <td bgcolor="#0A0A0B" style="padding:24px 32px;background:#0A0A0B;border-top:1px solid #2B2848;text-align:center;">
+              <p style="margin:0 0 8px;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:14px;line-height:20px;color:#9595BB;">You are receiving this because you signed up to hear from CODECAVE.</p>
+              <p style="margin:0 0 8px;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:14px;line-height:20px;color:#9595BB;"><a href="#" target="_blank" style="color:#9595BB;text-decoration:underline;">Update preferences</a> &nbsp;&middot;&nbsp; <a href="#" target="_blank" style="color:#9595BB;text-decoration:underline;">Unsubscribe</a></p>
+              <p style="margin:0;font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-size:14px;line-height:20px;color:#9595BB;">CODECAVE &middot; 8 The Green, STE B, 19901 Dover DE, US &middot; codecave.pro</p>
             </td>
           </tr>
 
