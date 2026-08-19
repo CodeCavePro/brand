@@ -57,10 +57,38 @@ details.kit-acc>summary::-webkit-details-marker{display:none}
 details.kit-acc .kit-acc-icon{transition:transform .18s ease}
 details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
       
-      .nav-links { display: flex; gap: 28px; align-items: center; color: var(--color-body-secondary-lighter); }
-      .nav-links a { color: var(--color-body-secondary-lighter); transition: color .15s ease; }
-      .nav-links a:hover { color: var(--color-body-primary); }
-      @media (max-width: 820px) { .nav-links { display: none; } }
+      /* The header is the site's header (header/desktop-menu.vue), not a bar of
+         this template's own: ghost-button links split around an absolutely
+         centred wordmark, on the translucent primary surface with the blur the
+         site's dropdown uses, at py-3 over a .page-container. It had been a
+         left-aligned name, four plain text links and a CTA — a different bar
+         wearing the same colours, which is what "does not match" meant. The
+         documentation bar (ds-nav.css) is deliberately NOT linked here: this
+         page is the deliverable being shown, so it carries the site's chrome
+         rather than the package's. */
+      .site-header { position: sticky; top: 0; z-index: 20;
+                     border-bottom: 1px solid var(--color-surface-quaternary);
+                     background: var(--color-surface-primary-transparent);
+                     -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px); }
+      /* .wrap, not .page-container: the site's bar is max-width-desktop because
+         the site's sections are too, and here they are 1120. The bar has to line
+         up with the page under it, so it takes this page's measure and only the
+         bar's own behaviour from the site. */
+      .site-header .bar { box-sizing: border-box; position: relative; display: flex;
+                          align-items: center; justify-content: space-between;
+                          padding-top: 0.75rem; padding-bottom: 0.75rem; }
+      .site-header ul { display: flex; align-items: center; margin: 0; padding: 0; list-style: none; }
+      .site-header .home { position: absolute; left: 50%; transform: translateX(-50%);
+                           display: flex; transition: opacity var(--transition-base); }
+      .site-header .home:hover { opacity: 0.8; }
+      /* Under 768 the centred logo would sit on top of the links, so it takes its
+         own row — the same wrap ds-nav.css uses at the same breakpoint. */
+      @media (max-width: 767px) {
+        .site-header .bar { flex-wrap: wrap; justify-content: center; }
+        .site-header ul { flex: 1; justify-content: center; }
+        .site-header .home { position: static; transform: none; order: -1;
+                             flex-basis: 100%; justify-content: center; padding: 0.5rem 0 0.75rem; }
+      }
       .section { padding: clamp(64px, 9vw, 104px) 0; }
       .section-head { max-width: 680px; margin: 0 auto 48px; text-align: center; }
       .pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(16px, 2vw, 24px); }
@@ -89,21 +117,18 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
     </style>
   </head>
   <body>
-    <header class="site-header" style="position:sticky;top:0;z-index:20;background:color-mix(in srgb, var(--color-surface-secondary) 86%, transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--color-surface-quaternary);">
-      <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;height:64px;gap:1.5rem;">
-        <a href="#" aria-label="CODECAVE — home"><img class="logo" src="../assets/codecave-wide.svg" alt="CODECAVE"></a>
-        <nav class="nav-links">
-          <a href="#how">Workflow</a>
-          <a href="#features">Services</a>
-          <a href="#pricing">Engagement</a>
-          <a href="#faq">FAQ</a>
-        </nav>
-        <div style="display:flex;gap:0.75rem;align-items:center;">
-          <!-- Bordered, not glow: the sticky header shares a viewport with the
-               hero, and two glow buttons in one viewport is anti-pattern 6. -->
-          <a class="btn btn-tertiary" href="#pricing">Discuss project for free</a>
-        </div>
-      </div>
+    <header class="site-header">
+      <nav class="wrap bar" aria-label="Main">
+        <ul>
+          <li><a class="btn btn-ghost" href="#how">Workflow</a></li>
+          <li><a class="btn btn-ghost" href="#features">Services</a></li>
+        </ul>
+        <a class="home" href="#" aria-label="CODECAVE — home"><img class="logo" src="../assets/codecave-wide.svg" alt="CODECAVE"></a>
+        <ul>
+          <li><a class="btn btn-ghost" href="#pricing">Engagement</a></li>
+          <li><a class="btn btn-ghost" href="#faq">FAQ</a></li>
+        </ul>
+      </nav>
     </header>
 
     <!-- 2 · HERO — the 5-piece value prop -->
