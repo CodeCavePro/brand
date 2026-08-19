@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>CODECAVE — Poster</title>
-    
+
     <link rel="stylesheet" href="../colors_and_type.css" />
     <style>
       * { box-sizing: border-box; }
@@ -18,51 +18,33 @@
         -webkit-font-smoothing: antialiased;
         text-rendering: optimizeLegibility;
       }
-      a { color: var(--color-action); text-decoration: none; }
-      h1, h2, h3, h4 {
-        margin: 0;
-        font-family: var(--font-sans);
-        line-height: 1.15;
-        font-weight: var(--font-weight-bold);
-        color: var(--color-body-primary);
-        overflow-wrap: break-word;
-      }
+      h1 { margin: 0; font-family: var(--font-sans); line-height: 1.15; font-weight: var(--font-weight-bold); color: var(--color-heading); }
       p { margin: 0; overflow-wrap: break-word; }
-      img, svg { max-width: 100%; display: block; }
-      .wrap { max-width: 1120px; margin: 0 auto; padding-left: clamp(20px, 4vw, 40px); padding-right: clamp(20px, 4vw, 40px); }
-      .kicker {
-        display: block;
-        text-transform: uppercase;
-        letter-spacing: 0.14em;
-        font-size: var(--text-caption);
-        font-weight: var(--font-weight-bold);
-        color: var(--color-action);
-        margin-bottom: 0.75rem;
-      }
-      .clamp-2, .clamp-3 { display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
-      .clamp-2 { -webkit-line-clamp: 2; }
-      .clamp-3 { -webkit-line-clamp: 3; }
-      a[role="button"]{transition:filter .15s ease,transform .15s ease}
-a[role="button"]:hover{filter:brightness(1.07)}
-a[role="button"]:active{filter:brightness(.95);transform:translateY(0.5px)}
-input:focus,textarea:focus,select:focus{border-color:var(--color-action)!important;box-shadow:0 0 0 3px var(--color-brand-800);outline:none}
-details.kit-acc>summary{list-style:none;cursor:pointer}
-details.kit-acc>summary::-webkit-details-marker{display:none}
-details.kit-acc .kit-acc-icon{transition:transform .18s ease}
-details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
-      
+
       .poster-stage { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: clamp(20px, 4vw, 48px); background: var(--color-surface-primary); }
+
+      /* The sheet is a card, so it takes the card's ground and the card's
+         corner. It was on --color-surface-tertiary, two steps up from the page,
+         which is lightening a panel to make it read (DESIGN.md anti-pattern 3);
+         and its 1.4cqi corner came out around 10px against a system whose
+         smallest card radius is 24px. Both are now the system's. The radius is
+         the token rather than cqi on purpose: cqi on the element that ESTABLISHES
+         the container resolves against the viewport, not against the sheet, so a
+         cqi corner here silently changes with the window. */
       .poster {
         position: relative;
         aspect-ratio: 3 / 4;
         width: min(720px, 92vw, calc((100vh - 96px) * 3 / 4));
         container-type: inline-size;
-        background: var(--color-surface-tertiary);
+        background: var(--color-surface-secondary);
         color: var(--color-body-primary);
         border: 1px solid var(--color-surface-quaternary);
-        border-radius: 1.4cqi;
+        border-radius: var(--radius-article);
         overflow: hidden;
-        box-shadow: 0 36px 90px var(--color-surface-tertiary), 0 4px 12px var(--color-surface-primary);
+        /* The light comes from below. A 0 36px 90px drop shadow under a panel is
+           anti-pattern 1 — the single thing the elevation section says never to
+           substitute for this token. */
+        box-shadow: var(--shadow-section);
         display: grid;
         grid-template-rows: auto 1fr auto;
         padding: 9cqi;
@@ -72,25 +54,27 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
         content: "";
         position: absolute; inset: 4cqi;
         border: 1px solid var(--color-surface-quaternary);
-        border-radius: 0.8cqi;
+        border-radius: 1.6cqi;
         pointer-events: none;
       }
       .poster > * { position: relative; z-index: 1; }
 
       /* ── three type-size roles ────────────────────────────────────────── */
       .p-focal {
-        font-family: var(--font-sans);
-        font-weight: var(--font-weight-bold);
+        font-size: 7.4cqi;
         line-height: 1.02;
         letter-spacing: -0.025em;
-        margin: 0;
         text-wrap: balance;
-        color: var(--color-body-primary);
       }
-      .p-focal .accent { color: var(--color-action); }
+      /* #5F20FE is 2.94:1 on this ground — under the 3:1 large-text floor even
+         at 7.4cqi — so the accent word carries --color-hovered (8.41:1) and the
+         action violet stays on the marks below, where it is a rule and a dot
+         rather than type. DESIGN.md §10.5. */
+      .p-focal .accent { color: var(--color-hovered); }
       .p-sub {
         font-size: 3cqi; line-height: 1.42; margin: 0;
         color: var(--color-body-secondary-lighter); max-width: 56cqi;
+        text-wrap: pretty;
       }
       .p-meta {
         font-size: 1.9cqi; line-height: 1.4; letter-spacing: 0.02em;
@@ -103,33 +87,23 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
       }
 
       /* the single accent mark that sits on the focal */
-      .p-rule { width: 12cqi; height: 0.7cqi; background: var(--color-action); border-radius: 0.4cqi; }
+      .p-rule { width: 12cqi; height: 0.7cqi; background: var(--color-action); border-radius: var(--radius-pill); }
 
       /* header band: tiny wordmark + edition tag, like a print masthead */
       .p-head { display: flex; align-items: center; justify-content: space-between; gap: 3cqi; }
-      .p-wordmark { font-family: var(--font-sans); font-weight: var(--font-weight-bold); font-size: 2.4cqi; letter-spacing: -0.01em; color: var(--color-body-primary); }
+      .p-wordmark { font-weight: var(--font-weight-bold); font-size: 2.4cqi; letter-spacing: -0.01em; color: var(--color-heading); }
+
+      /* one action, on its own ruled band — the poster's equivalent of the page's
+         single CTA. No button: a printed sheet has nothing to press. */
+      .p-cta { display: flex; align-items: baseline; justify-content: space-between; gap: 3cqi; padding-top: 4cqi; margin-top: 5cqi; border-top: 1px solid var(--color-surface-quaternary); }
+      .p-cta-action { font-weight: var(--font-weight-bold); font-size: 3cqi; letter-spacing: -0.01em; color: var(--color-heading); }
+      .p-cta-link { font-size: 2.4cqi; font-weight: var(--font-weight-bold); letter-spacing: 0.01em; color: var(--color-hovered); white-space: nowrap; }
 
       /* signature footer: logo small & confident, like a signature */
       .p-sign { display: flex; align-items: flex-end; justify-content: space-between; gap: 3cqi; }
       .p-sign-mark { display: flex; align-items: center; gap: 1.6cqi; }
       .p-sign-dot { width: 2.6cqi; height: 2.6cqi; border-radius: 50%; background: var(--color-action); flex: 0 0 auto; }
-      .p-sign-name { font-family: var(--font-sans); font-weight: var(--font-weight-bold); font-size: 2.8cqi; letter-spacing: -0.01em; color: var(--color-body-primary); }
-
-      /* ── Event 5W grid ────────────────────────────────────────────────── */
-      .p-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 4cqi 5cqi; margin: 0; }
-      .p-fact { display: flex; flex-direction: column; gap: 1cqi; min-width: 0; }
-      .p-fact-k { text-transform: uppercase; letter-spacing: 0.2em; font-size: 1.6cqi; font-weight: var(--font-weight-bold); color: var(--color-body-secondary); }
-      .p-fact-v { font-family: var(--font-sans); font-weight: var(--font-weight-bold); font-size: 3.4cqi; line-height: 1.12; color: var(--color-body-primary); letter-spacing: -0.01em; }
-      /* When + Where are the most-looked-up facts → give them more weight */
-      .p-fact--lead .p-fact-v { font-size: 4cqi; }
-
-      /* CTA block — one action, scan / short link, with a line-drawn code mark */
-      .p-cta { display: flex; align-items: center; gap: 3.4cqi; padding-top: 4cqi; border-top: 1px solid var(--color-surface-quaternary); }
-      .p-cta-copy { min-width: 0; }
-      .p-cta-action { font-family: var(--font-sans); font-weight: var(--font-weight-bold); font-size: 3cqi; color: var(--color-body-primary); margin: 0 0 0.6cqi; letter-spacing: -0.01em; }
-      .p-cta-link { font-size: 2cqi; color: var(--color-action); font-weight: var(--font-weight-bold); letter-spacing: 0.01em; }
-      .p-code { flex: 0 0 auto; width: 17cqi; height: 17cqi; border: 1px solid var(--color-surface-quaternary); border-radius: 1cqi; padding: 1.8cqi; background: var(--color-surface-secondary); }
-
+      .p-sign-name { font-weight: var(--font-weight-bold); font-size: 2.8cqi; letter-spacing: -0.01em; color: var(--color-heading); }
     </style>
   </head>
   <body>
@@ -142,9 +116,13 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
 
       <div style="display:flex;flex-direction:column;justify-content:center;gap:4cqi;padding:2cqi 0;">
         <p class="p-kicker">PLAIN  ·  SPECIFIC  ·  SENIOR</p>
-        <h1 class="p-focal" style="font-size:7.4cqi;"><span class="accent">CODECAVE</span> is dark, round, and violet — in that order of importance.</h1>
+        <h1 class="p-focal"><span class="accent">CODECAVE</span> is dark, round, and violet — in that order of importance.</h1>
         <div class="p-rule"></div>
-        <p class="p-sub">CODECAVE is a software delivery studio. Its public surface is a marketing and lead-generation site whose entire job is to turn a visitor into one booked consultation. Six services are offered — Cloud &amp; DevOps, E-Commerce, Autodesk plugins, Automation &amp; AI, HubSpot, and AR &amp; VR — and each is titled by the outcome it produces rather than the technology it uses. The stack is Astro 7, Vue 3 and Tailwind 4, with GSAP for entrance motion, Lenis for smooth scroll and Strapi as the content backend.</p>
+        <p class="p-sub">A software delivery studio. Cloud &amp; DevOps, E-Commerce, Autodesk plugins, Automation &amp; AI, HubSpot and AR &amp; VR — each one named for the outcome it produces, not the technology it uses.</p>
+        <div class="p-cta">
+          <span class="p-cta-action">Fifteen minutes, free.</span>
+          <span class="p-cta-link">codecave.pro</span>
+        </div>
       </div>
 
       <footer class="p-sign">
