@@ -6,30 +6,47 @@
 }
 
 :root {
-    --color-brand-0: #E8E6F0;
-    --color-brand-25: #DFDDE4;
-    --color-brand-50: #C6C4CC;
-    --color-brand-100: #645F70;
-    --color-brand-105: #585461;
-    --color-brand-110: #2E2C33;
-    --color-brand-130: #2A2637;
+
+    /* brand colors */
+    --color-brand-25: #E8E6F0;
+    --color-brand-50: #BBB9CB;
+    --color-brand-100: #B8AFDB;
     --color-brand-200: #B19AFE;
-    --color-brand-210: #9980FF;
-    --color-brand-300: #8252FC;
-    --color-brand-400: #20EFFE;
-    --color-brand-450: #077689;
+    --color-brand-300: #735CAB;
+    --color-brand-400: #5F3ABD;
     --color-brand-500: #5F20FE;
-    --color-brand-580: #5206E3;
-    --color-brand-600: #4004AF;
-    --color-brand-650: #33196E;
-    --color-brand-660: #281470;
-    --color-brand-670: #1B0D4E;
-    --color-brand-700: #1A0452;
-    --color-brand-800: #1E113B;
-    --color-brand-900: #070312;
-    --color-brand-910: #0D0D0F;
-    --color-brand-920: #141319;
-    --color-brand-950: #050505;
+    --color-brand-600: #4705ED;
+    --color-brand-700: #4004AF; 
+    --color-brand-800: #1B0D4E; 
+    --color-brand-900: #1E113B; 
+    --color-brand-950: #0A0A0B;
+
+    
+    /* gray colors */
+    --color-gray-50: #F4F4F6; 
+    --color-gray-100: #DCDCE5; 
+    --color-gray-200: #D5D5DD;
+    --color-gray-300: #C7C7DB;
+    --color-gray-400: #A3A3C2; 
+    --color-gray-500: #9595BB; 
+    --color-gray-600: #6B6699;
+    --color-gray-700: #2B2848; 
+    --color-gray-800: #232339; 
+    --color-gray-900: #1C1C27; 
+    --color-gray-950: #15151E;
+    --color-gray-1000: #050505;  
+    --color-gray-1100: #0F0F15;
+
+    /* once used */
+    --color-glow-25: #9980FF;
+    --color-shadow-0: #281470;
+    --color-progress-0: #8252FC;
+    
+    --color-technology-gradient-0: #077689;
+    --color-technology-gradient-25: #1A0452;
+    --color-technology-gradient-50: #070312;
+    
+    /* erros */
     --color-error-100: #FE9A9A;
     --color-error-200: #FE2020;
     --color-error-300: #B42318;
@@ -37,6 +54,8 @@
 }
 
 @theme {
+
+    /* sizes */
     --max-width-desktop: 1280px;
     --breakpoint-sm: 457px;
     --font-sans: Satoshi, sans-serif;
@@ -47,37 +66,50 @@
     --text-heading-sm: 2rem;
     --text-heading-sm--line-height: 110%;
     --radius-custom: 2.75rem;
-    --color-primary-0: var(--color-brand-0);
-    --color-primary-130: var(--color-brand-130);
+
+    /* colors */
+
+    /* primary */
+    --color-primary-25: var(--color-brand-25);
+    --color-primary-50: var(--color-brand-50);
+    --color-primary-100: var(--color-brand-100);
     --color-primary-200: var(--color-brand-200);
-    --color-primary-210: var(--color-brand-210);
     --color-primary-300: var(--color-brand-300);
-    --color-primary-450: var(--color-brand-450);
-    --color-primary-500: var(--color-brand-500);
+    --color-primary-400: var(--color-brand-400);
+    --color-primary-500: var(--color-brand-500); /* button primary*/
     --color-primary-600: var(--color-brand-600);
-    --color-primary-660: var(--color-brand-660);
-    --color-primary-670: var(--color-brand-670);
-    --color-primary-700: var(--color-brand-700);
-    --color-primary-800: var(--color-brand-800);
-    --color-primary-900: var(--color-brand-900);
-    --color-primary-910: var(--color-brand-910);
-    --color-primary-920: var(--color-brand-920);
-    --color-primary-950: var(--color-brand-950);
-    --color-heading: var(--color-brand-0);
+    --color-primary-700: var(--color-brand-700); /* button primary hover*/
+    --color-primary-800: var(--color-brand-800); 
+    --color-primary-900: var(--color-brand-900); /* button primary active*/
+
+
+    /* once used? */
+    --color-glow-25: var(--color-glow-25);
+    --color-progress-0: var(--color-progress-0);
+    --color-technology-gradient-0: var(--color-technology-gradient-0);
+    --color-technology-gradient-25: var(--color-technology-gradient-25);
+    --color-technology-gradient-50: var(--color-technology-gradient-50);
+    --color-shadow-0: var(--color-shadow-0);
+    --color-failureproof-0: var(--color-gray-1000);
+
+    --color-heading: var(--color-gray-50);
     --color-action: var(--color-brand-500);
-    --color-neutral: var(--color-brand-105);
+    --color-neutral: var(--color-gray-600);
     --color-hovered: var(--color-brand-200);
-    --color-outline-primary-hover: var(--color-brand-670);
-    --color-body-primary: var(--color-brand-0);
-    --color-body-secondary: var(--color-brand-100);
-    --color-body-secondary-lighter: var(--color-brand-50);
+    --color-outline-primary-hover: var(--color-brand-800);
+    --color-body-primary: var(--color-gray-50);
+    --color-text-body-primary: var(--color-gray-200);
+    --color-body-secondary: var(--color-gray-500);
+    --color-body-secondary-lighter: var(--color-gray-300);
     --color-surface-primary: var(--color-brand-950);
+    --color-surface-primary-hover: var(--color-gray-800);
+    --color-surface-secondary: var(--color-gray-1100); /* Surface/background-secondary*/
+    --color-surface-tertiary: var(--color-gray-900);
     --color-surface-primary-transparent: hsl(from var(--color-surface-primary) h s l / 0.3);
-    --color-surface-primary-hover: var(--color-brand-130);
-    --color-surface-secondary: var(--color-brand-910);
-    --color-surface-tertiary: var(--color-brand-920);
-    --color-surface-quaternary: var(--color-brand-110);
-    --color-default-transparent: var(--color-brand-25);
+    --color-surface-quaternary: var(--color-gray-700);
+    
+    --color-default-transparent: var(--color-gray-100);
+    
     --color-error: var(--color-error-300);
 }
 
@@ -110,9 +142,9 @@
     position: relative;
     z-index: 50;
     border-radius: 4rem;
-    box-shadow: 0 -64px 64px 0 hsl(from var(--color-primary-660) h s l / 0.20),
-    0 -10px 24px 0 hsl(from var(--color-primary-660) h s l / 0.10),
-    0 -6px 6px 0 hsl(from var(--color-primary-660) h s l / 0.08);
+    box-shadow: 0 -64px 64px 0 hsl(from var(--color-shadow-0) h s l / 0.20),
+    0 -10px 24px 0 hsl(from var(--color-shadow-0) h s l / 0.10),
+    0 -6px 6px 0 hsl(from var(--color-shadow-0) h s l / 0.08);
 }
 
 @media (min-width: 768px) {
@@ -121,53 +153,20 @@
     }
 }
 
-/* ------------------------------------------------------------------ */
-/* Rendering performance: GPU compositing & paint containment          */
-/* ------------------------------------------------------------------ */
-
-/* Pinned "swipe-over" panels: promote to their own compositing layer
-   up-front so ScrollTrigger's position:fixed toggle doesn't trigger a
-   full re-rasterization mid-scroll. */
-.swipe-over,
-#swipe-over {
-    will-change: transform;
-    backface-visibility: hidden;
+#hs-eu-cookie-confirmation #hs-eu-policy-wording a {
+    color: var(--color-brand-200);
 }
 
-/* Big rounded cards with multi-layer box-shadows are expensive to paint.
-   Give them their own layer: rasterize once, then only composite.
-   (Safe here: no position:fixed/pinned descendants — a transform would
-   otherwise become their containing block.) */
-.section-container {
-    transform: translateZ(0);
-    contain: layout style;
+#hs-eu-cookie-confirmation #hs-eu-policy-wording a:hover,
+#hs-eu-cookie-confirmation #hs-eu-cookie-settings-button:hover {
+    color: var(--color-brand-500);
 }
 
-/* vue3-carousel animates the track's transform every frame */
-.carousel__track {
-    will-change: transform;
+#hs-eu-cookie-confirmation #hs-eu-decline-button:hover {
+    border-color: var(--color-primary-800);
 }
 
-.carousel__slide {
-    backface-visibility: hidden;
-    transform: translateZ(0);
-}
-
-/* Skip layout & paint of the offscreen footer until it approaches
-   the viewport (contain-intrinsic-size keeps scrollbar geometry stable) */
-footer {
-    content-visibility: auto;
-    contain-intrinsic-size: auto 900px;
-}
-
-/* Accessibility + battery: kill CSS animation work for users who asked */
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-    }
+#hs-eu-cookie-confirmation #hs-eu-confirmation-button:hover {
+    background-color: var(--color-primary-600);
+    border-color: var(--color-primary-600);
 }

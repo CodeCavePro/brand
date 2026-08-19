@@ -6,8 +6,17 @@
 <title>Checkbox — CODECAVE storybook</title>
 <link rel="icon" href="../build/favicon.svg">
 <link rel="stylesheet" href="../colors_and_type.css">
-<link rel="stylesheet" href="components.css">
+<link rel="stylesheet" href="tw-bridge.css">
 <link rel="stylesheet" href="storybook.css">
+<script type="importmap">
+{
+  "imports": {
+    "vue": "../vendor/vue.esm-browser.prod.js",
+    "gsap": "../vendor/gsap/index.js",
+    "gsap/dist/SplitText": "../vendor/gsap/SplitText.js"
+  }
+}
+</script>
 </head>
 <body data-od-id="story-checkbox">
 <div class="sb">
@@ -22,6 +31,7 @@
     <div class="sb-tags">
       <span class="sb-tag is-vue">Vue island</span>
       <span class="sb-tag">src/components/common/Checkbox.vue</span>
+      <span class="sb-tag">rendered live from compiled/Checkbox.js</span>
       <span class="sb-tag">4 combinations</span>
     </div>
   </header>
@@ -38,21 +48,22 @@
       </tbody>
     </table>
     <p style="margin-top:1rem">There is no <code>modelValue</code> and no emit.
-       This component holds no state and reports nothing to its parent — see the
-       findings.</p>
+       This component holds no state and reports nothing to its parent — while
+       Radio, InputText and TextField all take <code>modelValue</code> and emit
+       <code>update:modelValue</code>. See the findings.</p>
   </section>
 
   <section class="sb-section">
     <h2>The matrix</h2>
-    <p>Click them. Hover them too — the tick previews at full scale on hover, not
-       only when checked.</p>
+    <p>These four are the real <code>Checkbox.vue</code> — compiled from
+       <code>source_examples/</code> and mounted as Vue islands, not HTML
+       imitations. Click them. Hover them too — the tick previews at full scale
+       on hover, not only when checked.</p>
     <div class="sb-stories">
 
       <div class="sb-story">
         <div class="sb-canvas">
-          <label class="cc-check cc-check-primary" for="cb1">
-            <input type="checkbox" id="cb1"><span>I agree to the privacy policy</span>
-          </label>
+          <div id="story-cb1"></div>
         </div>
         <div class="sb-story-body">
           <span class="sb-story-name">Primary · medium</span>
@@ -63,35 +74,31 @@
 
       <div class="sb-story">
         <div class="sb-canvas">
-          <label class="cc-check cc-check-primary is-small" for="cb2">
-            <input type="checkbox" id="cb2" checked><span>Subscribe to insights</span>
-          </label>
+          <div id="story-cb2"></div>
         </div>
         <div class="sb-story-body">
           <span class="sb-story-name">Primary · small</span>
           <span class="sb-story-args">size="small"</span>
-          <span class="sb-story-note">16px box, 12px label. Shown checked.</span>
+          <span class="sb-story-note">16px box, 12px label. Shown checked — set on
+            the DOM node from outside, because the API cannot express it (see
+            findings).</span>
         </div>
       </div>
 
       <div class="sb-story">
         <div class="sb-canvas">
-          <label class="cc-check cc-check-secondary" for="cb3">
-            <input type="checkbox" id="cb3"><span>Cloud &amp; DevOps</span>
-          </label>
+          <div id="story-cb3"></div>
         </div>
         <div class="sb-story-body">
           <span class="sb-story-name">Secondary · medium</span>
           <span class="sb-story-args">variant="secondary"</span>
-          <span class="sb-story-note">Pill on #0D0D0F. Uses <code>outline</code>, not <code>border</code>, and fills solid violet when checked.</span>
+          <span class="sb-story-note">Pill on #0F0F15 (the site&rsquo;s gray-1100). Uses <code>outline</code>, not <code>border</code>, and fills solid violet when checked.</span>
         </div>
       </div>
 
       <div class="sb-story">
         <div class="sb-canvas">
-          <label class="cc-check cc-check-secondary is-small" for="cb4">
-            <input type="checkbox" id="cb4" checked><span>Automation &amp; AI</span>
-          </label>
+          <div id="story-cb4"></div>
         </div>
         <div class="sb-story-body">
           <span class="sb-story-name">Secondary · small</span>
@@ -106,16 +113,18 @@
   <section class="sb-section">
     <h2>Findings</h2>
 
-    <p class="sb-note is-warn"><strong>The tick transition is invalid and does not animate.</strong>
-      Source declares
+    <p class="sb-note is-warn"><strong>The tick transition leans on a variable the
+      component never defines.</strong> Source declares
       <code>transition: var(--default-transition-duration) transform ease-in-out;</code>
-      and <code>--default-transition-duration</code> is defined nowhere in the
-      project — not in <code>global.css</code>, not in <code>@theme</code>, not in
-      <code>tailwind.config.ts</code>. The custom property resolves to nothing, the
-      shorthand fails to parse, and the tick snaps from scale(0) to scale(1) with
-      no easing. Reproduced as-authored here. The fix is a real duration; the
-      system already ships <code>--transition-base</code> (200ms ease).
-      <code>Radio.vue</code> line 61 has the identical bug.</p>
+      and <code>--default-transition-duration</code> appears nowhere in the
+      project's own code. It resolves anyway — to 150ms from Tailwind's default
+      theme, which the build emits because <code>transition-colors</code> is in
+      use. So inside the site (and here, via <code>tw-bridge.css</code>) the tick
+      animates; lift the component out of a Tailwind build and the shorthand
+      collapses, snapping the tick from scale(0) to scale(1). A self-contained fix
+      would name a real duration — the system ships
+      <code>--transition-base</code> (200ms ease). <code>Radio.vue</code> line 61
+      carries the same declaration and the same dependency.</p>
 
     <p class="sb-note is-warn"><strong>The component is stateless and unreported.</strong>
       No <code>modelValue</code>, no <code>defineEmits</code>, no
@@ -138,5 +147,22 @@
   </section>
 
 </div>
+
+<script type="module">
+  import { createApp } from 'vue';
+  import Checkbox from './compiled/Checkbox.js';
+
+  const stories = {
+    'story-cb1': { id: 'cb1', label: 'I agree to the privacy policy', variant: 'primary',   size: 'medium' },
+    'story-cb2': { id: 'cb2', label: 'Subscribe to insights',         variant: 'primary',   size: 'small'  },
+    'story-cb3': { id: 'cb3', label: 'Cloud & DevOps',                variant: 'secondary', size: 'medium' },
+    'story-cb4': { id: 'cb4', label: 'Automation & AI',               variant: 'secondary', size: 'small'  },
+  };
+  for (const [el, props] of Object.entries(stories)) createApp(Checkbox, props).mount('#' + el);
+
+  // Checkbox.vue exposes no checked state (see findings) — the two stories
+  // shown checked can only be set from outside, on the DOM node itself.
+  for (const id of ['cb2', 'cb4']) document.getElementById(id).checked = true;
+</script>
 </body>
 </html>
