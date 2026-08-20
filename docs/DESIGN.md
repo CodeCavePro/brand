@@ -47,7 +47,7 @@ Tailwind 4: 61 `.astro` files, 45 `.vue` files, **zero React**, no Storybook
 | Site header with a Services mega-dropdown | `header/desktop-menu.vue`, `header/services-list.vue`, `header/menu.ts` |
 | Mobile menu drawer | `header/mobile-menu.vue` |
 | Service / hero heading block with the single glow CTA | `services/heading.astro` |
-| Consultation lead form | `homepage/contacts-form.vue` |
+| Consultation lead form | `common/forms/ContactUsForm.vue` |
 | Insight (article) cards | `common/ArticlePreview.vue` |
 | Attributed testimonial cards | `common/Review.vue` |
 | Rotated, gradient-bordered technology cards | `homepage/technology-card.vue` |
@@ -364,9 +364,19 @@ Derived from real source; each entry names its file.
 
 ### Buttons — `common/Button.vue`, `common/GlowButton.vue`
 
-All buttons are **44px tall**, `padding: 4px 24px`, `border-radius: 9999px`,
-`font-weight: 700`, `font-size: 16px`. 44px already meets the touch-target
-minimum.
+Every button carries a **48 × 48px minimum box** — `min-w-12 min-h-12` on the
+shared base class — with `padding: 4px 24px`, `border-radius: 9999px`,
+`font-weight: 700`, `font-size: 16px`. Treat 48px as the floor for any control
+a finger has to land on: the mobile burger was moved from 44px to 48px in the
+same change, so this is a rule, not a one-off. It clears WCAG 2.5.5 AAA (44px)
+rather than merely meeting 2.5.8 AA (24px).
+
+The `secondary` and `tertiary` variants still declare `h-11` (44px) on top of
+that base. They do not render at 44px — `min-height` beats `height` in CSS, so
+every one of them is 48px tall and the `h-11` is dead. `--control-height`
+remains `2.75rem` in `colors_and_type.css` because that is what the specimen
+markup here sets explicitly; production no longer agrees with it, and the
+reconciliation is a site-side decision (CCWEB2-319).
 
 | Variant | Rest | Hover | Active |
 |---|---|---|---|
@@ -446,9 +456,16 @@ is still in source; see [WEBSITE-REVIEW.md](/WEBSITE-REVIEW.md) §4.
 | Card | Radius | Fill | Hover | Source |
 |---|---|---|---|---|
 | Default | 24px | `#0F0F15` | `#1C1C27` | sitewide |
-| Article | 36px | `#0F0F15` | `#1C1C27` | `common/ArticlePreview.vue` |
+| Article | 36px | `#0F0F15` + 1px `#1C1C27` hairline | `#1C1C27` | `common/ArticlePreview.vue` |
 | Testimonial | 44px | transparent + `blur(32px)` | — | `common/Review.vue` |
 | Technology | 24px | transparent + `blur(14px)`, 1px gradient border | rotates upright | `homepage/technology-card.vue` |
+
+The article card is the only one that carries a border. It gained
+`border-surface-tertiary border` on 2026-08-20 — the same `#1C1C27` the other
+cards use as their *hover* fill, so at rest the hairline reads as the edge of
+where the hover state will go. It is a 1px separator, not a frame: nothing else
+in the system outlines a card, and adding a second one would turn a signature
+into a pattern.
 
 The technology card is the system's one piece of showmanship: cards sit at
 `±1°/±2°/±4°` rotations and translate upright when active. Its border is a
@@ -709,6 +726,12 @@ decision. If a brighter hover lands upstream, this package follows it.
 `--color-error` is `#B42318` (`error-300`), which measures **3.01:1** on
 `#0A0A0B` — below the 4.5:1 floor for body text. The production site uses it for
 form error messaging.
+
+The 2026-08-20 resync gave that sentence a name: `common/TextField.vue` gained
+an `isError` / `errorMessage` state and styles both the invalid value and the
+12px message with `text-error`. On the field's own `--color-surface-secondary`
+(`#0F0F15`) that measures **2.91:1**, against **9.37:1** for the `error-100`
+that `InputText.vue` uses for the same job. Filed as CCWEB2-320.
 
 This package keeps `#B42318` for icons, rules and non-text marks, and renders
 error *messages* in `--color-error-100` `#FE9A9A` (**9.71:1**). The error halo

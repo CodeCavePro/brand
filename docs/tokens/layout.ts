@@ -9,7 +9,7 @@
 // The `.js` extension is required, not a typo: these modules are published as
 // ESM, and Node's resolver needs the extension it will see at runtime.
 // TypeScript maps it back to ./colors.ts when compiling.
-import { accent, brand } from './colors.js';
+import { accent, brand, error } from './colors.js';
 
 export const maxWidthDesktop = '1280px' as const;
 export const breakpointSm = '457px' as const;
@@ -79,6 +79,14 @@ export const shadow = {
   inputFocus: [
     `0 0 16px 0 hsl(from ${brand[500]} h s l / 0.5)`,
     `0 0 4px 0 hsl(from ${brand[500]} h s l / 0.6)`,
+  ].join(', '),
+  // The invalid-field halo. `--shadow-input-error` has been in
+  // colors_and_type.css since the rebuild; this mirror simply never grew the
+  // matching key, so a consumer reading tokens from the module could style a
+  // focus ring and had nothing to reach for on the error state.
+  inputError: [
+    `0 0 16px 0 hsl(from ${error[200]} h s l / 0.5)`,
+    `0 0 4px 0 hsl(from ${error[100]} h s l / 0.6)`,
   ].join(', '),
 } as const;
 
