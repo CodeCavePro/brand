@@ -51,6 +51,33 @@
     --color-error-200: #FE2020;
     --color-error-300: #B42318;
     --color-error-400: #CA1400;
+
+    /* control geometry
+     *
+     * Declared here and not in @theme on purpose: both names are consumed only
+     * from scoped <style> blocks (Checkbox.vue, Radio.vue), never as a utility
+     * class, so they must exist unconditionally rather than because some
+     * utility elsewhere caused Tailwind to emit them.
+     *
+     * They exist at all because those components used to reference
+     * `--radius-sm` and `--default-transition-duration`, which this file never
+     * declared -- they resolved purely because the Tailwind build happens to
+     * emit defaults under those names. That is an undeclared dependency on the
+     * build: lift the component anywhere else and the value silently changes or
+     * disappears. It also made the value un-chooseable, since `rounded-sm` went
+     * from 0.125rem in Tailwind v3 to 0.25rem in v4.
+     *
+     * 0.5rem matches the brand package's --radius-control token, which covers
+     * inputs and small chips; the checkbox is an input, and its own secondary
+     * label wrapper is already rounded-lg (8px). The old inherited 0.25rem was
+     * never a decision anyone made.
+     *
+     * The -sm step exists because the corner cannot be size-independent: the
+     * small checkbox is 16px, and 8px on a 16px box is exactly half its side,
+     * i.e. a circle -- a radio button rendering for a pick-any control. */
+    --radius-control: 0.5rem;
+    --radius-control-sm: 0.25rem;
+    --duration-control: 150ms;
 }
 
 @theme {

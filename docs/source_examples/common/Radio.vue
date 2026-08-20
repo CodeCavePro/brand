@@ -58,7 +58,7 @@ input::before {
   height: 7px;
   border-radius: 50%;
   transform: scale(0);
-  transition: var(--default-transition-duration) transform ease-in-out;
+  transition: var(--duration-control) transform ease-in-out;
   background: var(--color-action);
 }
 

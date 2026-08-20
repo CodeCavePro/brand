@@ -215,6 +215,7 @@
    * other silently changed shape — see the checkbox note further down. The
    * remaining six radii were already semantic; these two were the only ones
    * that could collide, and now they cannot. */
+  --radius-control-sm:0.25rem;  /*   4px — the 16px checkbox box ONLY       */
   --radius-control:   0.5rem;   /*   8px — inputs, small chips              */
   --radius-tile:      0.75rem;  /*  12px — inline chips, icon tiles         */
   --radius-card:      1.5rem;   /*  24px — DEFAULT card, dominant sitewide  */
@@ -716,15 +717,14 @@ a:hover { color: var(--color-hovered); }
   height: 1.5rem;
   margin: 0;
   border: 2px solid var(--color-outline-primary-hover);
-  /* 4px literal, and the ONE place in this system where a corner is that
-   * small. It is not a CODECAVE decision: Checkbox.vue's scoped style says
-   * `border-radius: var(--radius-sm)` and the site's @theme never declares
-   * that name, so both checkbox variants take Tailwind's default 0.25rem.
-   * There is deliberately no 4px token to reach for — naming it would invite
-   * reuse, and everywhere else small corners read as off-brand. The site-side
-   * fix (declare the radius you want) is CCWEB2-313; until it lands, this is
-   * what ships, so this is what the specimen shows. */
-  border-radius: 0.25rem;
+  /* The control radius, same as every other input and small chip. This used to
+   * be a 4px literal with a long apology attached: Checkbox.vue read
+   * `var(--radius-sm)`, the site declared no such name, and the box quietly
+   * took Tailwind's 0.25rem default. Nobody had chosen 4px. The site now
+   * declares `--radius-control: 0.5rem` itself (CCWEB2-313), so the specimen
+   * and the site agree on one value under one name and the divergence is
+   * gone. */
+  border-radius: var(--radius-control);
   cursor: pointer;
   transition: border-color var(--transition-base),
               background-color var(--transition-base);
@@ -760,11 +760,12 @@ a:hover { color: var(--color-hovered); }
 .checkbox-chip input {
   width: 1rem;
   height: 1rem;
-  /* Same 4px, same reason as `.checkbox input` above. It matters more here:
-   * this box is 16px, so the old 8px was exactly half its side — a perfect
-   * circle, i.e. a radio button, i.e. pick-one where the chips are pick-any.
-   * The surrounding pill above keeps 8px (`rounded-lg` in source). */
-  border-radius: 0.25rem;
+  /* The -sm step, not --radius-control. The box is 16px, so 8px would be
+   * exactly half its side: a perfect circle, i.e. a radio button, i.e.
+   * pick-one rendering for a pick-any control. The surrounding pill keeps 8px
+   * (`rounded-lg` in source), so the chip reads as a rounded tile holding a
+   * small square. Checkbox.vue keys the same distinction off `data-size`. */
+  border-radius: var(--radius-control-sm);
   border: 0;
   outline: 2px solid var(--color-surface-quaternary);
   transition: outline-color var(--transition-base),

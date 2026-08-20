@@ -282,6 +282,7 @@ never two separate sentences.
 
 | Token | Value | Applies to |
 |---|---|---|
+| `--radius-control-sm` | 4px | the 16px checkbox box, and nothing else |
 | `--radius-control` | 8px | inputs, small chips |
 | `--radius-tile` | 12px | inline chips, icon tiles |
 | `--radius-card` | 24px | **default card, dominant sitewide** |
@@ -292,17 +293,24 @@ never two separate sentences.
 | `--radius-pill` | 9999px | buttons, pills, avatars |
 
 Measured radius census on the homepage: 24px on 42 blocks, 12px on 9, 44px on
-8, 8px on 7, 120px on 2. Radii of 2–4px occur only on the checkbox box.
+8, 8px on 7, 120px on 2. The 4px step renders nowhere on the homepage — it
+exists only for the small checkbox box, which the homepage does not use.
 
 **Every name in that table describes what it wraps, and that is load-bearing.**
 The two that were `--radius-sm` and `--radius-md` are also Tailwind default
 theme names, at *different* values — 0.25rem and 0.375rem against this system's
 0.5rem and 0.75rem. The site emits Tailwind's defaults (its `@theme` declares
-one radius, `--radius-custom`), so any markup that names `--radius-sm` gets 8px
+one radius, `--radius-custom`), so any markup that named `--radius-sm` got 8px
 here and 4px there with nothing to notice: no error, no warning, just a
 different shape. Renamed 2026-08-20 so the collision is structurally impossible.
-See `Checkbox.vue` below for the case that made it visible, filed against the
-site as [CCWEB2-313](https://codecave.atlassian.net/browse/CCWEB2-313).
+
+`Checkbox.vue` was the case that made it visible, and it is now **resolved on
+both sides**: the site declares `--radius-control: 0.5rem` in its own `:root`
+rather than inheriting a name it never defined, so the checkbox corner went 4px
+→ 8px and the two systems agree on one value under one name
+([CCWEB2-313](https://codecave.atlassian.net/browse/CCWEB2-313)). The site-side
+change deliberately reuses this exact token name: any other name at the same
+value would have recreated the original bug one layer over.
 
 ### Container
 
@@ -410,17 +418,28 @@ selection): wrapped in a `--color-surface-secondary` pill with
 `--color-action`. The tick is `assets/checked-icon.svg`, scaled `0 → 1` on
 hover and check.
 
-**The box itself takes a 4px corner in both variants** — the one small radius
-anywhere in the system, and the only value in this document that is not a
-CODECAVE decision. `Checkbox.vue` writes `border-radius: var(--radius-sm)` in
-its scoped style; the site's `@theme` never declares that name, so the box
-falls through to Tailwind's default `0.25rem`. There is deliberately no token
-for it: naming a 4px radius would invite reuse, and everywhere else small
-corners read as off-brand. Pinned as a literal in `colors_and_type.css` with
-the reason inline. Filed against the site as
-[CCWEB2-313](https://codecave.atlassian.net/browse/CCWEB2-313) — the component
-should declare the corner it wants rather than inherit whichever `--radius-sm`
-is in scope.
+**The default box takes `--radius-control` (8px), same as every other input.**
+It did not always. `Checkbox.vue` used to write `border-radius:
+var(--radius-sm)` in its scoped style against a site that declared no such
+name, so the box fell through to Tailwind's `0.25rem` — 4px, chosen by nobody,
+and the only value this document ever carried that was not a CODECAVE
+decision. Resolved 2026-08-20: the site now declares `--radius-control: 0.5rem`
+in its own `:root` and the component reads that
+([CCWEB2-313](https://codecave.atlassian.net/browse/CCWEB2-313)). One value,
+one name, both systems.
+
+**The 16px box takes `--radius-control-sm` (4px), and the corner cannot be
+size-independent.** Half of 16 is 8, so applying the 8px control corner to the
+small box renders a perfect circle — a radio button for a pick-any control.
+`Checkbox.vue` keys the distinction off a `data-size` attribute rather than a
+utility class, so it holds without a Tailwind build; `colors_and_type.css`
+mirrors it on `.checkbox-chip input`.
+
+Note the chip variant is currently **unreachable on the live site**:
+`Checkbox.vue` types `variant?: 'primary'` and its `case 'secondary'` branch is
+dead code that no caller passes, so the only checkboxes that render anywhere
+are the contact form's two 24px ones. The specimen is kept because the branch
+is still in source; see [WEBSITE-REVIEW.md](/WEBSITE-REVIEW.md) §4.
 
 ### Cards
 

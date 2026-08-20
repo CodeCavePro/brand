@@ -52,8 +52,9 @@
   </header>
 
   <section class="pv-block" data-od-id="radius-scale">
-    <h2>The eight steps, at true size</h2>
+    <h2>The nine steps, at true size</h2>
     <div class="pv-grid pv-grid-3">
+      <div class="r-demo" style="border-radius:var(--radius-control-sm)">--radius-control-sm · 4px<br>the 16px checkbox box ONLY</div>
       <div class="r-demo" style="border-radius:var(--radius-control)">--radius-control · 8px<br>inputs, small chips</div>
       <div class="r-demo" style="border-radius:var(--radius-tile)">--radius-tile · 12px<br>inline chips, icon tiles</div>
       <div class="r-demo" style="border-radius:var(--radius-card)">--radius-card · 24px<br><strong>DEFAULT card</strong></div>
@@ -69,9 +70,11 @@
        0.375rem against this system's 0.5rem and 0.75rem. The site emits Tailwind's defaults (its
        <code>@theme</code> declares one radius, <code>--radius-custom</code>), so the same markup
        rendered here and rendered there took two different shapes, with no error and nothing in the
-       console to notice. Six of the eight were already semantic; the two t-shirt sizes were
+       console to notice. Six of the eight then-existing steps were already semantic; the two t-shirt sizes were
        precisely the two that could collide. See
-       <a href="components-inputs.html">the checkbox</a> for the case that made it visible.</p>
+       <a href="components-inputs.html">the checkbox</a> for the case that made it visible — since
+       resolved on the site's side too, which now declares <code>--radius-control: 0.5rem</code>
+       itself instead of inheriting a name it never defined.</p>
   </section>
 
   <section class="pv-block" data-od-id="radius-census">

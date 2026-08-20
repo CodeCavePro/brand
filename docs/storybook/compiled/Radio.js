@@ -56,7 +56,7 @@ var __sfc__ = /* @__PURE__ */ _defineComponent({
 });
 __sfc__.__scopeId = "data-v-3e960a13";
 __sfc__.__file = "source_examples/common/Radio.vue";
-var __css__ = "\ninput[data-v-3e960a13] {\r\n  width: 17px;\r\n  height: 17px;\r\n  appearance: none;\r\n  -webkit-appearance: none;\r\n  display: grid;\r\n  place-content: center;\n}\ninput[data-v-3e960a13]::before {\r\n  content: '';\r\n  width: 7px;\r\n  height: 7px;\r\n  border-radius: 50%;\r\n  transform: scale(0);\r\n  transition: var(--default-transition-duration) transform ease-in-out;\r\n  background: var(--color-action);\n}\ninput[data-v-3e960a13]:checked::before {\r\n  transform: scale(1);\n}\r\n";
+var __css__ = "\ninput[data-v-3e960a13] {\r\n  width: 17px;\r\n  height: 17px;\r\n  appearance: none;\r\n  -webkit-appearance: none;\r\n  display: grid;\r\n  place-content: center;\n}\ninput[data-v-3e960a13]::before {\r\n  content: '';\r\n  width: 7px;\r\n  height: 7px;\r\n  border-radius: 50%;\r\n  transform: scale(0);\r\n  transition: var(--duration-control) transform ease-in-out;\r\n  background: var(--color-action);\n}\ninput[data-v-3e960a13]:checked::before {\r\n  transform: scale(1);\n}\r\n";
 if (typeof document !== "undefined" && !document.getElementById("sfc-style-3e960a13")) {
   const el = document.createElement("style");
   el.id = "sfc-style-3e960a13";

@@ -1,12 +1,25 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import AsteriskIcon from "../../assets/icons/asterisk-icon.vue";
 
-const props = defineProps<{
-  id: string
-  label: string
-  variant?: 'primary' | 'secondary'
-  size?: 'small' | 'medium'
-}>()
+const props = withDefaults(
+  defineProps<{
+    id: string
+    label: string
+    isRequired?: boolean
+    isError?: boolean
+    variant?: 'primary'
+    size?: 'small' | 'medium'
+    modelValue?: boolean
+  }>(),
+  {
+    isRequired: false,
+    isError: false,
+    variant: 'primary',
+    size: 'medium'
+  }
+)
+
 const checkboxSize = computed(() => {
   switch (props.size) {
     case 'small':
@@ -33,21 +46,35 @@ const labelVariantClass = computed(() => {
   }
 })
 const inputBaseClass = 'cursor-pointer transition-colors'
+const borderClass = computed(() => {
+  return props.isError ? 'border-error checkbox-error' : 'border-outline-primary-hover hover:border-action'
+});
+
 const inputVariantClass = computed(() => {
   switch (props.variant) {
     case 'secondary':
       return `${inputBaseClass} ${checkboxSize.value} outline-2 outline-surface-quaternary checked:bg-action checked:outline-none hover:outline-action`
     default:
-      return `${inputBaseClass} ${checkboxSize.value} border-2 border-outline-primary-hover hover:border-action`
+       return `${inputBaseClass} ${checkboxSize.value} border-2 ${borderClass.value}`
   }
 })
+
+defineEmits(['update:modelValue'])
 </script>
 
 <template>
   <label :for="id" :class="labelVariantClass">
-    <input :id="id" type="checkbox" :autocomplete="id" :class="inputVariantClass" />
-    <span>
+    <input 
+      :id="id" 
+      type="checkbox" 
+      :autocomplete="id" 
+      :class="inputVariantClass"
+      :data-size="size"
+      :checked="modelValue"
+      @change="$emit('update:modelValue', ($event.target as HTMLTextAreaElement).checked)"/>
+    <span class="flex items-center">
       {{ label }}
+      <AsteriskIcon v-if="isRequired" class="mx-1"/>
     </span>
   </label>
 </template>
@@ -58,21 +85,34 @@ input {
   -webkit-appearance: none;
   display: grid;
   place-content: center;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-control);
+}
+
+/* The corner cannot be size-independent. The small box is 16px, and 8px on a
+   16px box is exactly half its side -- a circle, which reads as a radio button
+   for what is a pick-any control. Keyed off data-size rather than a utility
+   class so it holds without a Tailwind build, same reason both custom
+   properties are declared in :root. */
+input[data-size="small"] {
+  border-radius: var(--radius-control-sm);
 }
 
 input::before {
   content: '';
   transform: scale(0);
-  transition: var(--default-transition-duration) transform ease-in-out;
+  transition: var(--duration-control) transform ease-in-out;
   background-image: url("../../assets/images/checked-icon.svg");
   background-repeat: no-repeat;
   background-position: center center;
 }
 
-input:hover::before,
 input:checked::before {
   transform: scale(1);
   transform-origin: center center;
+}
+
+.checkbox-error {
+  box-shadow: 0 0 16px 0 hsl(from var(--color-error-200) h s l / 0.5),
+    0 0 4px 0 hsl(from var(--color-error-100) h s l / 0.6);
 }
 </style>

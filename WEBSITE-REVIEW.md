@@ -8,12 +8,16 @@ math computed against the current palette (page ground `#0A0A0B`, card ground
 `#0F0F15`).
 
 The design system in this repo now **follows the site** — nothing below was
-"fixed" in the DS unless the remark says so in as many words, and only two do
-(4 · checkbox squash, 4 · circular chip box), both because the defect made the
-documentation itself render wrong. Each remark names the source file so it can
-be addressed where it lives. Severity: **P0** = ship-blocking (security or accessibility
-failure), **P1** = incorrect behavior or broken contract, **P2** = hygiene and
-polish.
+"fixed" in the DS unless the remark says so in as many words, and only one does
+(4 · checkbox squash), because the defect made the documentation itself render
+wrong. Each remark names the source file so it can be addressed where it lives.
+Severity: **P0** = ship-blocking (security or accessibility failure), **P1** =
+incorrect behavior or broken contract, **P2** = hygiene and polish.
+
+**This file lists only what is still open.** Remarks are deleted as they are
+fixed rather than struck through — the Jira backlog under
+[CCWEB2](https://codecave.atlassian.net/browse/CCWEB2) is the record of what was
+done and when.
 
 ---
 
@@ -131,27 +135,16 @@ section's own heading and flatten the document outline.
   a sentence-length label (the newsletter opt-in on the contact form is one)
   hits it. Add `shrink-0`. *Fixed ahead in the port (`flex: none`) because it
   made the brand documentation render a broken control.*
-- **`Checkbox.vue` depends on a `--radius-sm` the project never sets** — worth a
-  note rather than a fix; filed as
-  [CCWEB2-313](https://codecave.atlassian.net/browse/CCWEB2-313). Its scoped
-  style says `border-radius: var(--radius-sm)`, and `@theme` in `global.css`
-  does not declare one, so the value comes from Tailwind's default theme:
-  **0.25rem / 4px**. That happens to be the right corner for a 16px box, so the
-  chips read correctly on the site today — but the component is one `@theme`
-  line away from changing shape, and lifted out of a Tailwind build it takes
-  whatever `--radius-sm` it lands next to, or nothing at all. Same class of
-  dependency as the `--default-transition-duration` item below. Declare the
-  radius the component actually wants, or give the `var()` a fallback.
-  *(The design-system port used to be exactly the stylesheet that shadowed it:
-  its own `--radius-sm` was 8px, and 8px on a 16px box is half the side — a
-  perfect circle that reads as a radio button. The port has since renamed its
-  two colliding radii to `--radius-control` and `--radius-tile` and pins 4px on
-  both checkbox variants so its specimens match the site. Nothing to change on
-  the site for that part; the undeclared dependency is the part that remains.)*
-- **Checkbox/Radio animate against a variable the project never defines**:
-  `transition: var(--default-transition-duration) transform ease-in-out`
-  resolves to 150ms only because Tailwind's default theme happens to emit it.
-  Outside a Tailwind build the tick/dot snaps. Name a real duration.
+- **`Checkbox.vue`'s `secondary` variant is dead code.** The props type says
+  `variant?: 'primary'`, so the `case 'secondary'` branches in
+  `labelVariantClass` and `inputVariantClass` are unreachable through the typed
+  API, and no caller passes it — the only `<Checkbox>` usages on the site are
+  the contact form's two, both default. The chip form (16px box in a
+  `surface-secondary` pill) therefore renders nowhere. Either it was dropped and
+  the branch should go, or it was meant to survive and the type should read
+  `'primary' | 'secondary'`. Right now the source documents a control the site
+  does not have, which is how the design-system port came to carry a specimen
+  for it.
 
 ## 5 · P2 — Token layer (`src/styles/global.css`)
 

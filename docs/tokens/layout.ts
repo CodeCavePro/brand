@@ -13,10 +13,11 @@ export const breakpointSm = '457px' as const;
 
 /**
  * Radii. CODECAVE runs unusually large corners — this is the loudest brand
- * signal in the system, louder than the violet. Nothing here is small; the one
- * 4px corner in the package is the checkbox box, which is Tailwind's default
- * leaking through an undeclared name on the site (CCWEB2-313), not a CODECAVE
- * value, so it is deliberately not a token.
+ * signal in the system, louder than the violet. Only one value here is small,
+ * and it exists for a geometric reason rather than a stylistic one: the small
+ * checkbox box is 16px, and the 8px control corner on a 16px box is exactly
+ * half its side, i.e. a circle, i.e. a radio button rendering for a pick-any
+ * control. Use `controlSm` for that box and nothing else.
  *
  * Every key is named for what it wraps rather than for a t-shirt size. `sm` and
  * `md` used to be here, and `--radius-sm` / `--radius-md` are also Tailwind
@@ -25,6 +26,7 @@ export const breakpointSm = '457px' as const;
  * nothing to notice. The semantic names cannot collide.
  */
 export const radius = {
+  controlSm: '0.25rem', // 4px — the 16px checkbox box ONLY
   control: '0.5rem', //   8px — inputs, small chips
   tile: '0.75rem', //    12px — inline chips, icon tiles
   card: '1.5rem', //     24px — the DEFAULT card, dominant sitewide

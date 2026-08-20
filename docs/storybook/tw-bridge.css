@@ -7,7 +7,7 @@
  *
  * The digest below covers every file under source_examples/, this file's only
  * source. Verify with: node docs/tools/check-tw-bridge.mjs
- * source-digest: sha256:9ef5a01450b12eb81d366a1639ca7d8adcc6e40d7c078b3d5f5d98c9b2e3a17f
+ * source-digest: sha256:d072ad8f166a94a2b12ad82f1c0f831a6a5450db0455e71b14729debd18270bd
  */
 /*! tailwindcss v4.3.0 | MIT License | https://tailwindcss.com */
 @layer properties;
@@ -32,7 +32,6 @@
     --text-xl: 1.25rem;
     --text-xl--line-height: calc(1.75 / 1.25);
     --font-weight-bold: 700;
-    --radius-sm: 0.25rem;
     --radius-lg: 0.5rem;
     --radius-xl: 0.75rem;
     --radius-2xl: 1rem;
@@ -421,6 +420,9 @@
   }
   .border-action {
     border-color: var(--color-action);
+  }
+  .border-error {
+    border-color: var(--color-error);
   }
   .border-outline-primary-hover {
     border-color: var(--color-outline-primary-hover);
@@ -1363,6 +1365,9 @@
   --color-error-200: #FE2020;
   --color-error-300: #B42318;
   --color-error-400: #CA1400;
+  --radius-control: 0.5rem;
+  --radius-control-sm: 0.25rem;
+  --duration-control: 150ms;
   --max-width-desktop: 1280px;
   --breakpoint-sm: 457px;
   --font-sans: Satoshi, sans-serif;
@@ -1414,7 +1419,6 @@
   --text-xl: 1.25rem;
   --text-xl--line-height: calc(1.75 / 1.25);
   --font-weight-bold: 700;
-  --radius-sm: 0.25rem;
   --radius-lg: 0.5rem;
   --radius-xl: 0.75rem;
   --radius-2xl: 1rem;

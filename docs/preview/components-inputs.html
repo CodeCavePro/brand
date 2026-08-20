@@ -23,9 +23,12 @@
                 padding: 0.5rem 0.75rem; border-radius: var(--radius-control);
                 background: var(--color-surface-secondary);
                 font-size: var(--text-caption); cursor: pointer; }
+  /* The -sm step, not --radius-control: the box is 16px, so 8px would be
+     exactly half its side — a perfect circle, i.e. a radio button rendering for
+     a pick-any control. The pill above it does take --radius-control. */
   .chip-check input { appearance: none; -webkit-appearance: none; display: grid;
                       place-content: center; width: 1rem; height: 1rem; margin: 0;
-                      border-radius: 0.25rem; cursor: pointer;
+                      border-radius: var(--radius-control-sm); cursor: pointer;
                       outline: 2px solid var(--color-surface-quaternary);
                       transition: outline-color var(--transition-base),
                                   background-color var(--transition-base); }
@@ -145,18 +148,24 @@
        a 16px box seated in a <code>#0F0F15</code> pill with an 8px corner
        (<code>--radius-control</code>, <code>rounded-lg</code> in source). The tick scales
        <code>0 &rarr; 1</code> on both hover and check.</p>
-    <p class="pv-note is-warn">Both boxes take a <strong>4px</strong> corner — the only small radius
-       anywhere in this system, and the one value on this page that CODECAVE did not choose.
-       <code>Checkbox.vue</code>'s scoped style asks for <code>--radius-sm</code>; the site's
-       <code>@theme</code> never declares that name, so the box falls through to Tailwind's default
-       <code>0.25rem</code>. The number is pinned here so the specimen shows what ships, and there
-       is deliberately no 4px token to reach for. Until 2026-08-20 this package also published a
-       <code>--radius-sm</code>, at 8px — and 8px on a 16px box is exactly half its side, a perfect
-       circle, which reads as a radio button: pick-one where the chips are pick-any. That is why
-       the package's two t-shirt-sized radii are now <code>--radius-control</code> and
-       <code>--radius-tile</code>. The site-side fix — declare the corner you want instead of
-       inheriting whichever <code>--radius-sm</code> is in scope — is
-       <a href="https://codecave.atlassian.net/browse/CCWEB2-313">CCWEB2-313</a>.</p>
+    <p class="pv-note">The 24px box takes <code>--radius-control</code> (8px), the same corner as
+       every other input. It used to take 4px, and that was nobody's decision:
+       <code>Checkbox.vue</code>'s scoped style asked for <code>--radius-sm</code>, the site declared
+       no such name, and the box fell through to Tailwind's default <code>0.25rem</code>. Fixed on
+       both sides on 2026-08-20 — this package renamed its colliding radii to
+       <code>--radius-control</code> and <code>--radius-tile</code>, and the site now declares
+       <code>--radius-control: 0.5rem</code> in its own <code>:root</code> rather than inheriting a
+       name it never defined (<a href="https://codecave.atlassian.net/browse/CCWEB2-313">CCWEB2-313</a>).</p>
+    <p class="pv-note is-warn">The <strong>16px box takes <code>--radius-control-sm</code> (4px)</strong>,
+       and the corner cannot be size-independent. Half of 16 is 8, so the 8px control corner on the
+       small box renders a perfect circle — a radio button for a pick-any control.
+       <code>Checkbox.vue</code> keys this off a <code>data-size</code> attribute rather than a
+       utility class, so it survives outside a Tailwind build. Note this variant is currently
+       unreachable on the live site:
+       <code>Checkbox.vue</code> types <code>variant?: 'primary'</code> and its
+       <code>case 'secondary'</code> branch is dead code no caller passes, so the only checkboxes
+       that render are the contact form's two 24px ones. The specimen stays because the branch is
+       still in source.</p>
     <div class="pv-grid pv-grid-2">
       <div class="pv-tile" style="display:grid;gap:1rem;justify-items:start">
         <span class="pv-label">Default</span>
