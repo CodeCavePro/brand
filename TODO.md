@@ -101,22 +101,25 @@ PNG at 2× or 3×.
 `docs/assets/`, then swap both templates. Until then the typed fallback stays
 and this note explains why.
 
-## 4. The README's "source of truth" claim contradicts how we actually work
+## 4. What counts as "converged"?
 
-README.md opens with:
+The apparent contradiction in the README is resolved: it was never two competing
+claims, it was one claim about the **target** and one about the **current phase**.
+`docs/` began highly divergent from the shipped site and is converging onto it
+without surrendering the brand identity; while that runs, the site is the
+reference and site-side flaws go to [WEBSITE-REVIEW.md](/WEBSITE-REVIEW.md).
+Afterwards, implementations follow the repo. Both READMEs and
+`.design-sync/conventions.md` now say exactly that.
 
-> This repository is the source of truth for the CODECAVE brand. […]
-> Implementations — including <https://codecave.gay> — conform to it, not the
-> reverse.
+What is *not* defined is the switch. Nothing anywhere says when convergence has
+been reached, so the flip has no trigger and could stay "in progress" forever by
+default.
 
-The working rule for this repo is the opposite: the Design Sync follows the live
-website, and where the site violates a design principle the finding goes to
-WEBSITE-REVIEW.md for a human designer rather than being silently "corrected"
-here. Both statements cannot stand.
-
-**To do:** a product decision, not an editing one. Either the README is rewritten
-to describe the repo as documentation-of-record that tracks the site, or the
-direction of authority genuinely changes and the sync process changes with it.
+**To do:** decide the criterion, and write it next to the claim. Candidates: the
+[CCWEB2](https://codecave.atlassian.net/browse/CCWEB2) backlog reaching zero open
+design-token tickets; DESIGN.md §"Known divergences" emptying out; or a dated
+call. Whichever it is, it needs to be checkable by someone who was not in the
+room.
 
 ## 5. Unanswered: navigation grouping for the CSS component layer
 
@@ -183,6 +186,12 @@ next reader does not re-discover it as new.
   and the four Foundations cards were untracked source. The derived half stays
   ignored and is materialized by
   [build-ds-bundle.sh](/docs/tools/build-ds-bundle.sh).
+
+- **The "source of truth" contradiction was not a contradiction.** The README
+  describes the target; the site-wins rule describes the phase we are in.
+  Recorded as such in both READMEs and `.design-sync/conventions.md`, which had
+  been carrying the flatly false clause "where the live site differs, the site
+  is what's out of date". What remains is item 4: defining when the phase ends.
 
 - **`.design-sync/conventions.md` had drifted out of the palette rebuild** —
   it is the configured `readmeHeader`, so it feeds the bundle README's first 86

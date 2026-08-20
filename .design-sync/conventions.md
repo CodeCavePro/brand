@@ -7,7 +7,12 @@ is the whole idiom.
 
 This project **is** the CODECAVE source of truth — canonical at
 <https://brand.codecave.pro/>, published from `CodeCavePro/brand`. Implementations conform
-to it; where the live site at <https://codecave.gay> differs, the site is what's out of date.
+to it, not the reverse.
+
+That is the target state. These docs began highly divergent from the shipped site and are still
+converging onto it, so *today* the live site at <https://codecave.gay> is the reference wherever
+the two disagree. Design to what is written here regardless: this is where the system is landing,
+and once convergence is reached implementations follow it.
 
 ## Setup
 

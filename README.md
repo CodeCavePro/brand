@@ -6,6 +6,14 @@ This repository contains resources for the **CODECAVE** brand such as [logos](/l
 > at **<https://brand.codecave.pro/>** from [docs/](/docs) and documented in
 > [docs/DESIGN.md](/docs/DESIGN.md). Implementations — including <https://codecave.gay> — conform
 > to it, not the reverse.
+>
+> **That is the target state, and we are not there yet.** `docs/` began highly divergent from the
+> shipped site, so the current phase runs the other way: the design system is converging *onto*
+> the website, without giving up the brand identity in the process. While that convergence is in
+> progress the site is the reference — where the two disagree `docs/` moves, and a genuine
+> site-side flaw is written up in [WEBSITE-REVIEW.md](/WEBSITE-REVIEW.md) for a human designer
+> rather than silently "corrected" here. Once convergence is reached the direction inverts and
+> the paragraph above governs.
 
 ## Design System
 
