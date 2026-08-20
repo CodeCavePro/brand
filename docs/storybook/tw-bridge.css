@@ -3,7 +3,12 @@
  * compiled against the utility classes the source_examples SFC templates
  * actually use, plus the site's tokens scoped to the demo canvases so the
  * real components render exactly as the live site does. This file serves
- * mounted components only — it does not restyle the docs. */
+ * mounted components only — it does not restyle the docs.
+ *
+ * The digest below covers every file under source_examples/, this file's only
+ * source. Verify with: node docs/tools/check-tw-bridge.mjs
+ * source-digest: sha256:9ef5a01450b12eb81d366a1639ca7d8adcc6e40d7c078b3d5f5d98c9b2e3a17f
+ */
 /*! tailwindcss v4.3.0 | MIT License | https://tailwindcss.com */
 @layer properties;
 @layer base, theme, utilities;

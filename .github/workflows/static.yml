@@ -1,4 +1,31 @@
-# Simple workflow for deploying static content to GitHub Pages
+# Deploy docs/ to GitHub Pages, rebuilding the storybook first when it can.
+#
+# The storybook's compiled/*.js and tw-bridge.css are generated from
+# docs/source_examples/, but the generator needs the codecave.pro repo's
+# toolchain (vue/compiler-sfc, esbuild, tailwindcss) — the SAME versions the
+# website builds with, which is the whole point. That means the rebuild can
+# only run where this workflow can reach that repo.
+#
+# So the job is in two halves, and the order matters:
+#
+#   1. A verification that ALWAYS runs. check-tw-bridge.mjs needs nothing but
+#      node, and it proves the committed storybook is in step with the sources
+#      beside it. This is the real guarantee — a stale bridge compiles and
+#      loads and silently documents an older site, so nothing else catches it.
+#
+#   2. A rebuild that runs when the toolchain is reachable, and is skipped
+#      without failing when it is not. Pages must keep deploying either way:
+#      losing the site because another repo is unreachable would be a far worse
+#      outcome than publishing the committed output, which step 1 just proved
+#      honest.
+#
+# If the rebuild produces something different from what is committed, the FRESH
+# output is what deploys — it is strictly the more correct artifact — and the
+# difference is reported in the job summary rather than failing the run.
+#
+# Rebuild prerequisites: CodeCavePro/codecave.pro must be readable. If it is
+# private, add a repo-scoped PAT as the CODECAVE_PRO_TOKEN secret; the default
+# GITHUB_TOKEN cannot read another repository.
 name: Deploy static content to Pages
 
 on:
@@ -22,15 +49,95 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Single deploy job since we're just deploying
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # Runs unconditionally and depends on nothing. If this fails, the
+      # committed storybook does not match docs/source_examples/ and whatever
+      # we publish would be documenting the wrong site.
+      - name: Verify the storybook matches its sources
+        run: node docs/tools/check-tw-bridge.mjs
+
+      # ---- optional rebuild ------------------------------------------------
+      # continue-on-error so an unreachable or private codecave.pro downgrades
+      # this workflow to "publish the verified committed output" instead of
+      # taking the site down.
+      - name: Check out the codecave.pro toolchain
+        id: toolchain
+        continue-on-error: true
+        uses: actions/checkout@v4
+        with:
+          repository: CodeCavePro/codecave.pro
+          path: _toolchain
+          token: ${{ secrets.CODECAVE_PRO_TOKEN || github.token }}
+          persist-credentials: false
+
+      - name: Setup pnpm
+        if: steps.toolchain.outcome == 'success'
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      # node-linker=hoisted gives a flat, npm-shaped node_modules. The
+      # generator resolves esbuild from the top level, and esbuild is only a
+      # transitive dependency there — under pnpm's default layout it would sit
+      # in .pnpm/ and not resolve at all.
+      - name: Install the site toolchain
+        if: steps.toolchain.outcome == 'success'
+        working-directory: _toolchain
+        run: pnpm install --frozen-lockfile --config.node-linker=hoisted --ignore-scripts=false
+
+      - name: Rebuild the storybook
+        if: steps.toolchain.outcome == 'success'
+        run: node docs/tools/build-storybook.mjs _toolchain
+
+      # The generator pins esbuild's absWorkingDir, so unchanged sources
+      # reproduce byte-identical output regardless of where it ran. Anything
+      # reported here is a real difference between the committed storybook and
+      # a fresh build with the site's current toolchain.
+      - name: Report any rebuild drift
+        if: steps.toolchain.outcome == 'success'
+        run: |
+          if git diff --quiet -- docs/storybook; then
+            echo "Rebuilt storybook is identical to the committed output." >> "$GITHUB_STEP_SUMMARY"
+          else
+            {
+              echo "### Storybook rebuild differs from the committed output"
+              echo ""
+              echo "The freshly built files are what this run publishes. Regenerate and commit to clear this:"
+              echo ""
+              echo '```'
+              echo "node docs/tools/build-storybook.mjs ../codecave.pro"
+              echo '```'
+              echo ""
+              echo '```diff'
+              git diff --stat -- docs/storybook
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Note a skipped rebuild
+        if: steps.toolchain.outcome != 'success'
+        run: |
+          {
+            echo "### Storybook rebuild skipped"
+            echo ""
+            echo "\`CodeCavePro/codecave.pro\` could not be checked out, so the storybook was not"
+            echo "rebuilt. The committed output was verified against \`docs/source_examples/\` and"
+            echo "published as-is."
+            echo ""
+            echo "To enable the rebuild, add a repo-scoped PAT as the \`CODECAVE_PRO_TOKEN\` secret."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # ---- publish ---------------------------------------------------------
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
@@ -38,6 +145,14 @@ jobs:
         with:
           # Upload docs folder
           path: './docs'
+
+  deploy:
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5

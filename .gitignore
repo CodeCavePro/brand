@@ -1,4 +1,9 @@
 
+# The Pages workflow checks the codecave.pro repo out here for its build
+# toolchain. CI-only, but ignored so a local reproduction of the workflow does
+# not offer to commit someone else's repository.
+/_toolchain/
+
 # ds-bundle/ is the design-sync upload staging directory, and it is HALF derived
 # and half authored — so it is half ignored. The old blanket `ds-bundle/` rule
 # called the whole thing "regenerated; not a source artifact", which was true of
