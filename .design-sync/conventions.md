@@ -6,7 +6,7 @@ and Vue, so no React components ship with this project — there is no `_ds_bund
 is the whole idiom.
 
 This project **is** the CODECAVE source of truth — canonical at
-<https://codecave.pro/brand/>, published from `CodeCavePro/brand`. Implementations conform
+<https://brand.codecave.pro/>, published from `CodeCavePro/brand`. Implementations conform
 to it; where the live site at <https://codecave.gay> differs, the site is what's out of date.
 
 ## Setup
@@ -29,8 +29,8 @@ CODECAVE's upward violet glow) — plus `.btn` and its eight variants, `.card`, 
 Style with `var(--token)`. **Never hard-code a hex value** — every colour in the brand has a name.
 
 Use the **semantic** layer. The raw `--color-brand-*` ramp exists only so the semantic names have
-somewhere to point; reach for it only when no semantic token fits (e.g. `--color-brand-210`, the
-primary button fill).
+somewhere to point; reach for it only when no semantic token fits (e.g. `--color-glow-25`, the
+glow-button fill).
 
 | Family | Tokens |
 |---|---|
@@ -44,7 +44,7 @@ primary button fill).
 
 Three rules that make a design read as CODECAVE:
 
-1. **Dark first.** The page is `--color-surface-primary` (#050505); cards are one step lighter.
+1. **Dark first.** The page is `--color-surface-primary` (#0A0A0B); cards are one step lighter.
 2. **Corners are large.** 24px is the default card radius; buttons and pills are fully round.
    Small radii look off-brand.
 3. **The eyebrow move.** Bold text in `--color-action` sitting above a light (300) lead paragraph
