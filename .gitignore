@@ -22,3 +22,15 @@ ds-bundle/fonts/
 # exist nowhere else in this repo and nothing regenerates them. Under the old
 # blanket rule they were untracked source: invisible to review and one `rm -rf`
 # from gone.
+
+# Internal planning, kept on disk and out of the published repository. Jira is
+# the system of record for open work; these two are the staging area in front of
+# it and they are meant to disappear once their contents are filed. Nothing in
+# docs/ links to either — checked before untracking — so removing them breaks no
+# reference. Their history up to this point stays in the log.
+#
+# WEBSITE-REVIEW.md is NOT here on purpose: twelve places cite it, three of them
+# comments inside the shipped colors_and_type.css, and README.md opens with a
+# promise about it. It goes only when those citations point at Jira instead.
+/TODO.md
+/ASTRO-MIGRATION.md
