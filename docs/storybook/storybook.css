@@ -87,6 +87,24 @@ body { padding: 0 0 6rem; }
   color: revert-layer; font-size: revert-layer;
   font-weight: revert-layer; line-height: revert-layer;
 }
+/* And the same story a third time, for focus. colors_and_type.css gives the
+   documentation a global `:focus-visible { outline: 2px solid --color-hovered;
+   outline-offset: 2px }`. It is unlayered, so inside a canvas it out-cascades
+   the `outline-none` / `focus:outline-none` that InputText, TextField and
+   Checkbox carry as layered utilities — and the components mean it: both text
+   fields replace the ring with a glow (`input:focus` / `div:focus-within`
+   box-shadow) and drawing a hard 2px rectangle inside that soft halo is a
+   second, competing focus indicator the site never renders. Production's
+   global.css has no `:focus-visible` rule at all.
+
+   revert-layer hands the decision back to the layered cascade: a component
+   with an outline utility gets its own, and one with none falls through to the
+   UA ring — which is exactly what the site does. Docs chrome outside the
+   canvases keeps its ring. */
+.sb-canvas :focus-visible, .sb-mount :focus-visible {
+  outline: revert-layer; outline-offset: revert-layer;
+}
+
 .sb-canvas.is-start { justify-content: flex-start; align-items: flex-start; }
 .sb-canvas.is-block { display: block; }
 
