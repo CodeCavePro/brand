@@ -121,23 +121,7 @@ design-token tickets; DESIGN.md §"Known divergences" emptying out; or a dated
 call. Whichever it is, it needs to be checkable by someone who was not in the
 room.
 
-## 5. Unanswered: navigation grouping for the CSS component layer
-
-`docs/ds-nav.css` gives all 30 documentation pages a global bar with two groups.
-The CSS component layer (the `.checkbox`, `.field`, `.btn` rules living directly
-in `colors_and_type.css`) has no home in that bar, and
-[docs/preview/index.html](/docs/preview/index.html) still presents its 12 cards
-as one flat list.
-
-Two options were on the table and neither was chosen: a third nav group for the
-CSS layer, or regrouping the preview index under "Tokens & assets" / "CSS
-components". Needs a decision before anyone starts.
-
-*(The six artifact specimens are deliberately excluded from `ds-nav.css` — those
-pages are the deliverable being shown, so they carry the site's chrome rather
-than the package's. That is intended, not an omission.)*
-
-## 6. Not ours: inert Tailwind config on the site side
+## 5. Not ours: inert Tailwind config on the site side
 
 `tailwind.config.ts` in the website repo is never loaded: Tailwind 4 reads a JS
 config only via `@config`, which no stylesheet declares, so `darkMode`,
@@ -151,6 +135,19 @@ next reader does not re-discover it as new.
 ---
 
 ## Recently closed
+
+- **The CSS component layer had no name anywhere in the navigation.** The four
+  nav groups cover tokens, live Vue components and artifact templates, but the
+  `.btn` / `.field` / `.checkbox` / `.chip` / `.rule` classes that live directly
+  in `colors_and_type.css` — the thing a consumer of this package actually
+  writes — were three unlabelled cards in the middle of a flat list of twelve.
+  [docs/preview/index.html](/docs/preview/index.html) now splits them under
+  "Tokens & assets" (9) and "CSS components" (3), with the second group saying
+  in so many words that it is *not* the "Live components" entry in the bar. The
+  nav bar stays at four groups: a fifth would advertise a section that is three
+  cards deep. *(The six artifact specimens remain deliberately excluded from
+  `ds-nav.css` — those pages are the deliverable being shown, so they carry the
+  site's chrome rather than the package's. Intended, not an omission.)*
 
 - **The storybook could not be verified or rebuilt anywhere but one laptop.**
   `tw-bridge.css` is generated from `docs/source_examples/`, but the generator
