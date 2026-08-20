@@ -1,5 +1,11 @@
 # CODECAVE Brand kit
 
+The human-facing companions to this file, which state the same rules with their
+reasons rather than as instructions: [CONTRIBUTING.md](/CONTRIBUTING.md) (what is
+editable, what is derived, what to run) and [RELEASING.md](/RELEASING.md)
+(publishing the npm package). When a rule here changes, check whether one of
+those states it too.
+
 ## Where open work lives — read this before assuming there is none
 
 **Jira is the only list.** This repo used to keep a `TODO.md`; it was deleted on

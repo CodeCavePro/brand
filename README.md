@@ -50,6 +50,11 @@ rules were read out of).
 
 `docs/README.md` is the package guide; `docs/SKILL.md` is the agent-facing entry point.
 
+**Changing any of it: [CONTRIBUTING.md](/CONTRIBUTING.md).** Read it before your first edit.
+`docs/` is the origin and everything else is downstream of it, but two directories under
+`docs/` must never be hand-edited either — and nothing in this repo fails loudly when a
+derived copy goes stale.
+
 ## Logos
 
 ### Wide version
