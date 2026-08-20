@@ -14,6 +14,13 @@ This repository contains resources for the **CODECAVE** brand such as [logos](/l
 > site-side flaw is written up in [WEBSITE-REVIEW.md](/WEBSITE-REVIEW.md) for a human designer
 > rather than silently "corrected" here. Once convergence is reached the direction inverts and
 > the paragraph above governs.
+>
+> **Convergence is reached when codecave.pro installs `@codecavepro/brand` and deletes its own
+> copy of the palette.** Not when the two "look the same" — that is a judgement someone has to
+> re-make every time anyone asks, and the answer drifted by nine files in one day the last time
+> it was measured by hand. It is a fact you can check in the site's `package.json`. Getting there
+> is [CCWEB2-318](https://codecave.atlassian.net/browse/CCWEB2-318); this criterion is
+> [CCWEB2-316](https://codecave.atlassian.net/browse/CCWEB2-316).
 
 ## Design System
 
@@ -122,6 +129,27 @@ The design system ships **six real cuts** — Light, Regular, Italic, Medium, Bo
 > Montserrat Bold, so the PNGs in [logos/](/logos) are still Montserrat-shaped. This is carried
 > forward deliberately — re-typing the wordmark without a new master would produce a mark that
 > matches nothing in circulation.
+
+## The npm package
+
+The same tokens install as **`@codecavepro/brand`** — the CSS and a typed module, no runtime and
+no components:
+
+```css
+@import "@codecavepro/brand/css";
+```
+
+It authors nothing. `packages/brand/` copies `docs/colors_and_type.css` and `docs/fonts/fonts.css`
+byte-for-byte and compiles `docs/tokens/*.ts`, so the file in your `node_modules` and the file at
+<https://brand.codecave.pro/colors_and_type.css> are provably the same bytes. **`docs/` stays the
+single origin — fixes go there, never to `packages/`.**
+
+- [packages/brand/README.md](/packages/brand/README.md) — installing and consuming it.
+- [RELEASING.md](/RELEASING.md) — how it gets published, and how to get out of a bad publish.
+
+> **Not yet published.** The registry has no `@codecavepro/brand` as of 2026-08-21. The first
+> publish is [CCWEB2-318](https://codecave.atlassian.net/browse/CCWEB2-318) phase 5 and has
+> preconditions — see the runbook.
 
 ## Other Things To Know
 

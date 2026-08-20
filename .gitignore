@@ -44,3 +44,6 @@ ds-bundle/fonts/
 node_modules/
 packages/*/dist/
 packages/*/.tmp/
+# Copied from the root LICENSE at build time. npm only picks a licence up from
+# the package root, and the root file is the origin — see scripts/build.mjs.
+packages/*/LICENSE

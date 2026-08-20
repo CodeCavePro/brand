@@ -55,12 +55,31 @@ const VERBATIM = [
   [docs('fonts', 'fonts.css'), 'fonts.css'],
 ];
 
+/**
+ * Copied verbatim to the PACKAGE ROOT rather than into dist/, because npm picks
+ * these two up by name and only from there — `files: ["dist"]` neither includes
+ * nor excludes them. `npm pack --dry-run` shipped 16 files with no licence text
+ * at all until this existed: package.json said "Unlicense" and the tarball
+ * proved nothing.
+ *
+ * The root LICENSE is the origin, exactly as docs/ is for the CSS. Copying it
+ * keeps the package a pure derivative — a second licence file to edit is the
+ * same failure as a second palette, and a worse one to get wrong.
+ */
+const ROOT_VERBATIM = [[path.join(repo, 'LICENSE'), 'LICENSE']];
+
+/** Every verbatim copy, as [source, absolute-destination]. */
+const COPIES = [
+  ...VERBATIM.map(([src, dest]) => [src, out(dest), `dist/${dest}`]),
+  ...ROOT_VERBATIM.map(([src, dest]) => [src, path.join(pkg, dest), dest]),
+];
+
 /** Token modules compiled to JS + .d.ts, in the order they are re-exported. */
 const TOKENS = ['colors', 'layout', 'typography'];
 
 const problems = [];
 
-for (const [src] of VERBATIM) {
+for (const [src] of COPIES) {
   if (!fs.existsSync(src)) problems.push(`missing source: ${path.relative(repo, src)}`);
 }
 for (const name of TOKENS) {
@@ -78,15 +97,14 @@ if (checkOnly) {
   // drift between the package and its origin, which is the one thing this
   // arrangement must never allow.
   let drifted = 0;
-  for (const [src, dest] of VERBATIM) {
-    const target = out(dest);
+  for (const [src, target, label] of COPIES) {
     if (!fs.existsSync(target)) {
-      console.error(`  not built: dist/${dest}`);
+      console.error(`  not built: ${label}`);
       drifted++;
       continue;
     }
     if (!fs.readFileSync(src).equals(fs.readFileSync(target))) {
-      console.error(`  drifted: dist/${dest} differs from ${path.relative(repo, src)}`);
+      console.error(`  drifted: ${label} differs from ${path.relative(repo, src)}`);
       drifted++;
     }
   }
@@ -94,7 +112,7 @@ if (checkOnly) {
     console.error(`\n${drifted} file(s) out of sync. Run: npm run build -w @codecavepro/brand`);
     process.exit(1);
   }
-  console.log(`@codecavepro/brand: ${VERBATIM.length} file(s) match docs/ byte-for-byte.`);
+  console.log(`@codecavepro/brand: ${COPIES.length} file(s) match their origin byte-for-byte.`);
   process.exit(0);
 }
 
@@ -103,8 +121,8 @@ fs.rmSync(tmp(), { recursive: true, force: true });
 fs.mkdirSync(out(), { recursive: true });
 fs.mkdirSync(tmp('tokens'), { recursive: true });
 
-for (const [src, dest] of VERBATIM) {
-  fs.copyFileSync(src, out(dest));
+for (const [src, target] of COPIES) {
+  fs.copyFileSync(src, target);
 }
 
 for (const name of TOKENS) {

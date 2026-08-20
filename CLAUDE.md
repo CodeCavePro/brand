@@ -12,7 +12,7 @@ label ([live query](https://codecave.atlassian.net/issues?jql=project%20%3D%20CC
 
 -   [CCWEB2-314](https://codecave.atlassian.net/browse/CCWEB2-314) — standing Tailwind-collision check; run it whenever this package or the site's `global.css` moves.
 -   [CCWEB2-315](https://codecave.atlassian.net/browse/CCWEB2-315) — **done** 2026-08-20. All `docs/source_examples/` captures refreshed. It measured *nine* drifted files on 2026-08-19 and *thirteen* a day later; expect this to need doing again, and treat that rate as the argument for CCWEB2-318 rather than a reason to re-file it.
--   [CCWEB2-316](https://codecave.atlassian.net/browse/CCWEB2-316) — decide what "converged onto the site" means, and write the criterion next to the claim.
+-   [CCWEB2-316](https://codecave.atlassian.net/browse/CCWEB2-316) — **done** 2026-08-21. "Converged" is now a checkable fact, written next to the claim in the root [README.md](/README.md): *codecave.pro installs `@codecavepro/brand` and deletes its own copy of the palette.* Not a similarity judgement — that one drifted by nine files in a day.
 -   [CCWEB2-317](https://codecave.atlassian.net/browse/CCWEB2-317) — decide whether `docs/` is built with Astro. Carries the whole proposal; blocked on one question, whether `docs/` stays committed as build output.
 -   [CCWEB2-318](https://codecave.atlassian.net/browse/CCWEB2-318) — **epic.** Publish `@codecavepro/brand` to npm and have codecave.pro install it, inverting the direction of truth. Six phases; **phase 1 landed** (`46a5b1c`), and CCWEB2-315 has cleared the block on phase 4 — but only as of 2026-08-20. Re-measure the captures before building components from them; never publish a component built from a capture that is behind the site.
 
@@ -50,11 +50,17 @@ hand-written stub used to live there as `lib/strapi.ts`; it is gone.
 ### The package, in one paragraph
 
 `packages/brand/` is a **pure derivative of `docs/`** — it copies
-`colors_and_type.css` and `fonts.css` byte-for-byte and compiles
-`docs/tokens/*.ts`. No *design content* under `packages/` is authored; the only
-tracked files are its manifest, build script and `README.md`, and `npm run
-check` asserts the byte-identity. **`docs/` remains the single origin; edit
-there, never in `packages/`.**
+`colors_and_type.css` and `fonts.css` byte-for-byte, copies the root `LICENSE`,
+and compiles `docs/tokens/*.ts`. No *design content* under `packages/` is
+authored; the only tracked files are its manifest, build script and `README.md`,
+and `npm run check` asserts the byte-identity of all three copies. **`docs/`
+remains the single origin; edit there, never in `packages/`.**
+
+The `LICENSE` copy is not housekeeping: npm picks a licence up **only** from the
+package root and `files: ["dist"]` neither includes nor excludes it, so the
+tarball shipped no licence text at all while `package.json` claimed
+`"Unlicense"`. Copying it beats authoring a second one for the same reason as
+the palette. Publishing the result is [RELEASING.md](/RELEASING.md).
 
 The README is authored because npm renders it as the package page and there is
 nowhere else for that page to come from — it is manifest-adjacent, the same
