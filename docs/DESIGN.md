@@ -709,6 +709,17 @@ transcription error, and each is reversible if the production behavior is
 preferred. (One former entry, §10.1, has been retired back to production
 behavior under the site-wins policy.)
 
+**When the site-wins policy ends.** It ends when `codecave.pro` installs the
+`@codecavepro/brand` npm package and deletes its own copy of the palette — at
+which point this file stops describing a target and starts describing what
+ships, and a divergence below becomes a bug in production rather than a
+considered correction here. The criterion is deliberately a fact you can check
+in the site's `package.json`, not a judgement about whether the two look the
+same: measured by hand, that judgement moved by nine files in a single day. See
+[CCWEB2-318](https://codecave.atlassian.net/browse/CCWEB2-318) for the work and
+[CCWEB2-316](https://codecave.atlassian.net/browse/CCWEB2-316) for this
+criterion.
+
 ### 10.1 `.btn-tertiary` hover — retired divergence
 
 An earlier revision of this package brightened the tertiary border on hover to

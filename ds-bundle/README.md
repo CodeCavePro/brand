@@ -14,6 +14,11 @@ converging onto it, so *today* the live site at <https://codecave.gay> is the re
 the two disagree. Design to what is written here regardless: this is where the system is landing,
 and once convergence is reached implementations follow it.
 
+**Convergence is reached when codecave.pro installs the `@codecavepro/brand` npm package and
+deletes its own copy of the palette** — a fact you can check in the site's `package.json`, rather
+than a judgement about whether the two "look the same" that someone has to re-make on request.
+Until then, treat the site as the reference and this as the destination.
+
 ## Setup
 
 No provider, no wrapper, no theme object. Link the stylesheet and the tokens are live on `:root`:
