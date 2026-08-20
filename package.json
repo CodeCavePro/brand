@@ -1,0 +1,18 @@
+{
+  "name": "@codecavepro/brand-workspace",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Workspace root. Not published — the publishable package is packages/brand.",
+  "license": "Unlicense",
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace @codecavepro/brand",
+    "check": "npm run check --workspace @codecavepro/brand && node docs/tools/check-tw-bridge.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

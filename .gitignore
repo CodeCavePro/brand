@@ -35,3 +35,12 @@ ds-bundle/fonts/
 # promise about it. It goes only when those citations point at Jira instead.
 /TODO.md
 /ASTRO-MIGRATION.md
+
+# The npm package (CCWEB2-318). packages/brand/ is a PURE DERIVATIVE of docs/:
+# every byte it publishes is copied or compiled from there, so none of its
+# output is source and none of it is tracked. `npm run check` asserts the
+# derivation still holds; package-lock.json IS tracked, because a lockfile is
+# the only thing making the build reproducible.
+node_modules/
+packages/*/dist/
+packages/*/.tmp/

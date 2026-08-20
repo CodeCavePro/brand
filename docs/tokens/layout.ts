@@ -6,7 +6,10 @@
  * `.section-container` rule in source_examples/styles/global.css.
  */
 
-import { brand } from './colors';
+// The `.js` extension is required, not a typo: these modules are published as
+// ESM, and Node's resolver needs the extension it will see at runtime.
+// TypeScript maps it back to ./colors.ts when compiling.
+import { accent, brand } from './colors.js';
 
 export const maxWidthDesktop = '1280px' as const;
 export const breakpointSm = '457px' as const;
@@ -63,10 +66,14 @@ export const spacing = {
  * shadow at all — they separate with radius and a 1px `brand.110` hairline.
  */
 export const shadow = {
+  // accent.shadow0 (#281470) is what --color-shadow-0 resolves to in
+  // colors_and_type.css. This previously read `brand[660]`, a step that has
+  // never existed in the ramp, so all three layers interpolated as
+  // `hsl(from undefined h s l / …)` — an invalid colour the browser drops.
   section: [
-    `0 -64px 64px 0 hsl(from ${brand[660]} h s l / 0.20)`,
-    `0 -10px 24px 0 hsl(from ${brand[660]} h s l / 0.10)`,
-    `0 -6px 6px 0 hsl(from ${brand[660]} h s l / 0.08)`,
+    `0 -64px 64px 0 hsl(from ${accent.shadow0} h s l / 0.20)`,
+    `0 -10px 24px 0 hsl(from ${accent.shadow0} h s l / 0.10)`,
+    `0 -6px 6px 0 hsl(from ${accent.shadow0} h s l / 0.08)`,
   ].join(', '),
   glowButton: '0 0 64px 0 #7A58FFA8, 0 0 16px 0 #4F22FFA6, 0 0 4px 2px #5B34FA',
   inputFocus: [

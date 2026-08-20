@@ -1,0 +1,45 @@
+{
+  "name": "@codecavepro/brand",
+  "version": "0.1.0",
+  "description": "CODECAVE design system — colour, typography and layout tokens as CSS custom properties and as a typed module.",
+  "license": "Unlicense",
+  "type": "module",
+  "homepage": "https://codecavepro.github.io/brand/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CodeCavePro/brand.git",
+    "directory": "packages/brand"
+  },
+  "keywords": [
+    "codecave",
+    "design-system",
+    "design-tokens",
+    "css-custom-properties"
+  ],
+  "sideEffects": [
+    "*.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./css": "./dist/colors_and_type.css",
+    "./fonts.css": "./dist/fonts.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/build.mjs --check",
+    "prepack": "node scripts/build.mjs"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
