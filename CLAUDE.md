@@ -11,10 +11,31 @@ Open items for the brand package, all in
 label ([live query](https://codecave.atlassian.net/issues?jql=project%20%3D%20CCWEB2%20AND%20labels%20%3D%20%22brand-kit%22%20ORDER%20BY%20key%20ASC)):
 
 -   [CCWEB2-314](https://codecave.atlassian.net/browse/CCWEB2-314) — standing Tailwind-collision check; run it whenever this package or the site's `global.css` moves.
--   [CCWEB2-315](https://codecave.atlassian.net/browse/CCWEB2-315) — nine `docs/source_examples/` captures have drifted from `codecave.pro/src`; refresh one at a time, not in a sweep.
+-   [CCWEB2-315](https://codecave.atlassian.net/browse/CCWEB2-315) — **done** 2026-08-20. All `docs/source_examples/` captures refreshed. It measured *nine* drifted files on 2026-08-19 and *thirteen* a day later; expect this to need doing again, and treat that rate as the argument for CCWEB2-318 rather than a reason to re-file it.
 -   [CCWEB2-316](https://codecave.atlassian.net/browse/CCWEB2-316) — decide what "converged onto the site" means, and write the criterion next to the claim.
 -   [CCWEB2-317](https://codecave.atlassian.net/browse/CCWEB2-317) — decide whether `docs/` is built with Astro. Carries the whole proposal; blocked on one question, whether `docs/` stays committed as build output.
--   [CCWEB2-318](https://codecave.atlassian.net/browse/CCWEB2-318) — **epic.** Publish `@codecavepro/brand` to npm and have codecave.pro install it, inverting the direction of truth. Six phases; **phase 1 landed** (`46a5b1c`). CCWEB2-315 hard-blocks phase 4 — never publish components built from captures that are behind the site.
+-   [CCWEB2-318](https://codecave.atlassian.net/browse/CCWEB2-318) — **epic.** Publish `@codecavepro/brand` to npm and have codecave.pro install it, inverting the direction of truth. Six phases; **phase 1 landed** (`46a5b1c`), and CCWEB2-315 has cleared the block on phase 4 — but only as of 2026-08-20. Re-measure the captures before building components from them; never publish a component built from a capture that is behind the site.
+
+Site-side issues opened by that resync, filed in CCWEB2 without the `brand-kit`
+label because they are the site's to fix, not the package's:
+
+-   [CCWEB2-319](https://codecave.atlassian.net/browse/CCWEB2-319) — `h-11` is dead under `min-h-12`; every button is 48px, and `--control-height` still says 44px. **Settle before the first `npm publish`** — it is a token the package is about to ship.
+-   [CCWEB2-320](https://codecave.atlassian.net/browse/CCWEB2-320) — `TextField.vue`'s error message renders at 2.91:1. Accessibility.
+-   [CCWEB2-321](https://codecave.atlassian.net/browse/CCWEB2-321) — footer link reads "Truspilot".
+-   [CCWEB2-322](https://codecave.atlassian.net/browse/CCWEB2-322) — `LazyImage.vue` never binds the `width`/`height` props it declares.
+
+### Ports, not stubs
+
+Where a captured component depends on something the docs build cannot carry (a
+Strapi client, an HTML sanitiser), **do not stub it**. `docs/storybook/ports/`
+holds the interface and a docs-build adapter, wired through the `PORTS` table in
+`build-storybook.mjs`, and `npm run check:ports` typechecks each adapter against
+its interface in CI. A stub fails as an `undefined` in a reader's browser; an
+adapter fails the build. The bar is in `ports.d.ts`: if swapping the
+implementation would change what the specimen *looks like*, it is not a port.
+
+Related rule: **nothing under `docs/source_examples/` is authored.** A
+hand-written stub used to live there as `lib/strapi.ts`; it is gone.
 
 ### The package, in one paragraph
 
