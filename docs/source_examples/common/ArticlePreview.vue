@@ -12,10 +12,14 @@ defineProps<{
 
 <template>
   <a :href="`${paths.insights}/${article.slug}`" :class="`mx-1 lg:mx-2 w-full h-full self-start sm:self-auto p-6 flex flex-col gap-5 sm:gap-8
-      rounded-[2.25rem] bg-surface-secondary hover:bg-surface-secondary transition-colors cursor-pointer
+      rounded-[2.25rem] bg-surface-secondary hover:bg-surface-secondary transition-colors cursor-pointer border-surface-tertiary border
       ${className ?? ''}`">
     <div class="flex flex-col sm:flex-row gap-5 sm:gap-8 h-fit">
-      <img class="w-[100px] h-[100px] sm:w-[132px] sm:h-[132px] rounded-xl object-cover" :src="getImageUrl(article.cover.url)" :alt="article.cover.name" />
+      <img loading="lazy" class="sm:w-[132px] sm:h-[132px] rounded-xl object-cover" 
+        :src="getImageUrl(article.cover.url)" 
+        :alt="article.cover.name" 
+        :width="100" 
+        :height="100"/>
       <div class="space-y-2 sm:space-y-3">
         <time class="text-body-secondary text-xs sm:text-sm" :datetime="article.date?.toString()">
           {{ formattedDate(article.locale, article.date) }}

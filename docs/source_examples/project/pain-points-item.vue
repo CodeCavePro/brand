@@ -2,6 +2,8 @@
 import { Marked, type RendererObject } from "marked";
 import { getImageUrl } from "../../helpers/image-url";
 import type { Feature } from "../../lib/strapi/types";
+import LazyImage from "../common/images/LazyImage.vue"
+import { sanitize } from "isomorphic-dompurify";
 
 const props = defineProps<{
   item: Feature
@@ -21,12 +23,12 @@ const renderer: RendererObject = {
 }
 marked.use({ renderer })
 const contentString = (typeof props.item.content === 'string' ? props.item.content : '') || ''
-const htmlContent = marked.parse(contentString) as string
+const htmlContent = sanitize(marked.parse(contentString))
 </script>
 
 <template>
   <div class="mx-1 md:mx-0 p-6 w-56 h-full md:h-auto rounded-3xl bg-surface-secondary space-y-6">
-    <img
+    <LazyImage
         :src="getImageUrl(item.image.url)"
         :alt="item.image.name"
         class="w-8 h-8"

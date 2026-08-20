@@ -4,7 +4,7 @@ import { Carousel, type CarouselConfig, Slide } from "vue3-carousel";
 import "vue3-carousel/carousel.css";
 import { BREAKPOINTS } from "../../helpers/breakpoints.ts";
 import GlowButton from "../common/GlowButton.vue";
-import TypingEffect from "../common/TypingEffect.vue";
+import TypingEffect from "../common/effects/TypingEffect.vue";
 import TechnologyCard from "./technology-card.vue";
 import type { Technology } from "../../lib/strapi/types";
 import { paths } from "../../helpers/paths.ts";

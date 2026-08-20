@@ -65,14 +65,17 @@ var __sfc__ = /* @__PURE__ */ _defineComponent({
       return _openBlock(), _createElementBlock("a", {
         href: `${_unref(paths).insights}/${__props.article.slug}`,
         class: _normalizeClass(`mx-1 lg:mx-2 w-full h-full self-start sm:self-auto p-6 flex flex-col gap-5 sm:gap-8
-      rounded-[2.25rem] bg-surface-secondary hover:bg-surface-secondary transition-colors cursor-pointer
+      rounded-[2.25rem] bg-surface-secondary hover:bg-surface-secondary transition-colors cursor-pointer border-surface-tertiary border
       ${__props.className ?? ""}`)
       }, [
         _createElementVNode("div", _hoisted_2, [
           _createElementVNode("img", {
-            class: "w-[100px] h-[100px] sm:w-[132px] sm:h-[132px] rounded-xl object-cover",
+            loading: "lazy",
+            class: "sm:w-[132px] sm:h-[132px] rounded-xl object-cover",
             src: _unref(getImageUrl)(__props.article.cover.url),
-            alt: __props.article.cover.name
+            alt: __props.article.cover.name,
+            width: 100,
+            height: 100
           }, null, 8, _hoisted_3),
           _createElementVNode("div", _hoisted_4, [
             _createElementVNode("time", {

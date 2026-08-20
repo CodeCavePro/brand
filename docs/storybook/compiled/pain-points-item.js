@@ -1,8 +1,8 @@
 /* GENERATED from source_examples/project/pain-points-item.vue by tools/build-storybook.mjs — do not edit. */
 
 // source_examples/project/pain-points-item.vue
-import { defineComponent as _defineComponent } from "vue";
-import { unref as _unref, createElementVNode as _createElementVNode, openBlock as _openBlock, createElementBlock as _createElementBlock } from "vue";
+import { defineComponent as _defineComponent2 } from "vue";
+import { unref as _unref, createVNode as _createVNode, createElementVNode as _createElementVNode, openBlock as _openBlock2, createElementBlock as _createElementBlock2 } from "vue";
 
 // ../../codecave.pro/node_modules/.pnpm/marked@18.0.5/node_modules/marked/lib/marked.esm.js
 function M() {
@@ -1251,11 +1251,76 @@ var getImageUrl = (url) => {
   return `${strapiUrl}/${url}`;
 };
 
-// source_examples/project/pain-points-item.vue
-var _hoisted_1 = { class: "mx-1 md:mx-0 p-6 w-56 h-full md:h-auto rounded-3xl bg-surface-secondary space-y-6" };
-var _hoisted_2 = ["src", "alt"];
-var _hoisted_3 = ["innerHTML"];
+// source_examples/common/images/LazyImage.vue
+import { defineComponent as _defineComponent } from "vue";
+import { openBlock as _openBlock, createElementBlock as _createElementBlock } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
+var _hoisted_1 = ["data-src", "alt"];
 var __sfc__ = /* @__PURE__ */ _defineComponent({
+  __name: "LazyImage",
+  props: {
+    src: { type: String, required: true },
+    alt: { type: String, required: false, default: "" },
+    threshold: { type: Number, required: false, default: 300 },
+    width: { type: Number, required: false },
+    height: { type: Number, required: false }
+  },
+  setup(__props) {
+    const props = __props;
+    const image = ref(null);
+    let observer = null;
+    const loadImage = () => {
+      if (!image.value) {
+        return;
+      }
+      const src = image.value.dataset.src;
+      if (!src) {
+        return;
+      }
+      image.value.src = src;
+      image.value.removeAttribute("data-src");
+      observer?.disconnect();
+    };
+    onMounted(() => {
+      if (!image.value) {
+        return;
+      }
+      observer = new IntersectionObserver(
+        (entries) => {
+          const entry = entries[0];
+          if (entry?.isIntersecting) {
+            loadImage();
+          }
+        },
+        {
+          rootMargin: `${props.threshold}px`
+        }
+      );
+      observer.observe(image.value);
+    });
+    onUnmounted(() => {
+      observer?.disconnect();
+    });
+    return (_ctx, _cache) => {
+      return _openBlock(), _createElementBlock("img", {
+        ref_key: "image",
+        ref: image,
+        "data-src": __props.src,
+        alt: __props.alt
+      }, null, 8, _hoisted_1);
+    };
+  }
+});
+__sfc__.__file = "source_examples/common/images/LazyImage.vue";
+var LazyImage_default = __sfc__;
+
+// sb-stub:isomorphic-dompurify
+var sanitize = (html) => html;
+
+// source_examples/project/pain-points-item.vue
+var _hoisted_12 = { class: "mx-1 md:mx-0 p-6 w-56 h-full md:h-auto rounded-3xl bg-surface-secondary space-y-6" };
+var _hoisted_2 = ["innerHTML"];
+var __sfc__2 = /* @__PURE__ */ _defineComponent2({
   __name: "pain-points-item",
   props: {
     item: { type: null, required: true }
@@ -1275,24 +1340,24 @@ var __sfc__ = /* @__PURE__ */ _defineComponent({
     };
     marked.use({ renderer });
     const contentString = (typeof props.item.content === "string" ? props.item.content : "") || "";
-    const htmlContent = marked.parse(contentString);
+    const htmlContent = sanitize(marked.parse(contentString));
     return (_ctx, _cache) => {
-      return _openBlock(), _createElementBlock("div", _hoisted_1, [
-        _createElementVNode("img", {
+      return _openBlock2(), _createElementBlock2("div", _hoisted_12, [
+        _createVNode(LazyImage_default, {
           src: _unref(getImageUrl)(__props.item.image.url),
           alt: __props.item.image.name,
           class: "w-8 h-8"
-        }, null, 8, _hoisted_2),
+        }, null, 8, ["src", "alt"]),
         _createElementVNode("div", {
           innerHTML: _unref(htmlContent),
           class: "text-body-secondary-lighter"
-        }, null, 8, _hoisted_3)
+        }, null, 8, _hoisted_2)
       ]);
     };
   }
 });
-__sfc__.__file = "source_examples/project/pain-points-item.vue";
-var pain_points_item_default = __sfc__;
+__sfc__2.__file = "source_examples/project/pain-points-item.vue";
+var pain_points_item_default = __sfc__2;
 export {
   pain_points_item_default as default
 };

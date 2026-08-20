@@ -36,7 +36,7 @@ sink gated only by CMS access control.
 ### 2.1 No reduced-motion handling anywhere
 `grep -r "prefers-reduced-motion" src/` returns nothing. The two biggest
 animations are GSAP-driven — the TypingEffect character stagger
-(`common/TypingEffect.vue`) and the GlowButton pointer-tracking highlight
+(`common/effects/TypingEffect.vue`) and the GlowButton pointer-tracking highlight
 (`common/GlowButton.vue`) — so even a CSS kill-switch would not cover them.
 **Fix:** a `window.matchMedia('(prefers-reduced-motion: reduce)')` guard in
 both components (GlowButton already has the identical pattern for
@@ -108,7 +108,7 @@ section's own heading and flatten the document outline.
 | 3.7 | `homepage/technology-card.vue` | Routing switches on the **display name** (`getTechnologyUrl`), returning `''` for anything unmatched — rewording or translating a label silently kills its CTA; the six names are duplicated in `header/menu.ts` and `footer/links.ts` | route by a stable slug shared by all three |
 | 3.8 | `project/pain-points-item.vue` | Markdown parsed once at `<script setup>` level, not in `computed` — swapping `item` without remount leaves stale body text next to the new image | wrap in `computed()` |
 | 3.9 | `common/GlowButton.vue` | The `class` prop lands on both the wrapper div and the inner anchor — positional utilities double-apply (`Cookies.vue` passes `w-full max-w-[12.5rem]!`) | apply caller class to the wrapper only |
-| 3.10 | `common/TypingEffect.vue` | `SplitText.create('.split-text span')` queries the whole document — a second instance re-splits and animates the first one's characters | scope via template ref |
+| 3.10 | `common/effects/TypingEffect.vue` | `SplitText.create('.split-text span')` queries the whole document — a second instance re-splits and animates the first one's characters | scope via template ref |
 | 3.11 | `common/Button.vue` | `type?: 'submit'` declared, never bound — implicit `type="submit"` inside forms is unreachable to override | bind it, or delete the prop |
 | 3.12 | `footer/link-group.vue` | `:key="index"` on the links `v-for` — wrong node reuse on reorder once the list is CMS-driven | key by `href` |
 | 3.13 | `common/Radio.vue` | Secondary hover is dead code: `group-hover:bg-surface-tertiary` with no ancestor carrying `group` | add the class at the call site or drop the style |

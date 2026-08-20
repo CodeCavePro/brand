@@ -1,6 +1,6 @@
-/* GENERATED from source_examples/common/TypingEffect.vue by tools/build-storybook.mjs — do not edit. */
+/* GENERATED from source_examples/common/effects/TypingEffect.vue by tools/build-storybook.mjs — do not edit. */
 
-// source_examples/common/TypingEffect.vue
+// source_examples/common/effects/TypingEffect.vue
 import { defineComponent as _defineComponent } from "vue";
 import { toDisplayString as _toDisplayString, createElementVNode as _createElementVNode, openBlock as _openBlock, createElementBlock as _createElementBlock } from "vue";
 import { gsap } from "gsap";
@@ -62,7 +62,7 @@ var __sfc__ = /* @__PURE__ */ _defineComponent({
     };
   }
 });
-__sfc__.__file = "source_examples/common/TypingEffect.vue";
+__sfc__.__file = "source_examples/common/effects/TypingEffect.vue";
 var TypingEffect_default = __sfc__;
 export {
   TypingEffect_default as default

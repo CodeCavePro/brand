@@ -72,7 +72,10 @@ const ENTRIES = [
   'common/InputText.vue',
   'common/TextField.vue',
   'common/GlowButton.vue',
-  'common/TypingEffect.vue',
+  // The site moved this into common/effects/ on 2026-08-20; the capture path
+  // follows the site's, because a capture whose path has drifted is no longer
+  // evidence of where the code lives.
+  'common/effects/TypingEffect.vue',
   'common/Review.vue',
   'common/ArticlePreview.vue',
   'homepage/technology-card.vue',
@@ -147,9 +150,35 @@ function tryFile(p) {
   return null;
 }
 
+/* Bare specifiers the storybook deliberately does NOT bundle, on the same
+ * reasoning as source_examples/lib/strapi.ts: a specimen needs the component's
+ * markup and styling, not its production plumbing.
+ *
+ * The bar for adding one is narrow — if its absence would change what the
+ * specimen LOOKS LIKE, it does not belong here, it belongs in the bundle.
+ *
+ * isomorphic-dompurify: pain-points-item wraps `marked.parse()` in `sanitize()`
+ * (a good change on the site — CMS-authored markdown). What the specimen feeds
+ * that pipeline is a hard-coded demo string, so the sanitiser is ~300K deciding
+ * that a paragraph is still a paragraph. It also cannot currently be installed
+ * from the site checkout, whose dependency graph has an unrelated peer conflict
+ * (`magicast` vs `tsdown`) that fails `npm install` outright — but that is the
+ * lesser reason, and if the size argument stopped holding this should bundle
+ * for real rather than stay stubbed out of convenience. */
+const STUBS = {
+  'isomorphic-dompurify':
+    'export const sanitize = (html) => html;\nexport default { sanitize };\n',
+};
+
 const vuePlugin = {
   name: 'vue-sfc',
   setup(build) {
+    build.onResolve({ filter: /^[^.\/]/ }, (args) =>
+      args.path in STUBS ? { path: args.path, namespace: 'sb-stub' } : null);
+    build.onLoad({ filter: /.*/, namespace: 'sb-stub' }, (args) => ({
+      contents: STUBS[args.path],
+      loader: 'js',
+    }));
     build.onResolve({ filter: /^\.\.\// }, (args) => {
       if (tryFile(path.resolve(args.resolveDir, args.path))) return null; // esbuild handles it
       const rerooted = tryFile(path.join(SRC, args.path.replace(/^(\.\.\/)+/, '')));

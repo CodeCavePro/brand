@@ -1,8 +1,8 @@
 /* GENERATED from source_examples/common/Review.vue by tools/build-storybook.mjs — do not edit. */
 
 // source_examples/common/Review.vue
-import { defineComponent as _defineComponent } from "vue";
-import { unref as _unref, openBlock as _openBlock3, createElementBlock as _createElementBlock3, createCommentVNode as _createCommentVNode, toDisplayString as _toDisplayString, createElementVNode as _createElementVNode3, resolveDynamicComponent as _resolveDynamicComponent, createBlock as _createBlock, createVNode as _createVNode, normalizeClass as _normalizeClass } from "vue";
+import { defineComponent as _defineComponent2 } from "vue";
+import { unref as _unref, openBlock as _openBlock4, createBlock as _createBlock, createCommentVNode as _createCommentVNode, toDisplayString as _toDisplayString, createElementVNode as _createElementVNode3, resolveDynamicComponent as _resolveDynamicComponent, createElementBlock as _createElementBlock4, createVNode as _createVNode, normalizeClass as _normalizeClass } from "vue";
 
 // source_examples/assets/icons/linkedin-icon.vue
 import { createElementVNode as _createElementVNode, openBlock as _openBlock, createElementBlock as _createElementBlock } from "vue";
@@ -86,19 +86,81 @@ var getImageUrl = (url) => {
   return `${strapiUrl}/${url}`;
 };
 
+// source_examples/common/images/LazyImage.vue
+import { defineComponent as _defineComponent } from "vue";
+import { openBlock as _openBlock3, createElementBlock as _createElementBlock3 } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
+var _hoisted_13 = ["data-src", "alt"];
+var __sfc__3 = /* @__PURE__ */ _defineComponent({
+  __name: "LazyImage",
+  props: {
+    src: { type: String, required: true },
+    alt: { type: String, required: false, default: "" },
+    threshold: { type: Number, required: false, default: 300 },
+    width: { type: Number, required: false },
+    height: { type: Number, required: false }
+  },
+  setup(__props) {
+    const props = __props;
+    const image = ref(null);
+    let observer = null;
+    const loadImage = () => {
+      if (!image.value) {
+        return;
+      }
+      const src = image.value.dataset.src;
+      if (!src) {
+        return;
+      }
+      image.value.src = src;
+      image.value.removeAttribute("data-src");
+      observer?.disconnect();
+    };
+    onMounted(() => {
+      if (!image.value) {
+        return;
+      }
+      observer = new IntersectionObserver(
+        (entries) => {
+          const entry = entries[0];
+          if (entry?.isIntersecting) {
+            loadImage();
+          }
+        },
+        {
+          rootMargin: `${props.threshold}px`
+        }
+      );
+      observer.observe(image.value);
+    });
+    onUnmounted(() => {
+      observer?.disconnect();
+    });
+    return (_ctx, _cache) => {
+      return _openBlock3(), _createElementBlock3("img", {
+        ref_key: "image",
+        ref: image,
+        "data-src": __props.src,
+        alt: __props.alt
+      }, null, 8, _hoisted_13);
+    };
+  }
+});
+__sfc__3.__file = "source_examples/common/images/LazyImage.vue";
+var LazyImage_default = __sfc__3;
+
 // source_examples/common/Review.vue
-var _hoisted_13 = { class: "flex flex-col lg:flex-row gap-5 lg:items-center" };
-var _hoisted_2 = ["src", "alt"];
-var _hoisted_3 = { class: "flex items-center gap-2" };
-var _hoisted_4 = { class: "text-heading text-lg lg:text-xl" };
-var _hoisted_5 = ["href"];
-var _hoisted_6 = { class: "text-sm text-body-secondary" };
-var _hoisted_7 = { class: "text-sm text-body-secondary-lighter whitespace-pre-wrap" };
-var _hoisted_8 = {
+var _hoisted_14 = { class: "flex flex-col lg:flex-row gap-5 lg:items-center" };
+var _hoisted_2 = { class: "flex items-center gap-2" };
+var _hoisted_3 = { class: "text-heading text-lg lg:text-xl" };
+var _hoisted_4 = ["href"];
+var _hoisted_5 = { class: "text-sm text-body-secondary" };
+var _hoisted_6 = { class: "text-sm text-body-secondary-lighter whitespace-pre-wrap" };
+var _hoisted_7 = {
   key: 0,
   class: "flex items-center gap-1 text-action"
 };
-var __sfc__3 = /* @__PURE__ */ _defineComponent({
+var __sfc__4 = /* @__PURE__ */ _defineComponent2({
   __name: "Review",
   props: {
     item: { type: null, required: true },
@@ -106,41 +168,41 @@ var __sfc__3 = /* @__PURE__ */ _defineComponent({
   },
   setup(__props) {
     return (_ctx, _cache) => {
-      return _openBlock3(), _createElementBlock3(
+      return _openBlock4(), _createElementBlock4(
         "div",
         {
           class: _normalizeClass(`mx-1 lg:mx-2 testimonial rounded-custom space-y-2 lg:space-y-3 py-10 px-6 lg:px-11 ${__props.className}`)
         },
         [
-          _createElementVNode3("div", _hoisted_13, [
-            __props.item.photo.name !== "no-image.svg" ? (_openBlock3(), _createElementBlock3("img", {
+          _createElementVNode3("div", _hoisted_14, [
+            __props.item.photo.name !== "no-image.svg" ? (_openBlock4(), _createBlock(LazyImage_default, {
               key: 0,
               class: "w-12 lg:w-16 h-12 lg:h-16",
               src: _unref(getImageUrl)(__props.item.photo.url),
               alt: __props.item.photo.name
-            }, null, 8, _hoisted_2)) : _createCommentVNode("v-if", true),
+            }, null, 8, ["src", "alt"])) : _createCommentVNode("v-if", true),
             _createElementVNode3("div", null, [
-              _createElementVNode3("div", _hoisted_3, [
+              _createElementVNode3("div", _hoisted_2, [
                 _createElementVNode3(
                   "p",
-                  _hoisted_4,
+                  _hoisted_3,
                   _toDisplayString(__props.item.name),
                   1
                   /* TEXT */
                 ),
-                __props.item.linkedinurl.length > 1 ? (_openBlock3(), _createElementBlock3("a", {
+                __props.item.linkedinurl.length > 1 ? (_openBlock4(), _createElementBlock4("a", {
                   key: 0,
                   target: "_blank",
                   rel: "noopener noreferrer",
                   class: "text-default-transparent hover:text-action transition-colors",
                   href: __props.item.linkedinurl
                 }, [
-                  (_openBlock3(), _createBlock(_resolveDynamicComponent(linkedin_icon_default)))
-                ], 8, _hoisted_5)) : _createCommentVNode("v-if", true)
+                  (_openBlock4(), _createBlock(_resolveDynamicComponent(linkedin_icon_default)))
+                ], 8, _hoisted_4)) : _createCommentVNode("v-if", true)
               ]),
               _createElementVNode3(
                 "p",
-                _hoisted_6,
+                _hoisted_5,
                 _toDisplayString(__props.item.position),
                 1
                 /* TEXT */
@@ -149,12 +211,12 @@ var __sfc__3 = /* @__PURE__ */ _defineComponent({
           ]),
           _createElementVNode3(
             "p",
-            _hoisted_7,
+            _hoisted_6,
             _toDisplayString(__props.item.review),
             1
             /* TEXT */
           ),
-          __props.item.verification ? (_openBlock3(), _createElementBlock3("div", _hoisted_8, [
+          __props.item.verification ? (_openBlock4(), _createElementBlock4("div", _hoisted_7, [
             _createVNode(verified_icon_default),
             _createElementVNode3(
               "span",
@@ -171,8 +233,8 @@ var __sfc__3 = /* @__PURE__ */ _defineComponent({
     };
   }
 });
-__sfc__3.__scopeId = "data-v-6157cca1";
-__sfc__3.__file = "source_examples/common/Review.vue";
+__sfc__4.__scopeId = "data-v-6157cca1";
+__sfc__4.__file = "source_examples/common/Review.vue";
 var __css__ = "\n.testimonial[data-v-6157cca1] {\r\n  backdrop-filter: blur(32px);\n}\r\n";
 if (typeof document !== "undefined" && !document.getElementById("sfc-style-6157cca1")) {
   const el = document.createElement("style");
@@ -180,7 +242,7 @@ if (typeof document !== "undefined" && !document.getElementById("sfc-style-6157c
   el.textContent = __css__;
   document.head.appendChild(el);
 }
-var Review_default = __sfc__3;
+var Review_default = __sfc__4;
 export {
   Review_default as default
 };

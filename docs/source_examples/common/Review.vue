@@ -3,6 +3,7 @@ import LinkedinIcon from "../../assets/icons/linkedin-icon.vue";
 import VerifiedIcon from "../../assets/icons/verified-icon.vue";
 import { getImageUrl } from "../../helpers/image-url.ts";
 import type { Testimonial } from "../../lib/strapi/types";
+import LazyImage from "./images/LazyImage.vue"
 
 defineProps<{
   item: Testimonial
@@ -13,7 +14,7 @@ defineProps<{
 <template>
   <div :class="`mx-1 lg:mx-2 testimonial rounded-custom space-y-2 lg:space-y-3 py-10 px-6 lg:px-11 ${className}`">
     <div class="flex flex-col lg:flex-row gap-5 lg:items-center">
-      <img v-if="item.photo.name !== 'no-image.svg'" 
+      <LazyImage v-if="item.photo.name !== 'no-image.svg'" 
             class="w-12 lg:w-16 h-12 lg:h-16" :src="getImageUrl(item.photo.url)"
            :alt=item.photo.name />
       <div>

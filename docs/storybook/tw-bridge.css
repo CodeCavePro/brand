@@ -7,7 +7,7 @@
  *
  * The digest below covers every file under source_examples/, this file's only
  * source. Verify with: node docs/tools/check-tw-bridge.mjs
- * source-digest: sha256:d072ad8f166a94a2b12ad82f1c0f831a6a5450db0455e71b14729debd18270bd
+ * source-digest: sha256:d9eba2e4a2762fa8ae96c62b839f051531b4c0c626abd6126cf1ef3ec11911dd
  */
 /*! tailwindcss v4.3.0 | MIT License | https://tailwindcss.com */
 @layer properties;
@@ -107,8 +107,8 @@
   .right-2\/3 {
     right: calc(2 / 3 * 100%);
   }
-  .bottom-\[77px\] {
-    bottom: 77px;
+  .bottom-19\.25 {
+    bottom: calc(var(--spacing) * 19.25);
   }
   .-left-2 {
     left: calc(var(--spacing) * -2);
@@ -149,6 +149,9 @@
   .mt-6 {
     margin-top: calc(var(--spacing) * 6);
   }
+  .ml-1 {
+    margin-left: calc(var(--spacing) * 1);
+  }
   .block {
     display: block;
   }
@@ -182,9 +185,6 @@
   .h-80 {
     height: calc(var(--spacing) * 80);
   }
-  .h-\[100px\] {
-    height: 100px;
-  }
   .h-\[220px\] {
     height: 220px;
   }
@@ -199,6 +199,9 @@
   }
   .max-h-full {
     max-height: 100%;
+  }
+  .min-h-12 {
+    min-height: calc(var(--spacing) * 12);
   }
   .min-h-\[7\.5rem\] {
     min-height: 7.5rem;
@@ -218,14 +221,14 @@
   .w-12 {
     width: calc(var(--spacing) * 12);
   }
+  .w-40 {
+    width: calc(var(--spacing) * 40);
+  }
   .w-56 {
     width: calc(var(--spacing) * 56);
   }
   .w-72 {
     width: calc(var(--spacing) * 72);
-  }
-  .w-\[100px\] {
-    width: 100px;
   }
   .w-\[190px\] {
     width: 190px;
@@ -236,17 +239,23 @@
   .w-full {
     width: 100%;
   }
+  .max-w-139 {
+    max-width: calc(var(--spacing) * 139);
+  }
   .max-w-\[8rem\] {
     max-width: 8rem;
-  }
-  .max-w-\[556px\] {
-    max-width: 556px;
   }
   .max-w-full {
     max-width: 100%;
   }
   .max-w-lg {
     max-width: var(--container-lg);
+  }
+  .min-w-12 {
+    min-width: calc(var(--spacing) * 12);
+  }
+  .flex-shrink-0 {
+    flex-shrink: 0;
   }
   .flex-grow {
     flex-grow: 1;
@@ -272,6 +281,9 @@
   }
   .rotate-4 {
     rotate: 4deg;
+  }
+  .rotate-270 {
+    rotate: 270deg;
   }
   .transform {
     transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);
@@ -317,6 +329,9 @@
   }
   .gap-3 {
     gap: calc(var(--spacing) * 3);
+  }
+  .gap-4 {
+    gap: calc(var(--spacing) * 4);
   }
   .gap-5 {
     gap: calc(var(--spacing) * 5);
@@ -433,6 +448,9 @@
   .border-surface-quaternary {
     border-color: var(--color-surface-quaternary);
   }
+  .border-surface-tertiary {
+    border-color: var(--color-surface-tertiary);
+  }
   .bg-glow-25 {
     background-color: var(--color-glow-25);
   }
@@ -519,6 +537,9 @@
   }
   .pt-\[7\.5rem\] {
     padding-top: 7.5rem;
+  }
+  .pr-1 {
+    padding-right: calc(var(--spacing) * 1);
   }
   .pr-4 {
     padding-right: calc(var(--spacing) * 4);
@@ -912,9 +933,24 @@
       height: auto;
     }
   }
+  .md\:w-64 {
+    @media (width >= 48rem) {
+      width: calc(var(--spacing) * 64);
+    }
+  }
   .md\:max-w-sm {
     @media (width >= 48rem) {
       max-width: var(--container-sm);
+    }
+  }
+  .md\:flex-row {
+    @media (width >= 48rem) {
+      flex-direction: row;
+    }
+  }
+  .md\:items-center {
+    @media (width >= 48rem) {
+      align-items: center;
     }
   }
   .md\:gap-8 {
@@ -1023,6 +1059,11 @@
   .xl\:hidden {
     @media (width >= 80rem) {
       display: none;
+    }
+  }
+  .xl\:w-80 {
+    @media (width >= 80rem) {
+      width: calc(var(--spacing) * 80);
     }
   }
   .xl\:-translate-y-1\/2 {

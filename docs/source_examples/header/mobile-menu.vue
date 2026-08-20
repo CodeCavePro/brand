@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import {menu} from "./menu.ts";
+import { menu } from "./menu.ts";
 import Button from "../common/Button.vue";
-import {onUnmounted, ref, watch} from "vue";
-import {paths} from "../../helpers/paths.ts";
+import Shevron from "../../assets/icons/shevron.vue";
+import { onUnmounted, ref, watch } from "vue";
+import { paths } from "../../helpers/paths.ts";
 import Logo from "../../assets/images/logo.svg";
 import BackIcon from "../../assets/icons/back-icon.vue";
 import ServicesList from "./services-list.vue";
@@ -54,71 +55,42 @@ const handleCloseMenu = () => {
 
 <template>
   <div>
-    <div
-        :class="`fixed z-50 top-0 w-full bg-surface-primary-transparent backdrop-blur-3xl ${isMenuOpen ? 'rounded-b-3xl' : 'rounded-none'}`">
+    <div :class="`fixed z-50 top-0 w-full bg-surface-primary-transparent backdrop-blur-3xl ${isMenuOpen ? 'rounded-b-3xl' : 'rounded-none'}`">
       <div :class="`h-full px-5 ${isMenuOpen ? 'pb-5' : 'pb-0'} flex flex-col gap-2 transition-all`">
         <div class="flex justify-between items-center py-1.5">
           <a :href="paths.home" class="px-1.5 hover:opacity-80 transition-opacity">
-            <img :src="Logo.src" alt="CODECAVE"/>
+            <img :src="Logo.src" alt="CODECAVE" />
           </a>
-          <button
-              @click="isMenuOpen = !isMenuOpen"
-              :class="`burger-menu ${isMenuOpen ? 'text-action' : 'text-heading'} transition-colors`"
-          >
+          <button @click="isMenuOpen = !isMenuOpen" :class="`burger-menu ${isMenuOpen ? 'text-action' : 'text-heading'} transition-colors`">
             <span></span>
           </button>
         </div>
-        <nav v-if="isMenuOpen" class="h-full">
+        <nav v-if="isMenuOpen" class="h-full text-sm">
           <div v-if="isServicesOpen">
             <h2 class="text-center font-bold text-body-primary py-2.5">
               {{ menu[0].submenuTitle }}
             </h2>
-            <ServicesList/>
+            <ServicesList />
             <button class="pt-4" @click="isServicesOpen = false">
-              <component class="w-11 h-11 text-action" :is="BackIcon"/>
+              <component class="w-11 h-11 text-action" :is="BackIcon" />
             </button>
           </div>
           <ul v-else class="h-full flex flex-col items-center gap-3 justify-around px-4 pt-2">
             <li v-for="(item, index) in menu" :key="index">
-              <Button
-                  v-if="item.name === 'Services'"
-                  :title="item.name"
-                  variant="ghost"
-                  @click="isServicesOpen = true"
-                  class="transition-transform duration-150"
-              />
-              <Button
-                  v-else-if="item.name === 'Workflow'"
-                  as="link"
-                  variant="ghost"
-                  title="About us | Workflow"
-                  :href="item.link"
-              />
-              <Button
-                  v-else-if="item.name === 'Contact us'"
-                  as="link"
-                  :href="item.link"
-                  title="Get a free consultation"
-                  variant="tertiary"
-                  @click="handleCloseMenu"
-              />
-              <Button
-                  v-else
-                  as="link"
-                  variant="ghost"
-                  :title="item.name"
-                  :href="item.link"
-              />
+              <div v-if="item.name === 'Services'">
+                <Button :title="item.name" variant="ghost" @click="isServicesOpen = true" class="transition-transform duration-150 pr-1">
+                  <Shevron class="rotate-270 ml-1" />
+                </Button>
+              </div>
+              <Button v-else-if="item.name === 'Workflow'" as="link" variant="ghost" title="About us | Workflow" :href="item.link" />
+              <Button v-else-if="item.name === 'Contact us'" as="link" :href="item.link" title="Get a free consultation" variant="tertiary" @click="handleCloseMenu" />
+              <Button v-else as="link" variant="ghost" :title="item.name" :href="item.link" />
             </li>
           </ul>
         </nav>
       </div>
     </div>
-    <div
-        v-if="isMenuOpen"
-        class="fixed z-0 inset-0"
-        @click="handleCloseMenu"
-    >
+    <div v-if="isMenuOpen" class="fixed z-0 inset-0" @click="handleCloseMenu">
     </div>
   </div>
 </template>
@@ -129,8 +101,8 @@ const handleCloseMenu = () => {
   justify-content: space-around;
   flex-direction: column;
   padding: 0.625rem;
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 3rem;
+  height: 3rem;
 }
 
 .burger-menu::before,
@@ -140,6 +112,6 @@ const handleCloseMenu = () => {
   width: 100%;
   height: 0.1rem;
   background-color: currentColor;
-  border-radius: 2.75rem;
+  border-radius: 3rem;
 }
 </style>

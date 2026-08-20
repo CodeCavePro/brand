@@ -21,7 +21,7 @@ var __sfc__ = /* @__PURE__ */ _defineComponent({
     const props = __props;
     const buttonBaseClass = `flex items-center justify-center
 ${props.isDisabled ? "cursor-not-allowed opacity-20" : "cursor-pointer"}
-w-fit max-w-full rounded-full text-body-primary font-bold transition-colors`;
+w-fit max-w-full min-w-12 min-h-12 rounded-full text-body-primary font-bold transition-colors`;
     const variantClass = computed(() => {
       switch (props.variant) {
         case "secondary":

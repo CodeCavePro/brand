@@ -4,6 +4,7 @@ import { strapi } from "../../lib/strapi";
 import Button from "../common/Button.vue";
 import GlowButton from "../common/GlowButton.vue";
 import TestimonialsCarousel from "./testimonials-carousel.vue";
+import TestimonialsBackground from "../../assets/images/testimonials-background.svg";
 
 const entries = await strapi.testimonials.find({
     filters: {
@@ -45,14 +46,20 @@ const reviewsSchema = {
         }
     }))
 }
+import { getImage } from "astro:assets";
+
+const optimizedBackground = await getImage({ src: TestimonialsBackground, format: "svg" });
 ---
 
-<section id="testimonials" class="page-container testimonial space-y-20 py-14 md:pb-20">
+<section id="testimonials" class="page-container testimonial space-y-20 py-14 md:pb-20" style={`background-image: url(${optimizedBackground.src})`}>
     <div id="testimonial-text" class="text-center space-y-8">
         <h2 class="font-bold text-heading text-heading-sm md:text-heading-md">Words of appreciation</h2>
         <div class="text-body-secondary-lighter md:text-xl">
-            <p>Thank you for the feedback and</p>
-            <p>for choosing to grow with us.</p>
+            <p>
+            Thank you for the feedback and
+            <br> 
+            for choosing to grow with us.
+            </p>
         </div>
     </div>
     <div class="-mx-2">
@@ -72,37 +79,28 @@ const reviewsSchema = {
 
 <style>
     .testimonial {
-        background-image: url("../../assets/images/testimonials-background.svg");
         background-position: center center;
         background-repeat: no-repeat;
     }
 </style>
 
 <script>
-    import { gsap } from "gsap";
-    import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap } from "gsap";
+import ScrollTrigger from "gsap/dist/ScrollTrigger";
 
-    gsap.registerPlugin(ScrollTrigger)
-    gsap.from('#testimonial-text', {
-        scrollTrigger: {
-            trigger: '#testimonial-text',
-            start: 'top bottom',
-            end: 'bottom end',
-            scrub: false,
-            once: true,
-        },
-        y: '100%',
-        opacity: 0,
-        ease: 'power3.out',
-    })
+gsap.registerPlugin(ScrollTrigger)
+gsap.from('#testimonial-text', {
+    scrollTrigger: {
+        trigger: '#testimonial-text',
+        start: 'top bottom',
+        end: 'bottom end',
+        scrub: false,
+        once: true,
+    },
+    y: '100%',
+    opacity: 0,
+    ease: 'power3.out',
+})
 </script>
 
 <script is:inline type="application/ld+json" set:html={JSON.stringify(reviewsSchema)} />
-
-<style>
-  /* GSAP tween targets: promote to compositor layers up-front so the
-     first animation frame does not pay for layer creation */
-  #testimonial-text {
-    will-change: transform, opacity;
-  }
-</style>

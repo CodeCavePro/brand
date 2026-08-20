@@ -1,13 +1,14 @@
 ---
-import LinkGroup from "./link-group.vue";
-import { industries, legal, other, reviews, services } from "./links.ts";
 import Icon from "../../assets/icons/Icon.astro";
-import Button from "../common/Button.vue";
-import InputText from "../common/InputText.vue";
+import Autodesk from "../../assets/images/autodesk-partner.png";
+import AWS from "../../assets/images/aws-partner.png";
 import Hubspot from "../../assets/images/hubspot-partner.png";
 import Microsoft from "../../assets/images/microsoft-partner.png";
-import AWS from "../../assets/images/aws-partner.png";
-import Autodesk from "../../assets/images/autodesk-partner.png";
+import Button from "../common/Button.vue";
+import ResearchFormAstroComponent from "../common/forms/ResearchForm.vue";
+import LazyImage from "../common/images/LazyImage.vue";
+import LinkGroup from "./link-group.vue";
+import { industries, legal, other, reviews, services } from "./links.ts";
 
 const socialMedia = [
     {link: 'https://t.me/CodeCaveConstactUsBot', icon: 'telegram'},
@@ -42,6 +43,7 @@ const mainPageSchema = {
                 "https://www.g2.com/products/codecave/expertises",
                 "https://glassdoor.com/Reviews/Employee-Review-CodeCave-E8324784-RVW95188942.htm",
                 "https://upcity.com/profiles/codecave-llc",
+                "https://www.trustpilot.com/review/codecave.pro"
             ],
             "knowsLanguage": [
                 "en",
@@ -143,27 +145,12 @@ const mainPageSchema = {
             <div class="space-y-2">
                 <h3 class="text-xl font-bold text-heading">Grab our AI trends research!</h3>
                 <p class="text-body-secondary-lighter text-sm max-w-66">
-                    We’ve researched current state of the AI in 5+ industries so you don’t have to. Check what we’ve
-                    found about yours.
+                    We’ve researched current state of the AI in 5+ industries so you don’t have to. 
+                    <br> 
+                    Check what we’ve found about yours.
                 </p>
             </div>
-            <form class="flex flex-col gap-4 md:flex-row md:items-center">
-                <div class="md:w-64 xl:w-80">
-                    <InputText
-                            id="email"
-                            isRequired
-                            label="E-mail"
-                            type="email"
-                            placeholder="Where should we send it?"
-                            autocomplete="email"
-                    />
-                </div>
-                <Button
-                        title="Grab research"
-                        variant="tertiary"
-                        class="w-40 flex-shrink-0"
-                />
-            </form>
+            <ResearchFormAstroComponent client:load/>
         </div>
         <div class="flex flex-col gap-16 xl:flex-row justify-between border-b border-surface-quaternary py-11">
             <div class="order-last xl:order-none space-y-8">
@@ -186,7 +173,7 @@ const mainPageSchema = {
                                     href={item.link}
                                     target="_blank"
                                     rel='noopener noreferrer'
-                                    class="transition-colors w-5 h-5 text-default-transparent hover:text-action"
+                                    class="transition-all w-5 h-5 text-default-transparent hover:text-action"
                             >
                                 <Icon name={item.icon} />
                             </a>
@@ -202,25 +189,29 @@ const mainPageSchema = {
             </div>
         </div>
         <div class="flex flex-wrap justify-between xl:justify-center gap-3 xl:gap-16 items-center pt-8 xl:pt-11">
-            <img
+            <LazyImage
                     class="h-12 w-12 xl:h-16 xl:w-16"
                     src={Hubspot.src}
                     alt={"Hubspot partner"}
+                    client:load
             />
-            <img
+            <LazyImage
                     class="h-6 xl:h-8"
                     src={Microsoft.src}
                     alt={"Microsoft partner"}
+                    client:load
             />
-            <img
+            <LazyImage
                     class="h-6 xl:h-8"
                     src={AWS.src}
                     alt={"AWS partner"}
+                    client:load
             />
-            <img
+            <LazyImage
                     class="h-6 xl:h-8"
                     src={Autodesk.src}
                     alt={"Autodesk partner"}
+                    client:load
             />
         </div>
     </div>
