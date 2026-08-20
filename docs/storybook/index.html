@@ -168,7 +168,11 @@
       </div>
 
       <div class="sb-card">
-        <div class="thumb sb-mount" inert style="background:var(--color-surface-primary) url('../imagery/partnership-background.svg') center/cover no-repeat">
+        <!-- testimonials-background.svg: the plate named for the section this
+             card ships in. The thumbnail used partnership-background.svg, which
+             is a different section's art, so the one component that can only be
+             judged on art was being shown on the wrong art. -->
+        <div class="thumb sb-mount" inert style="background:var(--color-surface-primary) url('../imagery/testimonials-background.svg') center/cover no-repeat">
           <div id="t-review" class="mini" style="width:24rem;transform:scale(0.5)"></div>
         </div>
         <a class="meta" href="review.html">

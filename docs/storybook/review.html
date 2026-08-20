@@ -12,8 +12,25 @@
 <style>
   /* Story-only. The testimonial card is transparent with a 32px backdrop blur,
      so it only reads correctly over the decorative art it is designed to sit on.
-     This canvas supplies that ground from the real harvested SVG. */
-  .on-art { background: var(--color-surface-primary) url("../imagery/partnership-background.svg") center/cover no-repeat; }
+     This canvas supplies that ground from the real harvested SVG.
+
+     testimonials-background.svg, specifically — the plate named for this
+     section. The page used to mount the cards on partnership-background.svg,
+     which is a different section's art (concentric circles, not the diagonal
+     line field), so the blur was being judged against a ground the component
+     never meets. Each plate carries its own #050505 rect by design
+     (DESIGN.md sect. "Imagery"), which is why no page colour shows through. */
+  .on-art { background: var(--color-surface-primary) url("../imagery/testimonials-background.svg") center/cover no-repeat; }
+
+  /* The grid story. Cards are laid two-up over ONE continuous plate, because
+     that is the only arrangement in which the transparency does any work: you
+     can see the art run behind a card and out the other side, and you can see
+     where one card's blur stops and its neighbour's begins. The 16px alley is
+     not this stylesheet's — it is the component's own `mx-1 lg:mx-2` doubled.
+     Nothing here sets a card width; the grid track does, as a section wrapper
+     would. */
+  .rev-grid { display: grid; gap: 0; grid-template-columns: 1fr; padding: 2.5rem 0; }
+  @media (min-width: 60rem) { .rev-grid { grid-template-columns: 1fr 1fr; } }
 </style>
 <script type="importmap">
 {
@@ -72,8 +89,9 @@
 
   <section class="sb-section">
     <h2>Stories</h2>
-    <p>Shown over <code>partnership-background.svg</code>, the ground it is built
-       for. The blur is what separates the card from the art behind it.</p>
+    <p>Shown over <code>testimonials-background.svg</code>, the plate named for
+       the section this card ships in. The blur is what separates the card from
+       the art behind it — there is nothing else doing that job.</p>
     <div class="sb-stories is-wide">
 
       <div class="sb-story">
@@ -103,6 +121,34 @@
         </div>
       </div>
 
+    </div>
+  </section>
+
+  <section class="sb-section">
+    <h2>In the grid</h2>
+    <p>One card on a canvas shows the blur; it does not show what the blur is
+       <em>for</em>. Laid two-up over a single continuous plate, the art runs
+       behind each card and out the other side, the alleys between them stay
+       unblurred, and the falloff in the plate's opacity ladder puts every card
+       on a slightly different ground — which is the case the component has to
+       survive and the one a flat swatch cannot pose.</p>
+    <div class="sb-stories is-single">
+      <div class="sb-story">
+        <div class="sb-canvas is-block on-art">
+          <div class="rev-grid" id="story-grid"></div>
+        </div>
+        <div class="sb-story-body">
+          <span class="sb-story-name">Four testimonials, two-up</span>
+          <span class="sb-story-args">mixed: with and without photo, LinkedIn and verification</span>
+          <span class="sb-story-note">The 16px alley is the component's own
+            <code>mx-1&nbsp;lg:mx-2</code>, doubled where two cards meet — no wrapper
+            supplies it. The section wrapper that positions this grid on the live
+            site is an Astro page, not a harvested SFC, so its widths and vertical
+            rhythm are <strong>not</strong> reproduced here; only the card is.
+            The third card's review carries hard newlines to exercise
+            <code>whitespace-pre-wrap</code>.</span>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -171,11 +217,57 @@
     // className omitted on purpose — the findings show what that does.
   }).mount('#story-rev2');
 
+  /* ---- the grid story ---------------------------------------------------
+   * Four cards over one plate. Each createApp().mount() takes over the
+   * element it is given, so the grid gets four children to mount into rather
+   * than one — the .rev-grid track sizes them, exactly as a section wrapper
+   * would; the component sets no width of its own.
+   *
+   * The mix is deliberate: two cards with photos and two without, so the
+   * `photo.name !== 'no-image.svg'` branch is visible side by side, and the
+   * verification row appears on some cards and not others — which is how the
+   * section actually looks, not how a matrix of one variant looks. */
+  const GRID = [
+    {
+      photo: { name: 'a.png', url: '/uploads/a.png' },
+      name: 'Marta Feld', position: 'CTO, Northwind Logistics, Germany',
+      review: 'They scoped the smallest thing that would prove the integration worked, shipped it in three weeks, and only then talked about the rest. The estimate held.',
+      linkedinurl: '#!', verification: 'Clutch Verified',
+    },
+    {
+      photo: { name: 'no-image.svg', url: '' },
+      name: 'Dario Benn', position: 'Head of Platform, Kestrel Freight',
+      review: 'Handover was the part I expected to go badly. The documentation was written as the work happened rather than after it, so there was nothing to reconstruct.',
+      linkedinurl: '#!', verification: '',
+    },
+    {
+      photo: { name: 'c.png', url: '/uploads/c.png' },
+      name: 'Ines Kovač', position: 'Founder, Adriatic Retail Group, Croatia',
+      review: 'Their project management is solid.\nThe team is ready to implement the features you actually want, and they say plainly when something is a bad idea.\n\nEvery commitment was met.',
+      linkedinurl: '#!', verification: 'G2 Verified',
+    },
+    {
+      photo: { name: 'no-image.svg', url: '' },
+      name: 'Anonymous', position: 'Engineering Director',
+      review: 'Every optional branch off: no photo, no profile link, no verification badge. The card still has to hold its shape beside three that do.',
+      linkedinurl: '', verification: '',
+    },
+  ];
+
+  const grid = document.querySelector('#story-grid');
+  GRID.forEach((item, i) => {
+    const slot = document.createElement('div');
+    slot.id = `story-grid-${i}`;
+    grid.appendChild(slot);
+    createApp(Review, { item, className: '' }).mount(slot);
+  });
+
   // getImageUrl() prefixes every media path with the Strapi host
   // (lib/strapi.ts), so the avatar the component requests lives on the CMS.
   // The storybook swaps in a local placeholder after mount; everything else
   // about the <img> — classes, sizing, alt wiring — is the component's own.
-  document.querySelector('#story-rev1 img').src = '../assets/images/sb-avatar.svg';
+  document.querySelectorAll('#story-rev1 img, #story-grid img')
+    .forEach((img) => { img.src = '../assets/images/sb-avatar.svg'; });
 </script>
 </body>
 </html>
