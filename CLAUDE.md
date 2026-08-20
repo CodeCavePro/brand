@@ -34,6 +34,15 @@ its interface in CI. A stub fails as an `undefined` in a reader's browser; an
 adapter fails the build. The bar is in `ports.d.ts`: if swapping the
 implementation would change what the specimen *looks like*, it is not a port.
 
+**An adapter substitutes the environment, never the behaviour.** `SanitizerPort`
+is real `dompurify` — pinned to the version `isomorphic-dompurify` resolves to,
+bump them together — not a pass-through; the wrapper's `jsdom` half is what gets
+dropped, because a docs page is only ever a browser. It shipped as an identity
+function for a day and that was the wrong call: it made the one page people
+visit to check sanitising the one page not doing it. Where an adapter truly
+cannot reach production (`StrapiPort` has the CMS host but not its token), the
+specimen must say so on its face, not in a comment.
+
 Related rule: **nothing under `docs/source_examples/` is authored.** A
 hand-written stub used to live there as `lib/strapi.ts`; it is gone.
 

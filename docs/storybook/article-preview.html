@@ -138,6 +138,7 @@
 <script type="module">
   import { createApp } from 'vue';
   import ArticlePreview from './compiled/ArticlePreview.js';
+  import { usePlaceholders } from './placeholders.js';
 
   createApp(ArticlePreview, {
     article: {
@@ -163,13 +164,10 @@
     },
   }).mount('#story-art2');
 
-  // getImageUrl() prefixes every media path with the Strapi host
-  // (ports/strapi.adapter.ts), so the covers the component requests live on the CMS.
-  // The storybook swaps in a local placeholder after mount; everything else
-  // about the <img> — classes, object-cover, alt wiring — is the component's.
-  for (const img of document.querySelectorAll('.sb-canvas img')) {
-    img.src = '../assets/images/sb-cover.svg';
-  }
+  // ArticlePreview still renders a plain <img>, not LazyImage — but going
+  // through placeholders.js anyway means the page keeps working if the site
+  // converts it, which is exactly how the other three pages broke.
+  usePlaceholders('.sb-canvas img', '../assets/images/sb-cover.svg');
 </script>
 </body>
 </html>

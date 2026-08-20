@@ -177,6 +177,25 @@ table.sb-props { width: 100%; border-collapse: collapse;
                 color: var(--color-hovered); }
 .sb-note.is-warn { border-color: var(--color-action); }
 
+/* ---- live assertion readout ----------------------------------------------
+   Used by pain-points-item.html, whose sanitiser story is an actual test
+   rather than a claim: it renders hostile markdown through the real component
+   and reports what survived. Kept general in case a second specimen needs to
+   prove something instead of asserting it, but it is deliberately not a
+   general "code block" style — a specimen that merely SHOWS code should use
+   <code> inside .sb-note like everything else. */
+.sb-verdict { margin-top: 0.75rem; padding: 0.625rem 0.875rem;
+              border-radius: var(--radius-control);
+              border: 1px solid var(--color-surface-quaternary);
+              font-family: var(--font-mono); font-size: 0.75rem;
+              line-height: 1.6; color: var(--color-body-secondary-lighter); }
+.sb-verdict b { display: block; margin-bottom: 0.375rem; font-weight: inherit; }
+.sb-verdict.is-pass b { color: var(--color-success, #4ADE80); }
+.sb-verdict.is-fail { border-color: var(--color-error-100, #FE9A9A); }
+.sb-verdict.is-fail b { color: var(--color-error-100, #FE9A9A); }
+.sb-verdict pre { margin: 0; overflow-x: auto; white-space: pre-wrap;
+                  word-break: break-word; color: var(--color-hovered); }
+
 /* ---- catalog (index) ----------------------------------------------------- */
 .sb-cat { display: grid; gap: 1rem;
           grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); }

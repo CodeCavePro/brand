@@ -38,8 +38,12 @@
  *       (default sibling checkout: ../codecave.pro relative to the repo)
  *
  * Output modules keep 'vue' and 'gsap' as bare imports; the storybook pages
- * map them to docs/vendor/ via an import map. Everything else (helpers,
- * icon SFCs, the strapi stub) is bundled in.
+ * map them to docs/vendor/ via an import map. Everything else — helpers, icon
+ * SFCs, and the port adapters with whatever they depend on — is bundled in.
+ * Bundled rather than externalised because a page cannot forget a bundle: the
+ * import map is per-page, so an adapter dependency added to the map on one page
+ * and not another fails as a bare-specifier error in a reader's browser, which
+ * is precisely the failure the ports exist to make impossible.
  * ======================================================================== */
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
@@ -174,9 +178,18 @@ const PORTS = [
   },
   {
     port: 'SanitizerPort',
-    // Also, at the time of writing, unbuildable from the site checkout at all:
-    // its graph has an unrelated peer conflict (magicast vs tsdown) that fails
-    // npm install outright. That is not why this is a port — see the adapter.
+    // Swaps the isomorphic wrapper for the DOMPurify inside it — same engine,
+    // same version, without jsdom, which exists to give the sanitiser a DOM on
+    // a server and has nothing to do in a browser. This one is a port for the
+    // environment only: the specimen sanitises for real. See the adapter.
+    //
+    // It is also unbuildable from the site checkout as things stand — the
+    // package is declared in codecave.pro/package.json but absent from its
+    // node_modules, and `npm install` there fails ERESOLVE on an unrelated
+    // conflict (magicast vs tsdown), with no lockfile to fall back on. That is
+    // a site-side problem, not the reason for this entry; resolving the adapter
+    // from THIS repo's node_modules is what makes the storybook buildable
+    // regardless.
     specifier: /^isomorphic-dompurify$/,
     adapter: 'sanitizer.adapter.ts',
   },

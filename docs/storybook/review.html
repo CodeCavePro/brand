@@ -192,6 +192,7 @@
 <script type="module">
   import { createApp } from 'vue';
   import Review from './compiled/Review.js';
+  import { usePlaceholders } from './placeholders.js';
 
   createApp(Review, {
     item: {
@@ -262,12 +263,9 @@
     createApp(Review, { item, className: '' }).mount(slot);
   });
 
-  // getImageUrl() prefixes every media path with the Strapi host
-  // (ports/strapi.adapter.ts), so the avatar the component requests lives on the CMS.
-  // The storybook swaps in a local placeholder after mount; everything else
-  // about the <img> — classes, sizing, alt wiring — is the component's own.
-  document.querySelectorAll('#story-rev1 img, #story-grid img')
-    .forEach((img) => { img.src = '../assets/images/sb-avatar.svg'; });
+  // Review renders its avatar through LazyImage, so the swap has to go through
+  // data-src — see placeholders.js for why setting .src alone loses a race.
+  usePlaceholders('#story-rev1 img, #story-grid img', '../assets/images/sb-avatar.svg');
 </script>
 </body>
 </html>

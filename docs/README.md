@@ -114,8 +114,10 @@ PDF and email builders, native apps. The CSS remains the source of truth.
 ├── source_examples/           high-signal source files, the evidence behind the rules
 ├── preview/                   12 focused review cards + index — layer 1, foundations
 ├── storybook/                 13 component stories + index — layer 2, components
-│   └── ports/                 interfaces + docs-build adapters for what a
-│                              component depends on outside itself
+│   ├── ports/                 interfaces + docs-build adapters for what a
+│   │                          component depends on outside itself
+│   └── placeholders.js        local stand-ins for the CMS-hosted media the
+│                              captured components ask for
 └── artifacts/                 6 whole surfaces + index — layer 3, compositions
 ```
 
@@ -239,7 +241,8 @@ defects and 25 design observations.** The ones that change runtime behavior:
 - **`Button`'s `isDisabled` does not disable.** It sets opacity and cursor only;
   the `disabled` attribute is never bound.
 - ~~**`PainPointsItem` renders unsanitized CMS markdown through `v-html`.**~~
-  Fixed upstream 2026-08-20 — the parse now runs through `isomorphic-dompurify`.
+  Fixed upstream 2026-08-20 — the parse now runs through `isomorphic-dompurify`,
+  and the specimen's third story re-checks it on every page load.
 - **`TextField` syncs its model on `change`, not `input`** — so `v-model`
   updates on blur while `InputText` in the same form updates per keystroke.
 
@@ -388,17 +391,34 @@ node docs/tools/build-storybook.mjs ../codecave.pro
 
 ### Ports — what a component depends on outside itself
 
-Some captured components import something the docs build has no business
-carrying: `helpers/image-url.ts` wants the Strapi base URL out of a module that
-otherwise constructs an authenticated client, and `project/pain-points-item.vue`
-sanitises its markdown with a ~300K library that, here, guards a demo string
-written twenty lines up in the page rendering it.
+Some captured components import something a static docs page cannot resolve the
+way production does: `helpers/image-url.ts` wants the Strapi base URL out of a
+module that otherwise constructs an authenticated client, and
+`project/pain-points-item.vue` sanitises its markdown with `isomorphic-dompurify`,
+whose job is to pair DOMPurify with `jsdom` so the call also works during SSR.
 
 Those dependencies are **inverted, not stubbed**. `storybook/ports/ports.d.ts`
 declares the narrow interface the component actually needs; an adapter beside it
 implements that interface for a static build; the `PORTS` table in
 `tools/build-storybook.mjs` is the only place a specifier is wired to an
 adapter. Everything else still compiles from the real source.
+
+**An adapter substitutes the environment, never the behaviour.** The sanitiser
+port really sanitises — it is plain `dompurify` at the version the isomorphic
+wrapper resolves to, minus the jsdom half that only matters on a server. The
+third story on the `PainPointsItem` page proves it rather than asserting it:
+hostile markdown goes in, and the verdict under it is generated after mount from
+the DOM the real component produced. It was an identity function for about a day
+in August 2026, which was wrong — it made that page the one place in the
+storybook where the component on screen was not the component in production, in
+exactly the behaviour anyone visits that page to check.
+
+Where an adapter genuinely cannot reach production, the specimen says so on its
+face. `StrapiPort` can give a media URL its host but not the private token
+behind it, so every page swaps in a local placeholder after mount — via
+`storybook/placeholders.js`, which knows that `LazyImage` reads `data-src` and
+that assigning `.src` to one of those loses a race with its
+`IntersectionObserver`.
 
 The distinction is not vocabulary. A stub is unchecked — it fails as an
 `undefined` in someone's browser, at the one moment the specimen was supposed to
