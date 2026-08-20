@@ -14,6 +14,17 @@ label ([live query](https://codecave.atlassian.net/issues?jql=project%20%3D%20CC
 -   [CCWEB2-315](https://codecave.atlassian.net/browse/CCWEB2-315) — nine `docs/source_examples/` captures have drifted from `codecave.pro/src`; refresh one at a time, not in a sweep.
 -   [CCWEB2-316](https://codecave.atlassian.net/browse/CCWEB2-316) — decide what "converged onto the site" means, and write the criterion next to the claim.
 -   [CCWEB2-317](https://codecave.atlassian.net/browse/CCWEB2-317) — decide whether `docs/` is built with Astro. Carries the whole proposal; blocked on one question, whether `docs/` stays committed as build output.
+-   [CCWEB2-318](https://codecave.atlassian.net/browse/CCWEB2-318) — **epic.** Publish `@codecavepro/brand` to npm and have codecave.pro install it, inverting the direction of truth. Six phases; **phase 1 landed** (`46a5b1c`). CCWEB2-315 hard-blocks phase 4 — never publish components built from captures that are behind the site.
+
+### The package, in one paragraph
+
+`packages/brand/` is a **pure derivative of `docs/`** — it copies
+`colors_and_type.css` and `fonts.css` byte-for-byte and compiles
+`docs/tokens/*.ts`. Nothing under `packages/` is authored, nothing is tracked
+except its manifest and build script, and `npm run check` asserts the
+byte-identity. **`docs/` remains the single origin; edit there, never in
+`packages/`.** The registry is npm public — this repo is already a public repo,
+so nothing private was being protected.
 
 CCWEB2 is the *website* project and these are brand-package items — they sit there
 because no brand project exists yet. The `brand-kit` label is what makes them
