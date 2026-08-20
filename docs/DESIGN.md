@@ -282,8 +282,8 @@ never two separate sentences.
 
 | Token | Value | Applies to |
 |---|---|---|
-| `--radius-sm` | 8px | inputs, small chips |
-| `--radius-md` | 12px | inline chips, icon tiles |
+| `--radius-control` | 8px | inputs, small chips |
+| `--radius-tile` | 12px | inline chips, icon tiles |
 | `--radius-card` | 24px | **default card, dominant sitewide** |
 | `--radius-article` | 36px | article / insight cards |
 | `--radius-custom` | 44px | feature and testimonial cards |
@@ -292,7 +292,17 @@ never two separate sentences.
 | `--radius-pill` | 9999px | buttons, pills, avatars |
 
 Measured radius census on the homepage: 24px on 42 blocks, 12px on 9, 44px on
-8, 8px on 7, 120px on 2. Radii of 2–4px do not occur.
+8, 8px on 7, 120px on 2. Radii of 2–4px occur only on the checkbox box.
+
+**Every name in that table describes what it wraps, and that is load-bearing.**
+The two that were `--radius-sm` and `--radius-md` are also Tailwind default
+theme names, at *different* values — 0.25rem and 0.375rem against this system's
+0.5rem and 0.75rem. The site emits Tailwind's defaults (its `@theme` declares
+one radius, `--radius-custom`), so any markup that names `--radius-sm` gets 8px
+here and 4px there with nothing to notice: no error, no warning, just a
+different shape. Renamed 2026-08-20 so the collision is structurally impossible.
+See `Checkbox.vue` below for the case that made it visible, filed against the
+site as [CCWEB2-313](https://codecave.atlassian.net/browse/CCWEB2-313).
 
 ### Container
 
@@ -372,7 +382,7 @@ single consultation CTA. Never place two glow buttons in one viewport.
 
 ### Text input — `common/InputText.vue`
 
-64px tall, `--radius-sm` (8px), fill `--color-surface-secondary`, hover fill
+64px tall, `--radius-control` (8px), fill `--color-surface-secondary`, hover fill
 `--color-surface-tertiary`. A **floating label** sits absolutely at
 `padding: 12px 0 0 12px`, bold, 14px, `--color-heading`; the input itself is
 padded `28px 12px 12px` so the label never collides with the value. Required
@@ -395,9 +405,22 @@ Error swaps the halo to the red ramp and turns the value text `--color-error`.
 Two variants. Default: 24px box, 2px border `#1B0D4E`, hover border
 `--color-action`, gap 12px. Secondary (the chip form used for service
 selection): wrapped in a `--color-surface-secondary` pill with
-`--radius-sm`, 2px outline `--color-surface-quaternary`, checked fill
-`--color-action`, hover outline `--color-action`. The tick is
-`assets/checked-icon.svg`, scaled `0 → 1` on hover and check.
+`--radius-control` (8px — `rounded-lg` in source), 2px outline
+`--color-surface-quaternary`, checked fill `--color-action`, hover outline
+`--color-action`. The tick is `assets/checked-icon.svg`, scaled `0 → 1` on
+hover and check.
+
+**The box itself takes a 4px corner in both variants** — the one small radius
+anywhere in the system, and the only value in this document that is not a
+CODECAVE decision. `Checkbox.vue` writes `border-radius: var(--radius-sm)` in
+its scoped style; the site's `@theme` never declares that name, so the box
+falls through to Tailwind's default `0.25rem`. There is deliberately no token
+for it: naming a 4px radius would invite reuse, and everywhere else small
+corners read as off-brand. Pinned as a literal in `colors_and_type.css` with
+the reason inline. Filed against the site as
+[CCWEB2-313](https://codecave.atlassian.net/browse/CCWEB2-313) — the component
+should declare the corner it wants rather than inherit whichever `--radius-sm`
+is in scope.
 
 ### Cards
 

@@ -167,7 +167,7 @@ table.sb-props { width: 100%; border-collapse: collapse;
 .sb-req { color: var(--color-action); font-family: var(--font-mono); }
 
 /* ---- callouts ------------------------------------------------------------ */
-.sb-note { padding: 1rem 1.25rem; border-radius: var(--radius-sm);
+.sb-note { padding: 1rem 1.25rem; border-radius: var(--radius-control);
            border: 1px solid var(--color-surface-quaternary);
            color: var(--color-body-secondary-lighter);
            font-size: var(--text-caption); line-height: var(--leading-caption); }

@@ -13,73 +13,38 @@ neither of them:
 What follows is work the brand repo owes itself. Nothing here is a defect on the
 live site.
 
-Everything still listed needs **a decision**, not an edit. The items that were
-merely undone have been done; they are recorded at the bottom.
+Nothing still listed is blocked on this repo alone: two need a decision, one
+needs an asset exported, and one is a standing check. The items that were merely
+undone have been done; they are recorded at the bottom.
 
 ---
 
-## 1. `brand.codecave.pro` is documented but not wired up
+## 1. Keep the Tailwind-collision check running
 
-The design system now names <https://brand.codecave.pro/> as its canonical
-location — in [.design-sync/config.json](/.design-sync/config.json), the
-conventions header, both READMEs. **Nothing publishes there yet.** There is no
-`CNAME` file, so `.github/workflows/static.yml` deploys to
-`codecavepro.github.io/brand` and the documented URL does not resolve.
-
-Three things are needed and only the first belongs to this repo:
-
-1. `docs/CNAME` containing `brand.codecave.pro` (`docs/` is the Pages artifact
-   root, so the file goes there, not at the top level).
-2. A DNS `CNAME` record: `brand.codecave.pro` → `codecavepro.github.io`.
-3. The custom domain set in the repo's Pages settings.
-
-**Order matters.** Committing the `CNAME` file before DNS resolves makes Pages
-serve the custom domain and redirect the `github.io` URL to it — so the site
-goes dark until DNS catches up. Do DNS first.
-
-**To do:** point DNS, then add the file. Not done here because doing it in the
-wrong order breaks the published site.
-
-## 2. Token names that collide with Tailwind's defaults
-
-The `.vue` sources in `docs/source_examples/` reference exactly two custom
-properties that the site's own `global.css` never declares:
+The `.vue` sources in `docs/source_examples/` reference custom properties that
+the site's own `global.css` never declares — they resolve only because the
+Tailwind build happens to emit a default of the same name. Lift such a
+component out of that build and the value changes or disappears.
 
 ```bash
 comm -23 <(grep -rhoE "var\(--[a-zA-Z0-9-]+" docs/source_examples --include=*.vue | sed 's/var(//' | sort -u) <(grep -oE "^\s*--[a-zA-Z0-9-]+" docs/source_examples/styles/global.css | tr -d ' ' | sort -u)
 ```
 
-Both come from Tailwind's default theme, which the site build happens to emit.
-Lift either component out of that build and the value changes or disappears.
+Two names come out today and both are filed against the site:
+[`--radius-sm`](https://codecave.atlassian.net/browse/CCWEB2-313) and
+[`--default-transition-duration`](https://codecave.atlassian.net/browse/CCWEB2-304).
 
-- **`--radius-sm`** — `Checkbox.vue` sets `border-radius: var(--radius-sm)` on
-  its box. On the site that is Tailwind's `0.25rem` (4px). In
-  [docs/colors_and_type.css](/docs/colors_and_type.css) the same name is this
-  system's own `0.5rem` (8px) — inputs and small chips. On a 16px box 8px is
-  exactly half the side, so the small chip renders as a perfect circle and reads
-  as a radio button: pick-one where the group is pick-any.
+**Careful — the one-liner has a blind spot.** It compares what the `.vue` files
+*reference* against what `global.css` *declares*, so it only ever finds names
+the site consumes. It cannot see a name this package publishes that Tailwind
+also defines but no SFC happens to use: `--radius-md` was exactly that case and
+sat undetected until someone read the two scales side by side. The complement —
+diffing this package's `:root` against Tailwind's default theme — has no check.
 
-  Handled in three places, none of them general:
-  - the storybook scopes the site's tokens to `.sb-canvas, .sb-mount`, so
-    mounted components already resolve 4px (`docs/tools/build-storybook.mjs`
-    names `--radius-sm` as its motivating example);
-  - `.checkbox-chip input` in `colors_and_type.css` pins the literal `0.25rem`;
-  - `docs/preview/components-inputs.html` explains why.
+**To do:** run the one-liner when `source_examples/` is refreshed; any third
+name is a new instance. Write the complementary check if the token layer grows.
 
-  **To do:** decide whether the DS should rename its 8px token (`--radius-input`?
-  `--radius-chip`?) so the collision cannot recur, and whether to file the
-  underlying fragility against the site — `Checkbox.vue` should declare the
-  radius it wants rather than inherit whatever `--radius-sm` it lands beside.
-  Not yet filed in Jira. **This is a breaking rename of a published token**,
-  which is why it has not been done unilaterally.
-
-- **`--default-transition-duration`** — same class of problem, already filed:
-  [CCWEB2-304](https://codecave.atlassian.net/browse/CCWEB2-304).
-
-**To do:** keep the one-liner above as a check. Any third name appearing in that
-diff is a new instance of this bug.
-
-## 3. The two email templates still set the wordmark as type
+## 2. The two email templates still set the wordmark as type
 
 [docs/artifacts/email.html](/docs/artifacts/email.html) and
 [docs/artifacts/newsletter.html](/docs/artifacts/newsletter.html) render
@@ -87,21 +52,26 @@ diff is a new instance of this bug.
 says must never be re-typed by hand. Every other artifact — deck, form, landing,
 poster — now carries `assets/codecave-wide.svg`.
 
-The blocker has **half** lifted. The site root is now settled
-(<https://brand.codecave.pro/>), and because `docs/` is the Pages artifact root,
-a file at `docs/assets/x.png` is served at `/assets/x.png`. So the URL is
-derivable rather than invented — but only once item 1 is done. Until
-`brand.codecave.pro` actually resolves, writing it into an email that may be
-archived for years is still writing a dead link.
+**The URL blocker is gone.** <https://brand.codecave.pro/> resolves and serves
+this package (verified 2026-08-20 — DNS points at Cloudflare, which fronts
+GitHub Pages; `codecavepro.github.io/brand/...` now 301s to it). Because `docs/`
+is the Pages artifact root, a file at `docs/assets/x.png` is served at
+`/assets/x.png`, so an absolute URL in an email is derivable rather than
+invented and will not rot.
 
-Outlook's Word engine also does not render SVG at all, so the asset has to be a
-PNG at 2× or 3×.
+What remains is a file-format problem, not a hosting one. Outlook's Word
+rendering engine does not render SVG at all, and `assets/codecave-wide.svg` is
+the only cut of the wordmark in the package, so the asset has to be exported as
+a PNG at 2× or 3× first. Inlining is not an escape hatch: Gmail strips `data:`
+image URIs and Outlook does not support them either — the only reliable
+alternative is a `cid:` MIME attachment, which is a property of the sending
+message, not of an HTML template, so no edit to these files can supply it.
 
-**To do:** finish item 1, export the raster cuts of `codecave-wide` into
-`docs/assets/`, then swap both templates. Until then the typed fallback stays
-and this note explains why.
+**To do:** export raster cuts of `codecave-wide` into `docs/assets/`, then point
+both templates at `https://brand.codecave.pro/assets/…`. Until then the typed
+fallback stays and this note explains why.
 
-## 4. What counts as "converged"?
+## 3. What counts as "converged"?
 
 The apparent contradiction in the README is resolved: it was never two competing
 claims, it was one claim about the **target** and one about the **current phase**.
@@ -121,7 +91,7 @@ design-token tickets; DESIGN.md §"Known divergences" emptying out; or a dated
 call. Whichever it is, it needs to be checkable by someone who was not in the
 room.
 
-## 5. Not ours: inert Tailwind config on the site side
+## 4. Not ours: inert Tailwind config on the site side
 
 `tailwind.config.ts` in the website repo is never loaded: Tailwind 4 reads a JS
 config only via `@config`, which no stylesheet declares, so `darkMode`,
@@ -135,6 +105,32 @@ next reader does not re-discover it as new.
 ---
 
 ## Recently closed
+
+- **Two published tokens carried Tailwind's default names at different values.**
+  `--radius-sm` was 0.5rem here and 0.25rem in Tailwind; `--radius-md` was
+  0.75rem here and 0.375rem there — the two scales offset by exactly two steps,
+  so the collision was invisible until something rendered in both. Renamed
+  `--radius-control` and `--radius-tile`. The six other radii were already
+  semantic; these two were precisely the ones that could collide, so the
+  namespace is now structurally clean. Breaking for anyone consuming the old
+  names, which is why it waited for a decision. The site-side half —
+  `Checkbox.vue` reading a name nothing declares — is
+  [CCWEB2-313](https://codecave.atlassian.net/browse/CCWEB2-313).
+
+- **The checkbox specimen contradicted itself.** `components-inputs.html` said
+  in prose that the chip box "takes a 4px corner … pinned here so the specimen
+  matches the site", while its own `.chip-check input` rule used the 8px token —
+  so the page rendered the perfect circle it was warning against. Both checkbox
+  boxes now pin the site's 4px, which is also a real convergence: `.checkbox
+  input` in `colors_and_type.css` had been shipping 8px where the site ships 4px.
+
+- **`brand.codecave.pro` is live.** DNS and the Pages custom domain were wired
+  up outside this repo; verified 2026-08-20 by loading
+  <https://brand.codecave.pro/preview/components-inputs.html> in a browser and
+  by `codecavepro.github.io/brand/...` returning a 301 to it. Cloudflare fronts
+  the domain and challenges non-browser clients, so `curl` sees a 403 — that is
+  the bot check, not a broken deploy. `docs/CNAME` added so a future deploy
+  cannot drop the custom-domain setting; safe to commit now that DNS resolves.
 
 - **The CSS component layer had no name anywhere in the navigation.** The four
   nav groups cover tokens, live Vue components and artifact templates, but the

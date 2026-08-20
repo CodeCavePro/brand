@@ -17,12 +17,19 @@
  * That scoping is deliberate, and inside the canvases it DOES redefine the
  * brand. The site's palette has moved past this package's, so a mounted
  * component resolved against colors_and_type.css would document the docs
- * system rather than the shipped one. `--radius-sm` is the clearest case: the
- * site never declares it, so Tailwind's 0.25rem stands and a checkbox is a
- * 4px-cornered square; this package defines its own 0.5rem, which on a 16px
- * box is a perfect circle — a radio button. Scoping the site's values to the
- * canvases is what makes a specimen faithful. Outside them the docs palette is
- * untouched.
+ * system rather than the shipped one. The colour ramps are the clearest case:
+ * `--color-brand-400` is #5F3ABD on the site and a different step here, and
+ * the gray ramp was renumbered entirely, so an unscoped specimen would show a
+ * component that exists nowhere. Scoping the site's values to the canvases is
+ * what makes a specimen faithful. Outside them the docs palette is untouched.
+ *
+ * The radius family used to be the worked example here, because this package
+ * published a `--radius-sm` at 0.5rem while Checkbox.vue reads the name and
+ * the site resolves it to Tailwind's 0.25rem. That collision is gone: the two
+ * t-shirt-sized radii were renamed `--radius-control` and `--radius-tile` on
+ * 2026-08-20, so nothing in this package can shadow a Tailwind default any
+ * more. The scoping still carries Tailwind's radii into the canvases, which is
+ * now belt and braces rather than the thing holding the specimen together.
  *
  * tw-bridge.css records a digest of everything under source_examples/ so
  * check-tw-bridge.mjs can prove the two are in step; see source-digest.mjs.
@@ -260,7 +267,8 @@ const built = twCompiler.build(candidates);
  * re-numbered brand ramp, ground #0A0A0B), and several names collide with
  * colors_and_type.css at different values. Custom properties inherit from
  * the nearest ancestor that sets them, so scoping the site's :root + @theme
- * declarations (and Tailwind's emitted theme vars, e.g. --radius-sm) to the
+ * declarations (and Tailwind's emitted theme vars, e.g. --radius-sm, which
+ * this package no longer publishes — see the header) to the
  * demo canvases lets mounted components resolve every var() to the value
  * the live site computes — while the docs chrome around them keeps the
  * design-system palette. */

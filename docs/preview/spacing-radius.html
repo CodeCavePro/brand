@@ -54,8 +54,8 @@
   <section class="pv-block" data-od-id="radius-scale">
     <h2>The eight steps, at true size</h2>
     <div class="pv-grid pv-grid-3">
-      <div class="r-demo" style="border-radius:var(--radius-sm)">--radius-sm · 8px<br>inputs, small chips</div>
-      <div class="r-demo" style="border-radius:var(--radius-md)">--radius-md · 12px<br>inline chips, icon tiles</div>
+      <div class="r-demo" style="border-radius:var(--radius-control)">--radius-control · 8px<br>inputs, small chips</div>
+      <div class="r-demo" style="border-radius:var(--radius-tile)">--radius-tile · 12px<br>inline chips, icon tiles</div>
       <div class="r-demo" style="border-radius:var(--radius-card)">--radius-card · 24px<br><strong>DEFAULT card</strong></div>
       <div class="r-demo" style="border-radius:var(--radius-article)">--radius-article · 36px<br>article / insight cards</div>
       <div class="r-demo" style="border-radius:var(--radius-custom)">--radius-custom · 44px<br>feature &amp; testimonial cards</div>
@@ -63,6 +63,15 @@
       <div class="r-demo" style="border-radius:var(--radius-section-md);grid-column:span 2">--radius-section-md · 120px · section panel &ge;768px</div>
       <div class="r-demo" style="border-radius:var(--radius-pill)">--radius-pill · 9999px<br>buttons, pills, avatars</div>
     </div>
+    <p class="pv-note"><strong>Every step is named for what it wraps, and that is not stylistic.</strong>
+       The first two were <code>--radius-sm</code> and <code>--radius-md</code> until 2026-08-20 —
+       which are also Tailwind default theme names, at <em>different</em> values: 0.25rem and
+       0.375rem against this system's 0.5rem and 0.75rem. The site emits Tailwind's defaults (its
+       <code>@theme</code> declares one radius, <code>--radius-custom</code>), so the same markup
+       rendered here and rendered there took two different shapes, with no error and nothing in the
+       console to notice. Six of the eight were already semantic; the two t-shirt sizes were
+       precisely the two that could collide. See
+       <a href="components-inputs.html">the checkbox</a> for the case that made it visible.</p>
   </section>
 
   <section class="pv-block" data-od-id="radius-census">

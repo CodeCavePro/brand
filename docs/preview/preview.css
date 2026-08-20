@@ -51,6 +51,12 @@ body {
                        color: var(--color-body-secondary-lighter);
                        font-size: var(--text-caption);
                        line-height: var(--leading-caption); }
+/* For a note about something that will bite rather than something that merely
+   informs. Same idiom as .sb-note.is-warn in the storybook. */
+.pv-block > .pv-note.is-warn { padding: 0.875rem 1.125rem;
+                       border: 1px solid var(--color-action);
+                       border-radius: var(--radius-control); }
+.pv-block > .pv-note + .pv-note { margin-top: -0.75rem; }
 
 .pv-grid       { display: grid; gap: 1rem; }
 .pv-grid-2     { grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr)); }
@@ -70,12 +76,12 @@ body {
             line-height: 1.4; word-break: break-all; }
 
 /* Swatches */
-.pv-swatch      { border-radius: var(--radius-md); overflow: hidden;
+.pv-swatch      { border-radius: var(--radius-tile); overflow: hidden;
                   border: 1px solid var(--color-surface-quaternary); }
 .pv-swatch-chip { height: 5rem; }
 .pv-swatch-body { padding: 0.75rem; background: var(--color-surface-secondary); }
 
-.pv-tile { padding: 1.25rem; border-radius: var(--radius-md);
+.pv-tile { padding: 1.25rem; border-radius: var(--radius-tile);
            background: var(--color-surface-secondary);
            border: 1px solid var(--color-surface-quaternary); }
 
@@ -90,7 +96,7 @@ table.pv-table  { width: 100%; border-collapse: collapse;
 .pv-table code  { font-family: var(--font-mono); font-size: 0.8125rem;
                   color: var(--color-hovered); }
 
-.pv-warn { padding: 1rem 1.25rem; border-radius: var(--radius-sm);
+.pv-warn { padding: 1rem 1.25rem; border-radius: var(--radius-control);
            border: 1px solid var(--color-action);
            color: var(--color-body-secondary-lighter);
            font-size: var(--text-caption); line-height: var(--leading-caption); }

@@ -43,7 +43,7 @@ glow-button fill).
 | Text | `--color-body-primary`, `--color-body-secondary-lighter`, `--color-body-secondary` (muted), `--color-heading` |
 | Accent | `--color-action` (links, borders, eyebrows), `--color-hovered`, `--gradient-brand`, `--color-error` |
 | Type size | `--text-heading-lg` / `-md` / `-sm`, `--text-stat`, `--text-lg`, `--text-md`, `--text-sm`, `--text-base`, `--text-caption` |
-| Radius | `--radius-sm` 8, `--radius-md` 12, `--radius-card` 24, `--radius-article` 36, `--radius-custom` 44, `--radius-pill`, `--radius-section` 64 |
+| Radius | `--radius-control` 8, `--radius-tile` 12, `--radius-card` 24, `--radius-article` 36, `--radius-custom` 44, `--radius-pill`, `--radius-section` 64 |
 | Gradient | `--gradient-brand` — display type only, plus the one sanctioned field: `.rule` / `.progress` |
 | Layout | `--max-width-desktop`, `--gutter-base` / `-md` / `-xl`, `--section-padding-top` / `-bottom`, `--card-padding`, `--shadow-section` |
 

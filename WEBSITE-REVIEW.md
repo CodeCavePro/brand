@@ -132,18 +132,22 @@ section's own heading and flatten the document outline.
   hits it. Add `shrink-0`. *Fixed ahead in the port (`flex: none`) because it
   made the brand documentation render a broken control.*
 - **`Checkbox.vue` depends on a `--radius-sm` the project never sets** — worth a
-  note rather than a fix. Its scoped style says `border-radius: var(--radius-sm)`,
-  and `@theme` in `global.css` does not declare one, so the value comes from
-  Tailwind's default theme: **0.25rem / 4px**. That happens to be the right
-  corner for a 16px box, so the small chips read correctly on the site today —
-  but the component is one `@theme` line away from changing shape, and lifted out
-  of a Tailwind build it takes whatever `--radius-sm` it lands next to. Same
-  class of dependency as the `--default-transition-duration` item below. Declare
-  the radius the component actually wants. *(In the design-system port
-  `--radius-sm` is 8px, which on a 16px box is exactly half the side — a perfect
-  circle that reads as a radio button. The port pins 4px for the small variant
-  so its documentation matches what the site renders; nothing to change on the
-  site for that.)*
+  note rather than a fix; filed as
+  [CCWEB2-313](https://codecave.atlassian.net/browse/CCWEB2-313). Its scoped
+  style says `border-radius: var(--radius-sm)`, and `@theme` in `global.css`
+  does not declare one, so the value comes from Tailwind's default theme:
+  **0.25rem / 4px**. That happens to be the right corner for a 16px box, so the
+  chips read correctly on the site today — but the component is one `@theme`
+  line away from changing shape, and lifted out of a Tailwind build it takes
+  whatever `--radius-sm` it lands next to, or nothing at all. Same class of
+  dependency as the `--default-transition-duration` item below. Declare the
+  radius the component actually wants, or give the `var()` a fallback.
+  *(The design-system port used to be exactly the stylesheet that shadowed it:
+  its own `--radius-sm` was 8px, and 8px on a 16px box is half the side — a
+  perfect circle that reads as a radio button. The port has since renamed its
+  two colliding radii to `--radius-control` and `--radius-tile` and pins 4px on
+  both checkbox variants so its specimens match the site. Nothing to change on
+  the site for that part; the undeclared dependency is the part that remains.)*
 - **Checkbox/Radio animate against a variable the project never defines**:
   `transition: var(--default-transition-duration) transform ease-in-out`
   resolves to 150ms only because Tailwind's default theme happens to emit it.

@@ -189,7 +189,7 @@ body {
   aspect-ratio: 4 / 3;
   padding: 0.75rem;
   border: 1px solid var(--color-surface-quaternary);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-tile);
   background: var(--color-surface-secondary);
   cursor: pointer;
   transition: border-color var(--transition-colors);
@@ -231,7 +231,7 @@ body {
 .bk-role-use { margin: 0.5rem 0 0; font-size: var(--text-caption); line-height: var(--leading-caption); color: var(--color-body-secondary-lighter); }
 
 .bk-ramp { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 0.5rem; margin-top: 2.5rem; }
-.bk-step { border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--color-surface-quaternary); }
+.bk-step { border-radius: var(--radius-control); overflow: hidden; border: 1px solid var(--color-surface-quaternary); }
 .bk-step-chip { height: 52px; }
 .bk-step-label { padding: 0.5rem 0.5rem 0.625rem; background: var(--color-surface-secondary); }
 
@@ -289,7 +289,7 @@ body {
 .bk-list { list-style: none; margin: 0.75rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
 .bk-list li {
   padding: 0.375rem 0.75rem;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-tile);
   font-size: var(--text-caption);
   background: var(--color-surface-tertiary);
   color: var(--color-body-primary);
@@ -875,13 +875,13 @@ body {
 
     <div class="bk-radii" data-od-id="kit-posture-radii">
       <div>
-        <div class="bk-radius-tile" style="--r:var(--radius-sm)"></div>
-        <span class="bk-meta bk-radius-tok">--radius-sm · 8px</span>
+        <div class="bk-radius-tile" style="--r:var(--radius-control)"></div>
+        <span class="bk-meta bk-radius-tok">--radius-control · 8px</span>
         <span class="bk-meta">inputs, small chips</span>
       </div>
       <div>
-        <div class="bk-radius-tile" style="--r:var(--radius-md)"></div>
-        <span class="bk-meta bk-radius-tok">--radius-md · 12px</span>
+        <div class="bk-radius-tile" style="--r:var(--radius-tile)"></div>
+        <span class="bk-meta bk-radius-tok">--radius-tile · 12px</span>
         <span class="bk-meta">inline chips, icon tiles</span>
       </div>
       <div>

@@ -209,8 +209,14 @@
   /* =========================================================================
    * RADIUS — the loudest brand signal. Small corners read as off-brand.
    * ====================================================================== */
-  --radius-sm:        0.5rem;   /*   8px — inputs, small chips              */
-  --radius-md:        0.75rem;  /*  12px — inline chips, icon tiles         */
+  /* Named for the thing, not for a t-shirt size. `--radius-sm` / `--radius-md`
+   * are also Tailwind default theme names at DIFFERENT values (0.25rem and
+   * 0.375rem), so a component authored against one system and rendered in the
+   * other silently changed shape — see the checkbox note further down. The
+   * remaining six radii were already semantic; these two were the only ones
+   * that could collide, and now they cannot. */
+  --radius-control:   0.5rem;   /*   8px — inputs, small chips              */
+  --radius-tile:      0.75rem;  /*  12px — inline chips, icon tiles         */
   --radius-card:      1.5rem;   /*  24px — DEFAULT card, dominant sitewide  */
   --radius-article:   2.25rem;  /*  36px — article / insight cards          */
   --radius-custom:    2.75rem;  /*  44px — feature cards (from @theme)      */
@@ -593,7 +599,7 @@ a:hover { color: var(--color-hovered); }
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 0.75rem;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-tile);
   background: var(--color-surface-secondary);
   color: var(--color-body-primary);
   font-size: var(--text-caption);
@@ -630,7 +636,7 @@ a:hover { color: var(--color-hovered); }
   width: 100%;
   padding: 1.75rem 0.75rem 0.75rem;
   border: 0;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-control);
   background: var(--color-surface-secondary);
   color: var(--color-hovered);
   font-family: var(--font-sans);
@@ -710,7 +716,15 @@ a:hover { color: var(--color-hovered); }
   height: 1.5rem;
   margin: 0;
   border: 2px solid var(--color-outline-primary-hover);
-  border-radius: var(--radius-sm);
+  /* 4px literal, and the ONE place in this system where a corner is that
+   * small. It is not a CODECAVE decision: Checkbox.vue's scoped style says
+   * `border-radius: var(--radius-sm)` and the site's @theme never declares
+   * that name, so both checkbox variants take Tailwind's default 0.25rem.
+   * There is deliberately no 4px token to reach for — naming it would invite
+   * reuse, and everywhere else small corners read as off-brand. The site-side
+   * fix (declare the radius you want) is CCWEB2-313; until it lands, this is
+   * what ships, so this is what the specimen shows. */
+  border-radius: 0.25rem;
   cursor: pointer;
   transition: border-color var(--transition-base),
               background-color var(--transition-base);
@@ -739,21 +753,17 @@ a:hover { color: var(--color-hovered); }
 .checkbox-chip {
   gap: 0.5rem;
   padding: 0.5rem 0.75rem;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-control);
   background: var(--color-surface-secondary);
 }
 
 .checkbox-chip input {
   width: 1rem;
   height: 1rem;
-  /* 4px literal, NOT var(--radius-sm) — and this is a name collision, not a
-   * disagreement with the site. Checkbox.vue asks for --radius-sm; the site's
-   * @theme never declares one, so on the live site the box takes Tailwind's
-   * default 0.25rem and renders at 4px. Here --radius-sm is this system's own
-   * 8px (inputs, small chips), which on a 16px box is exactly half the side —
-   * a perfect circle, i.e. a radio button, i.e. pick-one where the group is
-   * pick-any. Pinning the number keeps this specimen showing what the site
-   * shows. Do not "fix" it back to the token. */
+  /* Same 4px, same reason as `.checkbox input` above. It matters more here:
+   * this box is 16px, so the old 8px was exactly half its side — a perfect
+   * circle, i.e. a radio button, i.e. pick-one where the chips are pick-any.
+   * The surrounding pill above keeps 8px (`rounded-lg` in source). */
   border-radius: 0.25rem;
   border: 0;
   outline: 2px solid var(--color-surface-quaternary);

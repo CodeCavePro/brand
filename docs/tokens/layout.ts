@@ -13,12 +13,20 @@ export const breakpointSm = '457px' as const;
 
 /**
  * Radii. CODECAVE runs unusually large corners — this is the loudest brand
- * signal in the system, louder than the violet. Nothing here is small: a 4px
- * corner does not occur anywhere in the captured source.
+ * signal in the system, louder than the violet. Nothing here is small; the one
+ * 4px corner in the package is the checkbox box, which is Tailwind's default
+ * leaking through an undeclared name on the site (CCWEB2-313), not a CODECAVE
+ * value, so it is deliberately not a token.
+ *
+ * Every key is named for what it wraps rather than for a t-shirt size. `sm` and
+ * `md` used to be here, and `--radius-sm` / `--radius-md` are also Tailwind
+ * default theme names at *different* values (0.25rem, 0.375rem) — so markup
+ * authored against one system and rendered in the other changed shape with
+ * nothing to notice. The semantic names cannot collide.
  */
 export const radius = {
-  sm: '0.5rem', //        8px  — inputs, small chips
-  md: '0.75rem', //      12px — inline chips, icon tiles
+  control: '0.5rem', //   8px — inputs, small chips
+  tile: '0.75rem', //    12px — inline chips, icon tiles
   card: '1.5rem', //     24px — the DEFAULT card, dominant sitewide
   article: '2.25rem', // 36px — article / insight cards
   custom: '2.75rem', //  44px — feature and testimonial cards

@@ -16,13 +16,16 @@
   .force-hover input, .force-hover textarea { background: var(--color-surface-tertiary); }
   .force-focus input, .force-focus textarea { background: var(--color-surface-tertiary);
                                               box-shadow: var(--shadow-input-focus); }
+  /* The pill takes 8px (`rounded-lg` in source); the box inside it takes the
+     site's 4px. This page used to give both the same token and rendered the
+     16px box as a perfect circle — the exact failure the note below describes. */
   .chip-check { display: inline-flex; align-items: center; gap: 0.5rem;
-                padding: 0.5rem 0.75rem; border-radius: var(--radius-sm);
+                padding: 0.5rem 0.75rem; border-radius: var(--radius-control);
                 background: var(--color-surface-secondary);
                 font-size: var(--text-caption); cursor: pointer; }
   .chip-check input { appearance: none; -webkit-appearance: none; display: grid;
                       place-content: center; width: 1rem; height: 1rem; margin: 0;
-                      border-radius: var(--radius-sm); cursor: pointer;
+                      border-radius: 0.25rem; cursor: pointer;
                       outline: 2px solid var(--color-surface-quaternary);
                       transition: outline-color var(--transition-base),
                                   background-color var(--transition-base); }
@@ -137,15 +140,23 @@
 
   <section class="pv-block" data-od-id="inputs-checkbox">
     <h2>Checkbox — two variants</h2>
-    <p class="pv-note">Default: 24px box, 8px radius, 2px <code>#1B0D4E</code> border brightening to
+    <p class="pv-note">Default: 24px box, 2px <code>#1B0D4E</code> border brightening to
        <code>--color-action</code> on hover. Secondary is the chip form used for service selection —
-       a 16px box seated in a <code>#0F0F15</code> pill. The tick scales <code>0 &rarr; 1</code> on
-       both hover and check. The chip box takes a 4px corner rather than the 8px the default
-       carries, which is what the site renders: <code>Checkbox.vue</code> asks for
-       <code>--radius-sm</code>, the site's <code>@theme</code> never declares one, so it falls
-       through to Tailwind's default 4px. This system's own <code>--radius-sm</code> is 8px, and
-       8px on a 16px box is half its side — a circle, which reads as a radio, as pick-one when
-       the chips are pick-any. The number is pinned here so the specimen matches the site.</p>
+       a 16px box seated in a <code>#0F0F15</code> pill with an 8px corner
+       (<code>--radius-control</code>, <code>rounded-lg</code> in source). The tick scales
+       <code>0 &rarr; 1</code> on both hover and check.</p>
+    <p class="pv-note is-warn">Both boxes take a <strong>4px</strong> corner — the only small radius
+       anywhere in this system, and the one value on this page that CODECAVE did not choose.
+       <code>Checkbox.vue</code>'s scoped style asks for <code>--radius-sm</code>; the site's
+       <code>@theme</code> never declares that name, so the box falls through to Tailwind's default
+       <code>0.25rem</code>. The number is pinned here so the specimen shows what ships, and there
+       is deliberately no 4px token to reach for. Until 2026-08-20 this package also published a
+       <code>--radius-sm</code>, at 8px — and 8px on a 16px box is exactly half its side, a perfect
+       circle, which reads as a radio button: pick-one where the chips are pick-any. That is why
+       the package's two t-shirt-sized radii are now <code>--radius-control</code> and
+       <code>--radius-tile</code>. The site-side fix — declare the corner you want instead of
+       inheriting whichever <code>--radius-sm</code> is in scope — is
+       <a href="https://codecave.atlassian.net/browse/CCWEB2-313">CCWEB2-313</a>.</p>
     <div class="pv-grid pv-grid-2">
       <div class="pv-tile" style="display:grid;gap:1rem;justify-items:start">
         <span class="pv-label">Default</span>
