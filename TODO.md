@@ -13,8 +13,8 @@ neither of them:
 What follows is work the brand repo owes itself. Nothing here is a defect on the
 live site.
 
-Nothing still listed is blocked on this repo alone: two need a decision, one
-needs an asset exported, and one is a standing check. The items that were merely
+Nothing still listed is blocked on this repo alone: one needs a decision, one
+is a standing check, and one is somebody else's. The items that were merely
 undone have been done; they are recorded at the bottom.
 
 ---
@@ -44,34 +44,7 @@ diffing this package's `:root` against Tailwind's default theme — has no check
 **To do:** run the one-liner when `source_examples/` is refreshed; any third
 name is a new instance. Write the complementary check if the token layer grows.
 
-## 2. The two email templates still set the wordmark as type
-
-[docs/artifacts/email.html](/docs/artifacts/email.html) and
-[docs/artifacts/newsletter.html](/docs/artifacts/newsletter.html) render
-"CODECAVE" in Satoshi Bold rather than the drawn lockup, which DESIGN.md §8
-says must never be re-typed by hand. Every other artifact — deck, form, landing,
-poster — now carries `assets/codecave-wide.svg`.
-
-**The URL blocker is gone.** <https://brand.codecave.pro/> resolves and serves
-this package (verified 2026-08-20 — DNS points at Cloudflare, which fronts
-GitHub Pages; `codecavepro.github.io/brand/...` now 301s to it). Because `docs/`
-is the Pages artifact root, a file at `docs/assets/x.png` is served at
-`/assets/x.png`, so an absolute URL in an email is derivable rather than
-invented and will not rot.
-
-What remains is a file-format problem, not a hosting one. Outlook's Word
-rendering engine does not render SVG at all, and `assets/codecave-wide.svg` is
-the only cut of the wordmark in the package, so the asset has to be exported as
-a PNG at 2× or 3× first. Inlining is not an escape hatch: Gmail strips `data:`
-image URIs and Outlook does not support them either — the only reliable
-alternative is a `cid:` MIME attachment, which is a property of the sending
-message, not of an HTML template, so no edit to these files can supply it.
-
-**To do:** export raster cuts of `codecave-wide` into `docs/assets/`, then point
-both templates at `https://brand.codecave.pro/assets/…`. Until then the typed
-fallback stays and this note explains why.
-
-## 3. What counts as "converged"?
+## 2. What counts as "converged"?
 
 The apparent contradiction in the README is resolved: it was never two competing
 claims, it was one claim about the **target** and one about the **current phase**.
@@ -91,7 +64,7 @@ design-token tickets; DESIGN.md §"Known divergences" emptying out; or a dated
 call. Whichever it is, it needs to be checkable by someone who was not in the
 room.
 
-## 4. Not ours: inert Tailwind config on the site side
+## 3. Not ours: inert Tailwind config on the site side
 
 `tailwind.config.ts` in the website repo is never loaded: Tailwind 4 reads a JS
 config only via `@config`, which no stylesheet declares, so `darkMode`,
@@ -105,6 +78,21 @@ next reader does not re-discover it as new.
 ---
 
 ## Recently closed
+
+- **Both email templates set the wordmark as type.** `email.html` and
+  `newsletter.html` spelled CODECAVE in Space Grotesk with letter-spacing, which
+  [DESIGN.md](/docs/DESIGN.md) §8 explicitly forbids — the wordmark is a drawn
+  lockup, not a font setting. The stated blocker was that no raster cut existed;
+  that was wrong. `docs/assets/codecave-wide-1024-text-white.png` (1126×442) had
+  been sitting there all along, and it is the documented default cut — white
+  wordmark, violet chevron, for a dark canvas. Both mastheads now carry it at
+  `https://brand.codecave.pro/assets/codecave-wide-1024-text-white.png`, 153×60
+  in the email and 204×80 in the newsletter, i.e. 7.4× and 5.5× density for
+  retina. An absolute URL is not laziness: mail clients strip `<base>`, so
+  relative paths have no origin to resolve against; SVG does not render in
+  Outlook's Word engine; and Gmail strips `data:` image URIs, which rules out
+  inlining. A `cid:` attachment would work but a standalone HTML template cannot
+  supply one. A hosted PNG is the only option left, and the host is now real.
 
 - **Two published tokens carried Tailwind's default names at different values.**
   `--radius-sm` was 0.5rem here and 0.25rem in Tailwind; `--radius-md` was

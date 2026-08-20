@@ -90,10 +90,25 @@ a[role="button"]:active{filter:brightness(.95);transform:translateY(0.5px)}
                #2B2848, 36px (--radius-article). Same shell as newsletter.html. -->
           <table bgcolor="#0F0F15" role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;background:#0F0F15;border:1px solid #2B2848;border-radius:36px;overflow:hidden;">
 
-            <!-- Masthead: wordmark only, centered, no nav -->
+            <!-- Masthead: wordmark only, centered, no nav.
+                 The DRAWN lockup, not Satoshi type — DESIGN.md sect. 8 forbids
+                 re-typing the wordmark by hand. It has to be a raster: SVG does
+                 not render at all in Outlook's Word engine, and a data: URI is
+                 no escape (Gmail strips data: images and Outlook does not
+                 support them either). `text-white` is the documented default
+                 finish on a dark ground. Source is 1126x442, drawn here at
+                 153x60 — 7.4x density, so it stays crisp on any display.
+                 The absolute URL is required: mail clients have no base to
+                 resolve a relative path against, and <base> is stripped. It is
+                 not invented — https://brand.codecave.pro/ is live and docs/ is
+                 the Pages artifact root, so docs/assets/x.png serves at
+                 /assets/x.png. Verified 2026-08-20.
+                 alt text carries the brand name for image-blocked clients. -->
             <tr>
               <td style="padding:24px 32px;text-align:center;border-bottom:1px solid #2B2848;">
-                <span style="font-family:Satoshi, 'Helvetica Neue', Arial, sans-serif;font-weight:700;font-size:18px;line-height:28px;letter-spacing:-0.01em;color:#F4F4F6;white-space:nowrap;">CODECAVE</span>
+                <img src="https://brand.codecave.pro/assets/codecave-wide-1024-text-white.png"
+                     alt="CODECAVE" width="153" height="60"
+                     style="display:inline-block;width:153px;height:60px;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;" />
               </td>
             </tr>
 
