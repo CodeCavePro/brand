@@ -1,3 +1,19 @@
 
-# design-sync build output (regenerated; not a source artifact)
-ds-bundle/
+# ds-bundle/ is the design-sync upload staging directory, and it is HALF derived
+# and half authored — so it is half ignored. The old blanket `ds-bundle/` rule
+# called the whole thing "regenerated; not a source artifact", which was true of
+# 500K of it and false of the other 32K.
+#
+# DERIVED — ignored. Every one of these is a byte-for-byte copy of a tracked
+# file under docs/, materialized by docs/tools/build-ds-bundle.sh. Tracking them
+# would mean every palette or font change needs a second, forgettable commit,
+# and would put a duplicate 500K of Satoshi binaries in the history.
+ds-bundle/colors_and_type.css
+ds-bundle/tokens/
+ds-bundle/fonts/
+
+# AUTHORED — tracked, and deliberately not listed here: README.md, styles.css,
+# guidelines/brand.md, and components/Foundations/*/*.html. Those seven files
+# exist nowhere else in this repo and nothing regenerates them. Under the old
+# blanket rule they were untracked source: invisible to review and one `rm -rf`
+# from gone.

@@ -1,0 +1,16 @@
+/* CODECAVE Design System — root stylesheet.
+ *
+ * Rendered designs receive ONLY this file's transitive @import closure, so
+ * everything the design language needs must be reachable from here.
+ *
+ * Since the docs/ package rebuild, the whole system lives in ONE file —
+ * colors_and_type.css: six @font-face bindings (fonts/ sits beside it), the
+ * brand ramp, the semantic token layer, the type scale, radii, spacing,
+ * shadows, the dark html/body baseline, and the component class layer
+ * (.btn*, .card*, .field, .checkbox, .chip, .eyebrow, .lead, .stat,
+ * .divider, .rule, .progress, .page-container, .section-container).
+ * This file is a re-export kept so existing references to styles.css and
+ * the Foundations cards' relative links keep resolving.
+ */
+
+@import "./colors_and_type.css";
