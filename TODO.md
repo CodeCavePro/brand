@@ -16,8 +16,9 @@ live site.
 **Only open work is listed here.** Items are deleted when they are done rather
 than moved to a "closed" section — git history is the record of what changed and
 why, and a list that accumulates finished work stops being a list of what to do.
-Of the four below: one is a standing check, one is real work this repo owes, one
-needs a decision, and one is somebody else's.
+Of the five below: one is a standing check, one is real work this repo owes, two
+need a decision — §4 is the larger of the two and has its own document — and one
+is somebody else's.
 
 ---
 
@@ -97,7 +98,28 @@ design-token tickets; DESIGN.md §"Known divergences" emptying out; or a dated
 call. Whichever it is, it needs to be checkable by someone who was not in the
 room.
 
-## 4. Not ours: inert Tailwind config on the site side
+## 4. Decide whether `docs/` is built with Astro
+
+The doc pages have been copied from each other long enough that the duplication
+is measurable: the global nav is 14 identical lines in **30 files**, the callout
+exists in **four** implementations, and the page header and section block exist
+in three each. The reasoning has started duplicating too — `.pv-meta` and
+`.bk-meta` carry the same sentence, and the DESIGN.md §10.5 eyebrow argument is
+written out twice.
+
+Building the site with the stack it documents — Astro 7 + Vue 3 + Tailwind 4,
+the versions `codecave.pro` pins — collapses all of that, and would let the
+storybook mount the captured components directly instead of going through
+`build-storybook.mjs` and `tw-bridge.css`.
+
+**To do:** read [ASTRO-MIGRATION.md](/ASTRO-MIGRATION.md) and decide. It has the
+full census, the five phases, and the two constraints that shape everything —
+that an unreachable `codecave.pro` must never take the docs site down, and that
+the `colors_and_type.css` deliverable stays buildless. One question in it needs
+answering before any work starts: whether `docs/` remains committed once it is
+build output.
+
+## 5. Not ours: inert Tailwind config on the site side
 
 `tailwind.config.ts` in the website repo is never loaded: Tailwind 4 reads a JS
 config only via `@config`, which no stylesheet declares, so `darkMode`,
