@@ -16,9 +16,9 @@ live site.
 **Only open work is listed here.** Items are deleted when they are done rather
 than moved to a "closed" section — git history is the record of what changed and
 why, and a list that accumulates finished work stops being a list of what to do.
-Of the five below: one is a standing check, one is real work this repo owes, two
-need a decision — §4 is the larger of the two and has its own document — and one
-is somebody else's.
+Of the six below: one is a standing check, one is real work this repo owes,
+three need a decision — §4 is the largest and has its own document, §5 needs a
+designer rather than an engineer — and one is somebody else's.
 
 ---
 
@@ -119,7 +119,37 @@ the `colors_and_type.css` deliverable stays buildless. One question in it needs
 answering before any work starts: whether `docs/` remains committed once it is
 build output.
 
-## 5. Not ours: inert Tailwind config on the site side
+## 5. Decide the print colour space — Maria Shaban
+
+[CLAUDE.md](/CLAUDE.md) scopes the palette as HEX and RGB. CMYK was in that list
+and has been deferred here, because it is not a conversion job that can be run
+and committed.
+
+Two things make it a decision rather than a lookup:
+
+- **`#5F20FE` is outside CMYK gamut.** It is a highly saturated blue-violet, and
+  no four-ink mix reproduces it — it will shift, visibly, and the shift is the
+  brand's single most recognisable colour. Someone has to choose what it becomes
+  in print, and whether that is a four-colour approximation or a spot ink.
+- **`#0A0A0B` is an ink-coverage problem at scale.** The system's ground is
+  near-black and its panels are large. Rich black needs a build (the CMY under
+  the K) chosen against the stock and the press, and a large near-black field
+  printed wrong looks muddy or soaks.
+
+Neither has a right answer derivable from the hexes, and guessing produces a
+palette that is worse than none — the same failure mode as the removed `system/`
+token layer, which derived its own primary and never emitted `#5F20FE`.
+
+**Owner: Maria Shaban.** Both calls are theirs to make. Once made, record them in
+DESIGN.md beside the RGB/HEX values, with the reasoning, the way every other
+value in this package is recorded. Until then the package is screen-only and
+should say so.
+
+The RGB half is separable and cheap: it is mechanically derivable from the
+hexes and can be added to `tokens/` without a decision from anyone. It is not
+blocked on this item.
+
+## 6. Not ours: inert Tailwind config on the site side
 
 `tailwind.config.ts` in the website repo is never loaded: Tailwind 4 reads a JS
 config only via `@config`, which no stylesheet declares, so `darkMode`,
