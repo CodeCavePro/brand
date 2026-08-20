@@ -389,6 +389,18 @@ vue/esbuild/tailwind versions the site builds with, which is the whole point:
 node docs/tools/build-storybook.mjs ../codecave.pro
 ```
 
+That checkout must have its dependencies installed, and **it uses pnpm** — its
+lockfile is `pnpm-lock.yaml` and there is no `package-lock.json`:
+
+```bash
+pnpm install --frozen-lockfile
+```
+
+Reaching for `npm install` there instead produces an ERESOLVE failure on an
+unrelated peer conflict, which looks like a broken dependency graph and is
+really just the wrong package manager. `--frozen-lockfile` is what keeps a build
+of this package from quietly rewriting the site's lockfile.
+
 ### Ports — what a component depends on outside itself
 
 Some captured components import something a static docs page cannot resolve the

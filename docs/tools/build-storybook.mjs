@@ -181,19 +181,51 @@ const PORTS = [
     // Swaps the isomorphic wrapper for the DOMPurify inside it — same engine,
     // same version, without jsdom, which exists to give the sanitiser a DOM on
     // a server and has nothing to do in a browser. This one is a port for the
-    // environment only: the specimen sanitises for real. See the adapter.
-    //
-    // It is also unbuildable from the site checkout as things stand — the
-    // package is declared in codecave.pro/package.json but absent from its
-    // node_modules, and `npm install` there fails ERESOLVE on an unrelated
-    // conflict (magicast vs tsdown), with no lockfile to fall back on. That is
-    // a site-side problem, not the reason for this entry; resolving the adapter
-    // from THIS repo's node_modules is what makes the storybook buildable
-    // regardless.
+    // environment only: the specimen sanitises for real. See the adapter, and
+    // the version assertion below.
     specifier: /^isomorphic-dompurify$/,
     adapter: 'sanitizer.adapter.ts',
   },
 ];
+
+/* SanitizerPort is only honest while its DOMPurify is the DOMPurify the site
+ * ships. That was a comment asking whoever bumped one to bump the other, and it
+ * had already failed by the time it was written — the adapter was pinned a patch
+ * ahead of production within a day. So the build asserts it instead.
+ *
+ * Deliberately here rather than in `npm run check`: this needs the site
+ * checkout, which the checks do not require and CI does not have. The build
+ * already demands it. */
+function siteDomPurifyVersion() {
+  const top = path.join(siteDir, 'node_modules');
+  const iso = path.join(top, 'isomorphic-dompurify');
+  if (!fs.existsSync(iso)) return null;   // site tree not installed; see below
+
+  const candidates = [
+    // pnpm's isolated layout: the real isomorphic-dompurify sits in a private
+    // directory with its own dependencies beside it.
+    path.join(path.dirname(fs.realpathSync(iso)), 'dompurify', 'package.json'),
+    // npm/yarn hoist it to the top level instead.
+    path.join(top, 'dompurify', 'package.json'),
+  ];
+  for (const c of candidates) {
+    if (fs.existsSync(c)) return JSON.parse(fs.readFileSync(c, 'utf8')).version;
+  }
+  return null;
+}
+
+const ours = JSON.parse(fs.readFileSync(
+  path.join(docs, '..', 'node_modules', 'dompurify', 'package.json'), 'utf8')).version;
+const theirs = siteDomPurifyVersion();
+if (theirs === null) {
+  console.warn(`! cannot read the site's dompurify — is ${path.basename(siteDir)} installed?`);
+  console.warn(`  (it uses pnpm: \`pnpm install\` there, not npm)`);
+  console.warn(`  building anyway; the sanitizer port is unverified against production.`);
+} else if (theirs !== ours) {
+  console.error(`SanitizerPort would sanitize with dompurify ${ours}, but the site ships ${theirs}.`);
+  console.error(`Fix: npm i -D --save-exact dompurify@${theirs}`);
+  process.exit(1);
+}
 
 const vuePlugin = {
   name: 'vue-sfc',
