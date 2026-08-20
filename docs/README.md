@@ -362,6 +362,23 @@ This package — `colors_and_type.css`, `DESIGN.md`, `tokens/`, `preview/`,
 
 ## Verifying the package
 
+One check, and it needs nothing but node. Run it from the repository root:
+
 ```bash
-"$OD_NODE_BIN" "$OD_BIN" tools connectors design-system-package-audit --path . --fail-on-warnings
+node docs/tools/check-tw-bridge.mjs
+```
+
+It proves `storybook/tw-bridge.css` is still in step with `source_examples/`,
+comparing a SHA-256 recorded in the generated header against the sources on
+disk. A stale bridge does not announce itself: it compiles, it loads, and the
+storybook goes on documenting an older site than the sources sitting beside it.
+The same check runs on every push in `.github/workflows/static.yml`, ahead of
+the deploy, and it is the one guarantee that always runs.
+
+Regenerating the bridge is the other half, and it needs the `codecave.pro`
+checkout — the storybook compiles the real components with the same
+vue/esbuild/tailwind versions the site builds with, which is the whole point:
+
+```bash
+node docs/tools/build-storybook.mjs ../codecave.pro
 ```

@@ -770,31 +770,7 @@ This is the same shape of problem as §10.2 and is resolved the same way —
 keep production's value in the components, substitute the in-palette lighter
 step in the package's own chrome, and write down which is which.
 
-### 10.6 The host-generated `brand.html` is not shipped
-
-The Open Design pipeline emits a `brand.html` from `brand.json`. It is **not
-published in this package** — it renders this dark-first brand on white and
-cannot be made dark from inside the workspace, so it would only ever contradict
-the rest of the system. `brand-kit.html` is the brand page; `index.html` is the
-front door. Both are dark because they link `colors_and_type.css`, whose `body`
-rule sets `background: var(--color-surface-primary)`, with no local colour
-literal to drift.
-
-The template is fixed-light at the source: `--paper` and `--surface` are
-hard-coded `#ffffff`, and the one place a background is read (`var bg =
-role(brand, 'background', '#ffffff')`) is then discarded — `logoSurface =
-isLight(surface) ? surface : isLight(bg) ? bg : '#ffffff'` falls through to
-white for any value that is not light, which is every value this brand has.
-Only `--accent` and `--asset-surface` are written at runtime; nothing reaches
-`--paper`.
-
-The fix is upstream, in `nexu-io/open-design` → `apps/daemon/src/brands/engine/`:
-derive the chrome from the seed's `background`/`foreground` pair, and keep the
-per-tile light logo plate as an independent decision so black-ink wordmarks stay
-legible on a dark stage. Until that lands, a dark brand has no correct
-host-generated page and this package does not pretend otherwise.
-
-### 10.7 Email artifacts render the CTA green
+### 10.6 Email artifacts render the CTA green
 
 `artifacts/email.html` ships both CTAs as lime green. The cause is one
 attribute:
@@ -823,15 +799,19 @@ Outlook still squares the pill and drops the halo, leaving a flat `#9980FF`
 field with `#1B0D4E` text. That degradation is intentional - the fill and the
 text color are the parts carrying the brand.
 
-The footer signature is corrected in the same pass. The generator emits a
-placeholder postal address and the brand-guide host; the registered line is
+The footer signature is corrected in the same pass. As first written these
+files carried a placeholder postal address and a brand-guide host that is not
+CODECAVE's website; the registered line is
 **CODECAVE - 8 The Green, STE B, 19901 Dover DE, US - codecave.pro**.
 
-Like §10.6 these are generator defects rather than seed values, so no edit to
-`brand.json` fixes them and every pipeline run reinstates them. Re-apply with
-`"$OD_NODE_BIN" repair-after-pipeline-run.mjs`, which is idempotent.
+Neither correction is expressible in `brand.json`. Both were defects in the
+template that produced these files rather than in the values fed to it, which
+is why no change to the palette or the voice summary fixes them. The artifacts
+are hand-maintained now, so both fixes are permanent — but any future process
+that re-emits these files from a template will reintroduce both, and this
+section is the record of what to re-apply.
 
-### 10.8 The email token layer stops at the inbox
+### 10.7 The email token layer stops at the inbox
 
 The green CTA was the visible half of a larger problem: `email.html` is themed
 entirely through `var()`. Custom properties are not part of any email client's

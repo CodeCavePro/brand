@@ -46,7 +46,7 @@
   .form-demo { display: grid; gap: 1.25rem; max-width: 32rem; }
 </style>
 </head>
-<body data-od-id="preview-components-inputs">
+<body>
 
 <nav class="ds-nav" aria-label="Design system">
   <div class="page-container ds-nav-inner">
@@ -67,7 +67,7 @@
 <div class="pv-shell">
   <a class="pv-back" href="index.html">&larr; All foundations</a>
 
-  <header class="pv-head" data-od-id="inputs-head">
+  <header class="pv-head">
     <span class="eyebrow">Components · card 2 of 3</span>
     <h1>Inputs — the floating label and the violet halo</h1>
     <p>Transcribed from <code>source_examples/common/InputText.vue</code>,
@@ -76,35 +76,35 @@
        than an outline. Every field below is live: click, type, hover, and tab through them.</p>
   </header>
 
-  <section class="pv-block" data-od-id="inputs-text-states">
+  <section class="pv-block">
     <h2>Text input — five states</h2>
     <p class="pv-note">The bold 14px label sits absolutely at <code>12px / 12px</code> and the value
        is padded <code>28px 12px 12px</code>, so label and value never collide. Placeholders drop to
        14px <code>--color-body-secondary</code>; the value itself is <code>--color-hovered</code>.</p>
     <div class="pv-tile state-grid">
       <div class="state-cell">
-        <div class="field" data-od-id="input-rest">
+        <div class="field">
           <label for="in-rest">Full name</label>
           <input id="in-rest" type="text" placeholder="How should we address you?">
         </div>
         <span class="pv-meta">rest — fill #0F0F15</span>
       </div>
       <div class="state-cell">
-        <div class="field force-hover" data-od-id="input-hover">
+        <div class="field force-hover">
           <label for="in-hover">Full name</label>
           <input id="in-hover" type="text" placeholder="How should we address you?">
         </div>
         <span class="pv-meta">hover — fill lifts to #1C1C27</span>
       </div>
       <div class="state-cell">
-        <div class="field force-focus" data-od-id="input-focus">
+        <div class="field force-focus">
           <label for="in-focus">Work email<span class="required">*</span></label>
           <input id="in-focus" type="email" value="cto@acme.io">
         </div>
         <span class="pv-meta">focus — violet halo, no outline · required marker in --color-action</span>
       </div>
       <div class="state-cell">
-        <div class="field is-error" data-od-id="input-error">
+        <div class="field is-error">
           <label for="in-error">Work email<span class="required">*</span></label>
           <input id="in-error" type="email" value="cto@acme" aria-invalid="true">
           <span class="error-message">Enter a valid work email address.</span>
@@ -112,14 +112,14 @@
         <span class="pv-meta">error — red halo, value and message in #FE9A9A (8.4:1)</span>
       </div>
       <div class="state-cell">
-        <div class="field" data-od-id="input-filled">
+        <div class="field">
           <label for="in-filled">Company</label>
           <input id="in-filled" type="text" value="Acme Manufacturing">
         </div>
         <span class="pv-meta">filled — value in --color-hovered</span>
       </div>
       <div class="state-cell">
-        <div class="field" data-od-id="input-disabled" style="opacity:0.2">
+        <div class="field" style="opacity:0.2">
           <label for="in-disabled">Company</label>
           <input id="in-disabled" type="text" value="Acme Manufacturing" disabled>
         </div>
@@ -128,20 +128,20 @@
     </div>
   </section>
 
-  <section class="pv-block" data-od-id="inputs-textarea">
+  <section class="pv-block">
     <h2>Textarea — <code>TextField.vue</code></h2>
     <p class="pv-note">Min-height 120px, same 8px radius and fill. In production it auto-resizes on
        input and the halo is applied to the wrapper via <code>:focus-within</code>, so the label
        glows with the field.</p>
     <div class="pv-tile" style="max-width:32rem">
-      <div class="field" data-od-id="textarea-rest">
+      <div class="field">
         <label for="ta-rest">Tell us about your project</label>
         <textarea id="ta-rest" placeholder="Scope, timeline, and what success looks like."></textarea>
       </div>
     </div>
   </section>
 
-  <section class="pv-block" data-od-id="inputs-checkbox">
+  <section class="pv-block">
     <h2>Checkbox — two variants</h2>
     <p class="pv-note">Default: 24px box, 2px <code>#1B0D4E</code> border brightening to
        <code>--color-action</code> on hover. Secondary is the chip form used for service selection —
@@ -169,13 +169,13 @@
     <div class="pv-grid pv-grid-2">
       <div class="pv-tile" style="display:grid;gap:1rem;justify-items:start">
         <span class="pv-label">Default</span>
-        <label class="checkbox" data-od-id="checkbox-default"><input type="checkbox"><span>I have read the privacy policy</span></label>
-        <label class="checkbox" data-od-id="checkbox-default-checked"><input type="checkbox" checked><span>Send me the delivery brief</span></label>
+        <label class="checkbox"><input type="checkbox"><span>I have read the privacy policy</span></label>
+        <label class="checkbox"><input type="checkbox" checked><span>Send me the delivery brief</span></label>
         <span class="pv-meta">24px · 2px border · gap 12px</span>
       </div>
       <div class="pv-tile" style="display:grid;gap:1rem;justify-items:start">
         <span class="pv-label">Secondary (service chips)</span>
-        <div style="display:flex;flex-wrap:wrap;gap:0.5rem" data-od-id="checkbox-chips">
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem">
           <label class="chip-check"><input type="checkbox" checked><span>Cloud &amp; DevOps</span></label>
           <label class="chip-check"><input type="checkbox"><span>E-Commerce</span></label>
           <label class="chip-check"><input type="checkbox" checked><span>Autodesk plugins</span></label>
@@ -188,7 +188,7 @@
     </div>
   </section>
 
-  <section class="pv-block" data-od-id="inputs-form">
+  <section class="pv-block">
     <h2>Assembled — the consultation form</h2>
     <p class="pv-note">
       Field-for-field from <code>source_examples/homepage/contacts-form.vue</code>: e-mail is the only
@@ -197,7 +197,7 @@
       <strong>glow button</strong> — in the real page this section is its own viewport, so the glow
       here is the single primary for the form, not a second copy of the hero CTA.
     </p>
-    <form class="card form-demo" data-od-id="inputs-consultation-form" onsubmit="return false">
+    <form class="card form-demo" onsubmit="return false">
       <h3 class="eyebrow-lead" style="margin:0 0 0.5rem">
         <span class="lead">Tell us about your project</span>
         <span class="eyebrow">the consultation is free</span>

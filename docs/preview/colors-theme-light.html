@@ -15,7 +15,7 @@
   .light-plate .pv-meta { color: var(--color-neutral); }
 </style>
 </head>
-<body data-od-id="preview-colors-theme-light">
+<body>
 
 <nav class="ds-nav" aria-label="Design system">
   <div class="page-container ds-nav-inner">
@@ -36,7 +36,7 @@
 <div class="pv-shell">
   <a class="pv-back" href="index.html">&larr; All foundations</a>
 
-  <header class="pv-head" data-od-id="colors-light-head">
+  <header class="pv-head">
     <span class="eyebrow">Color · card 3 of 3</span>
     <h1>Light-surface exceptions — and why there is no light theme</h1>
     <p>CODECAVE is dark-first and ships no light mode. Exactly three light surfaces exist in the
@@ -49,7 +49,7 @@
       the black-text wordmark variant and leave every other token untouched.</p>
   </section>
 
-  <section class="pv-block" data-od-id="light-exception-cta">
+  <section class="pv-block">
     <h2>Exception 1 — the glow CTA field</h2>
     <p class="pv-note">
       <code>#9980FF</code> with <code>#1B0D4E</code> text: <strong>5.67:1</strong>. This is the only
@@ -57,12 +57,12 @@
       Source: <code>source_examples/common/GlowButton.vue</code>.
     </p>
     <div class="pv-row">
-      <span class="btn-glow-field"><a class="btn btn-glow" href="#" data-od-id="light-glow-cta"><span>Discuss project for free</span></a></span>
+      <span class="btn-glow-field"><a class="btn btn-glow" href="#"><span>Discuss project for free</span></a></span>
       <span class="pv-meta">fill --color-glow-25 · text --color-brand-800<br>44px pill · halo, not a drop shadow</span>
     </div>
   </section>
 
-  <section class="pv-block" data-od-id="light-exception-type">
+  <section class="pv-block">
     <h2>Exception 2 — the near-white type ramp</h2>
     <p class="pv-note">Light <em>ink</em>, not a light surface. Included here so the distinction is
        explicit: <code>#F4F4F6</code> and <code>#C7C7DB</code> are foregrounds and never become
@@ -79,14 +79,14 @@
     </div>
   </section>
 
-  <section class="pv-block" data-od-id="light-exception-wordmark">
+  <section class="pv-block">
     <h2>Exception 3 — the black-text wordmark</h2>
     <p class="pv-note">
       For print and genuinely light third-party surfaces only. The chevron glyph stays
       <code>#5F20FE</code>; only the wordmark paths change color. Real files, loaded from
       <code>assets/</code>.
     </p>
-    <div class="light-plate" data-od-id="light-wordmark-plate">
+    <div class="light-plate">
       <img src="../assets/codecave-wide-1024-text-black.png" alt="CODECAVE horizontal wordmark, black text" width="360" style="max-width:100%;height:auto">
       <span class="pv-meta">assets/codecave-wide-1024-text-black.png — on a genuinely light plate</span>
       <hr class="divider" style="width:100%;background:var(--color-brand-50)">
@@ -95,7 +95,7 @@
     </div>
   </section>
 
-  <section class="pv-block" data-od-id="light-error-note">
+  <section class="pv-block">
     <h2>A note on error text</h2>
     <p class="pv-note">
       <code>--color-error</code> (<code>#B42318</code>) reaches only <strong>3.2:1</strong> on the

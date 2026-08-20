@@ -13,15 +13,18 @@
      every chip carries a hairline — without it brand-900/950 and gray-950/1000/1100
      read as one block. */
   .pv-swatch-chip { box-shadow: inset 0 0 0 1px hsl(from #F4F4F6 h s l / 0.14); }
-  [data-od-id="colors-primary-action"] .pv-swatch-chip { height: 7rem; }
-  [data-od-id="colors-primary-ramp"]   .pv-swatch-chip { height: 4rem; }
-  [data-od-id="colors-primary-error"]  .pv-swatch-chip { height: 3.5rem; }
+  /* Chip height is per-section: the more important the value, the more area it
+     gets. `data-swatches` on the section is the hook, and it exists only for
+     these four rules. */
+  [data-swatches="action"] .pv-swatch-chip { height: 7rem; }
+  [data-swatches="ramp"]   .pv-swatch-chip { height: 4rem; }
+  [data-swatches="error"]  .pv-swatch-chip { height: 3.5rem; }
   /* Cyan wash: shown against the page, never against a card, so reviewers
      see the value at the luminance it actually occurs at. */
-  [data-od-id="colors-primary-cyan"] .pv-swatch-chip { height: 5rem; }
+  [data-swatches="cyan"] .pv-swatch-chip { height: 5rem; }
 </style>
 </head>
-<body data-od-id="preview-colors-primary">
+<body>
 
 <nav class="ds-nav" aria-label="Design system">
   <div class="page-container ds-nav-inner">
@@ -42,7 +45,7 @@
 <div class="pv-shell">
   <a class="pv-back" href="index.html">&larr; All foundations</a>
 
-  <header class="pv-head" data-od-id="colors-primary-head">
+  <header class="pv-head">
     <span class="eyebrow">Color · card 1 of 3</span>
     <h1>Primary violet and the raw ramps</h1>
     <p>Verbatim from <code>codecave.pro/src/styles/global.css</code> after the 2026 palette
@@ -51,7 +54,7 @@
        step, with the three documented exceptions below.</p>
   </header>
 
-  <section class="pv-block" data-od-id="colors-primary-action">
+  <section class="pv-block" data-swatches="action">
     <h2>The action color</h2>
     <p class="pv-note">
       <code>#5F20FE</code> edges, links and marks. It never fills a large area. When a genuine
@@ -90,7 +93,7 @@
     </div>
   </section>
 
-  <section class="pv-block" data-od-id="colors-primary-cyan">
+  <section class="pv-block" data-swatches="cyan">
     <h2>Where the cyan went</h2>
     <p class="pv-note">The 2026 rebuild removed bright cyan <code>#20EFFE</code> from the ramp —
        it survives only inside the decorative SVGs (see the imagery card). The token layer keeps
@@ -113,7 +116,7 @@
     </div>
   </section>
 
-  <section class="pv-block" data-od-id="colors-primary-ramp">
+  <section class="pv-block" data-swatches="ramp">
     <h2>Raw ramps — 12 violet steps, 13 grays</h2>
     <p class="pv-note">
       Light to dark. Only three raw values are legitimately consumed directly, because that is
@@ -161,7 +164,7 @@
     </div>
   </section>
 
-  <section class="pv-block" data-od-id="colors-primary-error">
+  <section class="pv-block" data-swatches="error">
     <h2>Error ramp</h2>
     <p class="pv-note">Four steps. <code>--color-error</code> points at <code>error-300</code>;
        <code>error-100</code> and <code>error-200</code> drive the input error halo, and

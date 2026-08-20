@@ -30,7 +30,7 @@
                     font-size: 0.75rem; color: var(--color-body-secondary-lighter); }
 </style>
 </head>
-<body data-od-id="preview-spacing-tokens">
+<body>
 
 <nav class="ds-nav" aria-label="Design system">
   <div class="page-container ds-nav-inner">
@@ -51,7 +51,7 @@
 <div class="pv-shell">
   <a class="pv-back" href="index.html">&larr; All foundations</a>
 
-  <header class="pv-head" data-od-id="spacing-head">
+  <header class="pv-head">
     <span class="eyebrow">Spacing · card 1 of 3</span>
     <h1>Gutters, rhythm and control sizing</h1>
     <p>CODECAVE has no single spacing unit exposed as a token. What it has instead is a small set of
@@ -59,7 +59,7 @@
        padding, and two control heights. Those are reproduced here at true scale.</p>
   </header>
 
-  <section class="pv-block" data-od-id="spacing-container">
+  <section class="pv-block">
     <h2>Container and gutters</h2>
     <p class="pv-note"><code>.page-container</code> — centred, <code>max-width: 1280px</code>. The
        gutter steps up twice. Note the non-standard <code>sm</code> breakpoint at
@@ -85,7 +85,7 @@
     </table>
   </section>
 
-  <section class="pv-block" data-od-id="spacing-rhythm">
+  <section class="pv-block">
     <h2>Section rhythm — asymmetric on purpose</h2>
     <p class="pv-note"><strong>200px top, 120px bottom.</strong> Sections are front-loaded so a
        heading gets air above it while consecutive panels stay close enough to read as a stack.
@@ -102,13 +102,13 @@
     </div>
   </section>
 
-  <section class="pv-block" data-od-id="spacing-card-padding">
+  <section class="pv-block">
     <h2>Card padding — heavier at the bottom</h2>
     <p class="pv-note"><code>--card-padding: 32px 32px 48px</code>. The extra 16px at the bottom
        exists because a card almost always seats a footer action. Cards without an action keep the
        same padding so a grid stays even.</p>
     <div class="pv-grid pv-grid-2">
-      <div class="card" data-od-id="spacing-card-with-action" style="position:relative">
+      <div class="card" style="position:relative">
         <span class="pv-meta" style="position:absolute;top:0.5rem;right:1rem">32 / 32 / 48</span>
         <h3 style="font-size:var(--text-lg);line-height:var(--leading-lg);margin:0 0 0.75rem">HubSpot</h3>
         <p style="color:var(--color-body-secondary-lighter);font-size:var(--text-caption);margin:0 0 1.5rem">
@@ -116,7 +116,7 @@
           margin on the button itself.</p>
         <a class="btn btn-tertiary" href="#">Learn more</a>
       </div>
-      <div class="card" data-od-id="spacing-card-no-action">
+      <div class="card">
         <h3 style="font-size:var(--text-lg);line-height:var(--leading-lg);margin:0 0 0.75rem">Same padding, no action</h3>
         <p style="color:var(--color-body-secondary-lighter);font-size:var(--text-caption);margin:0">
           Keeping <code>48px</code> here means an actionless card still aligns with its neighbours
@@ -125,7 +125,7 @@
     </div>
   </section>
 
-  <section class="pv-block" data-od-id="spacing-controls">
+  <section class="pv-block">
     <h2>Control sizing</h2>
     <p class="pv-note">Two heights only. Both are measured from live controls, and 44px already
        meets the minimum touch target — no separate mobile sizing is needed.</p>

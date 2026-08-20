@@ -22,7 +22,7 @@
   .bad      { border: 1px solid var(--color-error-300); }
 </style>
 </head>
-<body data-od-id="preview-spacing-radius">
+<body>
 
 <nav class="ds-nav" aria-label="Design system">
   <div class="page-container ds-nav-inner">
@@ -43,7 +43,7 @@
 <div class="pv-shell">
   <a class="pv-back" href="index.html">&larr; All foundations</a>
 
-  <header class="pv-head" data-od-id="radius-head">
+  <header class="pv-head">
     <span class="eyebrow">Spacing · card 2 of 3</span>
     <h1>Radius — the loudest brand signal</h1>
     <p>Corners do more brand work here than the violet does. A 24px card is the <em>default</em>,
@@ -51,7 +51,7 @@
        that single constraint is the fastest way to tell an on-brand surface from a generic one.</p>
   </header>
 
-  <section class="pv-block" data-od-id="radius-scale">
+  <section class="pv-block">
     <h2>The nine steps, at true size</h2>
     <div class="pv-grid pv-grid-3">
       <div class="r-demo" style="border-radius:var(--radius-control-sm)">--radius-control-sm · 4px<br>the 16px checkbox box ONLY</div>
@@ -77,7 +77,7 @@
        itself instead of inheriting a name it never defined.</p>
   </section>
 
-  <section class="pv-block" data-od-id="radius-census">
+  <section class="pv-block">
     <h2>Measured census — homepage</h2>
     <p class="pv-note">Counted on the rendered production homepage. 24px dominates by a wide margin;
        that is what makes it the default rather than one option among several.</p>
@@ -91,32 +91,32 @@
     </div>
   </section>
 
-  <section class="pv-block" data-od-id="radius-antipattern">
+  <section class="pv-block">
     <h2>What off-brand looks like</h2>
     <p class="pv-note">Same fill, same border, same padding. Only the corner changed. This is how
        much of the brand lives in the radius alone.</p>
     <div class="pv-grid pv-grid-3">
-      <div class="card" style="padding:1.5rem" data-od-id="radius-good">
+      <div class="card" style="padding:1.5rem">
         <span class="pv-label">On-brand</span>
         <span class="pv-meta" style="margin-top:0.5rem">--radius-card · 24px</span>
       </div>
-      <div class="card bad" style="padding:1.5rem;border-radius:4px" data-od-id="radius-bad-4">
+      <div class="card bad" style="padding:1.5rem;border-radius:4px">
         <span class="pv-label">Off-brand</span>
         <span class="pv-meta" style="margin-top:0.5rem">4px — reads as generic admin UI</span>
       </div>
-      <div class="card bad" style="padding:1.5rem;border-radius:0" data-od-id="radius-bad-0">
+      <div class="card bad" style="padding:1.5rem;border-radius:0">
         <span class="pv-label">Off-brand</span>
         <span class="pv-meta" style="margin-top:0.5rem">0px — never occurs in source</span>
       </div>
     </div>
   </section>
 
-  <section class="pv-block" data-od-id="radius-section-panel">
+  <section class="pv-block">
     <h2>The section panel in place</h2>
     <p class="pv-note">64px below 768px, 120px at and above it. Resize this window across the
        breakpoint and watch the corner change — the panel below is the real
        <code>.section-container</code> class, glow included.</p>
-    <div class="section-container" style="padding:3rem 2rem" data-od-id="radius-live-panel">
+    <div class="section-container" style="padding:3rem 2rem">
       <h3 class="eyebrow-lead" style="margin:0;text-align:center">
         <span class="lead">Words of appreciation</span>
         <span class="eyebrow">from the teams we build with</span>

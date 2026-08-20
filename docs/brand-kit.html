@@ -16,12 +16,10 @@
 /* ===========================================================================
    CODECAVE brand kit — dark first.
 
-   This page is hand-authored and is NOT part of the Open Design brand
-   pipeline. guide.md and the artifacts are rendered from brand.json and are
-   rewritten wholesale on every pipeline run; this file is not, which is why the
-   dark treatment can live here permanently. The generated token layer that used
-   to sit in system/ has been removed — it derived its own primary (#7040da) from
-   the seed and never once emitted #5F20FE.
+   This page is hand-authored and nothing regenerates it, which is why the dark
+   treatment can live here permanently. An earlier generated token layer under
+   system/ was removed rather than corrected: it derived its own primary
+   (#7040da) from the seed and never once emitted #5F20FE.
 
    Every colour below resolves through a token in colors_and_type.css. The
    only literal hex values are the palette specimen's own swatch chips and
@@ -411,7 +409,7 @@ body {
 </style>
 </head>
 
-<body data-od-id="brand-kit">
+<body>
 
 <div class="ds-nav-stack">
 
@@ -431,7 +429,7 @@ body {
 </nav>
 
 
-<nav class="bk-topbar" aria-label="Sections" data-od-id="kit-toc">
+<nav class="bk-topbar" aria-label="Sections">
   <div class="page-container bk-topbar-inner">
     <ul>
       <li><a class="btn btn-ghost" href="#logo">Logo</a></li>
@@ -451,14 +449,14 @@ body {
 <div class="bk-wrap">
 
   <!-- ===================== MASTHEAD ===================== -->
-  <header class="bk-masthead" data-od-id="kit-masthead">
-    <h1 class="bk-h1" data-od-id="kit-title">Dark, round, and violet —<br>in that order of importance.</h1>
+  <header class="bk-masthead">
+    <h1 class="bk-h1">Dark, round, and violet —<br>in that order of importance.</h1>
     <p class="bk-tagline">The brand kit for CODECAVE. There is no light theme; the
        surfaces below are the default, not a mode.</p>
   </header>
 
   <!-- ===================== LOGO ===================== -->
-  <section class="bk-section" id="logo" data-od-id="kit-logo">
+  <section class="bk-section" id="logo">
     <span class="bk-eyebrow">01 — Logo</span>
     <h2 class="bk-h2">The horizontal wordmark is primary</h2>
     <p class="bk-note">Drawn at 357&times;110. The chevron is always
@@ -467,7 +465,7 @@ body {
       artwork predates Satoshi and is outlined Montserrat Bold — the paths are
       vector outlines, not live text, and must never be re-typed by hand.</p>
 
-    <div class="bk-stage" id="logo-stage" data-surface="dark" data-od-id="kit-logo-stage">
+    <div class="bk-stage" id="logo-stage" data-surface="dark">
       <img id="logo-stage-img" src="assets/codecave-wide.svg" alt="CODECAVE horizontal wordmark">
     </div>
     <p class="bk-meta bk-caption" id="logo-caption">codecave-wide.svg &middot; primary &middot; dark ground</p>
@@ -478,7 +476,7 @@ body {
       ink. Black-ink artwork is the brand's only light-surface exception — those
       tiles carry a light ground because the ink demands it; the rule is declared
       per variant, never derived from the page.</p>
-    <div data-od-id="kit-logo-variants">
+    <div>
       <p class="bk-meta" style="margin-top:1.25rem">Wide &mdash; primary, 357&times;110</p>
       <div class="bk-variants" style="margin-top:0.5rem">
         <button class="bk-thumb" type="button" data-surface="dark" aria-current="true"
@@ -523,7 +521,7 @@ body {
       never in artwork, so the legend under each tile is what tells them apart.
       The mark never carries the wordmark's clear-space rule — an app icon is
       already a bounded field.</p>
-    <div class="bk-variants" data-od-id="kit-logo-icons">
+    <div class="bk-variants">
       <figure class="bk-icon">
         <button class="bk-thumb" type="button" data-surface="dark"
                 data-src="assets/codecave-mark.svg" data-label="codecave-mark.svg &middot; chevron only">
@@ -569,7 +567,7 @@ body {
   </section>
 
   <!-- ===================== PALETTE ===================== -->
-  <section class="bk-section" id="palette" data-od-id="kit-palette">
+  <section class="bk-section" id="palette">
     <span class="bk-eyebrow">02 — Palette</span>
     <h2 class="bk-h2">Six roles carry the brand</h2>
     <p class="bk-note">Depth never comes from contrast. The page is
@@ -578,8 +576,8 @@ body {
       hairline. Violet is an edge colour: it draws links, borders, eyebrows and
       the focus halo, and never fills a large area.</p>
 
-    <div class="bk-roles" data-od-id="kit-palette-roles">
-      <article class="bk-role" data-od-id="kit-role-surface-primary">
+    <div class="bk-roles">
+      <article class="bk-role">
         <div class="bk-role-chip" style="background:#0a0a0b"></div>
         <div class="bk-role-body">
           <div class="bk-role-name">Surface primary</div>
@@ -587,7 +585,7 @@ body {
           <p class="bk-role-use">The page canvas — near-black, never pure black.</p>
         </div>
       </article>
-      <article class="bk-role" data-od-id="kit-role-heading-body">
+      <article class="bk-role">
         <div class="bk-role-chip" style="background:#f4f4f6"></div>
         <div class="bk-role-body">
           <div class="bk-role-name">Heading / body</div>
@@ -595,7 +593,7 @@ body {
           <p class="bk-role-use">Headings and body text — 18.0:1 on the page.</p>
         </div>
       </article>
-      <article class="bk-role" data-od-id="kit-role-action">
+      <article class="bk-role">
         <div class="bk-role-chip" style="background:#5f20fe"></div>
         <div class="bk-role-body">
           <div class="bk-role-name">Action</div>
@@ -603,7 +601,7 @@ body {
           <p class="bk-role-use">Links, borders, eyebrows, focus halo — edges and marks only.</p>
         </div>
       </article>
-      <article class="bk-role" data-od-id="kit-role-surface-secondary">
+      <article class="bk-role">
         <div class="bk-role-chip" style="background:#0f0f15"></div>
         <div class="bk-role-body">
           <div class="bk-role-name">Surface secondary</div>
@@ -611,7 +609,7 @@ body {
           <p class="bk-role-use">Cards and panels — one hair above the page.</p>
         </div>
       </article>
-      <article class="bk-role" data-od-id="kit-role-body-secondary">
+      <article class="bk-role">
         <div class="bk-role-chip" style="background:#9595bb"></div>
         <div class="bk-role-body">
           <div class="bk-role-name">Body secondary</div>
@@ -619,7 +617,7 @@ body {
           <p class="bk-role-use">Metadata and placeholders only — never long-form copy.</p>
         </div>
       </article>
-      <article class="bk-role" data-od-id="kit-role-surface-quaternary">
+      <article class="bk-role">
         <div class="bk-role-chip" style="background:#2b2848"></div>
         <div class="bk-role-body">
           <div class="bk-role-name">Surface quaternary</div>
@@ -634,11 +632,11 @@ body {
       violet brand steps and thirteen grays, verbatim from the site's 2026
       rebuild — plus single-use accents for the glow button, the gradient and
       the section glow. The six roles above are drawn from them.</p>
-    <div class="bk-ramp" id="ramp" data-od-id="kit-palette-ramp"></div>
+    <div class="bk-ramp" id="ramp"></div>
   </section>
 
   <!-- ===================== TYPOGRAPHY ===================== -->
-  <section class="bk-section" id="type" data-od-id="kit-type">
+  <section class="bk-section" id="type">
     <span class="bk-eyebrow">03 — Typography</span>
     <h2 class="bk-h2">Satoshi, two weights</h2>
     <p class="bk-note">Regular 400 and Bold 700 carry everything. Production
@@ -647,14 +645,14 @@ body {
       marginally tighter until production ships the same files. Fallbacks:
       <code>system-ui, -apple-system, Segoe UI, Helvetica Neue, Arial, sans-serif</code>.</p>
 
-    <div class="bk-specimen" data-od-id="kit-type-specimen">
+    <div class="bk-specimen">
       <p class="bk-aa">Aa</p>
       <p class="bk-charset">ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>
         abcdefghijklmnopqrstuvwxyz<br>
         0123456789 &amp; @ # % — “ ” ‘ ’</p>
     </div>
 
-    <table class="bk-scale" data-od-id="kit-type-scale">
+    <table class="bk-scale">
       <thead>
         <tr><th scope="col">Role</th><th scope="col">Specimen</th><th scope="col">Size / leading</th></tr>
       </thead>
@@ -689,14 +687,14 @@ body {
     <h3 class="bk-h3" style="margin-top:2.5rem">The eyebrow</h3>
     <p class="bk-note">The system's one typographic signature: a bold violet line
       over a larger light lead line. It opens nearly every section.</p>
-    <div class="eyebrow-lead" data-od-id="kit-eyebrow-lead">
+    <div class="eyebrow-lead">
       <span class="eyebrow">Cloud &amp; DevOps</span>
       <span class="lead">Optimize costs without pausing delivery</span>
     </div>
   </section>
 
   <!-- ===================== COMPONENTS ===================== -->
-  <section class="bk-section" id="components" data-od-id="kit-components">
+  <section class="bk-section" id="components">
     <span class="bk-eyebrow">04 — Components</span>
     <h2 class="bk-h2">Pill buttons, hairline cards</h2>
     <p class="bk-note">Every control is a 44px pill: <code>padding: 4px 24px</code>,
@@ -707,7 +705,7 @@ body {
       Rendered live from <code>colors_and_type.css</code>, so this row is a working
       check on the token file rather than a picture of one.</p>
 
-    <div data-od-id="kit-button-rows">
+    <div>
       <div class="bk-specimen-row">
         <span class="bk-meta">primary</span>
         <button class="btn btn-primary" type="button">Send request</button>
@@ -742,27 +740,27 @@ body {
       only place violet fills an area. Three light sources stack: a static halo,
       a highlight travelling under the fill, and an edge bloom 8px outside each
       end. The fill never changes colour on hover.</p>
-    <div class="bk-cta-field" data-od-id="kit-cta-field">
+    <div class="bk-cta-field">
       <span class="btn-glow-field" id="cta-field">
-        <a class="btn btn-glow" href="#components" id="cta" data-od-id="kit-cta-glow"><span>Discuss partnership</span></a>
+        <a class="btn btn-glow" href="#components" id="cta"><span>Discuss partnership</span></a>
       </span>
-      <a class="btn btn-tertiary" href="#components" data-od-id="kit-cta-secondary">About us &amp; how we work</a>
+      <a class="btn btn-tertiary" href="#components">About us &amp; how we work</a>
     </div>
 
     <h3 class="bk-h3" style="margin-top:3rem">Surfaces</h3>
-    <div class="bk-cols" style="margin-top:1rem" data-od-id="kit-surfaces">
-      <div class="card" data-od-id="kit-card-default">
+    <div class="bk-cols" style="margin-top:1rem">
+      <div class="card">
         <h4 class="bk-h3" style="font-size:var(--text-md);margin-bottom:0.5rem">Default card</h4>
         <p class="bk-note" style="margin:0">24px radius, 1px hairline, no shadow.
           Padding is bottom-heavy — <code>2rem 2rem 3rem</code> — so a footer
           action has room to sit.</p>
       </div>
-      <div class="card card-article" data-od-id="kit-card-article">
+      <div class="card card-article">
         <h4 class="bk-h3" style="font-size:var(--text-md);margin-bottom:0.5rem">Article card</h4>
         <p class="bk-note" style="margin:0">Same surface at a 36px radius. Radius is
           the loudest brand signal in the system.</p>
       </div>
-      <div class="card-feature" data-od-id="kit-card-feature">
+      <div class="card-feature">
         <h4 class="bk-h3" style="font-size:var(--text-md);margin-bottom:0.5rem">Feature card</h4>
         <p class="bk-note" style="margin:0">44px radius, no fill — a gradient
           hairline drawn with <code>mask-composite</code> over a blurred backdrop.</p>
@@ -776,7 +774,7 @@ body {
       pins the 64px height — it is 28px of top padding around one 24px text line
       plus 12px below. The chips are checkboxes (<code>Checkbox.vue</code>,
       secondary&thinsp;/&thinsp;small), not tags — they toggle.</p>
-    <div class="bk-cols" style="margin-top:1rem;align-items:start" data-od-id="kit-inputs">
+    <div class="bk-cols" style="margin-top:1rem;align-items:start">
       <div style="display:grid;gap:0.75rem">
         <div class="field">
           <label for="kit-email">E-mail <span class="required">*</span></label>
@@ -811,7 +809,7 @@ body {
   </section>
 
   <!-- ===================== VOICE ===================== -->
-  <section class="bk-section" id="voice" data-od-id="kit-voice">
+  <section class="bk-section" id="voice">
     <span class="bk-eyebrow">05 — Voice &amp; tone</span>
     <h2 class="bk-h2">A small senior team, talking straight</h2>
     <p class="bk-note">First-person plural, present tense, short declaratives.
@@ -819,7 +817,7 @@ body {
       ownership are addressed head-on, because reassurance rather than
       excitement is what the audience is buying.</p>
 
-    <ol class="bk-rules" data-od-id="kit-voice-pillars">
+    <ol class="bk-rules">
       <li>Outcome before technology — every service is titled by what it produces, never by its stack.</li>
       <li>Risk is named, not hidden — NDA, scope, milestones and outcomes are stated upfront.</li>
       <li>One low-friction ask — a free consultation, requested through a single primary action per page.</li>
@@ -827,7 +825,7 @@ body {
     </ol>
 
     <div class="bk-cols" style="margin-top:2.5rem">
-      <div data-od-id="kit-voice-use">
+      <div>
         <div class="bk-meta">Use</div>
         <ul class="bk-list">
           <li>Discuss project for free</li>
@@ -841,7 +839,7 @@ body {
           <li>Your idea stays yours</li>
         </ul>
       </div>
-      <div data-od-id="kit-voice-avoid">
+      <div>
         <div class="bk-meta">Avoid</div>
         <ul class="bk-list is-avoid">
           <li>world-class</li>
@@ -860,7 +858,7 @@ body {
   </section>
 
   <!-- ===================== POSTURE ===================== -->
-  <section class="bk-section" id="posture" data-od-id="kit-posture">
+  <section class="bk-section" id="posture">
     <span class="bk-eyebrow">06 — Layout posture</span>
     <h2 class="bk-h2">Round, asymmetric, lit from below</h2>
     <p class="bk-note">How a page is <em>built</em>, as opposed to what it is coloured.
@@ -873,7 +871,7 @@ body {
       not occur anywhere in source. Measured census on the homepage: 24px on 42 blocks,
       12px on 9, 44px on 8, 8px on 7, 120px on 2. Radii of 2–4px do not appear at all.</p>
 
-    <div class="bk-radii" data-od-id="kit-posture-radii">
+    <div class="bk-radii">
       <div>
         <div class="bk-radius-tile" style="--r:var(--radius-control)"></div>
         <span class="bk-meta bk-radius-tok">--radius-control · 8px</span>
@@ -917,7 +915,7 @@ body {
       <code>--section-padding-top</code> and <code>--section-padding-bottom</code>; the
       hatched bands <em>are</em> the padding.</p>
 
-    <div class="bk-rhythm" data-od-id="kit-posture-rhythm">
+    <div class="bk-rhythm">
       <span class="bk-meta bk-rhythm-label bk-rhythm-label-top">200px above</span>
       <div class="bk-rhythm-content">
         <span class="bk-eyebrow" style="margin-bottom:0.25rem">07 — Next section</span>
@@ -934,7 +932,7 @@ body {
       below is one step lighter so the shoulder is visible; on the real site the glow alone
       finds the edge.</p>
 
-    <div class="bk-glow-stage" data-od-id="kit-posture-glow">
+    <div class="bk-glow-stage">
       <div class="section-container">
         <span class="bk-meta">--shadow-section · 64px radius under 768px, 120px at and above</span>
       </div>
@@ -944,7 +942,7 @@ body {
     </div>
 
     <h3 class="bk-h3" style="margin-top:3rem">What the posture forbids</h3>
-    <ol class="bk-rules" data-od-id="kit-posture-rules">
+    <ol class="bk-rules">
       <li>Depth never comes from contrast. The page is <code>#0A0A0B</code> and a card is
         <code>#0F0F15</code> — one hair apart on purpose. If you are lightening a card to
         make it read, you have made a layout mistake, not a colour one.</li>
@@ -961,7 +959,7 @@ body {
     </ol>
   </section>
 
-  <footer class="bk-foot" data-od-id="kit-foot">
+  <footer class="bk-foot">
     <p class="bk-meta">CODECAVE brand kit · tokens in <code>colors_and_type.css</code> ·
       component previews in <code>preview/</code> · source seed <code>brand.json</code>.
       This page is authored, not generated — the brand pipeline does not overwrite it.</p>

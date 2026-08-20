@@ -35,7 +35,7 @@
                background: var(--color-surface-secondary); }
 </style>
 </head>
-<body data-od-id="preview-components-buttons">
+<body>
 
 <nav class="ds-nav" aria-label="Design system">
   <div class="page-container ds-nav-inner">
@@ -56,7 +56,7 @@
 <div class="pv-shell">
   <a class="pv-back" href="index.html">&larr; All foundations</a>
 
-  <header class="pv-head" data-od-id="buttons-head">
+  <header class="pv-head">
     <span class="eyebrow">Components · card 1 of 3</span>
     <h1>Buttons — eight variants, one primary</h1>
     <p>Transcribed from <code>source_examples/common/Button.vue</code> and
@@ -66,7 +66,7 @@
        states are reviewable without a pointer.</p>
   </header>
 
-  <section class="pv-block" data-od-id="buttons-glow">
+  <section class="pv-block">
     <h2>Glow — the one true CTA</h2>
     <p class="pv-note">Lighter violet field <code>#9980FF</code> with <code>#1B0D4E</code> text
        (8.0:1) and a three-ring violet halo — <code>0 0 64px #7A58FFA8</code>,
@@ -96,10 +96,10 @@
        meant to escape.</p>
   </section>
 
-  <section class="pv-block" data-od-id="buttons-variants">
+  <section class="pv-block">
     <h2>The remaining variants</h2>
     <div class="pv-tile">
-      <div class="var-row" data-od-id="button-primary-row">
+      <div class="var-row">
         <span><span class="pv-label">.btn .btn-primary</span>
               <span class="pv-meta">solid violet · form submits, in-card confirmations</span></span>
         <div class="forced">
@@ -108,7 +108,7 @@
           <span><button class="btn btn-primary force-active">Send request</button><span class="state-tag">active · #1E113B</span></span>
         </div>
       </div>
-      <div class="var-row" data-od-id="button-secondary-row">
+      <div class="var-row">
         <span><span class="pv-label">.btn .btn-secondary</span>
               <span class="pv-meta">raised surface · the quiet neighbour of a primary</span></span>
         <div class="forced">
@@ -116,7 +116,7 @@
           <span><button class="btn btn-secondary force-hover">Download the brief</button><span class="state-tag">hover · #1C1C27</span></span>
         </div>
       </div>
-      <div class="var-row" data-od-id="button-tertiary-row">
+      <div class="var-row">
         <span><span class="pv-label">.btn .btn-tertiary</span>
               <span class="pv-meta">bordered · the workhorse, used dozens of times per page</span></span>
         <div class="forced">
@@ -124,7 +124,7 @@
           <span><a class="btn btn-tertiary force-hover" href="#">Learn more</a><span class="state-tag">hover · border #4004AF</span></span>
         </div>
       </div>
-      <div class="var-row" data-od-id="button-ghost-row">
+      <div class="var-row">
         <span><span class="pv-label">.btn .btn-ghost</span>
               <span class="pv-meta">nav items · no box, bold label</span></span>
         <div class="forced">
@@ -132,7 +132,7 @@
           <span><a class="btn btn-ghost force-hover" href="#">Services</a><span class="state-tag">hover · #B19AFE</span></span>
         </div>
       </div>
-      <div class="var-row" data-od-id="button-text-row">
+      <div class="var-row">
         <span><span class="pv-label">.btn .btn-text</span>
               <span class="pv-meta">footer and inline tertiary entry points</span></span>
         <div class="forced">
@@ -140,14 +140,14 @@
           <span><a class="btn btn-text force-hover" href="#">Privacy policy</a><span class="state-tag">hover · #B19AFE</span></span>
         </div>
       </div>
-      <div class="var-row" data-od-id="button-link-row">
+      <div class="var-row">
         <span><span class="pv-label">.btn .btn-link</span>
               <span class="pv-meta">inline link inside running copy</span></span>
         <div class="forced">
           <span><a class="btn btn-link" href="#">Read the case study</a><span class="state-tag">rest · #B19AFE, underlined</span></span>
         </div>
       </div>
-      <div class="var-row" data-od-id="button-disabled-row">
+      <div class="var-row">
         <span><span class="pv-label">.btn .btn-primary:disabled</span>
               <span class="pv-meta">disabled is the ONLY state allowed to reduce contrast</span></span>
         <div class="forced">
@@ -157,7 +157,7 @@
     </div>
   </section>
 
-  <section class="pv-block" data-od-id="buttons-focus">
+  <section class="pv-block">
     <h2>Focus states</h2>
     <p class="pv-note">Tab through this row. Every focusable control takes a 2px
        <code>--color-hovered</code> ring at 2px offset — visible against both the page and a card,
@@ -173,12 +173,12 @@
     </div>
   </section>
 
-  <section class="pv-block" data-od-id="buttons-action-economy">
+  <section class="pv-block">
     <h2>Action economy in practice</h2>
     <p class="pv-note">The real pairing from <code>source_examples/homepage/testimonial.astro</code>:
        one glow CTA, one bordered secondary, and the copy does not repeat. This is the only
        button group shape the system sanctions.</p>
-    <div class="cta-block" data-od-id="buttons-cta-pair">
+    <div class="cta-block">
       <span class="btn-glow-field"><a class="btn btn-glow" href="#" style="min-width:14rem"><span>Discuss partnership</span></a></span>
       <a class="btn btn-tertiary" href="#" style="min-width:14rem">About us &amp; how we work</a>
     </div>
