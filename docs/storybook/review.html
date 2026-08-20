@@ -263,7 +263,7 @@
   });
 
   // getImageUrl() prefixes every media path with the Strapi host
-  // (lib/strapi.ts), so the avatar the component requests lives on the CMS.
+  // (ports/strapi.adapter.ts), so the avatar the component requests lives on the CMS.
   // The storybook swaps in a local placeholder after mount; everything else
   // about the <img> — classes, sizing, alt wiring — is the component's own.
   document.querySelectorAll('#story-rev1 img, #story-grid img')

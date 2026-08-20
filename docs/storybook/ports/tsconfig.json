@@ -1,0 +1,18 @@
+{
+  // Typechecks the adapters against ports.d.ts. This is what makes them ports
+  // rather than stubs: without it the `: StrapiPort` annotations are comments,
+  // esbuild strips types without reading them, and an adapter that stops
+  // matching what a component imports would surface as an undefined in a
+  // browser instead of a failed build. Wired into `npm run check`.
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "Preserve",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022", "DOM"],
+    "strict": true,
+    "noEmit": true,
+    "noUnusedLocals": true,
+    "skipLibCheck": false
+  },
+  "include": ["*.ts"]
+}

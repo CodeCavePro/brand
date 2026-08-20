@@ -13,6 +13,10 @@
 #      beside it. This is the real guarantee — a stale bridge compiles and
 #      loads and silently documents an older site, so nothing else catches it.
 #
+#   1b. A typecheck of storybook/ports/ against the interfaces in ports.d.ts.
+#      Needs typescript, so it follows step 1 rather than joining it — step 1
+#      keeps its "nothing but node" property.
+#
 #   2. A rebuild that runs when the toolchain is reachable, and is skipped
 #      without failing when it is not. Pages must keep deploying either way:
 #      losing the site because another repo is unreachable would be a far worse
@@ -65,6 +69,19 @@ jobs:
       # we publish would be documenting the wrong site.
       - name: Verify the storybook matches its sources
         run: node docs/tools/check-tw-bridge.mjs
+
+      # The ports typecheck needs typescript, so it cannot go in the
+      # dependency-free check above — it goes after it. An adapter that has
+      # drifted from the interface its component imports compiles perfectly and
+      # fails as an undefined in a reader's browser, which is the one place a
+      # specimen must not fail. That is the whole reason ports are typechecked
+      # rather than left as stubs, and leaving the check off CI would give the
+      # rot back.
+      - name: Install the brand toolchain
+        run: npm ci
+
+      - name: Typecheck the storybook ports
+        run: npm run check:ports
 
       # ---- optional rebuild ------------------------------------------------
       # continue-on-error so an unreachable or private codecave.pro downgrades

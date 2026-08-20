@@ -78,8 +78,11 @@ var __sfc__2 = { render: render2 };
 __sfc__2.__file = "source_examples/assets/icons/verified-icon.vue";
 var verified_icon_default = __sfc__2;
 
-// source_examples/lib/strapi.ts
-var strapiUrl = "https://strapi.azure.codecave.network";
+// storybook/ports/strapi.adapter.ts
+var adapter = {
+  strapiUrl: "https://strapi.azure.codecave.network"
+};
+var { strapiUrl } = adapter;
 
 // source_examples/helpers/image-url.ts
 var getImageUrl = (url) => {

@@ -164,7 +164,7 @@
   }).mount('#story-art2');
 
   // getImageUrl() prefixes every media path with the Strapi host
-  // (lib/strapi.ts), so the covers the component requests live on the CMS.
+  // (ports/strapi.adapter.ts), so the covers the component requests live on the CMS.
   // The storybook swaps in a local placeholder after mount; everything else
   // about the <img> — classes, object-cover, alt wiring — is the component's.
   for (const img of document.querySelectorAll('.sb-canvas img')) {

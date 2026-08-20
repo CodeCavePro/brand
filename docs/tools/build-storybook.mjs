@@ -150,35 +150,46 @@ function tryFile(p) {
   return null;
 }
 
-/* Bare specifiers the storybook deliberately does NOT bundle, on the same
- * reasoning as source_examples/lib/strapi.ts: a specimen needs the component's
- * markup and styling, not its production plumbing.
+/* ---- ports: the storybook's outside world -------------------------------
+ * Where a captured component reaches outside itself, the storybook inverts the
+ * dependency instead of faking it. storybook/ports/ports.d.ts declares the
+ * narrow interface the component actually needs and an adapter beside it
+ * implements that interface for a static docs build; this table is the only
+ * place a specifier is wired to an adapter.
  *
- * The bar for adding one is narrow — if its absence would change what the
- * specimen LOOKS LIKE, it does not belong here, it belongs in the bundle.
+ * The reason it is a port and not a stub is that the contract is checkable —
+ * `npm run check` typechecks each adapter against its interface, so an adapter
+ * that drifts from what the component imports fails the build rather than
+ * failing as an undefined in someone's browser. See ports.d.ts for the rule
+ * about what does and does not qualify.
  *
- * isomorphic-dompurify: pain-points-item wraps `marked.parse()` in `sanitize()`
- * (a good change on the site — CMS-authored markdown). What the specimen feeds
- * that pipeline is a hard-coded demo string, so the sanitiser is ~300K deciding
- * that a paragraph is still a paragraph. It also cannot currently be installed
- * from the site checkout, whose dependency graph has an unrelated peer conflict
- * (`magicast` vs `tsdown`) that fails `npm install` outright — but that is the
- * lesser reason, and if the size argument stopped holding this should bundle
- * for real rather than stay stubbed out of convenience. */
-const STUBS = {
-  'isomorphic-dompurify':
-    'export const sanitize = (html) => html;\nexport default { sanitize };\n',
-};
+ * Note the specifiers are matched after leading ./ and ../ are stripped, so one
+ * entry covers a module however deep the importer sits. */
+const PORTS_DIR = path.join(docs, 'storybook', 'ports');
+const PORTS = [
+  {
+    port: 'StrapiPort',
+    specifier: /(?:^|\/)lib\/strapi(?:\.ts)?$/,
+    adapter: 'strapi.adapter.ts',
+  },
+  {
+    port: 'SanitizerPort',
+    // Also, at the time of writing, unbuildable from the site checkout at all:
+    // its graph has an unrelated peer conflict (magicast vs tsdown) that fails
+    // npm install outright. That is not why this is a port — see the adapter.
+    specifier: /^isomorphic-dompurify$/,
+    adapter: 'sanitizer.adapter.ts',
+  },
+];
 
 const vuePlugin = {
   name: 'vue-sfc',
   setup(build) {
-    build.onResolve({ filter: /^[^.\/]/ }, (args) =>
-      args.path in STUBS ? { path: args.path, namespace: 'sb-stub' } : null);
-    build.onLoad({ filter: /.*/, namespace: 'sb-stub' }, (args) => ({
-      contents: STUBS[args.path],
-      loader: 'js',
-    }));
+    build.onResolve({ filter: /.*/ }, (args) => {
+      const bare = args.path.replace(/^(?:\.\.?\/)+/, '');
+      const hit = PORTS.find((p) => p.specifier.test(bare));
+      return hit ? { path: path.join(PORTS_DIR, hit.adapter) } : null;
+    });
     build.onResolve({ filter: /^\.\.\// }, (args) => {
       if (tryFile(path.resolve(args.resolveDir, args.path))) return null; // esbuild handles it
       const rerooted = tryFile(path.join(SRC, args.path.replace(/^(\.\.\/)+/, '')));

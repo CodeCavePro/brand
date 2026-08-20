@@ -1243,8 +1243,11 @@ var Xt = g.parseInline;
 var Vt = b.parse;
 var Yt = x.lex;
 
-// source_examples/lib/strapi.ts
-var strapiUrl = "https://strapi.azure.codecave.network";
+// storybook/ports/strapi.adapter.ts
+var adapter = {
+  strapiUrl: "https://strapi.azure.codecave.network"
+};
+var { strapiUrl } = adapter;
 
 // source_examples/helpers/image-url.ts
 var getImageUrl = (url) => {
@@ -1314,8 +1317,11 @@ var __sfc__ = /* @__PURE__ */ _defineComponent({
 __sfc__.__file = "source_examples/common/images/LazyImage.vue";
 var LazyImage_default = __sfc__;
 
-// sb-stub:isomorphic-dompurify
-var sanitize = (html) => html;
+// storybook/ports/sanitizer.adapter.ts
+var adapter2 = {
+  sanitize: (html) => html
+};
+var { sanitize } = adapter2;
 
 // source_examples/project/pain-points-item.vue
 var _hoisted_12 = { class: "mx-1 md:mx-0 p-6 w-56 h-full md:h-auto rounded-3xl bg-surface-secondary space-y-6" };

@@ -114,6 +114,8 @@ PDF and email builders, native apps. The CSS remains the source of truth.
 ├── source_examples/           high-signal source files, the evidence behind the rules
 ├── preview/                   12 focused review cards + index — layer 1, foundations
 ├── storybook/                 13 component stories + index — layer 2, components
+│   └── ports/                 interfaces + docs-build adapters for what a
+│                              component depends on outside itself
 └── artifacts/                 6 whole surfaces + index — layer 3, compositions
 ```
 
@@ -382,3 +384,30 @@ vue/esbuild/tailwind versions the site builds with, which is the whole point:
 ```bash
 node docs/tools/build-storybook.mjs ../codecave.pro
 ```
+
+### Ports — what a component depends on outside itself
+
+Some captured components import something the docs build has no business
+carrying: `helpers/image-url.ts` wants the Strapi base URL out of a module that
+otherwise constructs an authenticated client, and `project/pain-points-item.vue`
+sanitises its markdown with a ~300K library that, here, guards a demo string
+written twenty lines up in the page rendering it.
+
+Those dependencies are **inverted, not stubbed**. `storybook/ports/ports.d.ts`
+declares the narrow interface the component actually needs; an adapter beside it
+implements that interface for a static build; the `PORTS` table in
+`tools/build-storybook.mjs` is the only place a specifier is wired to an
+adapter. Everything else still compiles from the real source.
+
+The distinction is not vocabulary. A stub is unchecked — it fails as an
+`undefined` in someone's browser, at the one moment the specimen was supposed to
+be proving something. An adapter is typechecked against its interface, so it
+fails at build time instead:
+
+```bash
+npm run check:ports
+```
+
+which `npm run check` runs for you. The bar for adding a port is narrow, and
+`ports.d.ts` states it: if swapping the implementation would change what the
+specimen **looks like**, it is not a port — it belongs in the bundle.

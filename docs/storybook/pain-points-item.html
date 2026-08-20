@@ -148,7 +148,7 @@
   }).mount('#story-pp2');
 
   // getImageUrl() prefixes every media path with the Strapi host
-  // (lib/strapi.ts), so the icon the component requests lives on the CMS.
+  // (ports/strapi.adapter.ts), so the icon the component requests lives on the CMS.
   // The storybook swaps in a local placeholder after mount.
   for (const img of document.querySelectorAll('.sb-canvas img')) {
     img.src = '../assets/images/sb-icon.svg';

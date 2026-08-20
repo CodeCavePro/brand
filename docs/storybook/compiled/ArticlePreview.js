@@ -15,8 +15,11 @@ var formattedDate = (locale, date) => {
   }).format(newDate);
 };
 
-// source_examples/lib/strapi.ts
-var strapiUrl = "https://strapi.azure.codecave.network";
+// storybook/ports/strapi.adapter.ts
+var adapter = {
+  strapiUrl: "https://strapi.azure.codecave.network"
+};
+var { strapiUrl } = adapter;
 
 // source_examples/helpers/image-url.ts
 var getImageUrl = (url) => {
