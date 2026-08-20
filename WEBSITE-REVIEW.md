@@ -23,13 +23,18 @@ done and when.
 
 ## 1 · P0 — Security
 
-### 1.1 Unsanitized CMS markdown reaches `v-html`
-`src/components/project/pain-points-item.vue` parses `item.content` with
-`marked` and binds the result via `v-html`. Markdown permits raw HTML and no
-sanitizer runs (marked dropped its own in v5), so anything an editor can type
-into the Strapi content field executes in every visitor's page. This is an XSS
+### 1.1 Unsanitized CMS markdown reaches `v-html` — **FIXED 2026-08-20**
+`src/components/project/pain-points-item.vue` parsed `item.content` with
+`marked` and bound the result via `v-html`. Markdown permits raw HTML and no
+sanitizer ran (marked dropped its own in v5), so anything an editor could type
+into the Strapi content field executed in every visitor's page. This was an XSS
 sink gated only by CMS access control.
 **Fix:** run the parsed HTML through DOMPurify (or equivalent) before binding.
+
+**Resolved.** The component now imports `sanitize` from `isomorphic-dompurify`
+and wraps the parse: `sanitize(marked.parse(contentString))`. Confirmed against
+`codecave.pro` `development` during the capture resync (CCWEB2-315). This was
+the only P0 in this document; section 1 is now empty of open items.
 
 ## 2 · P0 — Accessibility
 

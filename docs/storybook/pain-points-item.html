@@ -100,13 +100,23 @@
   <section class="sb-section">
     <h2>Findings</h2>
 
-    <p class="sb-note is-warn"><strong><code>v-html</code> on CMS content with no sanitizer.</strong>
-      <code>marked</code> is configured without <code>sanitize</code> (removed in
-      marked v5+ anyway) and no DOMPurify pass runs before the result reaches
-      <code>v-html</code>. Markdown permits raw HTML, so anything an editor can put
-      in the Strapi <code>content</code> field executes in the page. That makes
-      this an XSS sink gated only by CMS access control. Sanitizing the parsed
-      HTML before binding closes it.</p>
+    <p class="sb-note"><strong>Fixed upstream — <code>v-html</code> is now sanitized.</strong>
+      This card used to parse <code>item.content</code> with <code>marked</code> and
+      bind the result straight to <code>v-html</code>. Markdown permits raw HTML and
+      <code>marked</code> dropped its own <code>sanitize</code> option in v5, so
+      anything an editor could type into the Strapi <code>content</code> field
+      executed in every visitor's page — an XSS sink gated only by CMS access
+      control. As of the 2026-08-20 resync the component wraps the parse in
+      <code>sanitize()</code> from <code>isomorphic-dompurify</code>, which closes it.
+      Kept here rather than deleted because the specimen is the record of what the
+      component was, and this was the site's only P0.</p>
+
+    <p class="sb-note is-warn"><strong>This specimen does not exercise the sanitizer.</strong>
+      Its markdown is a literal in this page, so the storybook substitutes an
+      identity adapter for <code>isomorphic-dompurify</code> — see
+      <code>storybook/ports/sanitizer.adapter.ts</code>. What renders below is the
+      real component with a stand-in for the one dependency that has nothing to do
+      here. Read the sanitizing behaviour from the source, not from this page.</p>
 
     <p class="sb-note is-warn"><strong>Markdown is parsed once, outside any reactive scope.</strong>
       <code>htmlContent</code> is computed at <code>&lt;script setup&gt;</code> body

@@ -238,7 +238,8 @@ defects and 25 design observations.** The ones that change runtime behavior:
   including the `*.stories` exclusion in the content glob.
 - **`Button`'s `isDisabled` does not disable.** It sets opacity and cursor only;
   the `disabled` attribute is never bound.
-- **`PainPointsItem` renders unsanitized CMS markdown through `v-html`.**
+- ~~**`PainPointsItem` renders unsanitized CMS markdown through `v-html`.**~~
+  Fixed upstream 2026-08-20 — the parse now runs through `isomorphic-dompurify`.
 - **`TextField` syncs its model on `change`, not `input`** — so `v-model`
   updates on blur while `InputText` in the same form updates per keystroke.
 
