@@ -1,5 +1,30 @@
 # CODECAVE Brand kit
 
+## Where open work lives — read this before assuming there is none
+
+**Jira is the only list.** This repo used to keep a `TODO.md`; it was deleted on
+2026-08-20 once its contents were filed, so *the absence of a to-do file in this
+repository does not mean the work is done.*
+
+Open items for the brand package, all in
+[CCWEB2](https://codecave.atlassian.net/browse/CCWEB2) under the **`brand-kit`**
+label ([live query](https://codecave.atlassian.net/issues?jql=project%20%3D%20CCWEB2%20AND%20labels%20%3D%20%22brand-kit%22%20ORDER%20BY%20key%20ASC)):
+
+-   [CCWEB2-314](https://codecave.atlassian.net/browse/CCWEB2-314) — standing Tailwind-collision check; run it whenever this package or the site's `global.css` moves.
+-   [CCWEB2-315](https://codecave.atlassian.net/browse/CCWEB2-315) — nine `docs/source_examples/` captures have drifted from `codecave.pro/src`; refresh one at a time, not in a sweep.
+-   [CCWEB2-316](https://codecave.atlassian.net/browse/CCWEB2-316) — decide what "converged onto the site" means, and write the criterion next to the claim.
+-   [CCWEB2-317](https://codecave.atlassian.net/browse/CCWEB2-317) — decide whether `docs/` is built with Astro. Carries the whole proposal; blocked on one question, whether `docs/` stays committed as build output.
+
+CCWEB2 is the *website* project and these are brand-package items — they sit there
+because no brand project exists yet. The `brand-kit` label is what makes them
+movable in bulk when one does. **Print colour space / CMYK is deliberately not
+filed anywhere:** it is Maria Shaban's decision and gets its own project later.
+
+Site-side flaws still go to [WEBSITE-REVIEW.md](/WEBSITE-REVIEW.md), which is
+already mirrored as CCWEB2-270…310. It stays a file only because twelve places
+cite it by section number, three of them inside the shipped
+`docs/colors_and_type.css`.
+
 ## Core Visual Foundation
 These are the foundational rules and assets that dictate how every other template is built. [[1](https://weirmedia.ca/web-design)]
 -   Logo System: Primary logo, secondary logo, submarks, favicon, and monochrome versions.

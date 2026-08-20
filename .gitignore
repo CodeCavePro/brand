@@ -24,10 +24,11 @@ ds-bundle/fonts/
 # from gone.
 
 # Internal planning, kept on disk and out of the published repository. Jira is
-# the system of record for open work; these two are the staging area in front of
-# it and they are meant to disappear once their contents are filed. Nothing in
-# docs/ links to either — checked before untracking — so removing them breaks no
-# reference. Their history up to this point stays in the log.
+# the system of record for open work. TODO.md was the staging area in front of
+# it and is now gone — its six items were filed as CCWEB2-314..317 (label
+# `brand-kit`) or closed out, and CLAUDE.md carries the index so an empty repo
+# is never mistaken for an empty backlog. ASTRO-MIGRATION.md survives only as a
+# local working copy; its substance is CCWEB2-317.
 #
 # WEBSITE-REVIEW.md is NOT here on purpose: twelve places cite it, three of them
 # comments inside the shipped colors_and_type.css, and README.md opens with a
