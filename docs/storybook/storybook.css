@@ -71,14 +71,42 @@ body { padding: 0 0 6rem; }
              background: var(--color-surface-primary); }
 .sb-canvas.is-tall  { min-height: 15rem; }
 
+/* The canvas establishes its own inherited baseline, because otherwise every
+   mounted component inherits the DOCUMENTATION's <body> — and this package's
+   body is not the site's. Production ships no `body` rule at all; its baseline
+   is Tailwind's preflight, so that is what a specimen has to sit on.
+
+   line-height is the one that actually bites. The docs body sets
+   `--leading-base`, which is `1.5rem` — an absolute length. Tailwind's stock is
+   unitless `1.5`. At 16px the two agree at 24px, which is why this went
+   unnoticed; the moment a mounted element changes font size without carrying a
+   `text-*` utility they diverge, because a length does not scale and a ratio
+   does. Measured before this rule: a 14px element inside a canvas inherited
+   24px of leading where the site gives it 21px.
+
+   The tokens resolve to the SITE's values here, not the docs', because
+   tw-bridge.css scopes production's :root and @theme to these same two
+   selectors. */
+.sb-canvas, .sb-mount {
+  color: var(--color-body-primary);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
 /* colors_and_type.css paints docs-chrome anchors violet with an UNLAYERED
    `a` rule, which out-cascades every layered utility a mounted component
    carries (unlayered beats @layer regardless of specificity). Inside the
    canvases, roll anchor color back to the layered world so the component's
    own classes decide — falling back to the bridge's preflight-equivalent
-   `color: inherit` when no utility is present. */
+   `color: inherit` when no utility is present. The same rule also sets
+   `text-underline-offset: 0.2em`, which production has nowhere — measured at
+   3.2px on a canvas link against Tailwind's stock `auto` — so that reverts
+   with it. */
 .sb-canvas a, .sb-mount a,
-.sb-canvas a:hover, .sb-mount a:hover { color: revert-layer; }
+.sb-canvas a:hover, .sb-mount a:hover {
+  color: revert-layer; text-underline-offset: revert-layer;
+}
 /* Same story for headings: the docs baseline sizes h1–h3 with unlayered
    element rules that production's global.css does not have. Roll them back
    so a mounted component's own text-* utilities decide. */
