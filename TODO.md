@@ -13,9 +13,34 @@ neither of them:
 What follows is work the brand repo owes itself. Nothing here is a defect on the
 live site.
 
+Everything still listed needs **a decision**, not an edit. The items that were
+merely undone have been done; they are recorded at the bottom.
+
 ---
 
-## 1. Token names that collide with Tailwind's defaults
+## 1. `brand.codecave.pro` is documented but not wired up
+
+The design system now names <https://brand.codecave.pro/> as its canonical
+location — in [.design-sync/config.json](/.design-sync/config.json), the
+conventions header, both READMEs. **Nothing publishes there yet.** There is no
+`CNAME` file, so `.github/workflows/static.yml` deploys to
+`codecavepro.github.io/brand` and the documented URL does not resolve.
+
+Three things are needed and only the first belongs to this repo:
+
+1. `docs/CNAME` containing `brand.codecave.pro` (`docs/` is the Pages artifact
+   root, so the file goes there, not at the top level).
+2. A DNS `CNAME` record: `brand.codecave.pro` → `codecavepro.github.io`.
+3. The custom domain set in the repo's Pages settings.
+
+**Order matters.** Committing the `CNAME` file before DNS resolves makes Pages
+serve the custom domain and redirect the `github.io` URL to it — so the site
+goes dark until DNS catches up. Do DNS first.
+
+**To do:** point DNS, then add the file. Not done here because doing it in the
+wrong order breaks the published site.
+
+## 2. Token names that collide with Tailwind's defaults
 
 The `.vue` sources in `docs/source_examples/` reference exactly two custom
 properties that the site's own `global.css` never declares:
@@ -45,7 +70,8 @@ Lift either component out of that build and the value changes or disappears.
   `--radius-chip`?) so the collision cannot recur, and whether to file the
   underlying fragility against the site — `Checkbox.vue` should declare the
   radius it wants rather than inherit whatever `--radius-sm` it lands beside.
-  Not yet filed in Jira.
+  Not yet filed in Jira. **This is a breaking rename of a published token**,
+  which is why it has not been done unilaterally.
 
 - **`--default-transition-duration`** — same class of problem, already filed:
   [CCWEB2-304](https://codecave.atlassian.net/browse/CCWEB2-304).
@@ -53,52 +79,7 @@ Lift either component out of that build and the value changes or disappears.
 **To do:** keep the one-liner above as a check. Any third name appearing in that
 diff is a new instance of this bug.
 
-## 2. `docs/storybook/tw-bridge.css` cannot be regenerated here
-
-The file is generated output (1420 lines) and correct by construction — its
-`.sb-canvas, .sb-mount` block is *derived* from
-`docs/source_examples/styles/global.css`, not hand-copied, which is what lets
-the mounted components render as the live site does rather than as the docs
-palette.
-
-The problem is reproducibility. `docs/tools/build-storybook.mjs` resolves
-`vue/compiler-sfc`, `esbuild` and `tailwindcss` from **the codecave.pro repo's
-`node_modules`**, defaulting to a sibling `../codecave.pro` checkout:
-
-```bash
-node docs/tools/build-storybook.mjs ../codecave.pro
-```
-
-Consequences:
-
-- Refresh `docs/source_examples/` without that checkout to hand and
-  `tw-bridge.css` silently goes stale — the storybook then documents an older
-  site than the sources beside it.
-- Nothing verifies the two are in sync. No hash, no CI step, no note in
-  `docs/README.md` telling a reader the file is downstream of `source_examples/`.
-
-**To do:** either commit a sync check (hash the inputs into the generated
-header and fail loudly on mismatch) or document the dependency prominently
-wherever `source_examples/` is refreshed.
-
-**Also:** the generator's file header still claims the bridge "adds utilities
-without redefining the brand" and that `@theme` aliases resolve to
-`colors_and_type.css`'s ramp. The canvas-scope comment 200 lines below says the
-opposite and is the one that matches the code — the site's palette has moved
-past the docs system and is scoped in deliberately. Fix the header.
-
-## 3. Inert Tailwind config on the site side
-
-`tailwind.config.ts` in the website repo is never loaded: Tailwind 4 reads a JS
-config only via `@config`, which no stylesheet declares, so `darkMode`,
-`content` and `theme.extend` are all dead. Filed under
-[CCWEB2-274](https://codecave.atlassian.net/browse/CCWEB2-274) (design-token and
-typography cleanup) and recorded in [WEBSITE-REVIEW.md](/WEBSITE-REVIEW.md) §5.
-
-Nothing for this repo to do beyond not mirroring the file. Listed here so the
-next reader does not re-discover it as new.
-
-## 4. The two email templates still set the wordmark as type
+## 3. The two email templates still set the wordmark as type
 
 [docs/artifacts/email.html](/docs/artifacts/email.html) and
 [docs/artifacts/newsletter.html](/docs/artifacts/newsletter.html) render
@@ -106,28 +87,21 @@ next reader does not re-discover it as new.
 says must never be re-typed by hand. Every other artifact — deck, form, landing,
 poster — now carries `assets/codecave-wide.svg`.
 
-The templates are the exception on purpose: an `<img>` in an email needs an
-absolute, permanently hosted URL, and inventing one is exactly what the
-"never invent production URLs" rule forbids. Outlook's Word engine also does not
-render SVG at all, so the asset would have to be a PNG at 2× or 3×.
+The blocker has **half** lifted. The site root is now settled
+(<https://brand.codecave.pro/>), and because `docs/` is the Pages artifact root,
+a file at `docs/assets/x.png` is served at `/assets/x.png`. So the URL is
+derivable rather than invented — but only once item 1 is done. Until
+`brand.codecave.pro` actually resolves, writing it into an email that may be
+archived for years is still writing a dead link.
 
-**To do:** confirm a hosting location for `codecave-wide.png` (the brand site's
-own `/brand/assets/` is the obvious candidate but is not verified), export the
-raster cuts, then swap both templates. Until then the typed fallback stays and
-this note explains why.
+Outlook's Word engine also does not render SVG at all, so the asset has to be a
+PNG at 2× or 3×.
 
-## 5. Root README points at directories that do not exist
+**To do:** finish item 1, export the raster cuts of `codecave-wide` into
+`docs/assets/`, then swap both templates. Until then the typed fallback stays
+and this note explains why.
 
-[README.md](/README.md) lists `docs/system/` (deck, email, poster and landing
-templates) and `docs/ui_kits/app/` (the system applied to a working interface).
-Neither path exists. The templates live in [docs/artifacts/](/docs/artifacts)
-and there is no UI-kit directory at all.
-
-**To do:** repoint the `system/` link at `artifacts/`, and either restore the UI
-kit or drop the claim. The specimen and component counts in the same table (12
-review cards, 13 storybook components) are correct.
-
-## 6. The README's "source of truth" claim contradicts how we actually work
+## 4. The README's "source of truth" claim contradicts how we actually work
 
 README.md opens with:
 
@@ -144,7 +118,7 @@ here. Both statements cannot stand.
 to describe the repo as documentation-of-record that tracks the site, or the
 direction of authority genuinely changes and the sync process changes with it.
 
-## 7. Unanswered: navigation grouping for the CSS component layer
+## 5. Unanswered: navigation grouping for the CSS component layer
 
 `docs/ds-nav.css` gives all 30 documentation pages a global bar with two groups.
 The CSS component layer (the `.checkbox`, `.field`, `.btn` rules living directly
@@ -159,3 +133,58 @@ components". Needs a decision before anyone starts.
 *(The six artifact specimens are deliberately excluded from `ds-nav.css` — those
 pages are the deliverable being shown, so they carry the site's chrome rather
 than the package's. That is intended, not an omission.)*
+
+## 6. Not ours: inert Tailwind config on the site side
+
+`tailwind.config.ts` in the website repo is never loaded: Tailwind 4 reads a JS
+config only via `@config`, which no stylesheet declares, so `darkMode`,
+`content` and `theme.extend` are all dead. Filed under
+[CCWEB2-274](https://codecave.atlassian.net/browse/CCWEB2-274) (design-token and
+typography cleanup) and recorded in [WEBSITE-REVIEW.md](/WEBSITE-REVIEW.md) §5.
+
+Nothing for this repo to do beyond not mirroring the file. Listed here so the
+next reader does not re-discover it as new.
+
+---
+
+## Recently closed
+
+- **The storybook could not be verified or rebuilt anywhere but one laptop.**
+  `tw-bridge.css` is generated from `docs/source_examples/`, but the generator
+  needs the codecave.pro checkout's toolchain, so nothing verified the two were
+  in step — and a stale bridge compiles, loads, and silently documents an older
+  site. Now: the generator records a SHA-256 of every source file in the
+  `tw-bridge.css` header, and [check-tw-bridge.mjs](/docs/tools/check-tw-bridge.mjs)
+  verifies it with **nothing but node**, so it runs anywhere. Wired into
+  `.github/workflows/static.yml`, which runs it on every deploy and rebuilds the
+  storybook when the toolchain is reachable. *(The committed bridge turned out
+  not to be stale — the 1420 generated lines were byte-identical.)*
+
+- **The generator's output depended on where it was run from.** esbuild wrote
+  path annotations relative to the invocation directory, so building from the
+  repo root and from `docs/` produced twelve differing files. Pinning
+  `absWorkingDir` makes the output reproducible, which is what lets CI diff a
+  fresh build against the committed one and mean it.
+
+- **The generator's own header described behaviour it does not have.** It
+  claimed the bridge "adds utilities without redefining the brand"; the bridge
+  deliberately scopes the *site's* palette over this package's inside the
+  canvases, which is the only reason specimens are faithful. The canvas-scope
+  code said "see header comment", pointing readers at the wrong explanation.
+
+- **The root README linked two directories that do not exist** — `docs/system/`
+  and `docs/ui_kits/app/`. The templates live in
+  [docs/artifacts/](/docs/artifacts); there is no UI kit, so the claim is gone
+  rather than repointed. Every repo-relative link in the top-level and `docs/`
+  markdown now resolves.
+
+- **`ds-bundle/` was entirely gitignored**, including 32K of files that exist
+  nowhere else in the repo — the bundle README, `styles.css`, `guidelines/brand.md`
+  and the four Foundations cards were untracked source. The derived half stays
+  ignored and is materialized by
+  [build-ds-bundle.sh](/docs/tools/build-ds-bundle.sh).
+
+- **`.design-sync/conventions.md` had drifted out of the palette rebuild** —
+  it is the configured `readmeHeader`, so it feeds the bundle README's first 86
+  lines, and it still named `#050505` as the page ground and `--color-brand-210`,
+  a token the rebuilt ramp does not define.

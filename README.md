@@ -29,9 +29,9 @@ object:
 Also in `docs/`: [tokens/](/docs/tokens) (the same tokens as typed TS modules, for consumers that
 cannot read a stylesheet), [fonts/](/docs/fonts) (six real Satoshi cuts), [assets/](/docs/assets)
 and [build/](/docs/build) (marks, icons and favicons), [imagery/](/docs/imagery) (the decorative
-line-and-glow layer), [system/](/docs/system) (deck, email, poster and landing templates),
-[ui_kits/app/](/docs/ui_kits/app) (the system applied to a working interface), and
-[source_examples/](/docs/source_examples) (the first-party source the rules were read out of).
+line-and-glow layer), [artifacts/](/docs/artifacts) (deck, email, newsletter, form, poster and
+landing templates), and [source_examples/](/docs/source_examples) (the first-party source the
+rules were read out of).
 
 `docs/README.md` is the package guide; `docs/SKILL.md` is the agent-facing entry point.
 
