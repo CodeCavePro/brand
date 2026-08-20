@@ -4,7 +4,7 @@
   "description": "CODECAVE design system — colour, typography and layout tokens as CSS custom properties and as a typed module.",
   "license": "Unlicense",
   "type": "module",
-  "homepage": "https://codecavepro.github.io/brand/",
+  "homepage": "https://brand.codecave.pro/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/CodeCavePro/brand.git",

@@ -13,16 +13,25 @@
  *
  * and the buildless URL
  *
- *     https://codecavepro.github.io/brand/colors_and_type.css
+ *     https://brand.codecave.pro/colors_and_type.css
  *
- * are the same file. `--check` asserts exactly that and emits nothing, which
- * is what CI runs.
+ * are the same file. (docs/CNAME is the canonical host; the GitHub Pages
+ * default, codecavepro.github.io/brand, serves the same tree.) `--check`
+ * asserts exactly that and emits nothing, which is what CI runs.
  *
- * NOTE ON FONTS: the copied CSS keeps its `fonts/...` @font-face URLs, and the
- * package ships no font binaries (a licensing question — see CCWEB2-318). A
- * consumer importing `@codecavepro/brand/css` therefore gets correct tokens and
- * 404s on the faces until it supplies the files at `fonts/` beside the
- * stylesheet. That is the documented state, not an oversight.
+ * NOTE ON FONTS: the package ships no font binaries — a licensing question,
+ * see CCWEB2-318 — so both stylesheets 404 on their faces until a consumer
+ * supplies the files. Tokens and the type scale are unaffected. The two do NOT
+ * want them in the same place, because fonts.css is written to be dropped into
+ * a project on its own and its URLs are relative to the `fonts/` directory it
+ * normally lives in:
+ *
+ *     dist/colors_and_type.css  ->  url("./fonts/Satoshi-*.woff2")  ->  dist/fonts/
+ *     dist/fonts.css            ->  url("./Satoshi-*.woff2")        ->  dist/
+ *
+ * Flattening docs/fonts/fonts.css to dist/fonts.css is what splits them. This
+ * is documented in the package README's font table; if the copy layout ever
+ * changes, that table changes with it.
  */
 
 import { spawnSync } from 'node:child_process';
@@ -135,6 +144,53 @@ if (result.error) {
 if (result.status !== 0) process.exit(result.status ?? 1);
 
 fs.rmSync(tmp(), { recursive: true, force: true });
+
+/* ---- the README's example values must be real -----------------------------
+ * README.md is the one authored file here, because npm renders it as the
+ * package page and there is nowhere else for that page to come from. Its usage
+ * example quotes actual token values — which is a second home for those values,
+ * the precise failure this package exists to end.
+ *
+ * So they are asserted rather than trusted. Any line in the README shaped
+ *
+ *     group.key;   // 'value'
+ *     group.key;   // { a: 'x', b: 'y' }
+ *
+ * is checked against the module just compiled. A palette change that leaves the
+ * README behind fails the build, and since `prepack` runs this, it cannot be
+ * published stale. Comments that are prose rather than a literal are ignored,
+ * so the example can still explain itself.
+ */
+const readme = path.join(pkg, 'README.md');
+if (fs.existsSync(readme)) {
+  const mod = await import(new URL(`file://${out('index.js').replace(/\\/g, '/')}`));
+  const canonical = (s) => s.replace(/\s+/g, '').replace(/"/g, "'");
+  const literal = (v) =>
+    typeof v === 'string' || typeof v === 'number'
+      ? `'${v}'`
+      : `{${Object.entries(v).map(([k, vv]) => `${k}:'${vv}'`).join(',')}}`;
+
+  const stale = [];
+  let asserted = 0;
+  const re = /^\s*(\w+)\.(\w+);\s*\/\/\s*(.+?)\s*$/gm;
+  for (const [, group, key, comment] of fs.readFileSync(readme, 'utf8').matchAll(re)) {
+    if (!/^['{]/.test(comment)) continue;   // prose, not a claim
+    asserted++;
+    const actual = mod[group]?.[key];
+    if (actual === undefined) {
+      stale.push(`${group}.${key} — no such export`);
+    } else if (canonical(literal(actual)) !== canonical(comment)) {
+      stale.push(`${group}.${key} — README says ${comment}, module has ${literal(actual)}`);
+    }
+  }
+
+  if (stale.length) {
+    console.error('build failed — README.md quotes values the module does not have:');
+    for (const s of stale) console.error(`  ${s}`);
+    process.exit(1);
+  }
+  console.log(`@codecavepro/brand: ${asserted} README example value(s) verified.`);
+}
 
 const emitted = fs.readdirSync(out()).sort();
 console.log(`@codecavepro/brand built: ${emitted.join(', ')}`);

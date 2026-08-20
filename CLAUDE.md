@@ -51,10 +51,24 @@ hand-written stub used to live there as `lib/strapi.ts`; it is gone.
 
 `packages/brand/` is a **pure derivative of `docs/`** — it copies
 `colors_and_type.css` and `fonts.css` byte-for-byte and compiles
-`docs/tokens/*.ts`. Nothing under `packages/` is authored, nothing is tracked
-except its manifest and build script, and `npm run check` asserts the
-byte-identity. **`docs/` remains the single origin; edit there, never in
-`packages/`.** The registry is npm public — this repo is already a public repo,
+`docs/tokens/*.ts`. No *design content* under `packages/` is authored; the only
+tracked files are its manifest, build script and `README.md`, and `npm run
+check` asserts the byte-identity. **`docs/` remains the single origin; edit
+there, never in `packages/`.**
+
+The README is authored because npm renders it as the package page and there is
+nowhere else for that page to come from — it is manifest-adjacent, the same
+category as `package.json`. It explains how to install and consume, and links
+rather than restates: the rules live in `docs/DESIGN.md`.
+
+Its usage example does quote real token values, which is a second home for
+them, so **they are asserted, not trusted.** Any README line shaped
+`group.key;   // 'value'` is checked against the freshly compiled module by
+`build.mjs`; a palette change that leaves the README behind fails the build, and
+`prepack` runs it, so a stale value cannot be published. Prose comments are
+ignored — verified by corrupting a value and watching it exit 1. Add values to
+the example freely in that shape; do **not** write one in a form the check
+cannot see. The registry is npm public — this repo is already a public repo,
 so nothing private was being protected.
 
 CCWEB2 is the *website* project and these are brand-package items — they sit there
