@@ -21,8 +21,8 @@ label ([live query](https://codecave.atlassian.net/issues?jql=project%20%3D%20CC
     **Why phase 4 waits for phase 6.** Phase 4 promotes `docs/source_examples/`
     into `packages/brand/src/components`, which breaks two rules this repo
     otherwise holds absolutely: that nothing under `packages/` is authored, and
-    that a storybook specimen is a *record* of what the site ships. Nine of the
-    nineteen captures import things only the site has, so promoting them means
+    that a storybook specimen is a *record* of what the site ships. Seven of the
+    twenty-four captures import things only the site has, so promoting them means
     editing them — and an edited capture is neither the site's source nor a
     record of it. That is only a fair trade once the site actually installs the
     package, because then the package *is* what the site ships and the storybook
