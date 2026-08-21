@@ -164,6 +164,35 @@ theme comes from a devDependency pinned to the version the site resolves — so
 unlike `check:captures` it runs in CI. It also sweeps the full site checkout for
 undeclared properties when one is beside this repo, and says which it did.
 
+### Line endings are content, so leave `.gitattributes` alone
+
+`* text=auto eol=lf`, and it is load-bearing rather than tidiness. Three things
+here are digests or byte-for-byte copies of files in `docs/`, and all three
+read the **working tree**, not the git blob:
+
+- `check-tw-bridge.mjs` compares a sha256 of `docs/source_examples/` against
+  the value recorded in the generated `tw-bridge.css` header.
+- `npm run check` asserts `packages/brand/dist/colors_and_type.css` and
+  `fonts.css` are byte-identical to their origins, and `npm pack` runs it.
+- `build-storybook.mjs` compiles the `.vue` captures with esbuild, which
+  reproduces only if its inputs do.
+
+A CRLF checkout and an LF checkout of the same commit disagree on every one of
+them. That is not a hypothetical: without this file, `core.autocrlf=true` on
+Windows broke the Pages deploy for **36 consecutive runs** across 2026-08-20
+and 21 — green locally every time, red in CI every time, and the site quietly
+served a two-day-old build the whole while. `text=auto` on its own would not
+have helped: it normalises what is committed and leaves the checkout
+platform-native, which is exactly the state that caused it.
+
+If you clone into a tree that predates the file, or the check reports a digest
+mismatch it identifies as a line-ending difference, renormalise in place:
+
+```bash
+git rm -r --cached . && git reset --hard
+```
+
+
 **Prefer an assertion to a comment.** This is the repo's strongest habit and it
 was learned the hard way — a comment asking the next person to keep two things in
 step failed inside a day, while the pin it guarded was already wrong. If you find
