@@ -3,9 +3,15 @@
   "configurations": [
     {
       "name": "docs",
-      "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "8127", "--directory", "docs"],
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["astro", "dev", "--port", "8127"],
       "port": 8127
+    },
+    {
+      "name": "docs-static",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8128", "--directory", "docs"],
+      "port": 8128
     }
   ]
 }

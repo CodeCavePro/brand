@@ -163,14 +163,33 @@ jobs:
             echo "To enable the rebuild, add a repo-scoped PAT as the \`CODECAVE_PRO_TOKEN\` secret."
           } >> "$GITHUB_STEP_SUMMARY"
 
+      # ---- build the site --------------------------------------------------
+      # LAST, deliberately. The storybook rebuild above writes into
+      # docs/storybook/, so building before it would publish the previous run's
+      # output. Everything this step needs is in this checkout — see
+      # astro.config.mjs — so an unreachable codecave.pro cannot reach it, and
+      # the safety property in this file's header survives the migration: a
+      # neighbouring repo going private must never take this site down.
+      #
+      # The build fails if dist/ is not a superset of docs/. That matters more
+      # than usual while the migration is half-done, because most pages reach
+      # the site by being COPIED and only a few by being rendered — so a
+      # passthrough that silently stopped would deploy a site missing almost
+      # every page, with a green tick. See docs/tools/astro-passthrough.mjs.
+      - name: Build the docs site
+        run: npm run docs:build
+
       # ---- publish ---------------------------------------------------------
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload docs folder
-          path: './docs'
+          # dist/, not docs/ — CCWEB2-317. docs/ is now sources plus payload
+          # and can no longer be served as-is: a ported page exists there only
+          # as .astro. dist/ is docs/ passed through with the pages rendered
+          # over the top.
+          path: './dist'
 
   deploy:
     needs: build

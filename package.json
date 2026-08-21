@@ -1,5 +1,5 @@
 {
-  "name": "@codecavepro/brand-workspace",
+  "name": "@codecavepro/brand",
   "version": "0.0.0",
   "private": true,
   "description": "Workspace root. Not published — the publishable package is packages/brand.",
@@ -14,6 +14,9 @@
     "check:ports": "tsc --noEmit --project docs/storybook/ports/tsconfig.json",
     "check:collisions": "node docs/tools/check-tw-collisions.mjs",
     "check:captures": "node docs/tools/check-captures.mjs",
+    "docs:dev": "astro dev",
+    "docs:build": "astro build",
+    "docs:preview": "astro preview",
     "release": "npm publish --workspace @codecavepro/brand --access public"
   },
   "engines": {

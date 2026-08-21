@@ -135,9 +135,10 @@ mention either, and the licence is a build-time copy of the repo's root
 > **This replaces the git-dependency validation named in CCWEB2-318 phase 5.**
 > That plan proposed proving the loop with a `github:CodeCavePro/brand#tag`
 > dependency first, on the grounds that it is free and reversible. It does not
-> work here: an npm git dependency installs the **repository root**, and this
-> repo's root is `@codecavepro/brand-workspace`, which is `private: true` and
-> publishes nothing. A consumer would install the workspace, not the package.
+> work here: an npm git dependency installs the **repository root**, and the
+> root manifest — `/package.json`, not `packages/brand/package.json` — is
+> `private: true` and publishes nothing. A consumer would install the
+> workspace, not the package.
 >
 > The tarball is strictly better anyway — it is free, reversible *and* it is
 > literally what npm publishes, which the git dependency never was.
@@ -161,8 +162,11 @@ npm run release -- --otp=123456
 
 **The `--workspace` flag is not optional, and that is the entire reason this is
 a script rather than a command you type.** Bare `npm publish` at the repository
-root publishes the *workspace root*, `@codecavepro/brand-workspace` — not this
-package. It is stopped by that manifest's `private: true`, with
+root targets the **root manifest** — `/package.json` — and not
+`packages/brand/package.json`, which is the one that describes this package.
+The two currently share the name `@codecavepro/brand`, so the distinction is by
+path and only by path. It is stopped by the root manifest's `private: true`,
+with
 
 ```
 npm error This package has been marked as private

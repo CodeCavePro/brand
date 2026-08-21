@@ -1,0 +1,53 @@
+---
+/* The shell every documentation page shares: the head, the token stylesheets,
+ * the nav, the body. It emits what the 30 hand-written pages emit today.
+ *
+ * WHY THE PATHS ARE RELATIVE. `up` is derived from the page's own URL, so a
+ * page one directory down gets '../' and a page at the root gets ''. Root-
+ * absolute hrefs would be simpler and would be wrong for this repository: the
+ * doc pages are reviewed by opening them from disk, and the unported half of
+ * the site still links relatively. Under 'preserve' the pathname is
+ * '/preview/foo.html' for a normal page and '/preview/' for an index page —
+ * stripping the last segment handles both without a special case.
+ *
+ * Page-specific CSS goes in through the `head` slot as <style is:inline>.
+ * `is:inline` is load-bearing: Astro's default is to scope a component's <style>
+ * by rewriting its selectors, which would quietly break rules like .glow-stage
+ * that the page's own markup relies on.
+ */
+import DsNav from '../components/DsNav.astro';
+
+interface Props {
+  /** Full <title>, including the "CODECAVE — " prefix the pages already use. */
+  title: string;
+  /** Which nav section to mark current. Omit on a page in none of them. */
+  nav?: 'brand-kit' | 'foundations' | 'storybook' | 'artifacts';
+  /** Extra stylesheets, resolved relative to the page (e.g. "preview.css"). */
+  stylesheets?: string[];
+}
+
+const { title, nav, stylesheets = [] } = Astro.props;
+
+const dir = Astro.url.pathname.replace(/^\//, '').replace(/[^/]*$/, '');
+const up = '../'.repeat((dir.match(/\//g) ?? []).length);
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{title}</title>
+<link rel="icon" href={`${up}build/favicon.svg`}>
+<link rel="stylesheet" href={`${up}colors_and_type.css`}>
+<link rel="stylesheet" href={`${up}ds-nav.css`}>
+{stylesheets.map((href) => <link rel="stylesheet" href={href} />)}
+<slot name="head" />
+</head>
+<body>
+
+<DsNav current={nav} up={up} />
+
+<slot />
+
+</body>
+</html>

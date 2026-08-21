@@ -44,6 +44,18 @@ ds-bundle/fonts/
 node_modules/
 packages/*/dist/
 packages/*/.tmp/
+
+# The docs site (CCWEB2-317). `dist/` is docs/ passed through with the .astro
+# pages rendered over the top, and it is rebuilt from a clean checkout on every
+# deploy — committing it would put generated noise in every diff, which is the
+# whole reason the build does NOT write back into docs/. `.astro/` is the type
+# cache Astro regenerates on demand.
+#
+# Note the asymmetry with the rule above: packages/*/dist/ is ignored because
+# nothing there is source, and /dist/ is ignored for the same reason. docs/
+# stays committed because it is the origin for both of them.
+/dist/
+/.astro/
 # Copied from the root LICENSE at build time. npm only picks a licence up from
 # the package root, and the root file is the origin — see scripts/build.mjs.
 packages/*/LICENSE

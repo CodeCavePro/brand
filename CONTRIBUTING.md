@@ -173,6 +173,47 @@ yourself writing "remember to update X when Y changes", write the check instead.
 rendered DOM beats a paragraph asserting the behaviour, because the paragraph
 stays true-looking after the behaviour breaks.
 
+## Looking at the docs site
+
+The site is built with Astro now ([CCWEB2-317](https://codecave.atlassian.net/browse/CCWEB2-317)).
+
+```bash
+npm run docs:dev
+```
+
+`docs/` is still the origin and is still committed — the build reads from it and
+writes to `dist/`, which is not. **Nothing about the one rule changes:** if the
+build wrote back into `docs/`, the npm package's byte-identity assertion would be
+comparing a generated file against itself.
+
+The migration is deliberately half-done and will stay that way for a few phases.
+Pages exist in two forms at once:
+
+| | Lives at | Reaches the site by |
+|---|---|---|
+| ported | `docs/pages/preview/spacing-shadows.astro` | being rendered |
+| not yet ported | `docs/preview/colors-primary.html` | being copied |
+
+Both are served identically and neither knows about the other, so you can port
+one page at a time without a flag day. Two things to know when you port one:
+
+- **Delete the `.html` you replace, in the same commit.** `publicDir` and
+  `srcDir` are the same directory, and when both offer a path Astro keeps the
+  copied file and skips the page — a `WARN` in a build that exits 0, leaving the
+  new `.astro` as dead source. The build now fails instead: see
+  `docs/tools/astro-passthrough.mjs`.
+- **Diff the output against the page you replaced.** `compressHTML` is off, so a
+  faithful port renders almost byte-identically and the diff is short enough to
+  read. It is off for a better reason than that — on by default it collapsed a
+  line break before an inline tag to nothing, turning "violet light
+  **upward**" into "lightupward" in three places on the first page tried. In a
+  repository whose prose is the asset, that is not a minification setting.
+
+`artifacts/` is **never** rendered. Those six files are the deliverable being
+shown, not pages about it, and an HTML email with a documentation bar welded to
+the top is not a valid email. They pass through untouched; only
+`artifacts/index.html`, the gallery, will ever become a page.
+
 ## Where open work is tracked
 
 **Jira is the only list.** This repo had a `TODO.md`; it was deleted on
