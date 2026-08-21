@@ -27,11 +27,19 @@
     "./css": "./dist/colors_and_type.css",
     "./tokens.css": "./dist/tokens.css",
     "./fonts.css": "./dist/fonts.css",
+    "./components/*": "./dist/src/components/*",
+    "./assets/*": "./dist/src/assets/*",
+    "./helpers/*": "./dist/src/helpers/*",
+    "./lib/*": "./dist/src/lib/*",
     "./package.json": "./package.json"
   },
   "files": [
     "dist"
   ],
+  "peerDependencies": {
+    "gsap": "^3.13.0",
+    "vue": "^3.5.22"
+  },
   "scripts": {
     "build": "node scripts/build.mjs",
     "check": "node scripts/build.mjs --check",

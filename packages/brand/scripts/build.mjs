@@ -72,10 +72,124 @@ const VERBATIM = [
  */
 const ROOT_VERBATIM = [[path.join(repo, 'LICENSE'), 'LICENSE']];
 
+/* ==========================================================================
+ * The component tree — CCWEB2-318 phase 4.
+ *
+ * Same rule as the CSS: copied byte-for-byte from docs/source_examples/, which
+ * is itself a capture of what codecave.pro ships. Nothing here is authored, so
+ * a specimen in the storybook and a component in a consumer's node_modules are
+ * provably the same bytes as the site's.
+ *
+ * WHY THE LAYOUT CHANGES SHAPE. The captures flatten the site's
+ * `src/components/` away — `header/desktop-menu.vue` on disk is
+ * `src/components/header/desktop-menu.vue` on the site. Its imports did not
+ * flatten with it: it still climbs `../../assets/images/logo.svg`, which from
+ * the capture tree lands OUTSIDE source_examples/ entirely. Every capture with
+ * a two-level climb is in that position, and it has never been noticed because
+ * build-storybook.mjs carries a resolver that re-roots an overshooting climb
+ * back at source_examples/. A bundler plugin can do that; `import` in a
+ * consumer's app cannot.
+ *
+ * So the package restores the depth the capture removed. dist/src/ IS the
+ * site's src/ — components/, assets/, helpers/, lib/ — and every relative
+ * import resolves by ordinary path arithmetic, with not one byte edited.
+ *
+ * WHAT IS NOT SHIPPED, and why each one is out. This list is short on purpose:
+ * an exclusion is a component people cannot use, so it needs a reason that
+ * survives being read out loud.
+ */
+const NOT_SHIPPED = [
+  ['styles/global.css',
+   'the SITE\'s stylesheet, not this package\'s — it imports tailwindcss and ' +
+   '@codecavepro/brand/tokens.css, so shipping it would have the package ' +
+   'import itself. The storybook still reads it from the captures, where it ' +
+   'belongs, to build tw-bridge.css.'],
+  ['footer/footer.astro',
+   'an Astro component. Nothing that installs this package can render one ' +
+   'without Astro, and it imports build-time-only modules besides.'],
+  ['homepage/testimonial.astro', 'ditto.'],
+  ['common/ArticlePreview.vue',
+   'CMS-shaped, not brand-shaped: it imports Article from lib/strapi/types, ' +
+   '74 KB of types generated from the Strapi schema, and getImageUrl from ' +
+   'helpers/image-url.ts, which reads a hardcoded CMS host and token out of ' +
+   'lib/strapi.ts. Shipping either would put the site\'s content model, and ' +
+   'its CMS address, inside its design system.'],
+  ['common/Review.vue', 'ditto.'],
+  ['project/pain-points-item.vue', 'ditto.'],
+  ['homepage/technologies.vue', 'ditto (Technology, from the same 74 KB).'],
+  ['helpers/image-url.ts',
+   'the reason the four above are out. Inverting it site-side — take the base ' +
+   'URL rather than import lib/strapi — is what makes them shippable, and is ' +
+   'the same move CCWEB2-325 made for ContactUsForm. Filed as CCWEB2-332.'],
+];
+const EXCLUDED = new Set(NOT_SHIPPED.map(([rel]) => rel));
+
+/** A capture's path inside dist/, restoring the site's own directory depth. */
+function shippedAs(rel) {
+  const top = rel.split('/')[0];
+  return ['assets', 'helpers', 'lib'].includes(top)
+    ? `src/${rel}`
+    : `src/components/${rel}`;
+}
+
+/**
+ * The shippable captures, computed rather than listed.
+ *
+ * Every .vue that is not excluded is a root; each root's relative imports are
+ * followed transitively and pulled in with it. A list written by hand goes
+ * stale the first time a component gains an import — this cannot, and it fails
+ * loudly rather than shipping a component whose import resolves to nothing.
+ */
+function shippable() {
+  const all = (function walk(dir) {
+    return fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
+      e.isDirectory() ? walk(path.join(dir, e.name)) : [path.join(dir, e.name)]);
+  })(docs('source_examples'))
+    .map((f) => path.relative(docs('source_examples'), f).split(path.sep).join('/'))
+    .filter((rel) => !rel.startsWith('brand-repo'));
+
+  /* Resolved in the SHIPPED layout, not the capture layout — that is the whole
+   * assertion. `header/mobile-menu.vue` reaching `../../assets/images/logo.svg`
+   * escapes source_examples/ and lands inside dist/src/, and following the
+   * imports where the consumer will follow them is what proves it. */
+  const byShipped = new Map(all.map((rel) => [shippedAs(rel), rel]));
+  const roots = all.filter((rel) => rel.endsWith('.vue') && !EXCLUDED.has(rel))
+    .map(shippedAs);
+  const seen = new Set();
+  const escaped = [];
+
+  const visit = (shipped) => {
+    if (seen.has(shipped)) return;
+    seen.add(shipped);
+    const src = fs.readFileSync(docs('source_examples', byShipped.get(shipped)), 'utf8');
+    for (const m of src.matchAll(/from\s*["'](\.[^"']*)["']/g)) {
+      const joined = path.posix.join(path.posix.dirname(shipped), m[1]);
+      const hit = [joined, `${joined}.ts`, `${joined}.vue`].find((c) => byShipped.has(c));
+      if (!hit) { escaped.push([shipped, m[1]]); continue; }
+      visit(hit);
+    }
+  };
+  for (const shipped of roots) visit(shipped);
+
+  if (escaped.length) {
+    console.error('build failed — a shipped component imports something the package does not carry:');
+    for (const [shipped, spec] of escaped) console.error(`  dist/${shipped}  ->  ${spec}`);
+    console.error('');
+    console.error('Capture what it imports, or add the component to NOT_SHIPPED with a reason.');
+    process.exit(1);
+  }
+  return [...seen].map((shipped) => byShipped.get(shipped)).sort();
+}
+
 /** Every verbatim copy, as [source, absolute-destination]. */
 const COPIES = [
   ...VERBATIM.map(([src, dest]) => [src, out(dest), `dist/${dest}`]),
   ...ROOT_VERBATIM.map(([src, dest]) => [src, path.join(pkg, dest), dest]),
+  ...shippable().map((rel) => [
+    docs('source_examples', rel),
+    out(shippedAs(rel)),
+    `dist/${shippedAs(rel)}`,
+  ]),
 ];
 
 /**
@@ -232,6 +346,7 @@ fs.mkdirSync(out(), { recursive: true });
 fs.mkdirSync(tmp('tokens'), { recursive: true });
 
 for (const [src, target] of COPIES) {
+  fs.mkdirSync(path.dirname(target), { recursive: true });
   fs.copyFileSync(src, target);
 }
 
