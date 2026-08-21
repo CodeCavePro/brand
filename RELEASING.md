@@ -30,12 +30,14 @@ GitHub Pages on push and need no release.
 | npm login | a member of the `codecavepro` npm org | `npm whoami` |
 | Registry | `https://registry.npmjs.org/` | `npm config get registry` |
 
-**The npm org may not exist yet.** As of 2026-08-21 the registry returns 404 for
-`@codecavepro/brand` and `npm search @codecavepro` finds nothing — but neither
-proves the *scope* is unregistered, only that nothing public sits under it.
-Whether the org exists, and who is in it, cannot be checked without logging in.
-Establish that first; a scope someone else owns is a problem to discover before
-`npm publish`, not during it.
+**The org exists and `salaros` owns it.** `npm org ls codecavepro` returns
+`{"salaros": "owner"}`, checked 2026-08-21 — and checked to be a real answer
+rather than a swallowed error, by running the same command against
+`codecavepro-definitely-not-real` and watching it return `E404 Scope not found`.
+A command that reports success by printing nothing is worth provoking once.
+
+The scope holds nothing public yet: `npm view @codecavepro/brand` is still a
+404, which is what leaves `1.0.0` available to claim.
 
 Publishing is a manual, local step by design. No CI workflow holds an npm token,
 so there is no automation-shaped path to publishing something unreviewed.
@@ -147,14 +149,40 @@ accident.
 ### 4. Publish
 
 ```bash
-npm publish --workspace @codecavepro/brand
+npm run release
 ```
 
-`publishConfig.access` is already `public` in the manifest, so `--access public`
-is redundant — pass it anyway on the first publish if you want the intent in
-your shell history. A scoped package defaults to restricted, and a restricted
-publish under a free org fails rather than silently going private, but do not
-rely on that as the safety net.
+If your account requires two-factor auth, pass the code through — everything
+after `--` reaches `npm publish`:
+
+```bash
+npm run release -- --otp=123456
+```
+
+**The `--workspace` flag is not optional, and that is the entire reason this is
+a script rather than a command you type.** Bare `npm publish` at the repository
+root publishes the *workspace root*, `@codecavepro/brand-workspace` — not this
+package. It is stopped by that manifest's `private: true`, with
+
+```
+npm error This package has been marked as private
+```
+
+which reads like a problem with the package you meant to publish and is not one.
+**Do not remove that `private` field to make the message go away.** It is the
+only thing between a mistyped command and 554 files of monorepo on the public
+registry, and the package it is refusing to publish is the wrong package
+anyway.
+
+Neither rehearsal above catches this. Verified on npm 11.7.0: `npm publish
+--dry-run` on a `private` package prints `+ name@version` and exits 0. Step 3
+cannot save you here; only the real publish enforces it.
+
+`publishConfig.access` is already `public` in the manifest, so the script's
+`--access public` is redundant — it is there so the intent shows up in shell
+history. A scoped package defaults to restricted, and a restricted publish under
+a free org fails rather than silently going private, but do not rely on that as
+the safety net.
 
 Confirm the registry agrees:
 
@@ -231,8 +259,9 @@ which puts you back in the 72-hour window above, with an escalation attached.
 The routine release assumes the package already exists on the registry. The
 first one has five preconditions the rest do not, in this order:
 
-1. **The npm org exists and you are in it.** See
-   [Prerequisites](#prerequisites) — unverified from this repo.
+1. ~~**The npm org exists and you are in it.**~~ **Confirmed 2026-08-21** —
+   `salaros` owns the `codecavepro` scope and nothing public sits under it yet.
+   See [Prerequisites](#prerequisites).
 2. ~~**[CCWEB2-319](https://codecave.atlassian.net/browse/CCWEB2-319) is settled.**~~
    **Done 2026-08-21.** `spacing.controlHeight` was 44px against production's
    48px; it now ships 48px, applied as a `min-height`. Documenting a divergence
