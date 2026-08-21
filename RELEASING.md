@@ -69,8 +69,8 @@ npm version --workspace @codecavepro/brand minor --no-git-tag-version
 (`minor` is the common case — a token value moved. Substitute `patch` or
 `major` per the table.)
 
-`--no-git-tag-version` is deliberate: npm's own tag would be `v1.0.1`, which
-says nothing about *which* package in a workspace it belongs to. Tag by hand in
+`--no-git-tag-version` is deliberate: npm tags as `v1.0.1`, and this repo tags
+as `1.0.1`. Letting npm do it also commits on your behalf. Tag by hand in
 step 5.
 
 ### 2. Build from a clean tree and verify the derivation
@@ -165,12 +165,11 @@ npm view @codecavepro/brand version
 ### 5. Tag and push
 
 ```bash
-git commit -am "Release @codecavepro/brand v1.0.1" && git tag brand-v1.0.1 && git push && git push --tags
+git commit -am "Release @codecavepro/brand 1.0.1" && git tag 1.0.1 && git push && git push --tags
 ```
 
-**The convention is `brand-v<version>`**, set by `brand-v1.0.0` on 2026-08-21 —
-the repo's first tag. The prefix exists because this is a workspace: a bare
-`v1.0.1` would have to be guessed at once a second package lands.
+**Tags are the bare version — `1.0.1`.** No `v`, no package prefix. Set by
+`1.0.0` on 2026-08-21, the repo's first tag.
 
 Tags are annotated (`git tag -a`), not lightweight, so each carries its tagger,
 date and a message saying what was in it.
@@ -245,8 +244,7 @@ first one has four preconditions the rest do not, in this order:
    2026-08-20 and that is **not durable** — it measured nine drifted files on
    2026-08-19 and thirteen the next day. Nothing in the token package is built
    from a capture today, but check before assuming that is still true.
-4. **Version `1.0.0`.** The manifest already says so, and `brand-v1.0.0` is
-   tagged. Publishing straight at 1.0 is a deliberate call, not an oversight:
+4. **Version `1.0.0`.** The manifest already says so, and `1.0.0` is tagged. Publishing straight at 1.0 is a deliberate call, not an oversight:
    the token values are the thing consumers depend on and they already mirror
    production, so a `0.x` would be understating the stability of the only part
    that matters to them. The cost is that the layout is now a promise — an
