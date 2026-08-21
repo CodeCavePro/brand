@@ -6,9 +6,11 @@ bundle.
 
 Link one stylesheet and the whole system is live on `:root`.
 
-> **Status: pre-1.0.** The token *values* are stable — they mirror what
-> [codecave.pro](https://codecave.pro) ships. The package *layout* (export paths,
-> module shape) may still move before 1.0. Pin an exact version if that matters to you.
+> **Status: stable.** The token *values* mirror what
+> [codecave.pro](https://codecave.pro) ships, and the package *layout* — export paths,
+> module shape — is settled under semver: an export will not move or disappear outside a
+> major bump. Token *values* can change in a minor or patch release, because they track a
+> living design system; pin an exact version if you need them frozen.
 
 ## Install
 

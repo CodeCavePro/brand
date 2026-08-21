@@ -9,9 +9,9 @@ reissued. Everything else in this runbook is reversible; that is not.
 
 ## When to use this runbook
 
-- A token value changed in `docs/` and consumers need it.
-- The package layout changed (export paths, module shape) — that is a minor
-  bump while the package is pre-1.0.
+- A token value changed in `docs/` and consumers need it — a minor bump.
+- The package layout changed (export paths, module shape) — a **major** bump,
+  now that 1.0 is out and the layout is a promise.
 - The very first publish, [CCWEB2-318](https://codecave.atlassian.net/browse/CCWEB2-318)
   phase 5. Read [First publish only](#first-publish-only) as well; it has
   preconditions the routine path does not.
@@ -47,20 +47,29 @@ call except step 1.
 
 ### 1. Decide the version
 
-The package is pre-1.0. Token *values* are stable and mirror what codecave.pro
-ships; the package *layout* is not.
+The package is 1.0 and under ordinary semver. The layout is a promise now: an
+export cannot move or disappear outside a major bump.
 
 | Change | Bump |
 |---|---|
-| a token value, an added token, README wording | patch — `0.1.0` → `0.1.1` |
-| an export path, a module shape, a removed token | minor — `0.1.0` → `0.2.0` |
-| anything, once 1.0 is out | ordinary semver, and removals become major |
+| README wording, a fixed build, a docs-only change | patch — `1.0.0` → `1.0.1` |
+| a token **value** changing, a token added | minor — `1.0.0` → `1.1.0` |
+| an export path moving, a module shape changing, a token **removed** | major — `1.0.0` → `2.0.0` |
+
+A token value moving is a **minor**, not a patch. It is not a bug fix — the
+palette tracks a living design system, and a consumer who pinned `~1.0.0`
+deserves to opt into a colour change rather than receive it. Removing a token is
+a major for the same reason it is in any library: somebody's `var()` goes
+undefined and nothing tells them.
 
 ```bash
-npm version --workspace @codecavepro/brand patch --no-git-tag-version
+npm version --workspace @codecavepro/brand minor --no-git-tag-version
 ```
 
-`--no-git-tag-version` is deliberate: npm's own tag would be `v0.1.1`, which
+(`minor` is the common case — a token value moved. Substitute `patch` or
+`major` per the table.)
+
+`--no-git-tag-version` is deliberate: npm's own tag would be `v1.0.1`, which
 says nothing about *which* package in a workspace it belongs to. Tag by hand in
 step 5.
 
@@ -92,7 +101,7 @@ runs again and cannot be skipped. It writes
 Install it somewhere real and use it:
 
 ```bash
-mkdir -p /tmp/brand-smoke && cd /tmp/brand-smoke && npm init -y && npm i "$OLDPWD/codecavepro-brand-0.1.1.tgz"
+mkdir -p /tmp/brand-smoke && cd /tmp/brand-smoke && npm init -y && npm i "$OLDPWD/codecavepro-brand-1.0.1.tgz"
 ```
 
 Then check the three things a consumer does first. Run these from the smoke
@@ -156,13 +165,15 @@ npm view @codecavepro/brand version
 ### 5. Tag and push
 
 ```bash
-git commit -am "Release @codecavepro/brand v0.1.1" && git tag brand-v0.1.1 && git push && git push --tags
+git commit -am "Release @codecavepro/brand v1.0.1" && git tag brand-v1.0.1 && git push && git push --tags
 ```
 
-**The `brand-v<version>` convention starts here.** The repo has no tags at all
-as of 2026-08-21, so this establishes the shape rather than following it. The
-prefix exists because this is a workspace: a bare `v0.1.1` would have to be
-guessed at once a second package lands.
+**The convention is `brand-v<version>`**, set by `brand-v1.0.0` on 2026-08-21 —
+the repo's first tag. The prefix exists because this is a workspace: a bare
+`v1.0.1` would have to be guessed at once a second package lands.
+
+Tags are annotated (`git tag -a`), not lightweight, so each carries its tagger,
+date and a message saying what was in it.
 
 ### 6. Close the loop
 
@@ -177,7 +188,7 @@ is the only kind of release with downstream work attached.
 ### Within 72 hours, nothing depends on it, and the publish was a mistake
 
 ```bash
-npm unpublish @codecavepro/brand@0.1.1
+npm unpublish @codecavepro/brand@1.0.1
 ```
 
 npm allows this only inside the 72-hour window and only while no other package
@@ -190,11 +201,11 @@ to reuse the number.
 Unpublishing is not available. Deprecate, then ship a fix:
 
 ```bash
-npm deprecate @codecavepro/brand@0.1.1 "Broken build — use 0.1.2 or later."
+npm deprecate @codecavepro/brand@1.0.1 "Broken build — use 1.0.2 or later."
 ```
 
 The version stays installable — deprecation is a warning on install, not a
-removal — so the fix has to be a real one. Publish `0.1.2` immediately.
+removal — so the fix has to be a real one. Publish `1.0.2` immediately.
 
 ### If the wrong bytes shipped but the package works
 
@@ -234,8 +245,13 @@ first one has four preconditions the rest do not, in this order:
    2026-08-20 and that is **not durable** — it measured nine drifted files on
    2026-08-19 and thirteen the next day. Nothing in the token package is built
    from a capture today, but check before assuming that is still true.
-4. **Version `0.1.0`, not `1.0.0`.** The manifest already says so. 1.0 is a
-   promise about the package layout, and the layout is the part still moving.
+4. **Version `1.0.0`.** The manifest already says so, and `brand-v1.0.0` is
+   tagged. Publishing straight at 1.0 is a deliberate call, not an oversight:
+   the token values are the thing consumers depend on and they already mirror
+   production, so a `0.x` would be understating the stability of the only part
+   that matters to them. The cost is that the layout is now a promise — an
+   export path cannot move again without a `2.0.0`. Settle any layout doubts
+   **before** this publish, because after it they are expensive.
 
 Then run the routine release from step 2 — step 1 is skipped, the version is
 already correct.
