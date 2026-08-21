@@ -177,6 +177,13 @@ jobs:
         env:
           CONFIGURED: ${{ steps.sitetoken.outputs.configured }}
         run: |
+          # Also as an annotation. The step summary above is the readable
+          # version, but it takes repo access and a browser to see; an
+          # annotation hangs off the commit and is served by the public REST
+          # API, so the state is checkable from anywhere — including from a
+          # machine that is trying to work out why the secret it just added
+          # changed nothing.
+          echo "::notice title=Storybook rebuild skipped::CODECAVE_PRO_TOKEN configured=$CONFIGURED; the codecave.pro checkout was refused. See the run summary for what to check."
           {
             echo "### Storybook rebuild skipped"
             echo ""
