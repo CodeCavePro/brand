@@ -53,6 +53,7 @@ Genuine bugs in what codecave.pro ships, found while resyncing the captures.
 -   [CCWEB2-320](https://codecave.atlassian.net/browse/CCWEB2-320) — `TextField.vue`'s error message renders at 2.91:1. Accessibility.
 -   [CCWEB2-321](https://codecave.atlassian.net/browse/CCWEB2-321) — footer link reads "Truspilot".
 -   [CCWEB2-322](https://codecave.atlassian.net/browse/CCWEB2-322) — `LazyImage.vue` never binds the `width`/`height` props it declares.
+-   [CCWEB2-324](https://codecave.atlassian.net/browse/CCWEB2-324) — `ContactUsForm.vue:11` imports `getCollection`/`getEntry` from `astro:content` and never calls either. Dead today (the bundler drops it — checked the emitted chunk), so it is filed Low; it matters because `astro:content` is build-time-only and that component hydrates in the browser.
 
 ### The docs site is Astro
 
