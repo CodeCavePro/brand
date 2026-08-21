@@ -16,7 +16,6 @@ Open items for the brand package, all in
 [CCWEB2](https://codecave.atlassian.net/browse/CCWEB2) under the **`brand-kit`**
 label ([live query](https://codecave.atlassian.net/issues?jql=project%20%3D%20CCWEB2%20AND%20labels%20%3D%20%22brand-kit%22%20ORDER%20BY%20key%20ASC)):
 
--   [CCWEB2-317](https://codecave.atlassian.net/browse/CCWEB2-317) — **in progress.** `docs/` is built with Astro; sources stay in `docs/`, output goes to gitignored `dist/`, Pages deploys `dist/`. `preview/` and `storybook/` are ported. **Open: `index.html` + `brand-kit.html`. `artifacts/` is never rendered.** The site runs half-migrated meanwhile — a page is either an `.astro` under `docs/pages/` or a hand-written `.html` elsewhere in `docs/`, both served identically. Porting rules are in [CONTRIBUTING.md](/CONTRIBUTING.md); the one that bites is that you must delete the `.html` in the same commit, which `docs/tools/astro-passthrough.mjs` enforces because Astro's own behaviour there is a `WARN` and exit 0. **The storybook specimens are not Astro islands and must not become them** — they mount `compiled/*.js` in the browser through an import map, which is what makes them a record of what codecave.pro ships rather than a rebuild of it; `is:inline` on both tags is what keeps that true. `@astrojs/vue` is therefore still exercised by nothing.
 -   [CCWEB2-318](https://codecave.atlassian.net/browse/CCWEB2-318) — **epic.** Publish `@codecavepro/brand` to npm and have codecave.pro install it, inverting the direction of truth. **Open: the first publish itself (needs a human OTP), then phase 4 (promote components) and phase 6 (the codecave.pro PR — open it, do not merge).** Re-measure the captures with `npm run check:captures` before building components from them; never publish a component built from a capture that is behind the site.
 
 Genuine bugs in what codecave.pro ships, found while resyncing the captures.
@@ -27,6 +26,27 @@ Genuine bugs in what codecave.pro ships, found while resyncing the captures.
 -   [CCWEB2-320](https://codecave.atlassian.net/browse/CCWEB2-320) — `TextField.vue`'s error message renders at 2.91:1. Accessibility.
 -   [CCWEB2-321](https://codecave.atlassian.net/browse/CCWEB2-321) — footer link reads "Truspilot".
 -   [CCWEB2-322](https://codecave.atlassian.net/browse/CCWEB2-322) — `LazyImage.vue` never binds the `width`/`height` props it declares.
+
+### The docs site is Astro
+
+Finished under [CCWEB2-317](https://codecave.atlassian.net/browse/CCWEB2-317) on
+2026-08-21, so it is architecture now rather than open work. **Sources stay in
+`docs/`, output goes to gitignored `dist/`, and Pages deploys `dist/`.** Every
+page is an `.astro` under `docs/pages/`; `artifacts/` is never rendered and never
+will be. Everything else in `docs/` is payload and passes through, which
+`docs/tools/astro-passthrough.mjs` asserts every build — both halves are silent
+when they fail.
+
+Two rules survive the migration and are in [CONTRIBUTING.md](/CONTRIBUTING.md)
+with their reasons. The one that bites when adding a page: a `.html` at the same
+path wins over the `.astro`, so writing one page in both forms leaves the
+`.astro` dead — Astro's own behaviour is a `WARN` and exit 0, and the
+passthrough check fails the build instead. The one that bites when improving a
+page: **the storybook specimens are not Astro islands and must not become them.**
+They mount `compiled/*.js` in the browser through an import map, which is what
+makes them a record of what codecave.pro ships rather than a rebuild of it, and
+`is:inline` on both tags is what keeps that true. `@astrojs/vue` is consequently
+exercised by nothing; it stays only as a bet on CCWEB2-318 phase 4.
 
 ### Ports, not stubs
 
