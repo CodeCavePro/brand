@@ -238,7 +238,7 @@ var __sfc__4 = /* @__PURE__ */ _defineComponent2({
 });
 __sfc__4.__scopeId = "data-v-6157cca1";
 __sfc__4.__file = "source_examples/common/Review.vue";
-var __css__ = "\n.testimonial[data-v-6157cca1] {\r\n  backdrop-filter: blur(32px);\n}\r\n";
+var __css__ = "\n.testimonial[data-v-6157cca1] {\n  backdrop-filter: blur(32px);\n}\n";
 if (typeof document !== "undefined" && !document.getElementById("sfc-style-6157cca1")) {
   const el = document.createElement("style");
   el.id = "sfc-style-6157cca1";

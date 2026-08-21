@@ -132,38 +132,38 @@ var __sfc__2 = /* @__PURE__ */ _defineComponent({
 __sfc__2.__scopeId = "data-v-b7ef7edb";
 __sfc__2.__file = "source_examples/common/Checkbox.vue";
 var __css__ = `
-input[data-v-b7ef7edb] {\r
-  appearance: none;\r
-  -webkit-appearance: none;\r
-  display: grid;\r
-  place-content: center;\r
+input[data-v-b7ef7edb] {
+  appearance: none;
+  -webkit-appearance: none;
+  display: grid;
+  place-content: center;
   border-radius: var(--radius-control);
-}\r
-\r
-/* The corner cannot be size-independent. The small box is 16px, and 8px on a\r
-   16px box is exactly half its side -- a circle, which reads as a radio button\r
-   for what is a pick-any control. Keyed off data-size rather than a utility\r
-   class so it holds without a Tailwind build, same reason both custom\r
+}
+
+/* The corner cannot be size-independent. The small box is 16px, and 8px on a
+   16px box is exactly half its side -- a circle, which reads as a radio button
+   for what is a pick-any control. Keyed off data-size rather than a utility
+   class so it holds without a Tailwind build, same reason both custom
    properties are declared in :root. */
-input[data-size="small"][data-v-b7ef7edb] {\r
+input[data-size="small"][data-v-b7ef7edb] {
   border-radius: var(--radius-control-sm);
 }
-input[data-v-b7ef7edb]::before {\r
-  content: '';\r
-  transform: scale(0);\r
-  transition: var(--duration-control) transform ease-in-out;\r
-  background-image: url("../../assets/images/checked-icon.svg");\r
-  background-repeat: no-repeat;\r
+input[data-v-b7ef7edb]::before {
+  content: '';
+  transform: scale(0);
+  transition: var(--duration-control) transform ease-in-out;
+  background-image: url("../../assets/images/checked-icon.svg");
+  background-repeat: no-repeat;
   background-position: center center;
 }
-input[data-v-b7ef7edb]:checked::before {\r
-  transform: scale(1);\r
+input[data-v-b7ef7edb]:checked::before {
+  transform: scale(1);
   transform-origin: center center;
 }
-.checkbox-error[data-v-b7ef7edb] {\r
-  box-shadow: 0 0 16px 0 hsl(from var(--color-error-200) h s l / 0.5),\r
+.checkbox-error[data-v-b7ef7edb] {
+  box-shadow: 0 0 16px 0 hsl(from var(--color-error-200) h s l / 0.5),
     0 0 4px 0 hsl(from var(--color-error-100) h s l / 0.6);
-}\r
+}
 `;
 if (typeof document !== "undefined" && !document.getElementById("sfc-style-b7ef7edb")) {
   const el = document.createElement("style");
