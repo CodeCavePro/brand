@@ -118,9 +118,38 @@ const problems = [];
 
 /* ---- A. names an SFC uses that nothing declares -------------------------- */
 
-const siteGlobals = new Set(
-  declarations(fs.readFileSync(path.join(captures, 'styles', 'global.css'), 'utf8')).keys(),
-);
+/* What the SITE has at runtime, which since CCWEB2-318 phase 6 is no longer
+ * global.css alone: the site imports @codecavepro/brand/tokens.css and deleted
+ * its own copy of the palette, so resolving declarations from global.css by
+ * itself reports every brand token as undeclared. It reported 26 the day the
+ * captures were refreshed, all of them false.
+ *
+ * FOLLOW THE IMPORT rather than hard-coding the union. If the site ever drops
+ * that line, the names really do stop being declared and this check must fail
+ * again — which it will, because the union is conditional on the import being
+ * there. `@import "tailwindcss"` is deliberately NOT followed: a name that
+ * exists only because Tailwind emits a default is exactly what direction A is
+ * looking for.
+ *
+ * The package half is read from docs/colors_and_type.css's :root block, the
+ * origin dist/tokens.css is extracted from (scripts/build.mjs), not from the
+ * built file — dist/ is gitignored, so CI would resolve nothing. `npm run
+ * check` asserts the two are identical before this ever runs. */
+const globalCss = fs.readFileSync(path.join(captures, 'styles', 'global.css'), 'utf8');
+const siteGlobals = new Set(declarations(globalCss).keys());
+
+const IMPORTS_TOKENS = /^\s*@import\s+["']@codecavepro\/brand\/tokens\.css["']/m;
+if (IMPORTS_TOKENS.test(globalCss)) {
+  const origin = fs.readFileSync(path.join(docs, 'colors_and_type.css'), 'utf8');
+  const open = origin.search(/^:root\s*\{[ \t]*$/m);
+  const close = origin.indexOf('\n}\n', open);
+  if (open === -1 || close === -1) {
+    console.error('colors_and_type.css has no single top-level :root block to read tokens from.');
+    console.error('Direction A was not checked; nothing about undeclared names was verified.');
+    process.exit(1);
+  }
+  for (const name of declarations(origin.slice(open, close + 2)).keys()) siteGlobals.add(name);
+}
 
 /* The captures always, and the full site tree as well when one is beside us.
  *
@@ -214,9 +243,10 @@ if (problems.length) {
   console.error(`${problems.length} token problem(s):`);
   for (const line of problems) console.error(line);
   console.error('');
-  console.error('A name in direction A: declare it in the site\'s global.css, or scope it');
-  console.error('to the component. A name in direction B: rename the package\'s token, or');
-  console.error('add it to INTENDED in this file WITH the reason it is deliberate.');
+  console.error('A name in direction A: add it to the package tokens, declare it in the');
+  console.error('site\'s global.css, or scope it to the component. A name in direction B:');
+  console.error('rename the package\'s token, or add it to INTENDED in this file WITH the');
+  console.error('reason it is deliberate.');
   process.exit(1);
 }
 
