@@ -66,5 +66,7 @@ onUnmounted(() => {
     ref="image"
     :data-src="src"
     :alt="alt"
+    :width="width"
+    :height="height"
   />
 </template>

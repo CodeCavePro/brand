@@ -25,9 +25,9 @@ w-fit max-w-full min-w-12 min-h-12 rounded-full text-body-primary font-bold tran
     const variantClass = computed(() => {
       switch (props.variant) {
         case "secondary":
-          return `${buttonBaseClass} h-11 px-6 py-1 bg-primary-900 hover:bg-surface-tertiary`;
+          return `${buttonBaseClass} px-6 py-1 bg-primary-900 hover:bg-surface-tertiary`;
         case "tertiary":
-          return `${buttonBaseClass} h-11 px-6 py-1 border border-primary-500 hover:border-primary-700`;
+          return `${buttonBaseClass} px-6 py-1 border border-primary-500 hover:border-primary-700`;
         case "icon":
           return `${buttonBaseClass} p-5 border border-primary-500 hover:border-primary-700`;
         case "ghost":

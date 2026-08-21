@@ -40,7 +40,7 @@ export const other: Link[] = [
 ]
 
 export const reviews: Link[] = [
-    {name: 'Truspilot', href: 'https://www.trustpilot.com/review/codecave.pro'},
+    {name: 'Trustpilot', href: 'https://www.trustpilot.com/review/codecave.pro'},
     {name: 'Glassdoor', href: 'https://www.glassdoor.com/Reviews/Employee-Review-CodeCave-E8324784-RVW95188942.htm'},
     {name: 'Clutch', href: 'https://clutch.co/profile/codecave-0-1'},
     {name: 'G2', href: 'https://www.g2.com/products/codecave/expertises'},

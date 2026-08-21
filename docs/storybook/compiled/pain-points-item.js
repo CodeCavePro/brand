@@ -1258,7 +1258,7 @@ var getImageUrl = (url) => {
 import { defineComponent as _defineComponent } from "vue";
 import { openBlock as _openBlock, createElementBlock as _createElementBlock } from "vue";
 import { onMounted, onUnmounted, ref } from "vue";
-var _hoisted_1 = ["data-src", "alt"];
+var _hoisted_1 = ["data-src", "alt", "width", "height"];
 var __sfc__ = /* @__PURE__ */ _defineComponent({
   __name: "LazyImage",
   props: {
@@ -1309,7 +1309,9 @@ var __sfc__ = /* @__PURE__ */ _defineComponent({
         ref_key: "image",
         ref: image,
         "data-src": __props.src,
-        alt: __props.alt
+        alt: __props.alt,
+        width: __props.width,
+        height: __props.height
       }, null, 8, _hoisted_1);
     };
   }
@@ -2875,7 +2877,7 @@ var __sfc__2 = /* @__PURE__ */ _defineComponent2({
     };
     marked.use({ renderer });
     const contentString = (typeof props.item.content === "string" ? props.item.content : "") || "";
-    const htmlContent = sanitize(marked.parse(contentString));
+    const htmlContent = sanitize(marked.parse(contentString, { async: false }));
     return (_ctx, _cache) => {
       return _openBlock2(), _createElementBlock2("div", _hoisted_12, [
         _createVNode(LazyImage_default, {

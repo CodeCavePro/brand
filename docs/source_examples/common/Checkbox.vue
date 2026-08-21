@@ -8,7 +8,7 @@ const props = withDefaults(
     label: string
     isRequired?: boolean
     isError?: boolean
-    variant?: 'primary'
+    variant?: 'primary' | 'secondary'
     size?: 'small' | 'medium'
     modelValue?: boolean
   }>(),
@@ -71,7 +71,7 @@ defineEmits(['update:modelValue'])
       :class="inputVariantClass"
       :data-size="size"
       :checked="modelValue"
-      @change="$emit('update:modelValue', ($event.target as HTMLTextAreaElement).checked)"/>
+      @change="$emit('update:modelValue', ($event.target as HTMLInputElement).checked)"/>
     <span class="flex items-center">
       {{ label }}
       <AsteriskIcon v-if="isRequired" class="mx-1"/>

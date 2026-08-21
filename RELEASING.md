@@ -17,9 +17,15 @@ reissued. Everything else in this runbook is reversible; that is not.
   preconditions the routine path does not.
 
 **Do not use it** for changes that do not reach the tarball. The package ships
-`dist/` plus `README.md` and `LICENSE` — 17 files. Storybook specimens, docs
-pages, `DESIGN.md` and `WEBSITE-REVIEW.md` are none of them. Those deploy with
-GitHub Pages on push and need no release.
+`dist/` plus `README.md` and `LICENSE` — 52 files as of 1.2.0. Storybook
+specimens, docs pages, `DESIGN.md` and `WEBSITE-REVIEW.md` are none of them.
+Those deploy with GitHub Pages on push and need no release.
+
+**A capture *is* a change that reaches the tarball, now that components ship.**
+Refreshing `docs/source_examples/` moves published bytes, so it is a release,
+and `npm run check:captures` is a precondition of every publish rather than only
+the first — with the checkout on `development`, because it reads whatever branch
+it finds. See [CONTRIBUTING.md](/CONTRIBUTING.md).
 
 ## Prerequisites
 
@@ -130,6 +136,23 @@ node -e "const fs=require('fs'),p='node_modules/@codecavepro/brand/dist/colors_a
 
 prints `identical` — the buildless URL and the installed file are the same
 bytes, which is the package's central promise.
+
+```bash
+node -e "console.log(require.resolve('@codecavepro/brand/components/common/Button.vue'))"
+node -e "const fs=require('fs'),path=require('path'),root=path.dirname(require.resolve('@codecavepro/brand/package.json'))+'/dist/src';const walk=d=>fs.readdirSync(d,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(path.join(d,e.name)):[path.join(d,e.name)]);const bad=[];for(const f of walk(root))for(const m of fs.readFileSync(f,'utf8').matchAll(/from\s*['\"](\.[^'\"]*)['\"]/g)){const j=path.resolve(path.dirname(f),m[1]);if(![j,j+'.ts',j+'.vue'].some(c=>fs.existsSync(c)))bad.push(path.relative(root,f)+' -> '+m[1]);}console.log(bad.length?'DANGLING: '+bad.join(', '):'every relative import resolves')"
+```
+
+The first prints a path — the `./components/*` subpath export resolves. The
+second prints `every relative import resolves`, walking the installed
+`dist/src/` and following every relative import in it.
+
+That one is not ceremony. The captures flatten the site's `src/components/`
+level away while their imports still climb through it — `header/desktop-menu.vue`
+reaches `../../assets/images/logo.svg` — so the package ships at the site's
+depth to keep those resolving. The storybook cannot catch a regression here,
+because `build-storybook.mjs` re-roots escaping imports with a resolver plugin
+and a consumer's `import` has no such plugin. `DANGLING` means the package is
+broken for every consumer while looking fine in this repo.
 
 ```bash
 ls node_modules/@codecavepro/brand/
@@ -305,9 +328,14 @@ Worth knowing before someone files a release request for one of these:
 - **Font binaries.** A licensing question, not an oversight. The stylesheets
   declare six Satoshi faces and ship no files; consumers supply them. See the
   [package README](packages/brand/README.md).
-- **Components.** [CCWEB2-318](https://codecave.atlassian.net/browse/CCWEB2-318)
-  phase 4. Nothing is published from `docs/source_examples/` until a capture has
-  been re-measured against the live site, ever.
+- **The four CMS-shaped components.** `ArticlePreview`, `Review`,
+  `pain-points-item` and `technologies` reach the site's Strapi host and token
+  through `helpers/image-url.ts`. `build.mjs` excludes them by name in
+  `NOT_SHIPPED`, each with its reason; they ship when
+  [CCWEB2-332](https://codecave.atlassian.net/browse/CCWEB2-332) inverts that
+  dependency site-side. The rest of the components ship as of 1.2.0 — but
+  **nothing is published from `docs/source_examples/` until the captures have
+  been re-measured against the live site, ever.**
 - **Anything authored in `packages/`.** `README.md` is the single exception,
   because npm renders it as the package page and there is nowhere else for that
   page to come from — and even its example values are asserted against the

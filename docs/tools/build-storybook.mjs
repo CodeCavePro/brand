@@ -96,11 +96,25 @@ if (!fs.existsSync(PKG)) {
   process.exit(1);
 }
 
-/** Where an entry's source lives, and which root it is relative to. */
+/** Where an entry's source lives, and which root it is relative to.
+ *
+ * The package's copy must equal the capture it was copied from, or this build
+ * is documenting a package that no longer exists. dist/ is generated and
+ * gitignored, so it goes stale the moment a capture is refreshed without
+ * `npm run build -w @codecavepro/brand` after it — and nothing else here would
+ * notice: the bytes still compile, the specimen still renders, and it renders
+ * the OLD component. Caught doing exactly that on 2026-08-21, refreshing five
+ * captures and rebuilding the storybook before the package. */
 function rootOf(entry) {
   const shipped = path.join(PKG, 'components', entry);
-  return fs.existsSync(shipped) ? { file: shipped, root: PKG, label: 'package' }
-                                : { file: path.join(SRC, entry), root: SRC, label: 'captures' };
+  if (!fs.existsSync(shipped)) return { file: path.join(SRC, entry), root: SRC, label: 'captures' };
+  const capture = path.join(SRC, entry);
+  if (!fs.readFileSync(shipped).equals(fs.readFileSync(capture))) {
+    console.error(`the package's ${entry} is not the capture it was copied from.`);
+    console.error('dist/ is stale. Run: npm run build -w @codecavepro/brand');
+    process.exit(1);
+  }
+  return { file: shipped, root: PKG, label: 'package' };
 }
 
 const OUT = path.join(docs, 'storybook', 'compiled');

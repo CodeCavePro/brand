@@ -23,7 +23,7 @@ const renderer: RendererObject = {
 }
 marked.use({ renderer })
 const contentString = (typeof props.item.content === 'string' ? props.item.content : '') || ''
-const htmlContent = sanitize(marked.parse(contentString))
+const htmlContent = sanitize(marked.parse(contentString, { async: false }))
 </script>
 
 <template>

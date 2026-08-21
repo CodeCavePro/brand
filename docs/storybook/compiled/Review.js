@@ -93,7 +93,7 @@ var getImageUrl = (url) => {
 import { defineComponent as _defineComponent } from "vue";
 import { openBlock as _openBlock3, createElementBlock as _createElementBlock3 } from "vue";
 import { onMounted, onUnmounted, ref } from "vue";
-var _hoisted_13 = ["data-src", "alt"];
+var _hoisted_13 = ["data-src", "alt", "width", "height"];
 var __sfc__3 = /* @__PURE__ */ _defineComponent({
   __name: "LazyImage",
   props: {
@@ -144,7 +144,9 @@ var __sfc__3 = /* @__PURE__ */ _defineComponent({
         ref_key: "image",
         ref: image,
         "data-src": __props.src,
-        alt: __props.alt
+        alt: __props.alt,
+        width: __props.width,
+        height: __props.height
       }, null, 8, _hoisted_13);
     };
   }
