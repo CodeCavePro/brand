@@ -10,14 +10,16 @@
   ],
   "scripts": {
     "build": "npm run build --workspace @codecavepro/brand",
-    "check": "npm run check --workspace @codecavepro/brand && npm run check:ports && node docs/tools/check-tw-bridge.mjs",
+    "check": "npm run check --workspace @codecavepro/brand && npm run check:ports && node docs/tools/check-tw-bridge.mjs && npm run check:collisions",
     "check:ports": "tsc --noEmit --project docs/storybook/ports/tsconfig.json",
+    "check:collisions": "node docs/tools/check-tw-collisions.mjs",
     "check:captures": "node docs/tools/check-captures.mjs"
   },
   "engines": {
     "node": ">=20"
   },
   "devDependencies": {
-    "dompurify": "3.4.13"
+    "dompurify": "3.4.13",
+    "tailwindcss": "4.3.0"
   }
 }

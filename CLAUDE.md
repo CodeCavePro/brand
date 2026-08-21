@@ -16,7 +16,7 @@ Open items for the brand package, all in
 [CCWEB2](https://codecave.atlassian.net/browse/CCWEB2) under the **`brand-kit`**
 label ([live query](https://codecave.atlassian.net/issues?jql=project%20%3D%20CCWEB2%20AND%20labels%20%3D%20%22brand-kit%22%20ORDER%20BY%20key%20ASC)):
 
--   [CCWEB2-314](https://codecave.atlassian.net/browse/CCWEB2-314) — standing Tailwind-collision check; run it whenever this package or the site's `global.css` moves.
+-   [CCWEB2-314](https://codecave.atlassian.net/browse/CCWEB2-314) — **done** 2026-08-21, by making it stop being a standing manual job. It was a shell one-liner living in a Jira description; it is now `npm run check:collisions`, in `npm run check` and in CI. Both directions the ticket describes, including the complement it says *"has no check at all"* — and the fix that makes it scriptable: subtracting each SFC's own declarations, which is what turned the documented `--duration` over-report into a non-event instead of a glance-at-it-every-time.
 -   [CCWEB2-315](https://codecave.atlassian.net/browse/CCWEB2-315) — **done** 2026-08-20, **re-measured clean** 2026-08-21 (30/30 captures byte-identical). It measured *nine* drifted files on 2026-08-19 and *thirteen* a day later; treat that rate as the argument for CCWEB2-318 rather than a reason to re-file it. **Stop measuring this by hand — run `npm run check:captures`.** It needs a `codecave.pro` checkout, so it is deliberately outside `npm run check` and outside CI.
 -   [CCWEB2-316](https://codecave.atlassian.net/browse/CCWEB2-316) — **done** 2026-08-21. "Converged" is now a checkable fact, written next to the claim in the root [README.md](/README.md): *codecave.pro installs `@codecavepro/brand` and deletes its own copy of the palette.* Not a similarity judgement — that one drifted by nine files in a day.
 -   [CCWEB2-317](https://codecave.atlassian.net/browse/CCWEB2-317) — decide whether `docs/` is built with Astro. Carries the whole proposal; blocked on one question, whether `docs/` stays committed as build output.
@@ -29,6 +29,11 @@ label because they are the site's to fix, not the package's:
 -   [CCWEB2-320](https://codecave.atlassian.net/browse/CCWEB2-320) — `TextField.vue`'s error message renders at 2.91:1. Accessibility.
 -   [CCWEB2-321](https://codecave.atlassian.net/browse/CCWEB2-321) — footer link reads "Truspilot".
 -   [CCWEB2-322](https://codecave.atlassian.net/browse/CCWEB2-322) — `LazyImage.vue` never binds the `width`/`height` props it declares.
+
+And one that is the package's, found the first time the CCWEB2-314 complement
+ever ran:
+
+-   [CCWEB2-323](https://codecave.atlassian.net/browse/CCWEB2-323) — `--text-sm` and `--text-lg` collide with Tailwind's own and differ in value, and the package's unlayered `:root` **wins** over Tailwind's `@layer theme`. The site uses those utilities 72 times across 37 files and does not declare either token, so it inherits the bug at the exact moment it installs the package — CCWEB2-318 phase 6, which is the convergence criterion itself. **Blocks the first publish.** Renaming is free until the first `npm publish` and a `2.0.0` after it, the same argument RELEASING.md already makes for CCWEB2-319.
 
 ### Ports, not stubs
 

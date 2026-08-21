@@ -229,7 +229,7 @@ which puts you back in the 72-hour window above, with an escalation attached.
 ## First publish only
 
 The routine release assumes the package already exists on the registry. The
-first one has four preconditions the rest do not, in this order:
+first one has five preconditions the rest do not, in this order:
 
 1. **The npm org exists and you are in it.** See
    [Prerequisites](#prerequisites) — unverified from this repo.
@@ -244,7 +244,19 @@ first one has four preconditions the rest do not, in this order:
    2026-08-20 and that is **not durable** — it measured nine drifted files on
    2026-08-19 and thirteen the next day. Nothing in the token package is built
    from a capture today, but check before assuming that is still true.
-4. **Version `1.0.0`.** The manifest already says so, and `1.0.0` is tagged. Publishing straight at 1.0 is a deliberate call, not an oversight:
+4. **[CCWEB2-323](https://codecave.atlassian.net/browse/CCWEB2-323) is settled.**
+   `--text-sm` and `--text-lg` are declared by both this package and Tailwind,
+   with different values, and the package's unlayered `:root` **wins** over
+   Tailwind's `@layer theme` — so importing the stylesheet silently resizes
+   every `text-sm` and `text-lg` in a consumer's app. codecave.pro uses them 72
+   times across 37 files. `npm run check:collisions` reports it on every run.
+
+   This is precondition 2's argument again, and it is the reason precondition 2
+   is worth having as a *category* rather than a one-off: a token name is only
+   cheap to change while nobody has installed it. After the first publish a
+   rename is a `2.0.0`.
+
+5. **Version `1.0.0`.** The manifest already says so, and `1.0.0` is tagged. Publishing straight at 1.0 is a deliberate call, not an oversight:
    the token values are the thing consumers depend on and they already mirror
    production, so a `0.x` would be understating the stability of the only part
    that matters to them. The cost is that the layout is now a promise — an

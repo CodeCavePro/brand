@@ -143,9 +143,26 @@ produces an ERESOLVE that looks like a broken dependency graph and is not.
 npm run check
 ```
 
-That is three assertions in one: the package is byte-identical to its origin, every
-storybook port typechecks, and the compiled storybook matches the captures it was
-built from. All three are things that would otherwise rot quietly.
+That is four assertions in one: the package is byte-identical to its origin, every
+storybook port typechecks, the compiled storybook matches the captures it was
+built from, and no token silently redefines a Tailwind default. All four are
+things that would otherwise rot quietly.
+
+The last one is worth a sentence, because it catches a failure with no symptom
+here at all. Tailwind declares its theme inside `@layer theme`;
+`colors_and_type.css` declares in a plain `:root`, and **unlayered CSS beats any
+cascade layer regardless of source order.** So a token that happens to share a
+name with a Tailwind default does not merely coexist with it — it silently and
+unconditionally replaces it in every consumer's app, and nothing in this
+repository renders any differently. `npm run check:collisions` diffs the token
+layer against Tailwind's complete default theme, and sweeps the SFCs for
+properties nothing declares. The first time it ran it found
+[CCWEB2-323](https://codecave.atlassian.net/browse/CCWEB2-323).
+
+Both of its inputs live here — `source_examples/` is committed, and Tailwind's
+theme comes from a devDependency pinned to the version the site resolves — so
+unlike `check:captures` it runs in CI. It also sweeps the full site checkout for
+undeclared properties when one is beside this repo, and says which it did.
 
 **Prefer an assertion to a comment.** This is the repo's strongest habit and it
 was learned the hard way — a comment asking the next person to keep two things in
