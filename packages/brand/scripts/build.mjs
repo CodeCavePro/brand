@@ -32,6 +32,10 @@
  * Flattening docs/fonts/fonts.css to dist/fonts.css is what splits them. This
  * is documented in the package README's font table; if the copy layout ever
  * changes, that table changes with it.
+ *
+ * dist/tokens.css is the one output that is neither copied nor compiled: it is
+ * EXTRACTED from colors_and_type.css. See extractRoot() for why the package
+ * ships the palette twice over — once whole, once as values only.
  */
 
 import { spawnSync } from 'node:child_process';
@@ -74,6 +78,93 @@ const COPIES = [
   ...ROOT_VERBATIM.map(([src, dest]) => [src, path.join(pkg, dest), dest]),
 ];
 
+/**
+ * The tokens-only stylesheet, EXTRACTED from colors_and_type.css rather than
+ * written. It is the `:root` block and nothing else.
+ *
+ * WHY IT EXISTS. `./css` is the whole design system: six @font-face rules, the
+ * tokens, base rules for html/body/h1-h6/a, two layout primitives and ~60
+ * component classes. That is right for a page that wants CODECAVE's look
+ * wholesale, and wrong for an app that already has its own base styles — for
+ * codecave.pro, importing it would restyle every heading and link on the
+ * production site, which is a design change wearing a dependency-update
+ * costume. `./tokens.css` is the half that inverts the direction of truth
+ * without touching a pixel: the site keeps its own base layer and stops
+ * keeping its own copy of the palette.
+ *
+ * WHY EXTRACTED AND NOT WRITTEN. A hand-maintained token file would be a
+ * second home for the values whose whole point is having one. Extraction keeps
+ * the package a pure derivative; `--check` re-extracts and compares, so the
+ * two cannot drift.
+ *
+ * The block is located structurally — `:root {` alone on a line, closed by `}`
+ * in column 0 — and anything ambiguous is a hard failure rather than a guess.
+ * Silently shipping half a palette is the failure mode worth being loud about.
+ */
+function extractRoot(src) {
+  const css = fs.readFileSync(src, 'utf8').replace(/\r\n/g, '\n');
+  const rel = path.relative(repo, src).split(path.sep).join('/');
+
+  const opens = [...css.matchAll(/^:root\s*\{[ \t]*$/gm)];
+  if (opens.length !== 1) {
+    throw new Error(
+      `${rel}: expected exactly one \`:root {\` block, found ${opens.length}.\n` +
+        'dist/tokens.css is extracted from it — see scripts/build.mjs.',
+    );
+  }
+
+  const from = opens[0].index;
+  const close = css.indexOf('\n}\n', from);
+  if (close === -1) throw new Error(`${rel}: the :root block is never closed in column 0.`);
+  /* +2 takes the closing brace; the newline after it is added rather than
+   * sliced, so the file ends the same way whether or not the origin does. */
+  const block = css.slice(from, close + 2) + '\n';
+
+  /* A block that declares nothing is a rename or a refactor that got this far
+   * unnoticed; ship it and consumers get a stylesheet of comments. */
+  const declarations = (block.match(/^\s+--[\w-]+\s*:/gm) ?? []).length;
+  if (declarations < 50) {
+    throw new Error(`${rel}: the :root block declares only ${declarations} custom properties.`);
+  }
+
+  const header = [
+    '/* ==========================================================================',
+    ' * CODECAVE design tokens — @codecavepro/brand/tokens.css',
+    ' * --------------------------------------------------------------------------',
+    ` * GENERATED from ${rel} — do not edit.`,
+    ' *',
+    ' * The custom properties and nothing else: no @font-face, no rules for html,',
+    ' * body, headings or links, no layout primitives, no components. Import this',
+    " * into an app that already has a base layer of its own and wants CODECAVE's",
+    ' * values; import "@codecavepro/brand/css" to get the design system whole.',
+    ' *',
+    ' * Fonts are a separate concern here by design: --font-sans names Satoshi and',
+    " * supplying the faces is the consuming app's job.",
+    ' * ======================================================================== */',
+    '',
+    '',
+  ].join('\n');
+
+  return header + block;
+}
+
+/* extractRoot() throws on anything it will not guess about, which is the point
+ * — but a raw stack trace reads as "the build script is broken" when what
+ * actually happened is that docs/ changed shape. Report it the way every other
+ * failure here is reported, and say which file could not be produced. */
+function derive(produce, dest) {
+  try {
+    return produce();
+  } catch (err) {
+    console.error(`build failed — dist/${dest} cannot be derived from docs/:`);
+    console.error(`  ${err.message}`);
+    process.exit(1);
+  }
+}
+
+/** Files derived from a docs/ source, as [produce, destination-inside-dist]. */
+const DERIVED = [[() => extractRoot(docs('colors_and_type.css')), 'tokens.css']];
+
 /** Token modules compiled to JS + .d.ts, in the order they are re-exported. */
 const TOKENS = ['colors', 'layout', 'typography'];
 
@@ -108,11 +199,30 @@ if (checkOnly) {
       drifted++;
     }
   }
+  // A derived file cannot be compared against its source, so it is re-derived
+  // and compared against what was derived last time. Same guarantee, one step
+  // longer: dist/ is still provably a function of docs/ and of nothing else.
+  for (const [produce, dest] of DERIVED) {
+    const target = out(dest);
+    if (!fs.existsSync(target)) {
+      console.error(`  not built: dist/${dest}`);
+      drifted++;
+      continue;
+    }
+    if (fs.readFileSync(target, 'utf8').replace(/\r\n/g, '\n') !== derive(produce, dest)) {
+      console.error(`  drifted: dist/${dest} is not what its origin extracts to now`);
+      drifted++;
+    }
+  }
+
   if (drifted) {
     console.error(`\n${drifted} file(s) out of sync. Run: npm run build -w @codecavepro/brand`);
     process.exit(1);
   }
-  console.log(`@codecavepro/brand: ${COPIES.length} file(s) match their origin byte-for-byte.`);
+  console.log(
+    `@codecavepro/brand: ${COPIES.length} file(s) match their origin byte-for-byte, ` +
+      `${DERIVED.length} re-derive unchanged.`,
+  );
   process.exit(0);
 }
 
@@ -123,6 +233,10 @@ fs.mkdirSync(tmp('tokens'), { recursive: true });
 
 for (const [src, target] of COPIES) {
   fs.copyFileSync(src, target);
+}
+
+for (const [produce, dest] of DERIVED) {
+  fs.writeFileSync(out(dest), derive(produce, dest));
 }
 
 for (const name of TOKENS) {
@@ -207,6 +321,22 @@ if (fs.existsSync(readme)) {
     for (const s of stale) console.error(`  ${s}`);
     process.exit(1);
   }
+  /* The tokens-only section quotes how many properties it carries, which is a
+   * fact about dist/tokens.css living in a second file — the same shape of
+   * problem as the example values above, so it gets the same treatment. */
+  const claim = /(\d+)\s+properties on `:root`/.exec(fs.readFileSync(readme, 'utf8'));
+  if (claim) {
+    const real = (fs.readFileSync(out('tokens.css'), 'utf8').match(/^\s+--[\w-]+\s*:/gm) ?? []).length;
+    if (Number(claim[1]) !== real) {
+      console.error(
+        `build failed — README.md says ${claim[1]} properties on :root; ` +
+          `dist/tokens.css declares ${real}.`,
+      );
+      process.exit(1);
+    }
+    asserted++;
+  }
+
   console.log(`@codecavepro/brand: ${asserted} README example value(s) verified.`);
 }
 

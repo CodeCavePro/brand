@@ -43,6 +43,28 @@ That is the whole setup. Every token is now a custom property on `:root`:
 only so the semantic names have somewhere to point; using them directly is how a
 redesign turns into a find-and-replace across your codebase.
 
+### Already have your own base styles? Import the values only
+
+`@codecavepro/brand/css` is the design system **whole**: the tokens, six `@font-face`
+rules, base rules for `html`, `body`, `h1`–`h6` and `a`, two layout primitives and
+around sixty component classes. That is what you want for a page that should look like
+CODECAVE. It is *not* what you want in an app that already has a base layer — dropping
+it in restyles every heading and link you have.
+
+For that case there is a second stylesheet holding the custom properties and nothing
+else:
+
+```css
+@import "@codecavepro/brand/tokens.css";
+```
+
+Same 102 properties on `:root`, same values, zero rules. Nothing it declares can change
+how a single existing element renders — a `var()` only takes effect where you write
+one. Fonts come with it only as a *name*: `--font-sans` says Satoshi, and declaring the
+faces stays your call (see below).
+
+Use it to end a duplicated palette without signing up for a redesign in the same commit.
+
 ### No build step, if you prefer
 
 The same file is served, byte for byte, from the published design system:
@@ -69,6 +91,7 @@ dropped into a project on its own:
 |---|---|---|
 | `@codecavepro/brand/css` | `./fonts/Satoshi-*.woff2` | a `fonts/` directory **beside** the stylesheet |
 | `@codecavepro/brand/fonts.css` | `./Satoshi-*.woff2` | **beside** the stylesheet itself |
+| `@codecavepro/brand/tokens.css` | *none — it declares no faces* | wherever your own `@font-face` rules point |
 
 Get the cuts from [Fontshare](https://www.fontshare.com/fonts/satoshi) — Light 300,
 Regular 400, Italic, Medium 500, Bold 700, Black 900. Bind each with a real
@@ -141,10 +164,11 @@ the rules, the reasoning, the anti-patterns — is documented separately:
 
 ## How this package is built
 
-It authors nothing. Every byte is copied or compiled out of `docs/` in the repository
-above: the CSS is copied verbatim, and the typed module is compiled from
-`docs/tokens/*.ts`. `docs/` stays the single origin, and CI asserts the byte-identity
-on every push.
+It authors nothing. Every byte is copied, extracted or compiled out of `docs/` in the
+repository above: `css` and `fonts.css` are copied verbatim, `tokens.css` is extracted
+from the same file `css` is copied from, and the typed module is compiled from
+`docs/tokens/*.ts`. `docs/` stays the single origin, and CI asserts on every push that
+the copies are byte-identical and the extraction still reproduces what shipped.
 
 Two editable copies of a palette is the exact failure this package exists to end, so it
 would be self-defeating to introduce a second one on the way there. **Fixes go to

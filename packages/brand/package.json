@@ -1,6 +1,6 @@
 {
   "name": "@codecavepro/brand",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "CODECAVE design system — colour, typography and layout tokens as CSS custom properties and as a typed module.",
   "license": "Unlicense",
   "type": "module",
@@ -25,6 +25,7 @@
       "import": "./dist/index.js"
     },
     "./css": "./dist/colors_and_type.css",
+    "./tokens.css": "./dist/tokens.css",
     "./fonts.css": "./dist/fonts.css",
     "./package.json": "./package.json"
   },
