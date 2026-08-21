@@ -34,7 +34,7 @@ places you change it. Knowing which category a file is in is most of the job:
 | **Provenance captures** | `docs/source_examples/**` | **Never edit.** Refresh *from the live site*, never by hand. |
 | **Generated** | `packages/brand/dist/`, the derived half of `ds-bundle/`, `docs/storybook/compiled/`, `docs/storybook/tw-bridge.css` | Never edit. Rebuild. |
 | **Artwork** | SVGs under `docs/assets/`, `docs/build/`, `docs/imagery/`, `src/`, `favicons/` | Edit the hex literally — SVG has no cascade to inherit a token from. |
-| **Swatch captions** | `docs/index.html`, `docs/brand-kit.html`, `docs/preview/colors-*.html` | Edit the literal. Here the hex *is the content* — a `var()` would render nothing. |
+| **Swatch captions** | `docs/index.html`, `docs/brand-kit.html`, `docs/pages/preview/colors-*.astro` | Edit the literal. Here the hex *is the content* — a `var()` would render nothing. On the ported page the literals are a data array at the top of the file; that is still a literal. |
 | **Email** | `docs/artifacts/email.html`, `newsletter.html` | Edit the literal. Email clients do not support custom properties; this is not a shortcut. |
 | **Prose** | `docs/DESIGN.md`, `README.md`, `docs/README.md`, `docs/SKILL.md` | Update the ones that state the value. `DESIGN.md` is the rulebook and always states it. |
 

@@ -1,0 +1,25 @@
+---
+/* One chip from a raw ramp.
+ *
+ * Deliberately narrow: it only renders a swatch whose visible label IS its
+ * token suffix — `brand-500` painted with `var(--color-brand-500)`. That is
+ * true of all 32 ramp steps on colors-primary and of none of the five bespoke
+ * swatches on the same page, which name a semantic role instead
+ * (`Action` / `--color-action`) and carry markup in their caption. Those stay
+ * written out; widening this component to cover them would mean five props and
+ * a slot, and the page would be no shorter.
+ *
+ * The hex in `meta` is a literal, not a `var()`, and must stay one — on these
+ * pages the value IS the content, so a token would render nothing. See
+ * CONTRIBUTING.md, "Where a value actually lives".
+ */
+interface Props {
+  /** Token suffix after `--color-`, e.g. "brand-500". Also the visible label. */
+  token: string;
+  /** Caption under the label: the literal hex, then its job. Plain text. */
+  meta: string;
+}
+
+const { token, meta } = Astro.props;
+---
+<div class="pv-swatch"><div class="pv-swatch-chip" style={`background:var(--color-${token})`}></div><div class="pv-swatch-body"><span class="pv-label">{token}</span><span class="pv-meta">{meta}</span></div></div>

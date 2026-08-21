@@ -1,14 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CODECAVE — The dark canvas (the only theme)</title>
-<link rel="icon" href="../build/favicon.svg">
-<link rel="stylesheet" href="../colors_and_type.css">
-<link rel="stylesheet" href="../ds-nav.css" />
-<link rel="stylesheet" href="preview.css">
-<style>
+---
+/* Ported from docs/preview/colors-theme-dark.html (CCWEB2-317 phase 2).
+ *
+ * Nothing but the shell was extracted — this page has no repeated structure to
+ * collapse. The five surface steps look like a candidate and are not: each
+ * carries different prose, and the whole point of the demo is that a reader can
+ * read the five hexes in source order next to the fills they produce.
+ */
+import DocPage from '../../layouts/DocPage.astro';
+---
+<DocPage
+  title="CODECAVE — The dark canvas (the only theme)"
+  nav="foundations"
+  stylesheets={['preview.css']}
+>
+<style slot="head" is:inline>
   .stack-demo { border-radius: var(--radius-card); overflow: hidden;
                 border: 1px solid var(--color-surface-quaternary); }
   .stack-demo > div { padding: 1.5rem; font-size: var(--text-caption);
@@ -18,24 +23,6 @@
   .fg-row:last-child { border-bottom: 0; }
   .fg-row .sample { flex: 1; min-width: 14rem; }
 </style>
-</head>
-<body>
-
-<nav class="ds-nav" aria-label="Design system">
-  <div class="page-container ds-nav-inner">
-    <ul>
-      <li><a class="btn btn-ghost" href="../brand-kit.html">Brand kit</a></li>
-      <li><a class="btn btn-ghost" href="../preview/index.html" aria-current="page">Foundations</a></li>
-    </ul>
-    <a class="ds-nav-logo" href="../index.html" aria-label="CODECAVE design system — documentation home">
-      <img src="../assets/codecave-wide.svg" alt="CODECAVE"></a>
-    <ul>
-      <li><a class="btn btn-ghost" href="../storybook/index.html">Live components</a></li>
-      <li><a class="btn btn-ghost" href="../artifacts/index.html">Templates</a></li>
-    </ul>
-  </div>
-</nav>
-
 
 <div class="pv-shell">
   <a class="pv-back" href="index.html">&larr; All foundations</a>
@@ -121,5 +108,4 @@
   </section>
 </div>
 
-</body>
-</html>
+</DocPage>
