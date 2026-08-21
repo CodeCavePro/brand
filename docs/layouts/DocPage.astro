@@ -48,6 +48,14 @@ if (/&(#\d+|#x[0-9a-fA-F]+|[a-zA-Z][a-zA-Z0-9]*);/.test(title)) {
 const dir = Astro.url.pathname.replace(/^\//, '').replace(/[^/]*$/, '');
 const up = '../'.repeat((dir.match(/\//g) ?? []).length);
 
+/* A page with a second bar of its own — brand-kit's section links — needs both
+ * bars to stick as one block, which means one positioned wrapper around them
+ * rather than two stuck elements racing for the same top edge. Content in the
+ * `navstack` slot is that second bar, and it is what turns the wrapper on: the
+ * div cannot be the page's own, because DsNav has to be inside it. The class it
+ * carries is styled by whichever page fills the slot, not by ds-nav.css. */
+const stacked = Astro.slots.has('navstack');
+
 /* The import map is the one piece of head that cannot be written as ordinary
  * markup here. Astro does not evaluate {expressions} inside a <script>, so the
  * `up` prefix has to arrive through set:html — and the tag needs is:inline as
@@ -85,7 +93,14 @@ const importmapJson = `
 </head>
 <body>
 
-<DsNav current={nav} up={up} />
+{stacked ? (
+  <div class="ds-nav-stack">
+    <DsNav current={nav} up={up} />
+    <slot name="navstack" />
+  </div>
+) : (
+  <DsNav current={nav} up={up} />
+)}
 
 <slot />
 

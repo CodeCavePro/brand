@@ -1,18 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CODECAVE — Brand kit</title>
-<link rel="icon" href="build/favicon.svg">
+---
+/* Ported from docs/brand-kit.html (CCWEB2-317 phase 4). The brand page.
 
-<!-- The package's own token file. It also declares the Satoshi @font-face
-     rules with paths relative to this directory, so fonts come with it.
-     Nothing on this page re-declares a colour that lives in there. -->
-<link rel="stylesheet" href="colors_and_type.css">
-<link rel="stylesheet" href="ds-nav.css" />
-
-<style>
+ * Shell extraction, and the page that needed DocPage to grow one thing. It
+ * carries a second bar of its own — the section links — and the two bars have
+ * to stick as one block rather than race for the same top edge, so they share a
+ * positioned wrapper. DsNav has to be *inside* that wrapper, which is why the
+ * wrapper cannot live in this file: it arrives through DocPage's `navstack`
+ * slot, and filling that slot is what turns it on. `.ds-nav-stack` is styled
+ * below, in this page's own <style>, because it is this page's arrangement and
+ * no other page has it.
+ *
+ * The page script is a plain classic <script>, not a module, and reads the
+ * palette ramp off the computed custom properties so the strip cannot drift
+ * from the token file. `is:inline` keeps it that way — processed, it would
+ * become a module, and an IIFE that expects to run in document order at the
+ * foot of the body would no longer be guaranteed to.
+ *
+ * The deleted head carried one comment worth keeping: colors_and_type.css also
+ * declares the Satoshi @font-face rules with paths relative to docs/, so the
+ * fonts arrive with the token sheet and nothing here re-declares a colour.
+ */
+import DocPage from '../layouts/DocPage.astro';
+---
+<DocPage title="CODECAVE — Brand kit" nav="brand-kit">
+<style slot="head" is:inline>
 /* ===========================================================================
    CODECAVE brand kit — dark first.
 
@@ -407,28 +418,7 @@ body {
   .bk-topbar-inner { flex-wrap: wrap; justify-content: center; }
 }
 </style>
-</head>
-
-<body>
-
-<div class="ds-nav-stack">
-
-<nav class="ds-nav" aria-label="Design system">
-  <div class="page-container ds-nav-inner">
-    <ul>
-      <li><a class="btn btn-ghost" href="brand-kit.html" aria-current="page">Brand kit</a></li>
-      <li><a class="btn btn-ghost" href="preview/index.html">Foundations</a></li>
-    </ul>
-    <a class="ds-nav-logo" href="index.html" aria-label="CODECAVE design system — documentation home">
-      <img src="assets/codecave-wide.svg" alt="CODECAVE"></a>
-    <ul>
-      <li><a class="btn btn-ghost" href="storybook/index.html">Live components</a></li>
-      <li><a class="btn btn-ghost" href="artifacts/index.html">Templates</a></li>
-    </ul>
-  </div>
-</nav>
-
-
+<Fragment slot="navstack">
 <nav class="bk-topbar" aria-label="Sections">
   <div class="page-container bk-topbar-inner">
     <ul>
@@ -443,9 +433,7 @@ body {
     </ul>
   </div>
 </nav>
-
-</div><!-- /.ds-nav-stack -->
-
+</Fragment>
 <div class="bk-wrap">
 
   <!-- ===================== MASTHEAD ===================== -->
@@ -967,7 +955,7 @@ body {
 
 </div>
 
-<script>
+<script is:inline>
 (function () {
   'use strict';
 
@@ -1045,5 +1033,4 @@ body {
   }
 })();
 </script>
-</body>
-</html>
+</DocPage>

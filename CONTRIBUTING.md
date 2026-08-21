@@ -215,19 +215,17 @@ writes to `dist/`, which is not. **Nothing about the one rule changes:** if the
 build wrote back into `docs/`, the npm package's byte-identity assertion would be
 comparing a generated file against itself.
 
-The migration is deliberately half-done and will stay that way for a few phases.
-Pages exist in two forms at once:
+Every page is ported: the thirteen `preview/` cards, the fourteen `storybook/`
+pages, `index.html` and `brand-kit.html`. Each is an `.astro` under
+`docs/pages/` and reaches the site by being rendered. `artifacts/` is the
+exception and always will be — see below.
 
-| | Lives at | Reaches the site by |
-|---|---|---|
-| ported | `docs/pages/preview/spacing-shadows.astro` | being rendered |
-| not yet ported | `docs/index.html` | being copied |
+The half-migrated state is gone, but the machinery that made it survivable is
+not, and it is worth keeping: a page reaches `dist/` either by being rendered or
+by being copied, both silently, and `docs/tools/astro-passthrough.mjs` asserts
+both every build. Adding a page back as plain `.html` still works.
 
-All thirteen `preview/` cards and all fourteen `storybook/` pages are ported.
-`index.html` and `brand-kit.html` are not yet; `artifacts/` never will be.
-
-Both are served identically and neither knows about the other, so you can port
-one page at a time without a flag day. Three things to know when you port one:
+Four things to know if you write or move a page:
 
 - **The body is `.astro` now, not HTML.** A brace opens an expression, so
   literal text like `codecave-{wide|tall}-{size}.png` compiles to JavaScript —
@@ -249,7 +247,7 @@ one page at a time without a flag day. Three things to know when you port one:
   **upward**" into "lightupward" in three places on the first page tried. In a
   repository whose prose is the asset, that is not a minification setting.
 
-A fourth applies only to `storybook/`, and it is the one worth stating twice:
+The fourth applies only to `storybook/`, and it is the one worth stating twice:
 
 - **The specimens are not islands, and must not become them.** Each storybook
   page carries a browser import map and a module script that mounts
