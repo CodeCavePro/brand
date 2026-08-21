@@ -1,41 +1,18 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>InputText — CODECAVE storybook</title>
-<link rel="icon" href="../build/favicon.svg">
-<link rel="stylesheet" href="../colors_and_type.css">
-<link rel="stylesheet" href="../ds-nav.css" />
-<link rel="stylesheet" href="tw-bridge.css">
-<link rel="stylesheet" href="storybook.css">
-<script type="importmap">
-{
-  "imports": {
-    "vue": "../vendor/vue.esm-browser.prod.js",
-    "gsap": "../vendor/gsap/index.js",
-    "gsap/dist/SplitText": "../vendor/gsap/SplitText.js"
-  }
-}
-</script>
-</head>
-<body>
+---
+/* Ported from docs/storybook/input-text.html (CCWEB2-317 phase 3).
+ *
+ * Shell extraction. Mounting pattern and why it is not an island: button.astro.
 
-<nav class="ds-nav" aria-label="Design system">
-  <div class="page-container ds-nav-inner">
-    <ul>
-      <li><a class="btn btn-ghost" href="../brand-kit.html">Brand kit</a></li>
-      <li><a class="btn btn-ghost" href="../preview/index.html">Foundations</a></li>
-    </ul>
-    <a class="ds-nav-logo" href="../index.html" aria-label="CODECAVE design system — documentation home">
-      <img src="../assets/codecave-wide.svg" alt="CODECAVE"></a>
-    <ul>
-      <li><a class="btn btn-ghost" href="../storybook/index.html" aria-current="page">Live components</a></li>
-      <li><a class="btn btn-ghost" href="../artifacts/index.html">Templates</a></li>
-    </ul>
-  </div>
-</nav>
-
+ * `isRequired={true}` and `isError={true}` in the story args are prose about
+ * Vue; each literal brace is emitted as a string so it renders as itself. */
+import DocPage from '../../layouts/DocPage.astro';
+---
+<DocPage
+  title="InputText — CODECAVE storybook"
+  nav="storybook"
+  stylesheets={['tw-bridge.css','storybook.css']}
+  importmap
+>
 <div class="sb">
   <a class="sb-back" href="index.html">&larr; All components</a>
 
@@ -95,7 +72,7 @@
         </div>
         <div class="sb-story-body">
           <span class="sb-story-name">Required</span>
-          <span class="sb-story-args">isRequired={true} type="email"</span>
+          <span class="sb-story-args">isRequired={'{'}true{'}'} type="email"</span>
           <span class="sb-story-note">The asterisk is an inline SVG component in source, tinted <code>--color-action</code>.</span>
         </div>
       </div>
@@ -117,7 +94,7 @@
         </div>
         <div class="sb-story-body">
           <span class="sb-story-name">Error</span>
-          <span class="sb-story-args">isError={true} errorMessage="..."</span>
+          <span class="sb-story-args">isError={'{'}true{'}'} errorMessage="..."</span>
           <span class="sb-story-note">Halo switches to <code>error-200</code>/<code>error-100</code>; text to <code>--color-error</code>.</span>
         </div>
       </div>
@@ -156,7 +133,7 @@
 
 </div>
 
-<script type="module">
+<script is:inline type="module">
   import { createApp } from 'vue';
   import InputText from './compiled/InputText.js';
 
@@ -174,5 +151,4 @@
   };
   for (const [el, props] of Object.entries(stories)) createApp(InputText, props).mount('#' + el);
 </script>
-</body>
-</html>
+</DocPage>

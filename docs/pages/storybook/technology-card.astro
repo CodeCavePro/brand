@@ -1,48 +1,28 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TechnologyCard — CODECAVE storybook</title>
-<link rel="icon" href="../build/favicon.svg">
-<link rel="stylesheet" href="../colors_and_type.css">
-<link rel="stylesheet" href="../ds-nav.css" />
-<link rel="stylesheet" href="tw-bridge.css">
-<link rel="stylesheet" href="storybook.css">
-<style>
+---
+/* Ported from docs/storybook/technology-card.html (CCWEB2-317 phase 3).
+ *
+ * Shell extraction. Mounting pattern and why it is not an island: button.astro.
+
+ * The head <style> is story-only — the card positions itself absolutely, so
+ * each story has to supply a positioned stage. It goes through the `head` slot
+ * as `is:inline`, without which Astro would scope its selectors and .sb-slot
+ * would stop matching the markup below. Its @media braces are inside a <style>
+ * and are left alone; the ones in the story args are prose and are guarded. */
+import DocPage from '../../layouts/DocPage.astro';
+---
+<DocPage
+  title="TechnologyCard — CODECAVE storybook"
+  nav="storybook"
+  stylesheets={['tw-bridge.css','storybook.css']}
+  importmap
+>
+<style slot="head" is:inline>
   /* Story-only. The card positions itself absolutely from its six-slot table,
      so each story provides a positioned stage for it to land on. The active
      story reserves headroom for the xl lift. */
   .sb-slot { position: relative; height: 21rem; }
   @media (min-width: 1280px) { .sb-slot.sb-lift { margin-top: 6rem; } }
 </style>
-<script type="importmap">
-{
-  "imports": {
-    "vue": "../vendor/vue.esm-browser.prod.js",
-    "gsap": "../vendor/gsap/index.js",
-    "gsap/dist/SplitText": "../vendor/gsap/SplitText.js"
-  }
-}
-</script>
-</head>
-<body>
-
-<nav class="ds-nav" aria-label="Design system">
-  <div class="page-container ds-nav-inner">
-    <ul>
-      <li><a class="btn btn-ghost" href="../brand-kit.html">Brand kit</a></li>
-      <li><a class="btn btn-ghost" href="../preview/index.html">Foundations</a></li>
-    </ul>
-    <a class="ds-nav-logo" href="../index.html" aria-label="CODECAVE design system — documentation home">
-      <img src="../assets/codecave-wide.svg" alt="CODECAVE"></a>
-    <ul>
-      <li><a class="btn btn-ghost" href="../storybook/index.html" aria-current="page">Live components</a></li>
-      <li><a class="btn btn-ghost" href="../artifacts/index.html">Templates</a></li>
-    </ul>
-  </div>
-</nav>
-
 <div class="sb">
   <a class="sb-back" href="index.html">&larr; All components</a>
 
@@ -88,7 +68,7 @@
         </div>
         <div class="sb-story-body">
           <span class="sb-story-name">Inactive</span>
-          <span class="sb-story-args">active={false} index={0} className="w-72 h-72"</span>
+          <span class="sb-story-args">active={'{'}false{'}'} index={'{'}0{'}'} className="w-72 h-72"</span>
           <span class="sb-story-note">The CTA is <code>hidden</code> below xl, and <code>opacity-0</code> above it — present but invisible. The sizing comes entirely from <code>className</code>; the card has none of its own.</span>
         </div>
       </div>
@@ -99,7 +79,7 @@
         </div>
         <div class="sb-story-body">
           <span class="sb-story-name">Active</span>
-          <span class="sb-story-args">active={true} index={3} className="w-72 h-72"</span>
+          <span class="sb-story-args">active={'{'}true{'}'} index={'{'}3{'}'} className="w-72 h-72"</span>
           <span class="sb-story-note">Lifts by a third (or a half for the bottom two slots) over 500ms and shows the tertiary "Explore service" Button — its href comes from the name switch, here <code>/services/autodesk</code>.</span>
         </div>
       </div>
@@ -159,7 +139,7 @@
 
 </div>
 
-<script type="module">
+<script is:inline type="module">
   import { createApp } from 'vue';
   import TechnologyCard from './compiled/technology-card.js';
 
@@ -179,5 +159,4 @@
     className: 'w-72 h-72',
   }).mount('#story-tc2');
 </script>
-</body>
-</html>
+</DocPage>

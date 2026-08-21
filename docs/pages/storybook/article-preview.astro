@@ -1,41 +1,19 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ArticlePreview — CODECAVE storybook</title>
-<link rel="icon" href="../build/favicon.svg">
-<link rel="stylesheet" href="../colors_and_type.css">
-<link rel="stylesheet" href="../ds-nav.css" />
-<link rel="stylesheet" href="tw-bridge.css">
-<link rel="stylesheet" href="storybook.css">
-<script type="importmap">
-{
-  "imports": {
-    "vue": "../vendor/vue.esm-browser.prod.js",
-    "gsap": "../vendor/gsap/index.js",
-    "gsap/dist/SplitText": "../vendor/gsap/SplitText.js"
-  }
-}
-</script>
-</head>
-<body>
+---
+/* Ported from docs/storybook/article-preview.html (CCWEB2-317 phase 3).
+ *
+ * Shell extraction. Mounting pattern and why it is not an island: button.astro.
 
-<nav class="ds-nav" aria-label="Design system">
-  <div class="page-container ds-nav-inner">
-    <ul>
-      <li><a class="btn btn-ghost" href="../brand-kit.html">Brand kit</a></li>
-      <li><a class="btn btn-ghost" href="../preview/index.html">Foundations</a></li>
-    </ul>
-    <a class="ds-nav-logo" href="../index.html" aria-label="CODECAVE design system — documentation home">
-      <img src="../assets/codecave-wide.svg" alt="CODECAVE"></a>
-    <ul>
-      <li><a class="btn btn-ghost" href="../storybook/index.html" aria-current="page">Live components</a></li>
-      <li><a class="btn btn-ghost" href="../artifacts/index.html">Templates</a></li>
-    </ul>
-  </div>
-</nav>
-
+ * Nothing page-specific beyond the mounts. Its images go through
+ * placeholders.js rather than a literal src, which is the trap recorded in
+ * that file's header — assigning .src loses a race with the observer. */
+import DocPage from '../../layouts/DocPage.astro';
+---
+<DocPage
+  title="ArticlePreview — CODECAVE storybook"
+  nav="storybook"
+  stylesheets={['tw-bridge.css','storybook.css']}
+  importmap
+>
 <div class="sb">
   <a class="sb-back" href="index.html">&larr; All components</a>
 
@@ -76,7 +54,7 @@
         </div>
         <div class="sb-story-body">
           <span class="sb-story-name">Default</span>
-          <span class="sb-story-args">article={...}</span>
+          <span class="sb-story-args">article={'{'}...{'}'}</span>
           <span class="sb-story-note">Date in <code>--color-body-secondary</code>, excerpt in the lighter step, reading time back to secondary.</span>
         </div>
       </div>
@@ -135,7 +113,7 @@
 
 </div>
 
-<script type="module">
+<script is:inline type="module">
   import { createApp } from 'vue';
   import ArticlePreview from './compiled/ArticlePreview.js';
   import { usePlaceholders } from './placeholders.js';
@@ -169,5 +147,4 @@
   // converts it, which is exactly how the other three pages broke.
   usePlaceholders('.sb-canvas img', '../assets/images/sb-cover.svg');
 </script>
-</body>
-</html>
+</DocPage>

@@ -221,10 +221,10 @@ Pages exist in two forms at once:
 | | Lives at | Reaches the site by |
 |---|---|---|
 | ported | `docs/pages/preview/spacing-shadows.astro` | being rendered |
-| not yet ported | `docs/storybook/index.html` | being copied |
+| not yet ported | `docs/index.html` | being copied |
 
-All thirteen `preview/` cards are ported. `storybook/`, `index.html` and
-`brand-kit.html` are not yet; `artifacts/` never will be.
+All thirteen `preview/` cards and all fourteen `storybook/` pages are ported.
+`index.html` and `brand-kit.html` are not yet; `artifacts/` never will be.
 
 Both are served identically and neither knows about the other, so you can port
 one page at a time without a flag day. Three things to know when you port one:
@@ -248,6 +248,18 @@ one page at a time without a flag day. Three things to know when you port one:
   line break before an inline tag to nothing, turning "violet light
   **upward**" into "lightupward" in three places on the first page tried. In a
   repository whose prose is the asset, that is not a minification setting.
+
+A fourth applies only to `storybook/`, and it is the one worth stating twice:
+
+- **The specimens are not islands, and must not become them.** Each storybook
+  page carries a browser import map and a module script that mounts
+  `compiled/*.js` — esbuild output from codecave.pro's own toolchain, with `vue`
+  left external. That is what makes a specimen a record of what the site ships
+  rather than a rebuild of it. Both tags need `is:inline`: processed, Astro
+  bundles the module script and rewrites its bare specifiers, and the import map
+  is then resolving nothing. `DocPage`'s `importmap` prop emits the map, which is
+  identical on all thirteen mounting pages. `docs/pages/storybook/button.astro`
+  says all of this at the point where undoing it would be easy.
 
 `artifacts/` is **never** rendered. Those six files are the deliverable being
 shown, not pages about it, and an HTML email with a documentation bar welded to

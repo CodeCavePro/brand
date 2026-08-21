@@ -60,9 +60,18 @@ export default defineConfig({
    * having changed nothing. That is a second reason, not the reason. */
   compressHTML: false,
 
-  /* Wired, and not yet exercised by anything — no page mounts an island until
-   * the storybook moves in phase 3, which is the phase that proves it. Said
-   * plainly here rather than left to look load-bearing. */
+  /* vue() is wired and exercised by nothing, and phase 3 settled that it will
+   * stay that way. This comment used to say the storybook would prove it. The
+   * storybook does the opposite: its thirteen specimens mount Vue in the
+   * *browser*, from an import map and docs/storybook/compiled/*.js — esbuild
+   * output from codecave.pro's own toolchain — precisely so that what a reader
+   * sees is what the site ships. Compiling those components here instead is the
+   * one thing the storybook must not do, so `client:load` has no place in it.
+   *
+   * It stays because CCWEB2-318 phase 4 promotes components into the package
+   * and may well want a real island to demonstrate one. Nothing is asserting
+   * that, so treat it as a bet, not a requirement: if phase 4 lands without an
+   * island, this and the @astrojs/vue devDependency should both go. */
   integrations: [vue(), docsPassthrough()],
 
   vite: {

@@ -1,15 +1,23 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Review — CODECAVE storybook</title>
-<link rel="icon" href="../build/favicon.svg">
-<link rel="stylesheet" href="../colors_and_type.css">
-<link rel="stylesheet" href="../ds-nav.css" />
-<link rel="stylesheet" href="tw-bridge.css">
-<link rel="stylesheet" href="storybook.css">
-<style>
+---
+/* Ported from docs/storybook/review.html (CCWEB2-317 phase 3).
+ *
+ * Shell extraction. Mounting pattern and why it is not an island: button.astro.
+
+ * The head <style> is story-only and load-bearing twice over: the card is
+ * transparent with a 32px backdrop blur, so it can only be judged over the real
+ * harvested plate, and the grid story needs one continuous ground for two
+ * cards. `is:inline` keeps its selectors unscoped; its @media braces sit inside
+ * a <style> and are left alone. The ${className} in the findings prose is not —
+ * that one is guarded, being template text about a template. */
+import DocPage from '../../layouts/DocPage.astro';
+---
+<DocPage
+  title="Review — CODECAVE storybook"
+  nav="storybook"
+  stylesheets={['tw-bridge.css','storybook.css']}
+  importmap
+>
+<style slot="head" is:inline>
   /* Story-only. The testimonial card is transparent with a 32px backdrop blur,
      so it only reads correctly over the decorative art it is designed to sit on.
      This canvas supplies that ground from the real harvested SVG.
@@ -32,33 +40,6 @@
   .rev-grid { display: grid; gap: 0; grid-template-columns: 1fr; padding: 2.5rem 0; }
   @media (min-width: 60rem) { .rev-grid { grid-template-columns: 1fr 1fr; } }
 </style>
-<script type="importmap">
-{
-  "imports": {
-    "vue": "../vendor/vue.esm-browser.prod.js",
-    "gsap": "../vendor/gsap/index.js",
-    "gsap/dist/SplitText": "../vendor/gsap/SplitText.js"
-  }
-}
-</script>
-</head>
-<body>
-
-<nav class="ds-nav" aria-label="Design system">
-  <div class="page-container ds-nav-inner">
-    <ul>
-      <li><a class="btn btn-ghost" href="../brand-kit.html">Brand kit</a></li>
-      <li><a class="btn btn-ghost" href="../preview/index.html">Foundations</a></li>
-    </ul>
-    <a class="ds-nav-logo" href="../index.html" aria-label="CODECAVE design system — documentation home">
-      <img src="../assets/codecave-wide.svg" alt="CODECAVE"></a>
-    <ul>
-      <li><a class="btn btn-ghost" href="../storybook/index.html" aria-current="page">Live components</a></li>
-      <li><a class="btn btn-ghost" href="../artifacts/index.html">Templates</a></li>
-    </ul>
-  </div>
-</nav>
-
 <div class="sb">
   <a class="sb-back" href="index.html">&larr; All components</a>
 
@@ -176,8 +157,8 @@
       (≈8.4:1) is the in-palette fix. Same shape as <code>DESIGN.md</code> §10.5.</p>
 
     <p class="sb-note"><strong><code>className</code> has no fallback.</strong>
-      The template interpolates <code>${className}</code> directly, unlike
-      ArticlePreview's <code>${className ?? ''}</code>. Omitting the prop puts the
+      The template interpolates <code>${'{'}className{'}'}</code> directly, unlike
+      ArticlePreview's <code>${'{'}className ?? ''{'}'}</code>. Omitting the prop puts the
       literal string <code>undefined</code> into the class list. Harmless as a
       class name, but it ships in the markup.</p>
 
@@ -189,7 +170,7 @@
 
 </div>
 
-<script type="module">
+<script is:inline type="module">
   import { createApp } from 'vue';
   import Review from './compiled/Review.js';
   import { usePlaceholders } from './placeholders.js';
@@ -267,5 +248,4 @@
   // data-src — see placeholders.js for why setting .src alone loses a race.
   usePlaceholders('#story-rev1 img, #story-grid img', '../assets/images/sb-avatar.svg');
 </script>
-</body>
-</html>
+</DocPage>

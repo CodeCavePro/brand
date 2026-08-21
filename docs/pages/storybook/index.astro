@@ -1,16 +1,23 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CODECAVE — Live components</title>
-<link rel="icon" href="../build/favicon.svg">
-<link rel="stylesheet" href="../colors_and_type.css">
-<link rel="stylesheet" href="../ds-nav.css" />
-<link rel="stylesheet" href="tw-bridge.css">
-<link rel="stylesheet" href="components.css">
-<link rel="stylesheet" href="storybook.css">
-<style>
+---
+/* Ported from docs/storybook/index.html (CCWEB2-317 phase 3) — the gallery.
+ *
+ * Shell extraction. Mounting pattern and why it is not an island: button.astro.
+ * The one page that mounts all twelve compiled components at once, which makes
+ * it the cheapest check that the import map still resolves: if it is wrong,
+ * every thumbnail here is empty rather than one story on one page.
+ *
+ * It is also the only storybook page linking three stylesheets — it shows the
+ * pure-Astro ProjectChip alongside the Vue ones, so it needs components.css as
+ * well as tw-bridge.css. */
+import DocPage from '../../layouts/DocPage.astro';
+---
+<DocPage
+  title="CODECAVE — Live components"
+  nav="storybook"
+  stylesheets={['tw-bridge.css','components.css','storybook.css']}
+  importmap
+>
+<style slot="head" is:inline>
   .sb-lead { max-width: 68ch; margin: 1.25rem 0 0;
              color: var(--color-body-secondary-lighter);
              font-size: var(--text-md); line-height: var(--leading-md); }
@@ -26,33 +33,6 @@
      a thumb there is no stage to land on, so pin it back into the flow. */
   .thumb .card-wrapper { position: static !important; }
 </style>
-<script type="importmap">
-{
-  "imports": {
-    "vue": "../vendor/vue.esm-browser.prod.js",
-    "gsap": "../vendor/gsap/index.js",
-    "gsap/dist/SplitText": "../vendor/gsap/SplitText.js"
-  }
-}
-</script>
-</head>
-<body>
-
-<nav class="ds-nav" aria-label="Design system">
-  <div class="page-container ds-nav-inner">
-    <ul>
-      <li><a class="btn btn-ghost" href="../brand-kit.html">Brand kit</a></li>
-      <li><a class="btn btn-ghost" href="../preview/index.html">Foundations</a></li>
-    </ul>
-    <a class="ds-nav-logo" href="../index.html" aria-label="CODECAVE design system — documentation home">
-      <img src="../assets/codecave-wide.svg" alt="CODECAVE"></a>
-    <ul>
-      <li><a class="btn btn-ghost" href="../storybook/index.html" aria-current="page">Live components</a></li>
-      <li><a class="btn btn-ghost" href="../artifacts/index.html">Templates</a></li>
-    </ul>
-  </div>
-</nav>
-
 <div class="sb">
   <a class="sb-back" href="../index.html">&larr; Design system</a>
 
@@ -296,7 +276,7 @@
 
 </div>
 
-<script type="module">
+<script is:inline type="module">
   import { createApp } from 'vue';
   import Button from './compiled/Button.js';
   import GlowButton from './compiled/GlowButton.js';
@@ -376,5 +356,4 @@
     usePlaceholders('#' + id + ' img', '../assets/images/' + ph + '.svg');
   }
 </script>
-</body>
-</html>
+</DocPage>
