@@ -390,8 +390,11 @@ checkout beside this one:
 npm run check:captures
 ```
 
-It compares all 30 site-derived captures byte-for-byte against their origins and
-names any that have drifted. Deliberately outside `npm run check` and outside
+It compares all 30 site-derived captures against their origins and names any
+that have drifted. The comparison normalises line endings, because the site
+checkout does not pin them and a Windows clone of it is CRLF throughout — raw
+bytes would mark all 30 as drifted on any Windows machine and never on CI,
+which tells you about the reader's `core.autocrlf` and nothing about the site. Deliberately outside `npm run check` and outside
 CI: `codecave.pro` is private, and with no checkout the command fails loudly
 rather than reporting a success it did not earn. Run it before trusting any
 claim of the form "production does X" — every such claim in this package rests

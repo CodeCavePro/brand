@@ -65,10 +65,36 @@ function originOf(rel) {
   return null;
 }
 
+/**
+ * A capture's content with line endings normalised to LF.
+ *
+ * WHY NOT RAW BYTES. The captures are LF here and always will be — this repo's
+ * .gitattributes pins `eol=lf`, for reasons it sets out at length. The site is
+ * not: codecave.pro has no attributes file, so a Windows clone under the usual
+ * `core.autocrlf=true` writes its entire working tree with CRLF. Comparing raw
+ * bytes across those two checkouts marks every text capture as drifted, on
+ * every Windows machine, permanently — it reported 30 of 30 on 2026-08-21, all
+ * of them line endings and not one of them content.
+ *
+ * That failure mode is worse than having no check at all. A checker that is red
+ * whatever the site does trains its reader to skip the list, and the first real
+ * drift arrives into a list that was already entirely red.
+ *
+ * Normalising does not weaken the test. Git stores the site's files with LF and
+ * hands out CRLF at checkout, so the LF form IS the site's content and the CRLF
+ * is an artifact of the reader's machine that carries no information about what
+ * codecave.pro ships. Nothing binary reaches here — every capture is source
+ * text — so there is no case where a CR is data.
+ */
+function content(file) {
+  return fs.readFileSync(file, 'utf8').replace(/\r\n/g, '\n');
+}
+
 const drifted = [];
 const unresolved = [];
 let checked = 0;
 let skipped = 0;
+let eol = 0;
 
 for (const file of walk(captures).sort()) {
   const rel = path.relative(captures, file).split(path.sep).join('/');
@@ -84,8 +110,10 @@ for (const file of walk(captures).sort()) {
   }
 
   checked++;
-  if (!fs.readFileSync(file).equals(fs.readFileSync(origin))) {
+  if (content(file) !== content(origin)) {
     drifted.push({ rel, origin: path.relative(site, origin).split(path.sep).join('/') });
+  } else if (!fs.readFileSync(file).equals(fs.readFileSync(origin))) {
+    eol++;
   }
 }
 
@@ -111,5 +139,14 @@ if (drifted.length || unresolved.length) process.exit(1);
 
 console.log(
   `source_examples/ matches ${path.basename(site)} ` +
-  `(${checked} file(s) byte-identical, ${skipped} brand-repo capture(s) skipped).`,
+  `(${checked} file(s), ${skipped} brand-repo capture(s) skipped).`,
 );
+
+// Said out loud rather than left implicit, so nobody reads the line above as a
+// claim of byte-identity and then wonders why `fc` or `diff` disagrees with it.
+if (eol) {
+  console.log(
+    `${eol} of them differ from the site only in line endings — that checkout is ` +
+    `CRLF, this one is LF. Content is identical; nothing to refresh.`,
+  );
+}
