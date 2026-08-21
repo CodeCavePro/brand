@@ -24,9 +24,9 @@ defineProps<{
         <time class="text-body-secondary text-xs sm:text-sm" :datetime="article.date?.toString()">
           {{ formattedDate(article.locale, article.date) }}
         </time>
-        <h2 class="font-bold text-lg md:text-xl text-heading">
+        <h3 class="font-bold text-lg md:text-xl text-heading">
           {{ article.title }}
-        </h2>
+        </h3>
       </div>
     </div>
     <div class="text-sm flex flex-col justify-between h-full">

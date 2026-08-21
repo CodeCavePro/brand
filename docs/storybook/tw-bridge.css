@@ -7,7 +7,7 @@
  *
  * The digest below covers every file under source_examples/, this file's only
  * source. Verify with: node docs/tools/check-tw-bridge.mjs
- * source-digest: sha256:6928e57c9513debb06022413bdaccc62d1543f0de553454d713f17d588dffc4b
+ * source-digest: sha256:e232ae31445557996513041897aebbcef03cd7ffe92fb8eb19b16a02db72859f
  */
 /*! tailwindcss v4.3.0 | MIT License | https://tailwindcss.com */
 @layer properties;
@@ -1371,43 +1371,6 @@
 
 /* Site tokens, canvas-scoped — see header comment. */
 .sb-canvas, .sb-mount {
-  --color-brand-25: #E8E6F0;
-  --color-brand-50: #BBB9CB;
-  --color-brand-100: #B8AFDB;
-  --color-brand-200: #B19AFE;
-  --color-brand-300: #735CAB;
-  --color-brand-400: #5F3ABD;
-  --color-brand-500: #5F20FE;
-  --color-brand-600: #4705ED;
-  --color-brand-700: #4004AF;
-  --color-brand-800: #1B0D4E;
-  --color-brand-900: #1E113B;
-  --color-brand-950: #0A0A0B;
-  --color-gray-50: #F4F4F6;
-  --color-gray-100: #DCDCE5;
-  --color-gray-200: #D5D5DD;
-  --color-gray-300: #C7C7DB;
-  --color-gray-400: #A3A3C2;
-  --color-gray-500: #9595BB;
-  --color-gray-600: #6B6699;
-  --color-gray-700: #2B2848;
-  --color-gray-800: #232339;
-  --color-gray-900: #1C1C27;
-  --color-gray-950: #15151E;
-  --color-gray-1000: #050505;
-  --color-gray-1100: #0F0F15;
-  --color-glow-25: #9980FF;
-  --color-shadow-0: #281470;
-  --color-progress-0: #8252FC;
-  --color-technology-gradient-0: #077689;
-  --color-technology-gradient-25: #1A0452;
-  --color-technology-gradient-50: #070312;
-  --color-error-100: #FE9A9A;
-  --color-error-200: #FE2020;
-  --color-error-300: #B42318;
-  --color-error-400: #CA1400;
-  --radius-control: 0.5rem;
-  --radius-control-sm: 0.25rem;
   --duration-control: 150ms;
   --max-width-desktop: 1280px;
   --breakpoint-sm: 457px;
@@ -1448,6 +1411,12 @@
   --color-surface-quaternary: var(--color-gray-700);
   --color-default-transparent: var(--color-gray-100);
   --color-error: var(--color-error-300);
+  --color-gray-50: oklch(98.5% 0.002 247.839);
+  --color-gray-100: oklch(96.7% 0.003 264.542);
+  --color-gray-300: oklch(87.2% 0.01 258.338);
+  --color-gray-500: oklch(55.1% 0.027 264.364);
+  --color-gray-700: oklch(37.3% 0.034 259.733);
+  --color-gray-900: oklch(21% 0.034 264.665);
   --spacing: 0.25rem;
   --container-sm: 24rem;
   --container-lg: 32rem;

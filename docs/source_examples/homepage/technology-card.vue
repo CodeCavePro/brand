@@ -50,9 +50,9 @@ const getTechnologyUrl = (name: string) => {
   <div :class="`rounded-3xl card-wrapper cursor-pointer select-none absolute transform transition-transform duration-500
   ${rotate[index]} ${active ? `${translate[index]}` : ''} ${className || ''}`">
     <div class="card flex flex-col items-center justify-around">
-      <h2 class="max-w-[8rem] text-center text-xl font-bold text-heading text-balance">
+      <h3 class="max-w-[8rem] text-center text-xl font-bold text-heading text-balance">
         {{ name }}
-      </h2>
+      </h3>
       <Button as="link" :href="getTechnologyUrl(name)" title="Explore service" variant="tertiary" :class="`${active ? 'block' : 'hidden xl:block xl:opacity-0'}`" />
     </div>
   </div>

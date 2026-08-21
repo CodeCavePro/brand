@@ -4,49 +4,61 @@ import InputText from "../InputText.vue";
 import Checkbox from "../Checkbox.vue";
 import Radio from "../Radio.vue";
 import TextField from "../TextField.vue";
-import { onMounted, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import SuccessIcon from "../../../assets/icons/success-icon.vue";
 import CloseIcon from "../../../assets/icons/close-icon.vue";
 import gsap from "gsap";
-import { getCollection, getEntry } from 'astro:content';
-import { hubspotSubmitForm, getHubspotutk, type HubspotFormData } from "../../../lib/hubspot/hubspot.ts";
+import type {
+  ContactFormDefinition,
+  ContactFormValues,
+  CrmSubmitResult,
+  ICrmFormClient,
+} from "../../../lib/crm/types";
 import { isCorrectEmailFormat, isCorrectLinkedInFormat } from "../../../helpers/form-validator.ts";
 
+/* This component knows nothing about HubSpot, or about any other CRM. It is
+ * handed the labels to render and something that can accept a submission; who
+ * that something talks to is the caller's business. See lib/crm/types.ts. */
 const props = defineProps<{
-  contactUsForm: HubspotFormData
+  definition: ContactFormDefinition
+  client: ICrmFormClient
 }>()
 
-const hubspotFields = props.contactUsForm.fieldGroups.flatMap(group => group.fields)
+const emit = defineEmits<{
+  (e: 'submit', values: ContactFormValues): void
+  (e: 'submitted', result: CrmSubmitResult): void
+}>()
 
-const getHubspotField = (name: string): HubspotFormDataField => {
-  const field = hubspotFields.find(field => field.name === name)
-
-  if (!field) {
-    throw new Error(`HubSpot field "${name}" not found`)
-  }
-
-  return field
+interface FormField<T = string> {
+  value: T
+  error: string
+  label: string
+  placeholder?: string
+  required: boolean
+  maxLength?: number
 }
 
-const createFormField = (field: HubspotFormDataField, value: T): FormField<T> => ({
-  value,
-  error: '',
-  label: field.label,
-  placeholder: field.placeholder,
-  required: field.required
-})
+const createFormField = <T,>(name: keyof ContactFormDefinition, value: T): FormField<T> => {
+  const spec = props.definition[name]
+
+  return {
+    value,
+    error: '',
+    label: spec.label,
+    placeholder: spec.placeholder,
+    required: spec.required,
+    ...(spec.maxLength === undefined ? {} : { maxLength: spec.maxLength }),
+  }
+}
 
 const formData = ref({
-  email: createFormField(getHubspotField('email'), ''),
-  firstname: createFormField(getHubspotField('firstname'), ''),
-  lastname: createFormField(getHubspotField('lastname'), ''),
-  companyName: createFormField(getHubspotField('name'), ''),
-  linkedinCompanyPage: createFormField(getHubspotField('linkedin_company_page'), ''),
-  services: createFormField(getHubspotField('buying_intent'), ''),
-  description: {
-    ...createFormField(getHubspotField('description'), ''),
-    maxLength: 1000
-  },
+  email: createFormField('email', ''),
+  firstName: createFormField('firstName', ''),
+  lastName: createFormField('lastName', ''),
+  companyName: createFormField('companyName', ''),
+  linkedinCompanyPage: createFormField('linkedinCompanyPage', ''),
+  services: createFormField('services', ''),
+  description: createFormField('description', ''),
   privacyPolicy: {
     value: false,
     error: '',
@@ -55,28 +67,12 @@ const formData = ref({
   }
 })
 
-interface FormField<T = string> {
-  value: T
-  error: string
-  label: string
-  placeholder?: string
-  required: boolean
-  maxLength?: number;
-}
-
-const services = getHubspotField('buying_intent')
-  .options?.sort(o => o.displayOrder)
-  .map(o => {
-    return {
-      id: o.value,
-      label: o.label.replaceAll("&amp;", "&").replaceAll("&quot;", "\"")
-    }
-  });
+const services = computed(() => props.definition.services.options ?? [])
 
 const validateForm = () => {
   resetErrorMessages();
   let isValid = validateRequiredFields();
-  
+
   let description = formData.value.description;
   let email = formData.value.email;
   let linkedInPage = formData.value.linkedinCompanyPage;
@@ -89,7 +85,7 @@ const validateForm = () => {
     linkedInPage.error = 'Please enter valid LinkedIn page link'
     isValid = false
   }
-  if (description.value.length > description.maxLength) {
+  if (description.maxLength !== undefined && description.value.length > description.maxLength) {
     description.error = `You faced characters limits. Max length is ${description.maxLength}`
     isValid = false
   }
@@ -118,8 +114,8 @@ const validateRequiredFields = () => {
 
 const resetForm = () => {
   formData.value.email.value = '';
-  formData.value.firstname.value = '';
-  formData.value.lastname.value = '';
+  formData.value.firstName.value = '';
+  formData.value.lastName.value = '';
   formData.value.companyName.value = '';
   formData.value.linkedinCompanyPage.value = '';
   formData.value.description.value = '';
@@ -127,65 +123,61 @@ const resetForm = () => {
   formData.value.privacyPolicy.value = false;
 }
 
-const formFieldMapping = {
-  email: 'email',
-  firstname: 'firstname',
-  lastname: 'lastname',
-  companyName: 'name',
-  linkedinCompanyPage: 'linkedin_company_page',
-  services: 'buying_intent',
-  description: 'description'
-} as const
+const currentValues = (): ContactFormValues => ({
+  email: formData.value.email.value,
+  firstName: formData.value.firstName.value,
+  lastName: formData.value.lastName.value,
+  companyName: formData.value.companyName.value,
+  linkedinCompanyPage: formData.value.linkedinCompanyPage.value,
+  services: formData.value.services.value,
+  description: formData.value.description.value,
+  privacyPolicyAccepted: formData.value.privacyPolicy.value,
+})
+
+const isSubmitting = ref(false)
 
 const submitContactsForm = async () => {
-  if (!validateForm()) {
+  if (isSubmitting.value || !validateForm()) {
     return
   }
 
-  const hutk = getHubspotutk()
+  const values = currentValues()
+  emit('submit', values)
 
-  const formFields = Object.entries(formData.value)
-    .filter(([formKey]) => formKey in formFieldMapping)
-    .map(([formKey, field]) => ({
-      name: formFieldMapping[
-        formKey as keyof typeof formFieldMapping
-      ],
-      value: field.value
-    }))
-
-  const body = {
-    fields: hubspotFields.map(field => ({
-      objectTypeId: field.objectTypeId,
-      name: field.name,
-      value: formFields.find(
-        formField => formField.name === field.name
-      )?.value
-    })),
-    context: {
-      hutk: hutk,
-    }
-  }
-
+  isSubmitting.value = true
   try {
-    const response = await hubspotSubmitForm.post(`/${import.meta.env.PUBLIC_HUBSPOT_CONTACTUS_FORM_ID}`, body)
+    const result = await props.client.submit(values)
 
-    if (response.status === 200) {
+    if (result.ok) {
       resetForm()
-      showAlert()
+      showAlert('success')
+    } else {
+      /* The previous code logged the failure and showed nothing, so a visitor
+       * whose enquiry never sent had no way to know. The wording below is a
+       * placeholder for a writer -- see CCWEB2-325. */
+      showAlert('error')
     }
-  } catch (error: any) {
-    console.log('request err>>', error)
+
+    emit('submitted', result)
+  } finally {
+    isSubmitting.value = false
   }
 }
 
-const isAlertVisible = ref(false)
+const alertKind = ref<'success' | 'error' | null>(null)
+const isAlertVisible = computed(() => alertKind.value !== null)
 
-const showAlert = () => {
-  if (isAlertVisible.value) return
+const ALERT_TEXT = {
+  success: 'Sent! We will contact you within next 1-3 business days.',
+  error: 'We could not send your request. Please try again, or email us at hello@codecave.pro.',
+} as const
 
-  isAlertVisible.value = true
+const showAlert = (kind: 'success' | 'error') => {
+  if (alertKind.value !== null) return
+
+  alertKind.value = kind
   setTimeout(() => {
-    isAlertVisible.value = false
+    alertKind.value = null
   }, 10000)
 }
 
@@ -200,13 +192,13 @@ watch(isAlertVisible, () => {
 </script>
 
 <template>
-  <form ref="" class="flex flex-col gap-14 relative" novalidate>
+  <form class="flex flex-col gap-14 relative" novalidate>
     <div class="space-y-5">
       <fieldset class="space-y-2">
         <InputText id="email" v-model="formData.email.value" :isRequired=formData.email.required :label=formData.email.label type="email" :isError="!!formData.email.error" :errorMessage="formData.email.error" :placeholder="formData.email.placeholder ?? ''" autocomplete="email" />
         <div class="flex flex-col xl:flex-row gap-2">
-          <InputText id="firstname" v-model="formData.firstname.value" :isRequired=formData.firstname.required :label=formData.firstname.label type="text" :isError="!!formData.firstname.error" :errorMessage="formData.firstname.error" :placeholder="formData.firstname.placeholder ?? ''" autocomplete="given-name" />
-          <InputText id="lastname" v-model="formData.lastname.value" :isRequired=formData.lastname.required :label=formData.lastname.label type="text" :isError="!!formData.lastname.error" :errorMessage="formData.lastname.error" :placeholder="formData.lastname.placeholder ?? ''" autocomplete="family-name" />
+          <InputText id="firstname" v-model="formData.firstName.value" :isRequired=formData.firstName.required :label=formData.firstName.label type="text" :isError="!!formData.firstName.error" :errorMessage="formData.firstName.error" :placeholder="formData.firstName.placeholder ?? ''" autocomplete="given-name" />
+          <InputText id="lastname" v-model="formData.lastName.value" :isRequired=formData.lastName.required :label=formData.lastName.label type="text" :isError="!!formData.lastName.error" :errorMessage="formData.lastName.error" :placeholder="formData.lastName.placeholder ?? ''" autocomplete="family-name" />
         </div>
         <div class="flex flex-col xl:flex-row gap-2">
           <InputText id="companyName" v-model="formData.companyName.value" :isRequired=formData.companyName.required :label=formData.companyName.label type="text" :isError="!!formData.companyName.error" :errorMessage="formData.companyName.error" :placeholder="formData.companyName.placeholder ?? ''" />
@@ -229,13 +221,13 @@ watch(isAlertVisible, () => {
     </div>
     <GlowButton @click="submitContactsForm" title="Leave consultation request" class="self-center lg:self-start" />
     <div v-show="isAlertVisible" class="border border-action group absolute bottom-19.25 md:fixed z-50 left-1/2 -translate-x-1/2 md:top-24 form-alert flex gap-2 md:gap-8 items-center justify-between w-full h-fit max-w-139 bg-surface-secondary p-4 md:px-6 md:py-2.5 rounded-3xl">
-      <div class="w-8 h-8">
+      <div v-if="alertKind === 'success'" class="w-8 h-8">
         <component :is="SuccessIcon" class="w-8 h-8" />
       </div>
       <p class="text-sm md:text-lg font-bold text-heading md:max-w-sm">
-        Sent! We will contact you within next 1-3 business days.
+        {{ alertKind ? ALERT_TEXT[alertKind] : '' }}
       </p>
-      <button @click="isAlertVisible = false" class="group-hover:text-action text-heading transition-colors cursor-pointer">
+      <button @click="alertKind = null" class="group-hover:text-action text-heading transition-colors cursor-pointer">
         <component :is="CloseIcon" />
       </button>
     </div>

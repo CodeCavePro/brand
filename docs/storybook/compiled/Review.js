@@ -86,7 +86,7 @@ var { strapiUrl } = adapter;
 
 // source_examples/helpers/image-url.ts
 var getImageUrl = (url) => {
-  return `${strapiUrl}/${url}`;
+  return `${strapiUrl}/${url.replace(/^\/+/, "")}`;
 };
 
 // source_examples/common/images/LazyImage.vue

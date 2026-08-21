@@ -1,14 +1,15 @@
 ---
 import Icon from "../../assets/icons/Icon.astro";
-import Autodesk from "../../assets/images/autodesk-partner.png";
-import AWS from "../../assets/images/aws-partner.png";
-import Hubspot from "../../assets/images/hubspot-partner.png";
-import Microsoft from "../../assets/images/microsoft-partner.png";
+import Autodesk from "../../assets/images/autodesk-partner.svg";
+import AWS from "../../assets/images/aws-partner.svg";
+import Hubspot from "../../assets/images/hubspot-partner.svg";
+import Microsoft from "../../assets/images/microsoft-partner.svg";
 import Button from "../common/Button.vue";
 import ResearchFormAstroComponent from "../common/forms/ResearchForm.vue";
 import LazyImage from "../common/images/LazyImage.vue";
 import LinkGroup from "./link-group.vue";
 import { industries, legal, other, reviews, services } from "./links.ts";
+import { websiteUrl } from "../../helpers/paths.ts";
 
 const socialMedia = [
     {link: 'https://t.me/CodeCaveConstactUsBot', icon: 'telegram'},
@@ -20,10 +21,10 @@ const mainPageSchema = {
     "@graph": [
         {
             "@type": "Organization",
-            "@id": "https://codecave.it/#organization",
+            "@id": `${websiteUrl}/#organization`,
             "name": "CodeCave",
-            "url": "https://codecave.it",
-            "logo": "https://codecave.it/logo.svg",
+            "url": `${websiteUrl}`,
+            "logo": `${websiteUrl}/logo.svg`,
             "contactPoint": {
                 "@type": "ContactPoint",
                 "telephone": "+1-302-364-0193",
@@ -95,18 +96,18 @@ const mainPageSchema = {
         },
         {
             "@type": "WebSite",
-            "@id": "https://codecave.it/#website",
-            "url": "https://codecave.it",
+            "@id": `${websiteUrl}/#website`,
+            "url": `${websiteUrl}`,
             "name": "CodeCave",
-            "publisher": {"@id": "https://codecave.it/#organization"},
+            "publisher": {"@id": `${websiteUrl}/#organization`},
         },
         {
             "@type": "LocalBusiness",
-            "@id": "https://codecave.it/#localbusiness",
-            "parentOrganization": {"@id": "https://codecave.it/#organization"},
+            "@id": `${websiteUrl}/#localbusiness`,
+            "parentOrganization": {"@id": `${websiteUrl}/#organization`},
             "name": "CodeCave LLC",
-            "url": "https://codecave.it",
-            "image": "https://codecave.it/logo.svg",
+            "url": `${websiteUrl}`,
+            "image": `${websiteUrl}/logo.svg`,
             "taxID": "35-2654711",
             "telephone": "+1-302-364-0193",
             "address": {

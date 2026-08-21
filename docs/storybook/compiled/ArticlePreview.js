@@ -23,7 +23,7 @@ var { strapiUrl } = adapter;
 
 // source_examples/helpers/image-url.ts
 var getImageUrl = (url) => {
-  return `${strapiUrl}/${url}`;
+  return `${strapiUrl}/${url.replace(/^\/+/, "")}`;
 };
 
 // source_examples/helpers/paths.ts
@@ -86,7 +86,7 @@ var __sfc__ = /* @__PURE__ */ _defineComponent({
               datetime: __props.article.date?.toString()
             }, _toDisplayString(_unref(formattedDate)(__props.article.locale, __props.article.date)), 9, _hoisted_5),
             _createElementVNode(
-              "h2",
+              "h3",
               _hoisted_6,
               _toDisplayString(__props.article.title),
               1

@@ -4,7 +4,7 @@
 import { defineComponent as _defineComponent } from "vue";
 import { toDisplayString as _toDisplayString, createElementVNode as _createElementVNode, openBlock as _openBlock, createElementBlock as _createElementBlock } from "vue";
 import { gsap } from "gsap";
-import SplitText from "gsap/dist/SplitText";
+import { SplitText } from "gsap/SplitText";
 import { nextTick, onMounted, watch } from "vue";
 var _hoisted_1 = { class: "flex flex-col items-center leading-[130%] text-heading-sm lg:text-heading-lg font-bold" };
 var _hoisted_2 = { class: "block text-heading" };

@@ -158,7 +158,7 @@ var __sfc__2 = /* @__PURE__ */ _defineComponent2({
         [
           _createElementVNode2("div", _hoisted_12, [
             _createElementVNode2(
-              "h2",
+              "h3",
               _hoisted_2,
               _toDisplayString2(__props.name),
               1
