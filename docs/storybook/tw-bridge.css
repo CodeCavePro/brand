@@ -7,7 +7,7 @@
  *
  * The digest below covers every file under source_examples/, this file's only
  * source. Verify with: node docs/tools/check-tw-bridge.mjs
- * source-digest: sha256:e232ae31445557996513041897aebbcef03cd7ffe92fb8eb19b16a02db72859f
+ * source-digest: sha256:35a92dda002571752d31ff10b014dd0f544c03804ba5e6725ff9093459379d24
  */
 /*! tailwindcss v4.3.0 | MIT License | https://tailwindcss.com */
 @layer properties;
@@ -158,6 +158,9 @@
   .flex {
     display: flex;
   }
+  .grid {
+    display: grid;
+  }
   .hidden {
     display: none;
   }
@@ -166,6 +169,9 @@
   }
   .h-4 {
     height: calc(var(--spacing) * 4);
+  }
+  .h-5 {
+    height: calc(var(--spacing) * 5);
   }
   .h-6 {
     height: calc(var(--spacing) * 6);
@@ -208,6 +214,9 @@
   }
   .w-4 {
     width: calc(var(--spacing) * 4);
+  }
+  .w-5 {
+    width: calc(var(--spacing) * 5);
   }
   .w-6 {
     width: calc(var(--spacing) * 6);
@@ -329,6 +338,9 @@
   }
   .gap-3 {
     gap: calc(var(--spacing) * 3);
+  }
+  .gap-3\.5 {
+    gap: calc(var(--spacing) * 3.5);
   }
   .gap-4 {
     gap: calc(var(--spacing) * 4);
@@ -465,6 +477,9 @@
   }
   .bg-surface-secondary {
     background-color: var(--color-surface-secondary);
+  }
+  .bg-surface-tertiary {
+    background-color: var(--color-surface-tertiary);
   }
   .bg-transparent {
     background-color: transparent;
@@ -721,6 +736,18 @@
       @media (hover: hover) {
         color: var(--color-action);
       }
+    }
+  }
+  .group-hover\:text-hovered {
+    &:is(:where(.group):hover *) {
+      @media (hover: hover) {
+        color: var(--color-hovered);
+      }
+    }
+  }
+  .group-active\:text-hovered {
+    &:is(:where(.group):active *) {
+      color: var(--color-hovered);
     }
   }
   .placeholder\:pt-1\.5 {
@@ -1078,6 +1105,11 @@
       translate: var(--tw-translate-x) var(--tw-translate-y);
     }
   }
+  .xl\:grid-cols-2 {
+    @media (width >= 80rem) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
   .xl\:flex-row {
     @media (width >= 80rem) {
       flex-direction: row;
@@ -1095,6 +1127,16 @@
         margin-block-start: calc(calc(var(--spacing) * 2) * var(--tw-space-y-reverse));
         margin-block-end: calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-y-reverse)));
       }
+    }
+  }
+  .xl\:gap-x-8 {
+    @media (width >= 80rem) {
+      column-gap: calc(var(--spacing) * 8);
+    }
+  }
+  .xl\:gap-y-4 {
+    @media (width >= 80rem) {
+      row-gap: calc(var(--spacing) * 4);
     }
   }
   .xl\:pb-0 {
