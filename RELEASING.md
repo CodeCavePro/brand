@@ -261,38 +261,26 @@ which puts you back in the 72-hour window above, with an escalation attached.
 ## First publish only
 
 The routine release assumes the package already exists on the registry. The
-first one has five preconditions the rest do not, in this order:
+first one has three preconditions the rest do not, in this order:
 
-1. ~~**The npm org exists and you are in it.**~~ **Confirmed 2026-08-21** —
-   `salaros` owns the `codecavepro` scope and nothing public sits under it yet.
-   See [Prerequisites](#prerequisites).
-2. ~~**[CCWEB2-319](https://codecave.atlassian.net/browse/CCWEB2-319) is settled.**~~
-   **Done 2026-08-21.** `spacing.controlHeight` was 44px against production's
-   48px; it now ships 48px, applied as a `min-height`. Documenting a divergence
-   honestly is right for a token already published — it is the wrong thing to do
-   for one you are about to publish for the first time and could simply get
-   right.
-3. **`docs/source_examples/` has been re-measured.**
-   [CCWEB2-315](https://codecave.atlassian.net/browse/CCWEB2-315) closed on
-   2026-08-20 and that is **not durable** — it measured nine drifted files on
-   2026-08-19 and thirteen the next day. Nothing in the token package is built
-   from a capture today, but check before assuming that is still true.
-4. ~~**[CCWEB2-323](https://codecave.atlassian.net/browse/CCWEB2-323) is settled.**~~
-   **Done 2026-08-21.** `--text-lg`, `--text-sm` and `--text-base` were also
-   Tailwind default theme names at different values, and the package's unlayered
-   `:root` **wins** over Tailwind's `@layer theme` — so importing the stylesheet
-   silently resized every `text-lg` and `text-sm` in a consumer's app, 72 usages
-   across 37 files on codecave.pro alone. They are now `--text-subhead`,
-   `--text-label` and `--text-body`, which Tailwind has no default for.
-   `npm run check:collisions` guards it.
+1. **`docs/source_examples/` has been re-measured.** Run
+   `npm run check:captures`. A clean result is **not durable** — the captures
+   measured nine drifted files on 2026-08-19 and thirteen the next day. Nothing
+   in the token package is built from a capture today, but check before
+   assuming that is still true.
+2. **Every name is settled.** **A token name is only cheap to change while
+   nobody has installed it** — before the first publish a rename is free, after
+   it a rename is a `2.0.0`. Two were caught this way and both were free:
+   `spacing.controlHeight` shipping 44px against production's 48px, and
+   `--text-lg`/`--text-sm`/`--text-base` silently redefining Tailwind defaults
+   in every consumer's app. `npm run check:collisions` guards the second class.
+   Expect a third. **The last chance to rename anything is the run of this
+   checklist that ends in `npm publish`.**
 
-   This is precondition 2's argument again, and it is the reason precondition 2
-   is worth having as a *category* rather than a one-off: **a token name is only
-   cheap to change while nobody has installed it.** Both of these were free
-   today and a `2.0.0` after the first publish. Expect a third. The last chance
-   to rename anything is the run of this checklist that ends in `npm publish`.
-
-5. **Version `1.0.0`.** The manifest already says so, and `1.0.0` is tagged. Publishing straight at 1.0 is a deliberate call, not an oversight:
+   Note what the first one implies: documenting a divergence honestly is right
+   for a token already published, and the wrong thing to do for one you are
+   about to publish for the first time and could simply get right.
+3. **Version `1.0.0`.** The manifest already says so, and `1.0.0` is tagged. Publishing straight at 1.0 is a deliberate call, not an oversight:
    the token values are the thing consumers depend on and they already mirror
    production, so a `0.x` would be understating the stability of the only part
    that matters to them. The cost is that the layout is now a promise — an
