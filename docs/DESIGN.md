@@ -373,10 +373,19 @@ rather than merely meeting 2.5.8 AA (24px).
 
 The `secondary` and `tertiary` variants still declare `h-11` (44px) on top of
 that base. They do not render at 44px — `min-height` beats `height` in CSS, so
-every one of them is 48px tall and the `h-11` is dead. `--control-height`
-remains `2.75rem` in `colors_and_type.css` because that is what the specimen
-markup here sets explicitly; production no longer agrees with it, and the
-reconciliation is a site-side decision (CCWEB2-319).
+every one of them is 48px tall and the `h-11` is dead.
+
+`--control-height` is therefore `3rem` (48px), and `.btn` applies it as
+**`min-height`**, not `height`. Both halves of that matter: the value is what
+production actually renders, and the property is what lets a wrapped label grow
+instead of being clipped — which a fixed height would not.
+
+It said `2.75rem` until 2026-08-21, on the reasoning that it was what the
+specimen markup set. That was circular — the specimen set 44px because the
+token did — and it contradicted the paragraph directly above it in this file.
+Settled under the standing policy: where the two disagree, the site wins and
+`docs/` moves. The dead `h-11` is the site's to remove, and stays filed as
+[CCWEB2-319](https://codecave.atlassian.net/browse/CCWEB2-319).
 
 | Variant | Rest | Hover | Active |
 |---|---|---|---|

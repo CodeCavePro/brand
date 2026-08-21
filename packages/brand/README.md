@@ -110,15 +110,15 @@ Two things to know about it:
 - **The CSS is the source of truth.** This module is a faithful mirror of it. If the
   two ever disagree, the CSS wins and the module is the bug.
 
-## Known divergence
+## Controls are 48px, and it is a floor
 
-`spacing.controlHeight` (and `--control-height`) is `2.75rem` / 44px, which is what the
-design system specifies. **Production renders every button at 48px** — a `min-h-12`
-floor out-cascades the declared height. The token is shipping at the documented value
-rather than the observed one while that is settled upstream; if you are matching the
-live site pixel-for-pixel, use 48px.
+`spacing.controlHeight` / `--control-height` is `3rem` — 48px, what codecave.pro
+actually renders. `.btn` applies it as `min-height` rather than `height`, so a button
+whose label wraps grows instead of clipping. If you build your own controls from the
+token, do the same.
 
-Tracked as [CCWEB2-319](https://codecave.atlassian.net/browse/CCWEB2-319).
+48px clears WCAG 2.5.5 AAA outright rather than merely meeting 2.5.8 AA, so there is no
+separate mobile size.
 
 ## Documentation
 

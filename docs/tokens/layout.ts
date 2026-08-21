@@ -55,7 +55,7 @@ export const spacing = {
   sectionPaddingTop: '12.5rem', //   200px
   sectionPaddingBottom: '7.5rem', // 120px
   cardPadding: '2rem 2rem 3rem', //  bottom-heavy: seats a footer action
-  controlHeight: '2.75rem', //       44px — every button
+  controlHeight: '3rem', //          48px — every button (a floor, not a fixed height)
   inputHeight: '4rem', //            64px — every text field
 } as const;
 

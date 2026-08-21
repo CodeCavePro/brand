@@ -239,7 +239,7 @@
   --section-padding-bottom: 7.5rem; /* 120px */
   --card-padding: 2rem 2rem 3rem;   /* heavier bottom seats a footer action */
 
-  --control-height: 2.75rem;        /* 44px — every button and pill         */
+  --control-height: 3rem;           /* 48px — every button and pill         */
   --input-height: 4rem;             /* 64px — floating-label text input     */
 
   /* =========================================================================
@@ -392,8 +392,14 @@ a:hover { color: var(--color-hovered); }
 
 /* ---------------------------------------------------------------------------
  * Buttons — source: source_examples/common/Button.vue
- * Every control is a 44px pill: h-11 px-6 py-1 rounded-full font-bold.
+ * Every control is a 48px pill: min-h-12 px-6 py-1 rounded-full font-bold.
  * ONE solid fill per action. Everything else is bordered, ghost or text.
+ *
+ * min-height, not height, because that is what production does: Button.vue
+ * puts `min-h-12` on the shared base class and `h-11` on two variants, and
+ * min-height wins — every button is 48px and the h-11 is dead (CCWEB2-319).
+ * Transcribing the RESULT rather than the declarations also survives a label
+ * that wraps, which a fixed height would clip.
  * ------------------------------------------------------------------------ */
 
 .btn {
@@ -403,7 +409,7 @@ a:hover { color: var(--color-hovered); }
   box-sizing: border-box;
   width: fit-content;
   max-width: 100%;
-  height: var(--control-height);
+  min-height: var(--control-height);
   padding: 0.25rem 1.5rem;
   border: 0;
   border-radius: var(--radius-pill);

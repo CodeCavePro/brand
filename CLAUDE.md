@@ -25,7 +25,7 @@ label ([live query](https://codecave.atlassian.net/issues?jql=project%20%3D%20CC
 Site-side issues opened by that resync, filed in CCWEB2 without the `brand-kit`
 label because they are the site's to fix, not the package's:
 
--   [CCWEB2-319](https://codecave.atlassian.net/browse/CCWEB2-319) — `h-11` is dead under `min-h-12`; every button is 48px, and `--control-height` still says 44px. **Settle before the first `npm publish`** — it is a token the package is about to ship.
+-   [CCWEB2-319](https://codecave.atlassian.net/browse/CCWEB2-319) — **package side done** 2026-08-21. `--control-height` is now `3rem`/48px and `.btn` applies it as `min-height`, matching what production renders. The site's dead `h-11` under `min-h-12` is still the site's to remove, so the issue stays open.
 -   [CCWEB2-320](https://codecave.atlassian.net/browse/CCWEB2-320) — `TextField.vue`'s error message renders at 2.91:1. Accessibility.
 -   [CCWEB2-321](https://codecave.atlassian.net/browse/CCWEB2-321) — footer link reads "Truspilot".
 -   [CCWEB2-322](https://codecave.atlassian.net/browse/CCWEB2-322) — `LazyImage.vue` never binds the `width`/`height` props it declares.

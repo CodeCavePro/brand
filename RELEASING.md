@@ -233,12 +233,12 @@ first one has four preconditions the rest do not, in this order:
 
 1. **The npm org exists and you are in it.** See
    [Prerequisites](#prerequisites) — unverified from this repo.
-2. **[CCWEB2-319](https://codecave.atlassian.net/browse/CCWEB2-319) is settled.**
-   `spacing.controlHeight` ships 44px while production renders every button at
-   48px. The README documents the divergence honestly, which is the right thing
-   to do for a token that is *already out* — it is the wrong thing to do for a
-   token you are about to publish for the first time and could simply get right.
-   Settle it, then publish the settled value.
+2. ~~**[CCWEB2-319](https://codecave.atlassian.net/browse/CCWEB2-319) is settled.**~~
+   **Done 2026-08-21.** `spacing.controlHeight` was 44px against production's
+   48px; it now ships 48px, applied as a `min-height`. Documenting a divergence
+   honestly is right for a token already published — it is the wrong thing to do
+   for one you are about to publish for the first time and could simply get
+   right.
 3. **`docs/source_examples/` has been re-measured.**
    [CCWEB2-315](https://codecave.atlassian.net/browse/CCWEB2-315) closed on
    2026-08-20 and that is **not durable** — it measured nine drifted files on

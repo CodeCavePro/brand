@@ -127,12 +127,13 @@
 
   <section class="pv-block">
     <h2>Control sizing</h2>
-    <p class="pv-note">Two heights only. Both are measured from live controls, and 44px already
-       meets the minimum touch target — no separate mobile sizing is needed.</p>
+    <p class="pv-note">Two heights only. Both are measured from live controls. 48px is a floor,
+       not a fixed height — it clears WCAG 2.5.5 AAA outright, so no separate mobile sizing
+       is needed.</p>
     <div class="pv-tile">
       <div class="ctrl-row">
-        <span class="bar" style="width:44px;height:44px;border-radius:var(--radius-pill)"></span>
-        <span style="flex:1;min-width:16rem"><span class="pv-label">--control-height · 44px</span>
+        <span class="bar" style="width:48px;height:48px;border-radius:var(--radius-pill)"></span>
+        <span style="flex:1;min-width:16rem"><span class="pv-label">--control-height · 48px</span>
           <span class="pv-meta">every button and pill · padding 4px 24px · 16px bold label</span></span>
         <a class="btn btn-tertiary" href="#">Learn more</a>
       </div>
