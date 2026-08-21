@@ -31,6 +31,20 @@ label ([live query](https://codecave.atlassian.net/issues?jql=project%20%3D%20CC
     phase 6 goes first. The token half of the epic — the package, the CSS, the
     faux-bold font fix — needs none of this and is unblocked.
 
+    **Some of that editing is avoidable, and the way to avoid it is on the site.**
+    Measured on 2026-08-21: of 24 captures, 12 already build as specimens and 7
+    are genuinely blocked. Four of the seven are blocked only by files nobody
+    captured (`helpers/form-validator.ts`, `helpers/breakpoints.ts`,
+    `header/services-list.vue`, `logo.svg`, `back-icon.vue`) — re-capture those
+    and they build, with nothing authored. The hard ones are
+    [ContactUsForm](https://codecave.atlassian.net/browse/CCWEB2-325), whose prop
+    type *is* HubSpot's form definition, and the two `.astro` captures, which use
+    build-time-only modules. CCWEB2-325 is the fix for the first: invert the
+    dependency on the site so the component takes abstract data, emits a submit
+    event and talks to an `ICrmFormClient`, with `HubSpotFormClient` implementing
+    it. **That is site-side work, and it is what makes the capture promotable
+    rather than editable.**
+
     **What the site imports is `/tokens.css`, not `/css`.** Measured before
     writing the phase 6 PR: `@codecavepro/brand/css` is the design system
     whole, so importing it into codecave.pro would impose eight element rules
