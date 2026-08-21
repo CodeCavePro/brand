@@ -19,7 +19,10 @@
     "node": ">=20"
   },
   "devDependencies": {
+    "@astrojs/vue": "7.0.2",
+    "astro": "7.2.4",
     "dompurify": "3.4.13",
-    "tailwindcss": "4.3.0"
+    "tailwindcss": "4.3.0",
+    "vue": "3.5.35"
   }
 }
