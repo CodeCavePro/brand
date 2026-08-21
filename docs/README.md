@@ -381,6 +381,23 @@ storybook goes on documenting an older site than the sources sitting beside it.
 The same check runs on every push in `.github/workflows/static.yml`, ahead of
 the deploy, and it is the one guarantee that always runs.
 
+That check proves the bridge matches the captures. It cannot prove the
+**captures** still match the site — nothing in a checkout of this repository
+can, because the answer lives in another repository. With a `codecave.pro`
+checkout beside this one:
+
+```bash
+npm run check:captures
+```
+
+It compares all 30 site-derived captures byte-for-byte against their origins and
+names any that have drifted. Deliberately outside `npm run check` and outside
+CI: `codecave.pro` is private, and with no checkout the command fails loudly
+rather than reporting a success it did not earn. Run it before trusting any
+claim of the form "production does X" — every such claim in this package rests
+on those files. Last measured clean 2026-08-21; it found thirteen drifted files
+the day before.
+
 Regenerating the bridge is the other half, and it needs the `codecave.pro`
 checkout — the storybook compiles the real components with the same
 vue/esbuild/tailwind versions the site builds with, which is the whole point:

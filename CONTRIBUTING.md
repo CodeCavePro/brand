@@ -56,8 +56,21 @@ under `source_examples/` is authored.
 
 Refreshing them from the live site is a different act and is legitimate — that
 is [CCWEB2-315](https://codecave.atlassian.net/browse/CCWEB2-315), and it is not
-a one-time job. It measured nine drifted files on 2026-08-19 and thirteen the
-next day.
+a one-time job. It measured nine drifted files on 2026-08-19, thirteen on
+2026-08-20 and zero on 2026-08-21.
+
+To find out where they stand right now:
+
+```bash
+npm run check:captures
+```
+
+It compares every capture against a `codecave.pro` checkout (expected beside
+this repo; pass a path as an argument otherwise) and names the drifted ones.
+**It is not part of `npm run check` and not in CI**, because the site repository
+is private and CI has no checkout of it — with no checkout the command fails
+loudly rather than reporting success, so it can only ever be run somewhere the
+answer is real.
 
 ### The derived half of `ds-bundle/`
 

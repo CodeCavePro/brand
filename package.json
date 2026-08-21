@@ -11,7 +11,8 @@
   "scripts": {
     "build": "npm run build --workspace @codecavepro/brand",
     "check": "npm run check --workspace @codecavepro/brand && npm run check:ports && node docs/tools/check-tw-bridge.mjs",
-    "check:ports": "tsc --noEmit --project docs/storybook/ports/tsconfig.json"
+    "check:ports": "tsc --noEmit --project docs/storybook/ports/tsconfig.json",
+    "check:captures": "node docs/tools/check-captures.mjs"
   },
   "engines": {
     "node": ">=20"
