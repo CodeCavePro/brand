@@ -16,7 +16,7 @@ Open items for the brand package, all in
 [CCWEB2](https://codecave.atlassian.net/browse/CCWEB2) under the **`brand-kit`**
 label ([live query](https://codecave.atlassian.net/issues?jql=project%20%3D%20CCWEB2%20AND%20labels%20%3D%20%22brand-kit%22%20ORDER%20BY%20key%20ASC)):
 
--   [CCWEB2-318](https://codecave.atlassian.net/browse/CCWEB2-318) — **epic.** Publish `@codecavepro/brand` to npm and have codecave.pro install it, inverting the direction of truth. **`@codecavepro/brand@1.0.0` went to public npm on 2026-08-21 — phase 5 is done. Open: phase 6 (the codecave.pro PR — open it, do not merge), then phase 4.** The epic lists phase 4 before phase 6; **that order was reversed on 2026-08-21 and the reason is below.** Re-measure the captures with `npm run check:captures` before building components from them; never publish a component built from a capture that is behind the site.
+-   [CCWEB2-318](https://codecave.atlassian.net/browse/CCWEB2-318) — **epic.** Publish `@codecavepro/brand` to npm and have codecave.pro install it, inverting the direction of truth. **`@codecavepro/brand@1.0.0` went to public npm on 2026-08-21 — phase 5 is done. Open: publishing 1.1.0 (needs a human OTP), then phase 6 (the codecave.pro PR — open it, do not merge), then phase 4.** The epic lists phase 4 before phase 6; **that order was reversed on 2026-08-21 and the reason is below.** Re-measure the captures with `npm run check:captures` before building components from them; never publish a component built from a capture that is behind the site.
 
     **Why phase 4 waits for phase 6.** Phase 4 promotes `docs/source_examples/`
     into `packages/brand/src/components`, which breaks two rules this repo
@@ -30,6 +30,20 @@ label ([live query](https://codecave.atlassian.net/issues?jql=project%20%3D%20CC
     nothing describing the real site. Phase 6 is what makes phase 4 honest, so
     phase 6 goes first. The token half of the epic — the package, the CSS, the
     faux-bold font fix — needs none of this and is unblocked.
+
+    **What the site imports is `/tokens.css`, not `/css`.** Measured before
+    writing the phase 6 PR: `@codecavepro/brand/css` is the design system
+    whole, so importing it into codecave.pro would impose eight element rules
+    the site has no competing rule for, add sixty class selectors it does not
+    use, and redefine `.page-container` and `.section-container`, which the
+    site already defines and which differ. That is a redesign, not a
+    dependency update. `/tokens.css` — added in 1.1.0, extracted from
+    `colors_and_type.css` by `packages/brand/scripts/build.mjs` — is the
+    `:root` block alone, so the site can stop keeping its own copy of the
+    palette without a single pixel moving. **Phase 6 changes no colours.**
+    The site's own `@font-face` stays its own for the same reason: swapping
+    one faux-bolded cut for six real ones is a visible change and belongs in
+    its own PR, not smuggled into this one.
 
 Genuine bugs in what codecave.pro ships, found while resyncing the captures.
 **These are the site's to fix, not the package's** — do not "correct" them in
