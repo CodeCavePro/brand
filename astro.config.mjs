@@ -70,8 +70,15 @@ export default defineConfig({
    *
    * It stays because CCWEB2-318 phase 4 promotes components into the package
    * and may well want a real island to demonstrate one. Nothing is asserting
-   * that, so treat it as a bet, not a requirement: if phase 4 lands without an
-   * island, this and the @astrojs/vue devDependency should both go. */
+   * that, so treat it as a bet, not a requirement.
+   *
+   * The odds got longer on 2026-08-21: phase 4 was resequenced behind phase 6
+   * (see CLAUDE.md for why), so it now waits on the first publish AND on the
+   * website PR, and it may not happen at all. Two conditions retire this, and
+   * either is enough — phase 4 landing without an island, or phase 6 landing
+   * while phase 4 is still unstarted. Then this line and the @astrojs/vue
+   * devDependency both go; re-adding them is one `npm i -D` and two lines, so
+   * there is nothing to preserve by hesitating. */
   integrations: [vue(), docsPassthrough()],
 
   vite: {
