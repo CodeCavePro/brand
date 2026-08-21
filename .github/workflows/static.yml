@@ -96,6 +96,28 @@ jobs:
       # continue-on-error so an unreachable or private codecave.pro downgrades
       # this workflow to "publish the verified committed output" instead of
       # taking the site down.
+      # Which of the two skip reasons applies is otherwise unknowable from
+      # outside. `secrets.CODECAVE_PRO_TOKEN || github.token` falls back
+      # silently, and continue-on-error rewrites the checkout's conclusion to
+      # `success`, so the jobs API shows a green step followed by four skipped
+      # ones and no way to tell "no secret configured" from "secret configured
+      # but it cannot read the repo". Both also take ~30s, because checkout
+      # retries auth failures — so duration does not separate them either.
+      #
+      # This reads the length of the secret and nothing else. The value never
+      # reaches a log: it is bound to an env var, tested with -n, and only the
+      # boolean is written to the step output.
+      - name: Is a site token configured
+        id: sitetoken
+        env:
+          TOKEN: ${{ secrets.CODECAVE_PRO_TOKEN }}
+        run: |
+          if [ -n "$TOKEN" ]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Check out the codecave.pro toolchain
         id: toolchain
         continue-on-error: true
@@ -152,15 +174,39 @@ jobs:
 
       - name: Note a skipped rebuild
         if: steps.toolchain.outcome != 'success'
+        env:
+          CONFIGURED: ${{ steps.sitetoken.outputs.configured }}
         run: |
           {
             echo "### Storybook rebuild skipped"
             echo ""
             echo "\`CodeCavePro/codecave.pro\` could not be checked out, so the storybook was not"
             echo "rebuilt. The committed output was verified against \`docs/source_examples/\` and"
-            echo "published as-is."
+            echo "published as-is. **This is a downgrade, not a failure** — the deploy is unaffected."
             echo ""
-            echo "To enable the rebuild, add a repo-scoped PAT as the \`CODECAVE_PRO_TOKEN\` secret."
+            if [ "$CONFIGURED" = "true" ]; then
+              echo "\`CODECAVE_PRO_TOKEN\` **is set**, so the token itself was refused. Check, in"
+              echo "the order these actually go wrong:"
+              echo ""
+              echo "1. **Org approval.** A fine-grained PAT against an organisation repo starts"
+              echo "   life pending and reads nothing until an owner approves it."
+              echo "2. **Repository access** lists \`CodeCavePro/codecave.pro\`. \"All repositories\""
+              echo "   under the wrong resource owner is the common near-miss — the owner must be"
+              echo "   **CodeCavePro**, not the personal account."
+              echo "3. **Permissions** include \`Contents: Read-only\`. Nothing else is needed."
+              echo "4. **Expiry.** A lapsed PAT lands here and looks exactly like this."
+              echo ""
+              echo "A classic PAT with the \`repo\` scope also works and skips 1–3, at the cost of"
+              echo "being far broader than this needs."
+            else
+              echo "\`CODECAVE_PRO_TOKEN\` **is not set** on this repository, so the checkout fell"
+              echo "back to \`github.token\`, which is scoped to \`CodeCavePro/brand\` alone and"
+              echo "cannot read a different private repo."
+              echo ""
+              echo "Add it under Settings -> Secrets and variables -> Actions as a **repository"
+              echo "secret** (not a variable, and not an environment secret — this job declares no"
+              echo "environment, so an environment-scoped secret arrives empty and lands here)."
+            fi
           } >> "$GITHUB_STEP_SUMMARY"
 
       # ---- build the site --------------------------------------------------
