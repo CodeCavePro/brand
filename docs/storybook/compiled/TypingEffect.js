@@ -1,6 +1,6 @@
-/* GENERATED from source_examples/common/effects/TypingEffect.vue by tools/build-storybook.mjs — do not edit. */
+/* GENERATED from @codecavepro/brand/components/common/effects/TypingEffect.vue by tools/build-storybook.mjs — do not edit. */
 
-// source_examples/common/effects/TypingEffect.vue
+// ../packages/brand/dist/src/components/common/effects/TypingEffect.vue
 import { defineComponent as _defineComponent } from "vue";
 import { toDisplayString as _toDisplayString, createElementVNode as _createElementVNode, openBlock as _openBlock, createElementBlock as _createElementBlock } from "vue";
 import { gsap } from "gsap";

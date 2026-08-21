@@ -1,6 +1,6 @@
-/* GENERATED from source_examples/common/Radio.vue by tools/build-storybook.mjs — do not edit. */
+/* GENERATED from @codecavepro/brand/components/common/Radio.vue by tools/build-storybook.mjs — do not edit. */
 
-// source_examples/common/Radio.vue
+// ../packages/brand/dist/src/components/common/Radio.vue
 import { defineComponent as _defineComponent } from "vue";
 import { createElementVNode as _createElementVNode, toDisplayString as _toDisplayString, normalizeClass as _normalizeClass, openBlock as _openBlock, createElementBlock as _createElementBlock } from "vue";
 import { computed } from "vue";

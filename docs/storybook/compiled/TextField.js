@@ -1,6 +1,6 @@
-/* GENERATED from source_examples/common/TextField.vue by tools/build-storybook.mjs — do not edit. */
+/* GENERATED from @codecavepro/brand/components/common/TextField.vue by tools/build-storybook.mjs — do not edit. */
 
-// source_examples/common/TextField.vue
+// ../packages/brand/dist/src/components/common/TextField.vue
 import { defineComponent as _defineComponent } from "vue";
 import { toDisplayString as _toDisplayString, createElementVNode as _createElementVNode, normalizeClass as _normalizeClass, openBlock as _openBlock, createElementBlock as _createElementBlock, createCommentVNode as _createCommentVNode } from "vue";
 import { ref } from "vue";

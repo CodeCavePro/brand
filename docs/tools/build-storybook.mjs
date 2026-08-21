@@ -65,6 +65,44 @@ const compiler = req('vue/compiler-sfc');
 const esbuild = req('esbuild');
 
 const SRC = path.join(docs, 'source_examples');
+
+/* The package's shipped component tree — CCWEB2-318 phase 4.
+ *
+ * The storybook compiles a component FROM THE PACKAGE whenever the package
+ * carries it, and from the captures otherwise. That is not a detail of where
+ * files are read: it is what makes the docs the package's first consumer for
+ * components, exactly as they have been for tokens since phase 2. If a
+ * specimen renders, the package's layout works — including the two-level
+ * climbs (`../../assets/images/logo.svg`) that only resolve because dist/src/
+ * restores the directory depth the captures flattened away.
+ *
+ * Nothing about a specimen's MEANING changes. `npm run check` asserts the
+ * package's copies are byte-identical to the captures, and check-captures.mjs
+ * asserts the captures are byte-identical to the site, so the two roots are
+ * the same bytes and a specimen is still a record of what codecave.pro ships.
+ * The chain is one link longer and every link is checked.
+ *
+ * Entries the package does NOT carry stay on the captures, and the build says
+ * which those are on every run rather than hiding the split. Today they are
+ * the three components CCWEB2-332 is about: they reach getImageUrl, which
+ * imports the site's CMS host and token, so they cannot ship. A specimen for
+ * a component nobody can install is still worth having — it documents the
+ * site, which is the storybook's job.
+ */
+const PKG = path.join(docs, '..', 'packages', 'brand', 'dist', 'src');
+if (!fs.existsSync(PKG)) {
+  console.error(`The package is not built — no ${path.relative(path.join(docs, '..'), PKG)}`);
+  console.error('Run: npm run build -w @codecavepro/brand');
+  process.exit(1);
+}
+
+/** Where an entry's source lives, and which root it is relative to. */
+function rootOf(entry) {
+  const shipped = path.join(PKG, 'components', entry);
+  return fs.existsSync(shipped) ? { file: shipped, root: PKG, label: 'package' }
+                                : { file: path.join(SRC, entry), root: SRC, label: 'captures' };
+}
+
 const OUT = path.join(docs, 'storybook', 'compiled');
 fs.mkdirSync(OUT, { recursive: true });
 
@@ -90,7 +128,17 @@ const ENTRIES = [
 /* ---- .vue -> JS(TS) transform, one compile path for every SFC ------------ */
 function compileSFC(file) {
   const source = fs.readFileSync(file, 'utf8');
-  const filename = path.relative(SRC, file).replace(/\\/g, '/');
+  /* A component's identity is its CAPTURE path, whichever root the bytes were
+   * read from. It seeds the scoped-style id and Vue devtools' __file, and both
+   * must name the component rather than the directory it happened to be
+   * resolved through -- otherwise moving a component into the package (or out
+   * of it, under CCWEB2-332) rewrites every data-v- attribute in its bundle
+   * for no reason anyone could act on. dist/src/components/ IS source_examples/
+   * with the site's depth restored, so stripping that prefix recovers the
+   * capture path exactly. */
+  const underPkg = !path.relative(PKG, file).startsWith('..');
+  const rel = path.relative(underPkg ? PKG : SRC, file).replace(/\\/g, '/');
+  const filename = underPkg ? rel.replace(/^components\//, '') : rel;
   const id = crypto.createHash('sha1').update(filename).digest('hex').slice(0, 8);
   const { descriptor, errors } = compiler.parse(source, { filename });
   if (errors.length) throw new Error(`${filename}: ${errors[0].message}`);
@@ -249,10 +297,16 @@ const vuePlugin = {
 };
 
 /* ---- bundle each entry: vue + gsap stay external, the rest inlines ------ */
+const fromCaptures = [];
 for (const entry of ENTRIES) {
   const name = path.basename(entry, '.vue');
+  const { file, label } = rootOf(entry);
+  if (label === 'captures') fromCaptures.push(entry);
+  const from = label === 'package'
+    ? `@codecavepro/brand/components/${entry}`
+    : `source_examples/${entry}`;
   await esbuild.build({
-    entryPoints: [path.join(SRC, entry)],
+    entryPoints: [file],
     bundle: true,
     format: 'esm',
     outfile: path.join(OUT, `${name}.js`),
@@ -269,11 +323,23 @@ for (const entry of ENTRIES) {
     nodePaths: [path.join(siteDir, 'node_modules')],
     plugins: [vuePlugin],
     banner: {
-      js: `/* GENERATED from source_examples/${entry} by tools/build-storybook.mjs — do not edit. */`,
+      js: `/* GENERATED from ${from} by tools/build-storybook.mjs — do not edit. */`,
     },
     logLevel: 'silent',
   });
-  console.log(`compiled ${entry} -> storybook/compiled/${name}.js`);
+  console.log(`compiled ${entry} (${label}) -> storybook/compiled/${name}.js`);
+}
+
+/* Say the split out loud on every build. A specimen quietly falling back to
+ * the captures is exactly the drift phase 4 exists to prevent, and the only
+ * moment anyone would notice is here. */
+const fromPackage = ENTRIES.length - fromCaptures.length;
+if (fromCaptures.length) {
+  console.log(`\n${fromPackage} of ${ENTRIES.length} specimens came from the package; ${fromCaptures.length} from the captures:`);
+  for (const entry of fromCaptures) console.log(`  ${entry}`);
+  console.log('Those are not shipped — packages/brand/scripts/build.mjs names the reason for each.');
+} else {
+  console.log(`\nall ${ENTRIES.length} specimens came from the package.`);
 }
 
 /* ---- tw-bridge.css: the site's Tailwind, only the utilities in use ------- */

@@ -1,11 +1,11 @@
-/* GENERATED from source_examples/common/Checkbox.vue by tools/build-storybook.mjs — do not edit. */
+/* GENERATED from @codecavepro/brand/components/common/Checkbox.vue by tools/build-storybook.mjs — do not edit. */
 
-// source_examples/common/Checkbox.vue
+// ../packages/brand/dist/src/components/common/Checkbox.vue
 import { defineComponent as _defineComponent } from "vue";
 import { normalizeClass as _normalizeClass, createElementVNode as _createElementVNode2, toDisplayString as _toDisplayString, openBlock as _openBlock2, createBlock as _createBlock, createCommentVNode as _createCommentVNode, createTextVNode as _createTextVNode, createElementBlock as _createElementBlock2 } from "vue";
 import { computed } from "vue";
 
-// source_examples/assets/icons/asterisk-icon.vue
+// ../packages/brand/dist/src/assets/icons/asterisk-icon.vue
 import { createElementVNode as _createElementVNode, openBlock as _openBlock, createElementBlock as _createElementBlock } from "vue";
 var _hoisted_1 = {
   width: "16",
@@ -45,7 +45,7 @@ var __sfc__ = { render };
 __sfc__.__file = "source_examples/assets/icons/asterisk-icon.vue";
 var asterisk_icon_default = __sfc__;
 
-// source_examples/common/Checkbox.vue
+// ../packages/brand/dist/src/components/common/Checkbox.vue
 var _hoisted_12 = ["for"];
 var _hoisted_2 = ["id", "autocomplete", "data-size", "checked"];
 var _hoisted_3 = { class: "flex items-center" };

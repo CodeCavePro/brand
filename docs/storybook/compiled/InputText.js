@@ -1,10 +1,10 @@
-/* GENERATED from source_examples/common/InputText.vue by tools/build-storybook.mjs — do not edit. */
+/* GENERATED from @codecavepro/brand/components/common/InputText.vue by tools/build-storybook.mjs — do not edit. */
 
-// source_examples/common/InputText.vue
+// ../packages/brand/dist/src/components/common/InputText.vue
 import { defineComponent as _defineComponent } from "vue";
 import { toDisplayString as _toDisplayString, createElementVNode as _createElementVNode2, openBlock as _openBlock2, createBlock as _createBlock, createCommentVNode as _createCommentVNode, normalizeClass as _normalizeClass, createElementBlock as _createElementBlock2 } from "vue";
 
-// source_examples/assets/icons/asterisk-icon.vue
+// ../packages/brand/dist/src/assets/icons/asterisk-icon.vue
 import { createElementVNode as _createElementVNode, openBlock as _openBlock, createElementBlock as _createElementBlock } from "vue";
 var _hoisted_1 = {
   width: "16",
@@ -44,7 +44,7 @@ var __sfc__ = { render };
 __sfc__.__file = "source_examples/assets/icons/asterisk-icon.vue";
 var asterisk_icon_default = __sfc__;
 
-// source_examples/common/InputText.vue
+// ../packages/brand/dist/src/components/common/InputText.vue
 var _hoisted_12 = { class: "w-full relative" };
 var _hoisted_2 = ["for"];
 var _hoisted_3 = ["id", "type", "autocomplete", "placeholder", "required", "value"];
