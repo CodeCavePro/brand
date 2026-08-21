@@ -169,20 +169,28 @@ surprises you.
 `vue` is a peer dependency. `gsap` is an optional one, wanted only by `GlowButton`,
 `TypingEffect` and `ContactUsForm`; leave it out and the rest are unaffected.
 
-### They need your Tailwind theme, not just the tokens
+### Import the theme, not just the tokens
 
 Every colour, radius and control height in these components is a token — but they reach
 most of them through **Tailwind utility classes** (`bg-surface-primary`,
-`text-heading-lg`, `rounded-card`), and a utility class only exists if Tailwind knows
-the name. Importing `@codecavepro/brand/tokens.css` gives you the *values*; it does not
-give Tailwind the `@theme` entries that turn them into classes.
+`text-heading-md`, `rounded-custom`), and a utility class exists only if Tailwind knows
+the name. `tokens.css` gives you the *values*; `theme.css` gives Tailwind the names, so
+you need both:
 
-Until this package ships that block, mirror it in your own stylesheet — the definitive
-copy is the `@theme { … }` in codecave.pro's `src/styles/global.css`, reproduced in this
-repository at `docs/source_examples/styles/global.css`. Without it the components mount
-and behave correctly and render nearly unstyled.
+```css
+@import "tailwindcss";
+@import "@codecavepro/brand/tokens.css";
+@import "@codecavepro/brand/theme.css";
+```
 
-Tracked as [CCWEB2-333](https://codecave.atlassian.net/browse/CCWEB2-333).
+**That order is load-bearing, and `tokens.css` must stay unlayered.** Several entries in
+`theme.css` are deliberate self-references (`--color-glow-25: var(--color-glow-25)`):
+the declaration is what makes Tailwind emit the utility, while the value comes from
+`tokens.css`, whose unlayered `:root` outranks `@layer theme`. Wrap `tokens.css` in a
+cascade layer — or leave it out — and those names resolve to nothing.
+
+Import only `tokens.css` and the components mount and behave correctly and render
+nearly unstyled.
 
 ### What is not here, and why
 
@@ -220,8 +228,11 @@ the rules, the reasoning, the anti-patterns — is documented separately:
 
 It authors nothing. Every byte is copied, extracted or compiled out of `docs/` in the
 repository above: `css` and `fonts.css` are copied verbatim, `tokens.css` is extracted
-from the same file `css` is copied from, and the typed module is compiled from
-`docs/tokens/*.ts`. `docs/` stays the single origin, and CI asserts on every push that
+from the same file `css` is copied from, `theme.css` is extracted from the capture of
+codecave.pro's `global.css`, and the typed module is compiled from `docs/tokens/*.ts`.
+A name that `theme.css` and `tokens.css` both give a literal value must agree, and the
+build fails if it does not — otherwise one of the two would be dead and nobody would
+see it. `docs/` stays the single origin, and CI asserts on every push that
 the copies are byte-identical and the extraction still reproduces what shipped.
 
 Two editable copies of a palette is the exact failure this package exists to end, so it

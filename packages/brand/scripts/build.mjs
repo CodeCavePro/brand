@@ -271,6 +271,133 @@ function extractRoot(src) {
   return header + block;
 }
 
+/**
+ * The Tailwind bridge, EXTRACTED from the site's global.css capture rather
+ * than written. It is the `@theme` block and nothing else.
+ *
+ * WHY IT EXISTS. `./tokens.css` publishes the token *values*; it declares
+ * --color-surface-primary. It does not make `.bg-surface-primary` exist. A
+ * Tailwind utility class exists only if Tailwind knows the name, and Tailwind
+ * learns names from an @theme block. Since the package started shipping the
+ * components, a consumer who installed them got components that mounted,
+ * behaved correctly, and rendered nearly unstyled — because every colour,
+ * radius and control height in them is reached through a utility class.
+ *
+ * ORDERING IS LOAD-BEARING. Six of these entries are written as
+ * self-references — `--color-glow-25: var(--color-glow-25)`. That is not a
+ * bug and must never be "fixed" on sight: the declaration exists so Tailwind
+ * emits the utility, while the value comes from tokens.css, whose :root is
+ * unlayered and therefore beats @layer theme. A self-reference with no
+ * unlayered declaration behind it is a cycle, and the property silently
+ * becomes invalid. So theme.css is correct ONLY when tokens.css is imported
+ * before it and stays unlayered. The header says so to the consumer.
+ *
+ * The block is located structurally, like the :root one, and anything
+ * ambiguous is a hard failure rather than a guess.
+ */
+function extractTheme(src) {
+  const css = fs.readFileSync(src, 'utf8').replace(/\r\n/g, '\n');
+  const rel = path.relative(repo, src).split(path.sep).join('/');
+
+  const opens = [...css.matchAll(/^@theme\s*\{[ \t]*$/gm)];
+  if (opens.length !== 1) {
+    throw new Error(
+      `${rel}: expected exactly one \`@theme {\` block, found ${opens.length}.\n` +
+        'dist/theme.css is extracted from it — see scripts/build.mjs.',
+    );
+  }
+
+  const from = opens[0].index;
+  const close = css.indexOf('\n}\n', from);
+  if (close === -1) throw new Error(`${rel}: the @theme block is never closed in column 0.`);
+  const block = css.slice(from, close + 2) + '\n';
+
+  const declarations = (block.match(/^\s+--[\w-]+\s*:/gm) ?? []).length;
+  if (declarations < 30) {
+    throw new Error(`${rel}: the @theme block declares only ${declarations} names.`);
+  }
+
+  const header = [
+    '/* ==========================================================================',
+    ' * CODECAVE Tailwind theme — @codecavepro/brand/theme.css',
+    ' * --------------------------------------------------------------------------',
+    ` * GENERATED from ${rel} — do not edit.`,
+    ' *',
+    ' * Declares the names Tailwind needs in order to emit CODECAVE utility',
+    ' * classes: bg-surface-primary, text-heading-lg, rounded-card and the rest.',
+    ' * Without it the components in this package mount and behave correctly and',
+    ' * render nearly unstyled.',
+    ' *',
+    ' * IMPORT ORDER MATTERS, and this file is wrong without it:',
+    ' *',
+    ' *   @import "tailwindcss";',
+    ' *   @import "@codecavepro/brand/tokens.css";   <- must come first,',
+    ' *   @import "@codecavepro/brand/theme.css";       and stay unlayered',
+    ' *',
+    ' * Several entries here are deliberate self-references (--x: var(--x)). They',
+    ' * exist so Tailwind emits the utility; the value comes from tokens.css,',
+    " * whose unlayered :root outranks @layer theme. Import tokens.css inside a",
+    ' * cascade layer, or not at all, and those names resolve to nothing.',
+    ' * ======================================================================== */',
+    '',
+    '',
+  ].join('\n');
+
+  return header + block;
+}
+
+/**
+ * A name declared in BOTH theme.css and tokens.css, with two different literal
+ * values, is the second-home failure this package exists to end — and it hides,
+ * because tokens.css wins the cascade and the @theme value is simply dead. The
+ * site would show one value while the package documents another.
+ *
+ * So: every literal in the @theme block whose name tokens.css also declares
+ * must agree with it. Entries whose value is a var() reference are the correct
+ * shape and are not compared.
+ */
+const THEME_VALUE_EXCEPTIONS = [
+  [
+    '--font-sans',
+    'tokens.css ships the full fallback stack; global.css says "Satoshi, ' +
+      'sans-serif". The package value already wins on the live site, measured ' +
+      'during CCWEB2-318 phase 6 — the only resolved value the whole migration ' +
+      'moved. Keeping the shorter literal would re-import the shorter stack.',
+  ],
+];
+
+function assertThemeAgreesWithTokens(themeCss, tokensCss) {
+  const declared = new Map();
+  for (const m of tokensCss.matchAll(/^\s+(--[\w-]+)\s*:\s*([^;]+);/gm)) {
+    declared.set(m[1], m[2].replace(/\s+/g, ' ').trim());
+  }
+  const excused = new Map(THEME_VALUE_EXCEPTIONS);
+  const clashes = [];
+
+  for (const m of themeCss.matchAll(/^\s+(--[\w-]+)\s*:\s*([^;]+);/gm)) {
+    const name = m[1];
+    const value = m[2].replace(/\s+/g, ' ').trim();
+    if (value.startsWith('var(')) continue;
+    if (!declared.has(name) || excused.has(name)) continue;
+    if (declared.get(name) !== value) {
+      clashes.push(`  ${name}\n      theme.css:  ${value}\n      tokens.css: ${declared.get(name)}`);
+    }
+  }
+
+  if (clashes.length) {
+    console.error(
+      'build failed — theme.css and tokens.css disagree about ' +
+        `${clashes.length} value(s):\n${clashes.join('\n')}\n\n` +
+        'tokens.css wins the cascade, so the theme.css value is already dead on\n' +
+        'the live site. This is a codecave.pro fix in src/styles/global.css (make\n' +
+        'the entry `var(--name)`, as the others are), then refresh the capture.\n' +
+        'Do not edit docs/source_examples/ — it is evidence, not source.',
+    );
+    process.exit(1);
+  }
+  return declared.size;
+}
+
 /* extractRoot() throws on anything it will not guess about, which is the point
  * — but a raw stack trace reads as "the build script is broken" when what
  * actually happened is that docs/ changed shape. Report it the way every other
@@ -286,7 +413,18 @@ function derive(produce, dest) {
 }
 
 /** Files derived from a docs/ source, as [produce, destination-inside-dist]. */
-const DERIVED = [[() => extractRoot(docs('colors_and_type.css')), 'tokens.css']];
+const DERIVED = [
+  [() => extractRoot(docs('colors_and_type.css')), 'tokens.css'],
+  [() => extractTheme(docs('source_examples', 'styles', 'global.css')), 'theme.css'],
+];
+
+/* Both derived stylesheets, re-derived, so the agreement check runs against
+ * what this build would ship rather than against whatever is in dist/. */
+const themeAgrees = () =>
+  assertThemeAgreesWithTokens(
+    derive(DERIVED[1][0], 'theme.css'),
+    derive(DERIVED[0][0], 'tokens.css'),
+  );
 
 /** Token modules compiled to JS + .d.ts, in the order they are re-exported. */
 const TOKENS = ['colors', 'layout', 'typography'];
@@ -342,9 +480,10 @@ if (checkOnly) {
     console.error(`\n${drifted} file(s) out of sync. Run: npm run build -w @codecavepro/brand`);
     process.exit(1);
   }
+  const known = themeAgrees();
   console.log(
     `@codecavepro/brand: ${COPIES.length} file(s) match their origin byte-for-byte, ` +
-      `${DERIVED.length} re-derive unchanged.`,
+      `${DERIVED.length} re-derive unchanged, theme.css agrees with ${known} token(s).`,
   );
   process.exit(0);
 }
@@ -362,6 +501,8 @@ for (const [src, target] of COPIES) {
 for (const [produce, dest] of DERIVED) {
   fs.writeFileSync(out(dest), derive(produce, dest));
 }
+
+themeAgrees();
 
 for (const name of TOKENS) {
   fs.copyFileSync(docs('tokens', `${name}.ts`), tmp('tokens', `${name}.ts`));

@@ -17,7 +17,7 @@ reissued. Everything else in this runbook is reversible; that is not.
   preconditions the routine path does not.
 
 **Do not use it** for changes that do not reach the tarball. The package ships
-`dist/` plus `README.md` and `LICENSE` — 52 files as of 1.2.0. Storybook
+`dist/` plus `README.md` and `LICENSE` — 53 files as of 1.3.0. Storybook
 specimens, docs pages, `DESIGN.md` and `WEBSITE-REVIEW.md` are none of them.
 Those deploy with GitHub Pages on push and need no release.
 

@@ -16,7 +16,7 @@ Open items for the brand package, all in
 [CCWEB2](https://codecave.atlassian.net/browse/CCWEB2) under the **`brand-kit`**
 label ([live query](https://codecave.atlassian.net/issues?jql=project%20%3D%20CCWEB2%20AND%20labels%20%3D%20%22brand-kit%22%20ORDER%20BY%20key%20ASC)):
 
--   [CCWEB2-318](https://codecave.atlassian.net/browse/CCWEB2-318) — **epic. All six phases have landed (2026-08-21).** 1.0.0 and 1.1.0 are on public npm; codecave.pro `development` installs the package and takes its palette from `/tokens.css`; and the package now ships the components as well as the tokens. What is left is the *rest* of phase 6's sentence — the site still keeps its own copies of components it could install — and it stays that way until [CCWEB2-333](https://codecave.atlassian.net/browse/CCWEB2-333) ships the Tailwind `@theme` block and [CCWEB2-332](https://codecave.atlassian.net/browse/CCWEB2-332) frees the four CMS-shaped components. The font half is also still open: the site has one Satoshi cut and faux-bolds every heading, and swapping in six real ones is a visible change that belongs in its own PR.
+-   [CCWEB2-318](https://codecave.atlassian.net/browse/CCWEB2-318) — **epic. All six phases have landed (2026-08-21).** 1.0.0 and 1.1.0 are on public npm; codecave.pro `development` installs the package and takes its palette from `/tokens.css`; and the package now ships the components as well as the tokens. What is left is the *rest* of phase 6's sentence — the site still keeps its own copies of components it could install — and it stays that way until [CCWEB2-332](https://codecave.atlassian.net/browse/CCWEB2-332) frees the four CMS-shaped components. The font half is also still open: the site has one Satoshi cut and faux-bolds every heading, and swapping in six real ones is a visible change that belongs in its own PR.
 
     **Never build or publish a component from a stale capture — and read what
     "stale" is measured against.** `npm run check:captures` diffs
@@ -82,11 +82,24 @@ hand-written stub used to live there as `lib/strapi.ts`; it is gone.
 
 `packages/brand/` is a **pure derivative of `docs/`** — it copies
 `colors_and_type.css` and `fonts.css` byte-for-byte, copies the root `LICENSE`,
-copies the components out of `docs/source_examples/`, and compiles
-`docs/tokens/*.ts`. No *design content* under `packages/` is authored; the only
+copies the components out of `docs/source_examples/`, extracts `tokens.css` and
+`theme.css`, and compiles `docs/tokens/*.ts`. No *design content* under `packages/` is authored; the only
 tracked files are its manifest, build script and `README.md`, and `npm run
 check` asserts the byte-identity of every copy. **`docs/` remains the single
 origin; edit there, never in `packages/`.**
+
+**`theme.css` is the half that makes the components visible, and its import order
+is load-bearing.** `tokens.css` carries the token *values*; only an `@theme` entry
+makes `.bg-surface-primary` exist, so a consumer needs both. Several `@theme`
+entries are deliberate self-references (`--x: var(--x)`) — **never "fix" one on
+sight.** The declaration is what makes Tailwind emit the utility; the value comes
+from `tokens.css`, whose unlayered `:root` beats `@layer theme`. Behind a layered
+or absent `tokens.css` the same line is a cycle and resolves to nothing. Where the
+two files both give a name a *literal* value they must agree, and the build fails
+if they do not — otherwise one is dead and nothing shows it. `--font-sans` is the
+one excused difference, and the exception carries its reason in `build.mjs`.
+`--breakpoint-sm` must stay a literal: Tailwind bakes it into `@media (width >=
+457px)` at build time, where a `var()` would be invalid CSS.
 
 **The component list is computed, never written down.** `build.mjs` takes every
 non-excluded `.vue` under `source_examples/` as a root and follows its relative
