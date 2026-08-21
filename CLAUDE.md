@@ -16,48 +16,14 @@ Open items for the brand package, all in
 [CCWEB2](https://codecave.atlassian.net/browse/CCWEB2) under the **`brand-kit`**
 label ([live query](https://codecave.atlassian.net/issues?jql=project%20%3D%20CCWEB2%20AND%20labels%20%3D%20%22brand-kit%22%20ORDER%20BY%20key%20ASC)):
 
--   [CCWEB2-318](https://codecave.atlassian.net/browse/CCWEB2-318) — **epic.** Publish `@codecavepro/brand` to npm and have codecave.pro install it, inverting the direction of truth. **`@codecavepro/brand` 1.0.0 and 1.1.0 are both on public npm, and phase 6 landed: `CodeCavePro/codecave.pro` `development` is at `482e96f1`, so the site installs the package and takes its palette from `/tokens.css`. Phases 5 and 6 are done (2026-08-21). *Whether that commit is deployed to production is unverified* — it is merged, which is what phase 4 was waiting on. Phase 4 is therefore unblocked.** The epic lists phase 4 before phase 6; **that order was reversed on 2026-08-21 and the reason is below.** Re-measure the captures with `npm run check:captures` before building components from them; never publish a component built from a capture that is behind the site.
+-   [CCWEB2-318](https://codecave.atlassian.net/browse/CCWEB2-318) — **epic. All six phases have landed (2026-08-21).** 1.0.0 and 1.1.0 are on public npm; codecave.pro `development` installs the package and takes its palette from `/tokens.css`; and the package now ships the components as well as the tokens. What is left is the *rest* of phase 6's sentence — the site still keeps its own copies of components it could install — and it stays that way until [CCWEB2-333](https://codecave.atlassian.net/browse/CCWEB2-333) ships the Tailwind `@theme` block and [CCWEB2-332](https://codecave.atlassian.net/browse/CCWEB2-332) frees the four CMS-shaped components. The font half is also still open: the site has one Satoshi cut and faux-bolds every heading, and swapping in six real ones is a visible change that belongs in its own PR.
 
-    **Why phase 4 waits for phase 6.** Phase 4 promotes `docs/source_examples/`
-    into `packages/brand/src/components`, which breaks two rules this repo
-    otherwise holds absolutely: that nothing under `packages/` is authored, and
-    that a storybook specimen is a *record* of what the site ships. Seven of the
-    twenty-four captures import things only the site has, so promoting them means
-    editing them — and an edited capture is neither the site's source nor a
-    record of it. That is only a fair trade once the site actually installs the
-    package, because then the package *is* what the site ships and the storybook
-    documenting it is documenting production. Until that day it would leave
-    nothing describing the real site. Phase 6 is what makes phase 4 honest, so
-    phase 6 goes first. The token half of the epic — the package, the CSS, the
-    faux-bold font fix — needs none of this and is unblocked.
-
-    **Some of that editing is avoidable, and the way to avoid it is on the site.**
-    Measured on 2026-08-21: of 24 captures, 12 already build as specimens and 7
-    are genuinely blocked. Four of the seven are blocked only by files nobody
-    captured (`helpers/form-validator.ts`, `helpers/breakpoints.ts`,
-    `header/services-list.vue`, `logo.svg`, `back-icon.vue`) — re-capture those
-    and they build, with nothing authored. The hard ones are
-    [ContactUsForm](https://codecave.atlassian.net/browse/CCWEB2-325), whose prop
-    type *is* HubSpot's form definition, and the two `.astro` captures, which use
-    build-time-only modules. CCWEB2-325 is the fix for the first: invert the
-    dependency on the site so the component takes abstract data, emits a submit
-    event and talks to an `ICrmFormClient`, with `HubSpotFormClient` implementing
-    it. **That is site-side work, and it is what makes the capture promotable
-    rather than editable.**
-
-    **What the site imports is `/tokens.css`, not `/css`.** Measured before
-    writing the phase 6 PR: `@codecavepro/brand/css` is the design system
-    whole, so importing it into codecave.pro would impose eight element rules
-    the site has no competing rule for, add sixty class selectors it does not
-    use, and redefine `.page-container` and `.section-container`, which the
-    site already defines and which differ. That is a redesign, not a
-    dependency update. `/tokens.css` — added in 1.1.0, extracted from
-    `colors_and_type.css` by `packages/brand/scripts/build.mjs` — is the
-    `:root` block alone, so the site can stop keeping its own copy of the
-    palette without a single pixel moving. **Phase 6 changes no colours.**
-    The site's own `@font-face` stays its own for the same reason: swapping
-    one faux-bolded cut for six real ones is a visible change and belongs in
-    its own PR, not smuggled into this one.
+    **Never build or publish a component from a stale capture — and read what
+    "stale" is measured against.** `npm run check:captures` diffs
+    `docs/source_examples/` against **whatever branch the codecave.pro checkout
+    happens to be on**, so a checkout sitting on an unmerged branch reports that
+    branch's own fixes as capture drift. The captures record what the site
+    *ships*: put the checkout on `development` before believing the answer.
 
 Open bugs in what codecave.pro ships, found while resyncing the captures or
 while working on the site itself. **These are the site's to fix, not the
@@ -116,10 +82,28 @@ hand-written stub used to live there as `lib/strapi.ts`; it is gone.
 
 `packages/brand/` is a **pure derivative of `docs/`** — it copies
 `colors_and_type.css` and `fonts.css` byte-for-byte, copies the root `LICENSE`,
-and compiles `docs/tokens/*.ts`. No *design content* under `packages/` is
-authored; the only tracked files are its manifest, build script and `README.md`,
-and `npm run check` asserts the byte-identity of all three copies. **`docs/`
-remains the single origin; edit there, never in `packages/`.**
+copies the components out of `docs/source_examples/`, and compiles
+`docs/tokens/*.ts`. No *design content* under `packages/` is authored; the only
+tracked files are its manifest, build script and `README.md`, and `npm run
+check` asserts the byte-identity of every copy. **`docs/` remains the single
+origin; edit there, never in `packages/`.**
+
+**The component list is computed, never written down.** `build.mjs` takes every
+non-excluded `.vue` under `source_examples/` as a root and follows its relative
+imports transitively — *in the layout the package ships*, which is why
+`dist/src/` restores the site's `src/components/…` depth rather than keeping the
+captures' flattened one. An import that lands outside the package fails the
+build and names itself. So a component is added by capturing it, and the only
+hand-written thing is `NOT_SHIPPED`, where each exclusion carries its reason as
+a string.
+
+The storybook compiles from the package where the package has the component and
+from the captures where it does not, and **says which on every build.** A
+specimen quietly reverting to the captures is exactly the drift this
+arrangement prevents, and the build log is the only place anyone would see it.
+A component's identity — its scoped-style id, its `__file` — is its *capture*
+path whichever root supplied the bytes, so promoting one (or removing it again)
+does not rewrite every `data-v-` attribute in its bundle.
 
 The `LICENSE` copy is not housekeeping: npm picks a licence up **only** from the
 package root and `files: ["dist"]` neither includes nor excludes it, so the
@@ -139,7 +123,9 @@ them, so **they are asserted, not trusted.** Any README line shaped
 `prepack` runs it, so a stale value cannot be published. Prose comments are
 ignored — verified by corrupting a value and watching it exit 1. Add values to
 the example freely in that shape; do **not** write one in a form the check
-cannot see. The registry is npm public — this repo is already a public repo,
+cannot see. The same treatment covers the two counts the README quotes as
+prose — the `:root` property count and "15 components and 13 icons" — because
+those are facts about what the build produced, not claims worth trusting. The registry is npm public — this repo is already a public repo,
 so nothing private was being protected.
 
 CCWEB2 is the *website* project and these are brand-package items — they sit there

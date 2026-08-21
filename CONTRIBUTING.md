@@ -59,6 +59,13 @@ is [CCWEB2-315](https://codecave.atlassian.net/browse/CCWEB2-315), and it is not
 a one-time job. It measured nine drifted files on 2026-08-19, thirteen on
 2026-08-20 and zero on 2026-08-21.
 
+`npm run check:captures` is what measures it, and **it reads whatever branch the
+codecave.pro checkout beside this one happens to be on.** Point it at a feature
+branch and it will report that branch's own unmerged work as capture drift — the
+captures record what the site *ships*, so the checkout belongs on `development`
+before you believe the answer, and certainly before you "refresh" anything to
+match.
+
 To find out where they stand right now:
 
 ```bash
@@ -174,8 +181,8 @@ read the **working tree**, not the git blob:
   the value recorded in the generated `tw-bridge.css` header.
 - `npm run check` asserts `packages/brand/dist/colors_and_type.css` and
   `fonts.css` are byte-identical to their origins, and `npm pack` runs it.
-- `build-storybook.mjs` compiles the `.vue` captures with esbuild, which
-  reproduces only if its inputs do.
+- `build-storybook.mjs` compiles `.vue` SFCs with esbuild, which reproduces only
+  if its inputs do.
 
 A CRLF checkout and an LF checkout of the same commit disagree on every one of
 them. That is not a hypothetical: without this file, `core.autocrlf=true` on
@@ -252,7 +259,12 @@ The fourth applies only to `storybook/`, and it is the one worth stating twice:
 - **The specimens are not islands, and must not become them.** Each storybook
   page carries a browser import map and a module script that mounts
   `compiled/*.js` — esbuild output from codecave.pro's own toolchain, with `vue`
-  left external. That is what makes a specimen a record of what the site ships
+  left external. Since CCWEB2-318 phase 4 those bytes come from
+  `@codecavepro/brand` for every component the package ships and from the
+  captures for the rest, which is the same claim either way: the package's
+  components *are* the captures, copied. The build prints the split on every
+  run, so a specimen silently falling back to the captures is visible rather
+  than not. That is what makes a specimen a record of what the site ships
   rather than a rebuild of it. Both tags need `is:inline`: processed, Astro
   bundles the module script and rewrites its bare specifiers, and the import map
   is then resolving nothing. `DocPage`'s `importmap` prop emits the map, which is
