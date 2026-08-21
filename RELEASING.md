@@ -55,7 +55,7 @@ export cannot move or disappear outside a major bump.
 | Change | Bump |
 |---|---|
 | README wording, a fixed build, a docs-only change | patch — `1.0.0` → `1.0.1` |
-| a token **value** changing, a token added | minor — `1.0.0` → `1.1.0` |
+| a token **value** changing, a token added, an export **added** | minor — `1.0.0` → `1.1.0` |
 | an export path moving, a module shape changing, a token **removed** | major — `1.0.0` → `2.0.0` |
 
 A token value moving is a **minor**, not a patch. It is not a bug fix — the
@@ -75,6 +75,12 @@ npm version --workspace @codecavepro/brand minor --no-git-tag-version
 as `1.0.1`. Letting npm do it also commits on your behalf. Tag by hand in
 step 5.
 
+Use the command rather than editing `package.json`, because it also writes the
+new version into `package-lock.json`. Editing by hand leaves the two
+disagreeing, and `npm ci` — which is what CI runs — refuses to install a
+workspace in that state. If you did edit by hand, `npm install
+--package-lock-only` fixes it.
+
 ### 2. Build from a clean tree and verify the derivation
 
 ```bash
@@ -83,7 +89,9 @@ npm run build && npm run check
 
 `check` asserts what the package promises: three files byte-identical to their
 origin (`docs/colors_and_type.css`, `docs/fonts/fonts.css`, the root `LICENSE`),
-the ports typecheck, and the storybook matching `docs/source_examples/`. If the
+`dist/tokens.css` still re-extracting from `docs/colors_and_type.css` to exactly
+what shipped, the ports typechecking, and the storybook matching
+`docs/source_examples/`. If the
 byte-identity assertion fails, **do not fix it in `packages/`** — the fix
 belongs in `docs/`, which is the origin. See [CLAUDE.md](/CLAUDE.md).
 
