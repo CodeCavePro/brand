@@ -1,41 +1,29 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Button — CODECAVE storybook</title>
-<link rel="icon" href="../build/favicon.svg">
-<link rel="stylesheet" href="../colors_and_type.css">
-<link rel="stylesheet" href="../ds-nav.css" />
-<link rel="stylesheet" href="tw-bridge.css">
-<link rel="stylesheet" href="storybook.css">
-<script type="importmap">
-{
-  "imports": {
-    "vue": "../vendor/vue.esm-browser.prod.js",
-    "gsap": "../vendor/gsap/index.js",
-    "gsap/dist/SplitText": "../vendor/gsap/SplitText.js"
-  }
-}
-</script>
-</head>
-<body>
-
-<nav class="ds-nav" aria-label="Design system">
-  <div class="page-container ds-nav-inner">
-    <ul>
-      <li><a class="btn btn-ghost" href="../brand-kit.html">Brand kit</a></li>
-      <li><a class="btn btn-ghost" href="../preview/index.html">Foundations</a></li>
-    </ul>
-    <a class="ds-nav-logo" href="../index.html" aria-label="CODECAVE design system — documentation home">
-      <img src="../assets/codecave-wide.svg" alt="CODECAVE"></a>
-    <ul>
-      <li><a class="btn btn-ghost" href="../storybook/index.html" aria-current="page">Live components</a></li>
-      <li><a class="btn btn-ghost" href="../artifacts/index.html">Templates</a></li>
-    </ul>
-  </div>
-</nav>
-
+---
+/* Ported from docs/storybook/button.html (CCWEB2-317 phase 3).
+ *
+ * Shell extraction, and the page that sets the pattern for the other twelve
+ * mounted ones. Two things about it are load-bearing and easy to undo:
+ *
+ *   The `importmap` prop, not an island. The specimen is mounted in the
+ *   browser by the module script at the foot of this file, from
+ *   ./compiled/Button.js — esbuild output from codecave.pro's own toolchain,
+ *   with `vue` left external. `is:inline` keeps Astro's hands off both tags:
+ *   processed, the module script would be bundled and its bare specifiers
+ *   rewritten, and the import map that resolves them would resolve nothing.
+ *   Converting this to <Button client:load /> would compile the component here
+ *   instead, and the specimen would stop being a record of what the site ships.
+ *
+ *   The brace guards. `isDisabled={true}` and `{{ title }}` are prose about
+ *   Vue, and in .astro a brace opens an expression. Each literal run is emitted
+ *   as a string so it renders as itself. */
+import DocPage from '../../layouts/DocPage.astro';
+---
+<DocPage
+  title="Button — CODECAVE storybook"
+  nav="storybook"
+  stylesheets={['tw-bridge.css','storybook.css']}
+  importmap
+>
 <div class="sb">
   <a class="sb-back" href="index.html">&larr; All components</a>
 
@@ -54,7 +42,7 @@
 
   <section class="sb-section">
     <h2>Props</h2>
-    <p>Taken verbatim from <code>defineProps&lt;{...}&gt;</code>. A
+    <p>Taken verbatim from <code>defineProps&lt;{'{'}...{'}'}&gt;</code>. A
        <span class="sb-req">*</span> marks a required prop.</p>
     <table class="sb-props">
       <thead><tr><th>Prop</th><th>Type</th><th>Notes</th></tr></thead>
@@ -183,7 +171,7 @@
         </div>
         <div class="sb-story-body">
           <span class="sb-story-name">Disabled</span>
-          <span class="sb-story-args">isDisabled={true}</span>
+          <span class="sb-story-args">isDisabled={'{'}true{'}'}</span>
           <span class="sb-story-note">opacity 0.2 + not-allowed cursor. At 20% the label falls far below any contrast floor.</span>
         </div>
       </div>
@@ -225,7 +213,7 @@
 
     <p class="sb-note"><strong><code>variant="icon"</code> is styling only.</strong>
       There is no icon <em>element</em> branch — the button always renders
-      <code>{{ title }}</code> followed by the slot. An icon button is
+      <code>{'{{'} title {'}}'}</code> followed by the slot. An icon button is
       <code>variant="icon"</code> with no <code>title</code> and the SVG in the
       slot; nothing stops a caller passing both and getting a label crammed into
       the p-5 square. (An earlier revision accepted <code>as="icon"</code> — the
@@ -234,7 +222,7 @@
 
 </div>
 
-<script type="module">
+<script is:inline type="module">
   import { createApp } from 'vue';
   import Button from './compiled/Button.js';
 
@@ -267,5 +255,4 @@
     </Button>`,
   }).mount('#story-icon');
 </script>
-</body>
-</html>
+</DocPage>

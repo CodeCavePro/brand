@@ -24,9 +24,12 @@ interface Props {
   nav?: 'brand-kit' | 'foundations' | 'storybook' | 'artifacts';
   /** Extra stylesheets, resolved relative to the page (e.g. "preview.css"). */
   stylesheets?: string[];
+  /** Emit the vendored-ESM import map. Every storybook page that mounts a
+   *  compiled component needs it, and all thirteen ship the same nine lines. */
+  importmap?: boolean;
 }
 
-const { title, nav, stylesheets = [] } = Astro.props;
+const { title, nav, stylesheets = [], importmap = false } = Astro.props;
 
 /* `title` is plain text — {title} escapes it on the way out. Passing HTML
  * already escaped, which is how it is written in the .html pages this layout
@@ -44,6 +47,28 @@ if (/&(#\d+|#x[0-9a-fA-F]+|[a-zA-Z][a-zA-Z0-9]*);/.test(title)) {
 
 const dir = Astro.url.pathname.replace(/^\//, '').replace(/[^/]*$/, '');
 const up = '../'.repeat((dir.match(/\//g) ?? []).length);
+
+/* The import map is the one piece of head that cannot be written as ordinary
+ * markup here. Astro does not evaluate {expressions} inside a <script>, so the
+ * `up` prefix has to arrive through set:html — and the tag needs is:inline as
+ * well, or Astro takes ownership of the script and the map stops being a map.
+ *
+ * It maps the three bare specifiers the compiled components import. Those files
+ * are esbuild output from the site's own toolchain, externalised rather than
+ * bundled, so `import { createApp } from 'vue'` survives into the browser and
+ * something has to resolve it. Deliberately the vendored copies under
+ * docs/vendor/ and NOT the npm ones: a specimen has to render the same when the
+ * page is opened from disk, and the vendored vue is the esm-browser build that
+ * ships the runtime compiler, which several stories need for slot content. */
+const importmapJson = `
+{
+  "imports": {
+    "vue": "${up}vendor/vue.esm-browser.prod.js",
+    "gsap": "${up}vendor/gsap/index.js",
+    "gsap/dist/SplitText": "${up}vendor/gsap/SplitText.js"
+  }
+}
+`;
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -56,6 +81,7 @@ const up = '../'.repeat((dir.match(/\//g) ?? []).length);
 <link rel="stylesheet" href={`${up}ds-nav.css`}>
 {stylesheets.map((href) => <link rel="stylesheet" href={href} />)}
 <slot name="head" />
+{importmap && <script type="importmap" is:inline set:html={importmapJson} />}
 </head>
 <body>
 
