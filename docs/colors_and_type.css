@@ -189,18 +189,38 @@
   --text-heading-sm: 2rem;                 /* 32px — eyebrow + lead pair    */
   --text-heading-sm--line-height: 110%;
 
+  /* Named for the thing, not for a t-shirt size — the same rule as RADIUS
+   * below, and here for the same reason rather than for symmetry.
+   *
+   * These were `--text-lg`, `--text-sm` and `--text-base`, which are ALSO
+   * Tailwind default theme names, at 1.125rem, 0.875rem and 1rem. Tailwind
+   * declares its theme inside `@layer theme` and this file declares in a plain
+   * :root, and unlayered CSS beats any cascade layer regardless of source
+   * order — so the collision was not two declarations racing, it was this file
+   * silently and unconditionally winning. Importing the stylesheet into a
+   * Tailwind app resized every `text-lg` and `text-sm` in it, with no warning
+   * anywhere; codecave.pro alone uses those two utilities 72 times across 37
+   * files. CCWEB2-323.
+   *
+   * The old scale was also offset by one step from Tailwind's, which is what
+   * made it dangerous rather than merely wrong: `--text-caption` is 0.875rem,
+   * exactly Tailwind's `text-sm`. Every value looked plausible.
+   *
+   * `md` stays a size word only because Tailwind has no `--text-md` default.
+   * That is luck, not design, and `npm run check:collisions` is what notices
+   * if it stops being true. */
   --text-stat:    2.25rem;   /* 36px / 40px — stat figures                  */
-  --text-lg:      1.5rem;    /* 24px / 32px — subsection heading            */
+  --text-subhead: 1.5rem;    /* 24px / 32px — subsection heading            */
   --text-md:      1.25rem;   /* 20px / 28px — intro copy                    */
-  --text-sm:      1.125rem;  /* 18px / 28px — names, labels                 */
-  --text-base:    1rem;      /* 16px / 24px — body, buttons                 */
+  --text-label:   1.125rem;  /* 18px / 28px — names, labels                 */
+  --text-body:    1rem;      /* 16px / 24px — body, buttons                 */
   --text-caption: 0.875rem;  /* 14px / 20px — captions, form labels         */
 
   --leading-stat:    2.5rem;
-  --leading-lg:      2rem;
+  --leading-subhead: 2rem;
   --leading-md:      1.75rem;
-  --leading-sm:      1.75rem;
-  --leading-base:    1.5rem;
+  --leading-label:   1.75rem;
+  --leading-body:    1.5rem;
   --leading-caption: 1.25rem;
 
   --font-weight-regular: 400;
@@ -290,8 +310,8 @@ body {
   background: var(--color-surface-primary);
   color: var(--color-body-primary);
   font-family: var(--font-sans);
-  font-size: var(--text-base);
-  line-height: var(--leading-base);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
   -webkit-font-smoothing: antialiased;
 }
 
@@ -416,9 +436,9 @@ a:hover { color: var(--color-hovered); }
   background: none;
   color: var(--color-body-primary);
   font-family: var(--font-sans);
-  font-size: var(--text-base);
+  font-size: var(--text-body);
   font-weight: var(--font-weight-bold);
-  line-height: var(--leading-base);
+  line-height: var(--leading-body);
   text-decoration: none;
   cursor: pointer;
   transition: color var(--transition-colors),
@@ -647,8 +667,8 @@ a:hover { color: var(--color-hovered); }
   background: var(--color-surface-secondary);
   color: var(--color-hovered);
   font-family: var(--font-sans);
-  font-size: var(--text-base);
-  line-height: var(--leading-base);
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
   transition: background-color var(--transition-base),
               box-shadow var(--transition-base);
 }

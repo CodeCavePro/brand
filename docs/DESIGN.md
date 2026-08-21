@@ -248,10 +248,10 @@ package binds real Light/Medium/Black cuts as well, but designs should stay on
 | `--text-heading-md` | 44px | 115% | section heading |
 | `--text-heading-sm` | 32px | 110% | eyebrow + lead pair |
 | `--text-stat` | 36px | 40px | stat figures |
-| `--text-lg` | 24px | 32px | subsection heading |
+| `--text-subhead` | 24px | 32px | subsection heading |
 | `--text-md` | 20px | 28px | intro copy |
-| `--text-sm` | 18px | 28px | names, labels |
-| `--text-base` | 16px | 24px | body, buttons |
+| `--text-label` | 18px | 28px | names, labels |
+| `--text-body` | 16px | 24px | body, buttons |
 | `--text-caption` | 14px | 20px | captions, form labels |
 
 The hero steps down responsively: `text-heading-sm` on mobile →

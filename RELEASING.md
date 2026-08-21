@@ -244,17 +244,20 @@ first one has five preconditions the rest do not, in this order:
    2026-08-20 and that is **not durable** — it measured nine drifted files on
    2026-08-19 and thirteen the next day. Nothing in the token package is built
    from a capture today, but check before assuming that is still true.
-4. **[CCWEB2-323](https://codecave.atlassian.net/browse/CCWEB2-323) is settled.**
-   `--text-sm` and `--text-lg` are declared by both this package and Tailwind,
-   with different values, and the package's unlayered `:root` **wins** over
-   Tailwind's `@layer theme` — so importing the stylesheet silently resizes
-   every `text-sm` and `text-lg` in a consumer's app. codecave.pro uses them 72
-   times across 37 files. `npm run check:collisions` reports it on every run.
+4. ~~**[CCWEB2-323](https://codecave.atlassian.net/browse/CCWEB2-323) is settled.**~~
+   **Done 2026-08-21.** `--text-lg`, `--text-sm` and `--text-base` were also
+   Tailwind default theme names at different values, and the package's unlayered
+   `:root` **wins** over Tailwind's `@layer theme` — so importing the stylesheet
+   silently resized every `text-lg` and `text-sm` in a consumer's app, 72 usages
+   across 37 files on codecave.pro alone. They are now `--text-subhead`,
+   `--text-label` and `--text-body`, which Tailwind has no default for.
+   `npm run check:collisions` guards it.
 
    This is precondition 2's argument again, and it is the reason precondition 2
-   is worth having as a *category* rather than a one-off: a token name is only
-   cheap to change while nobody has installed it. After the first publish a
-   rename is a `2.0.0`.
+   is worth having as a *category* rather than a one-off: **a token name is only
+   cheap to change while nobody has installed it.** Both of these were free
+   today and a `2.0.0` after the first publish. Expect a third. The last chance
+   to rename anything is the run of this checklist that ends in `npm publish`.
 
 5. **Version `1.0.0`.** The manifest already says so, and `1.0.0` is tagged. Publishing straight at 1.0 is a deliberate call, not an oversight:
    the token values are the thing consumers depend on and they already mirror

@@ -33,7 +33,7 @@ label because they are the site's to fix, not the package's:
 And one that is the package's, found the first time the CCWEB2-314 complement
 ever ran:
 
--   [CCWEB2-323](https://codecave.atlassian.net/browse/CCWEB2-323) — `--text-sm` and `--text-lg` collide with Tailwind's own and differ in value, and the package's unlayered `:root` **wins** over Tailwind's `@layer theme`. The site uses those utilities 72 times across 37 files and does not declare either token, so it inherits the bug at the exact moment it installs the package — CCWEB2-318 phase 6, which is the convergence criterion itself. **Blocks the first publish.** Renaming is free until the first `npm publish` and a `2.0.0` after it, the same argument RELEASING.md already makes for CCWEB2-319.
+-   [CCWEB2-323](https://codecave.atlassian.net/browse/CCWEB2-323) — **done** 2026-08-21. `--text-lg`, `--text-sm` and `--text-base` were also Tailwind default theme names at different values, and the package's unlayered `:root` **wins** over Tailwind's `@layer theme`, so importing the stylesheet resized every `text-lg` and `text-sm` in a consumer's app — 72 usages across 37 files on codecave.pro alone, acquired at the exact moment the site installs the package. They are now `--text-subhead`, `--text-label` and `--text-body`, names Tailwind has no default for. **The rename was free only because nothing is published yet**; after the first `npm publish` it is a `2.0.0`. The type scale had been carrying the very mistake `colors_and_type.css` already documents against `--radius-sm`/`--radius-md`: *name for the thing, not for a t-shirt size.*
 
 ### Ports, not stubs
 

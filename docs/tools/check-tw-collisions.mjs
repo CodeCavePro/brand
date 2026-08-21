@@ -13,7 +13,11 @@
  *   B. REDEFINED — the package declares --x and Tailwind ALSO declares it, with
  *      a different value. The package wins (see the cascade note below), so a
  *      consumer's `text-sm` utility silently renders at our size instead of
- *      Tailwind's, with no warning anywhere.
+ *      Tailwind's, with no warning anywhere. Nothing in THIS repo renders
+ *      differently, which is exactly why it needs a check: the storybook scopes
+ *      the site's tokens to its demo canvases, so a collision that would hit
+ *      every consumer at document level is invisible on the one page built to
+ *      look at components.
  *
  * Direction A is CCWEB2-314's original one-liner, which lived in a Jira
  * description and was run by hand. Direction B is the complement that ticket
@@ -76,16 +80,18 @@ const INTENDED = {
   '--font-mono':      'package-only, but a mono stack is not something Tailwind should win',
   '--breakpoint-sm':  'site declares 457px in @theme; read at build time, inert at runtime',
   '--font-weight-bold': 'same value as Tailwind (700)',
-  '--text-base':        'same value as Tailwind (1rem)',
 };
 
 /* Collisions that are real defects with a ticket open on them. Reported loudly
  * every run, but not fatal — they are tracked, and failing the build on a known
- * item would only teach people to skip the check. */
-const OPEN = {
-  '--text-sm': 'CCWEB2-323 — 1.125rem vs Tailwind 0.875rem; resizes consumers\' text-sm',
-  '--text-lg': 'CCWEB2-323 — 1.5rem vs Tailwind 1.125rem; resizes consumers\' text-lg',
-};
+ * item would only teach people to skip the check.
+ *
+ * Empty, and the way it emptied is the point. Its two entries were --text-sm
+ * and --text-lg (CCWEB2-323). They are now --text-label and --text-subhead,
+ * names Tailwind has no default for, so there is nothing left to acknowledge:
+ * the collision was removed rather than accepted. Prefer that. An entry here
+ * is a debt, not a resolution. */
+const OPEN = {};
 
 /** Every `--name: value` declared at the top level of a rule in a CSS file. */
 function declarations(css) {

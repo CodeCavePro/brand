@@ -87,8 +87,15 @@ color.action;          // '#5F20FE'
 color.surfaceSecondary; // '#0F0F15'
 radius.card;           // '1.5rem'
 fontSize.headingLg;    // { size: '3.5rem', lineHeight: '130%' }
+fontSize.body;         // { size: '1rem', lineHeight: '1.5rem' }
 spacing.sectionPaddingTop; // '12.5rem'
 ```
+
+The body steps are `stat`, `subhead`, `md`, `label`, `body`, `caption` — named
+for their job rather than as t-shirt sizes. That is deliberate and worth copying
+if you build on this: `lg`, `sm` and `base` are Tailwind default theme names, and
+because this package's `:root` is unlayered it would beat Tailwind's `@layer
+theme` and silently resize every `text-lg` and `text-sm` in your app.
 
 Everything is `as const`, so the values are literal types, and the key unions are
 exported for building your own maps:

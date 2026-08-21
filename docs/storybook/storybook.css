@@ -48,8 +48,8 @@ body { padding: 0 0 6rem; }
 
 /* ---- sections ------------------------------------------------------------ */
 .sb-section { margin-top: 3.5rem; }
-.sb-section > h2 { margin: 0 0 0.5rem; font-size: var(--text-lg);
-                   line-height: var(--leading-lg); }
+.sb-section > h2 { margin: 0 0 0.5rem; font-size: var(--text-subhead);
+                   line-height: var(--leading-subhead); }
 .sb-section > p { max-width: 72ch; margin: 0 0 1.5rem;
                   color: var(--color-body-secondary-lighter);
                   font-size: var(--text-caption);
@@ -77,7 +77,7 @@ body { padding: 0 0 6rem; }
    is Tailwind's preflight, so that is what a specimen has to sit on.
 
    line-height is the one that actually bites. The docs body sets
-   `--leading-base`, which is `1.5rem` — an absolute length. Tailwind's stock is
+   `--leading-body`, which is `1.5rem` — an absolute length. Tailwind's stock is
    unitless `1.5`. At 16px the two agree at 24px, which is why this went
    unnoticed; the moment a mounted element changes font size without carrying a
    `text-*` utility they diverge, because a length does not scale and a ratio

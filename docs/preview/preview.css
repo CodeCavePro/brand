@@ -45,7 +45,7 @@ body {
                     font-size: var(--text-md); line-height: var(--leading-md); }
 
 .pv-block            { margin-top: 3.5rem; }
-.pv-block > h2       { font-size: var(--text-lg); line-height: var(--leading-lg);
+.pv-block > h2       { font-size: var(--text-subhead); line-height: var(--leading-subhead);
                        margin-bottom: 0.5rem; }
 .pv-block > .pv-note { max-width: 70ch; margin: 0 0 1.75rem;
                        color: var(--color-body-secondary-lighter);

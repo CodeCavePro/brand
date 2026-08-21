@@ -47,7 +47,7 @@ glow-button fill).
 | Surfaces | `--color-surface-primary` (page), `--color-surface-secondary` (cards), `--color-surface-tertiary` (raised), `--color-surface-quaternary` (borders) |
 | Text | `--color-body-primary`, `--color-body-secondary-lighter`, `--color-body-secondary` (muted), `--color-heading` |
 | Accent | `--color-action` (links, borders, eyebrows), `--color-hovered`, `--gradient-brand`, `--color-error` |
-| Type size | `--text-heading-lg` / `-md` / `-sm`, `--text-stat`, `--text-lg`, `--text-md`, `--text-sm`, `--text-base`, `--text-caption` |
+| Type size | `--text-heading-lg` / `-md` / `-sm`, `--text-stat`, `--text-subhead`, `--text-md`, `--text-label`, `--text-body`, `--text-caption` |
 | Radius | `--radius-control-sm` 4 (the 16px checkbox box only), `--radius-control` 8, `--radius-tile` 12, `--radius-card` 24, `--radius-article` 36, `--radius-custom` 44, `--radius-pill`, `--radius-section` 64 |
 | Gradient | `--gradient-brand` — display type only, plus the one sanctioned field: `.rule` / `.progress` |
 | Layout | `--max-width-desktop`, `--gutter-base` / `-md` / `-xl`, `--section-padding-top` / `-bottom`, `--card-padding`, `--shadow-section` |
@@ -87,7 +87,7 @@ serves one TTF and lags behind. Design to 300/400/700 and do not reach for 500, 
     <hr class="rule">
 
     <article class="card" style="max-width: 340px">
-      <h3 style="font-size: var(--text-lg)">Cloud &amp; DevOps</h3>
+      <h3 style="font-size: var(--text-subhead)">Cloud &amp; DevOps</h3>
       <p style="color: var(--color-body-secondary-lighter)">Infrastructure that scales with demand.</p>
       <button class="btn btn-primary">Discuss project</button>
     </article>
