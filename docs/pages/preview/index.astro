@@ -1,14 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CODECAVE — Foundations</title>
-<link rel="icon" href="../build/favicon.svg">
-<link rel="stylesheet" href="../colors_and_type.css">
-<link rel="stylesheet" href="../ds-nav.css" />
-<link rel="stylesheet" href="preview.css">
-<style>
+---
+/* Ported from docs/preview/index.html (CCWEB2-317 phase 2).
+ *
+ * The foundations index. Shell extraction only — the cards differ in every
+ * field, and this page is the one place a reader sees the whole set laid out,
+ * so it stays legible as a literal list rather than becoming a data structure
+ * with the titles hidden in a frontmatter array.
+ *
+ * Note the route: pages/preview/index.astro renders to /preview/index.html
+ * because build.format is 'preserve'. Under Astro's default 'file' it would
+ * have landed at /preview.html and broken every link into it.
+ */
+import DocPage from '../../layouts/DocPage.astro';
+---
+<DocPage
+  title="CODECAVE — Foundations"
+  nav="foundations"
+  stylesheets={['preview.css']}
+>
+<style slot="head" is:inline>
   .cards { display: grid; gap: 1.25rem; margin-top: 2rem;
            grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr)); }
   a.pv-card { display: grid; gap: 0.625rem; align-content: start;
@@ -43,24 +52,6 @@
   a.pv-card .f    { margin-top: 0.375rem; color: var(--color-body-secondary-lighter);
                     font-family: var(--font-mono); font-size: 0.75rem; }
 </style>
-</head>
-<body>
-
-<nav class="ds-nav" aria-label="Design system">
-  <div class="page-container ds-nav-inner">
-    <ul>
-      <li><a class="btn btn-ghost" href="../brand-kit.html">Brand kit</a></li>
-      <li><a class="btn btn-ghost" href="../preview/index.html" aria-current="page">Foundations</a></li>
-    </ul>
-    <a class="ds-nav-logo" href="../index.html" aria-label="CODECAVE design system — documentation home">
-      <img src="../assets/codecave-wide.svg" alt="CODECAVE"></a>
-    <ul>
-      <li><a class="btn btn-ghost" href="../storybook/index.html">Live components</a></li>
-      <li><a class="btn btn-ghost" href="../artifacts/index.html">Templates</a></li>
-    </ul>
-  </div>
-</nav>
-
 
 <div class="pv-shell">
   <header class="pv-head">
@@ -184,5 +175,4 @@
   </section>
 </div>
 
-</body>
-</html>
+</DocPage>

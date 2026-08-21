@@ -192,10 +192,21 @@ Pages exist in two forms at once:
 | | Lives at | Reaches the site by |
 |---|---|---|
 | ported | `docs/pages/preview/spacing-shadows.astro` | being rendered |
-| not yet ported | `docs/preview/colors-primary.html` | being copied |
+| not yet ported | `docs/storybook/index.html` | being copied |
+
+All thirteen `preview/` cards are ported. `storybook/`, `index.html` and
+`brand-kit.html` are not yet; `artifacts/` never will be.
 
 Both are served identically and neither knows about the other, so you can port
-one page at a time without a flag day. Two things to know when you port one:
+one page at a time without a flag day. Three things to know when you port one:
+
+- **The body is `.astro` now, not HTML.** A brace opens an expression, so
+  literal text like `codecave-{wide|tall}-{size}.png` compiles to JavaScript —
+  write it as `{'…'}` instead. Entities are the same hazard in reverse: `title`
+  is plain text and the layout escapes it, so passing `&amp;` puts a literal
+  `&amp;` in the browser tab. That one is asserted — `DocPage` refuses a title
+  containing an entity — because nothing else caught it: the page built, served
+  and looked right, and only the diff below showed the doubled escape.
 
 - **Delete the `.html` you replace, in the same commit.** `publicDir` and
   `srcDir` are the same directory, and when both offer a path Astro keeps the

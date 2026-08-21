@@ -1,14 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CODECAVE — Rule &amp; progress: the gradient line</title>
-<link rel="icon" href="../build/favicon.svg">
-<link rel="stylesheet" href="../colors_and_type.css">
-<link rel="stylesheet" href="../ds-nav.css" />
-<link rel="stylesheet" href="preview.css">
-<style>
+---
+/* Ported from docs/preview/components-progress.html (CCWEB2-317 phase 2).
+ * Shell extraction only.
+ */
+import DocPage from '../../layouts/DocPage.astro';
+---
+<DocPage
+  title="CODECAVE — Rule & progress: the gradient line"
+  nav="foundations"
+  stylesheets={['preview.css']}
+>
+<style slot="head" is:inline>
   .var-row { display: grid; gap: 1rem; padding: 1.5rem 0;
              border-bottom: 1px solid var(--color-surface-quaternary); }
   @media (min-width: 860px) { .var-row { grid-template-columns: 15rem 1fr; align-items: center; } }
@@ -31,24 +32,6 @@
   .ok  { color: var(--color-action); }
   .bad { color: var(--color-error); }
 </style>
-</head>
-<body>
-
-<nav class="ds-nav" aria-label="Design system">
-  <div class="page-container ds-nav-inner">
-    <ul>
-      <li><a class="btn btn-ghost" href="../brand-kit.html">Brand kit</a></li>
-      <li><a class="btn btn-ghost" href="../preview/index.html" aria-current="page">Foundations</a></li>
-    </ul>
-    <a class="ds-nav-logo" href="../index.html" aria-label="CODECAVE design system — documentation home">
-      <img src="../assets/codecave-wide.svg" alt="CODECAVE"></a>
-    <ul>
-      <li><a class="btn btn-ghost" href="../storybook/index.html">Live components</a></li>
-      <li><a class="btn btn-ghost" href="../artifacts/index.html">Templates</a></li>
-    </ul>
-  </div>
-</nav>
-
 
 <div class="pv-shell">
   <a class="pv-back" href="index.html">&larr; All foundations</a>
@@ -196,5 +179,4 @@
   </section>
 </div>
 
-</body>
-</html>
+</DocPage>

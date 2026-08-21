@@ -1,14 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CODECAVE — Decorative art: the line-and-glow layer</title>
-<link rel="icon" href="../build/favicon.svg">
-<link rel="stylesheet" href="../colors_and_type.css">
-<link rel="stylesheet" href="../ds-nav.css" />
-<link rel="stylesheet" href="preview.css">
-<style>
+---
+/* Ported from docs/preview/brand-imagery.html (CCWEB2-317 phase 2).
+ * Shell extraction only — the decorative SVGs are each a different argument
+ * about where cyan is still allowed, not repetitions of one.
+ */
+import DocPage from '../../layouts/DocPage.astro';
+---
+<DocPage
+  title="CODECAVE — Decorative art: the line-and-glow layer"
+  nav="foundations"
+  stylesheets={['preview.css']}
+>
+<style slot="head" is:inline>
   /* Every plate carries its own #050505 ground. That is not a preview
      convenience — the art is stroke-only on a transparent root, so on any
      lighter surface it does not read as off-brand, it fails to render. */
@@ -48,24 +50,6 @@
   .stop code { font-family: var(--font-mono); font-size: 0.75rem;
                color: var(--color-body-secondary-lighter); }
 </style>
-</head>
-<body>
-
-<nav class="ds-nav" aria-label="Design system">
-  <div class="page-container ds-nav-inner">
-    <ul>
-      <li><a class="btn btn-ghost" href="../brand-kit.html">Brand kit</a></li>
-      <li><a class="btn btn-ghost" href="../preview/index.html" aria-current="page">Foundations</a></li>
-    </ul>
-    <a class="ds-nav-logo" href="../index.html" aria-label="CODECAVE design system — documentation home">
-      <img src="../assets/codecave-wide.svg" alt="CODECAVE"></a>
-    <ul>
-      <li><a class="btn btn-ghost" href="../storybook/index.html">Live components</a></li>
-      <li><a class="btn btn-ghost" href="../artifacts/index.html">Templates</a></li>
-    </ul>
-  </div>
-</nav>
-
 
 <div class="pv-shell">
   <a class="pv-back" href="index.html">&larr; All foundations</a>
@@ -180,5 +164,4 @@
   </section>
 </div>
 
-</body>
-</html>
+</DocPage>

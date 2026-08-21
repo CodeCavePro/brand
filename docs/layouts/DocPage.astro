@@ -28,6 +28,20 @@ interface Props {
 
 const { title, nav, stylesheets = [] } = Astro.props;
 
+/* `title` is plain text — {title} escapes it on the way out. Passing HTML
+ * already escaped, which is how it is written in the .html pages this layout
+ * replaces, escapes it a second time and puts a literal "&amp;" in the browser
+ * tab. Porting components-progress.html did exactly that, and it survived
+ * everything except diffing the rendered page against the file it replaced.
+ * Not everyone will run that diff, so the build refuses the input instead. */
+if (/&(#\d+|#x[0-9a-fA-F]+|[a-zA-Z][a-zA-Z0-9]*);/.test(title)) {
+  throw new Error(
+    `DocPage: title contains an HTML entity and would be escaped twice —\n` +
+      `  ${title}\n` +
+      `Write the character itself; the layout escapes it.`,
+  );
+}
+
 const dir = Astro.url.pathname.replace(/^\//, '').replace(/[^/]*$/, '');
 const up = '../'.repeat((dir.match(/\//g) ?? []).length);
 ---
