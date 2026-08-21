@@ -1,8 +1,8 @@
 # @codecavepro/brand
 
-The CODECAVE design system as **CSS custom properties** and as a **typed module** —
-colour, typography and layout tokens, with no runtime, no provider and no component
-bundle.
+The CODECAVE design system as **CSS custom properties**, as a **typed module**, and as
+the **Vue components codecave.pro actually renders** — no runtime, no provider, no
+wrapper layer.
 
 Link one stylesheet and the whole system is live on `:root`.
 
@@ -139,6 +139,60 @@ Two things to know about it:
   reason — never pair a size with a line-height from a different step.
 - **The CSS is the source of truth.** This module is a faithful mirror of it. If the
   two ever disagree, the CSS wins and the module is the bug.
+
+## The components
+
+15 components and 13 icons — the buttons, form controls, menu, footer and cards
+codecave.pro renders — ship as **source**, byte-for-byte the files the site builds
+from. Not a reimplementation of them, and not a bundle compiled from a snapshot:
+the same files, kept identical by a check that runs on every push.
+
+```vue
+<script setup lang="ts">
+import Button from '@codecavepro/brand/components/common/Button.vue';
+import TextField from '@codecavepro/brand/components/common/TextField.vue';
+import CloudIcon from '@codecavepro/brand/assets/icons/cloud-icon.vue';
+</script>
+
+<template>
+  <TextField v-model="email" label="Email" type="email" />
+  <Button title="Send" variant="primary" />
+  <CloudIcon />
+</template>
+```
+
+Because they are `.vue` files rather than compiled JS, your build needs a Vue SFC
+plugin — `@vitejs/plugin-vue`, `@astrojs/vue`, `vue-loader`. In exchange their scoped
+styles go through your own pipeline and you can read the source of anything that
+surprises you.
+
+`vue` is a peer dependency. `gsap` is an optional one, wanted only by `GlowButton`,
+`TypingEffect` and `ContactUsForm`; leave it out and the rest are unaffected.
+
+### They need your Tailwind theme, not just the tokens
+
+Every colour, radius and control height in these components is a token — but they reach
+most of them through **Tailwind utility classes** (`bg-surface-primary`,
+`text-heading-lg`, `rounded-card`), and a utility class only exists if Tailwind knows
+the name. Importing `@codecavepro/brand/tokens.css` gives you the *values*; it does not
+give Tailwind the `@theme` entries that turn them into classes.
+
+Until this package ships that block, mirror it in your own stylesheet — the definitive
+copy is the `@theme { … }` in codecave.pro's `src/styles/global.css`, reproduced in this
+repository at `docs/source_examples/styles/global.css`. Without it the components mount
+and behave correctly and render nearly unstyled.
+
+Tracked as [CCWEB2-333](https://codecave.atlassian.net/browse/CCWEB2-333).
+
+### What is not here, and why
+
+Four components stay out: `ArticlePreview`, `Review`, `pain-points-item` and
+`technologies`. They are CMS-shaped rather than brand-shaped — their props are types
+generated from the Strapi schema, and they build image URLs through a helper that reads
+a hardcoded CMS host and token. Shipping them would put the site's content layer inside
+a brand package. Inverting that dependency site-side is
+[CCWEB2-332](https://codecave.atlassian.net/browse/CCWEB2-332); they arrive when it
+lands.
 
 ## Controls are 48px, and it is a floor
 

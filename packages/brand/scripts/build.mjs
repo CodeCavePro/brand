@@ -178,17 +178,26 @@ function shippable() {
     console.error('Capture what it imports, or add the component to NOT_SHIPPED with a reason.');
     process.exit(1);
   }
-  return [...seen].map((shipped) => byShipped.get(shipped)).sort();
+  return [...seen].sort();
+}
+
+/** Undo shippedAs: assets/, helpers/ and lib/ never live under components/. */
+function captureOf(shipped) {
+  return shipped.startsWith('src/components/')
+    ? shipped.slice('src/components/'.length)
+    : shipped.slice('src/'.length);
 }
 
 /** Every verbatim copy, as [source, absolute-destination]. */
+const shipped = shippable();
+
 const COPIES = [
   ...VERBATIM.map(([src, dest]) => [src, out(dest), `dist/${dest}`]),
   ...ROOT_VERBATIM.map(([src, dest]) => [src, path.join(pkg, dest), dest]),
-  ...shippable().map((rel) => [
-    docs('source_examples', rel),
-    out(shippedAs(rel)),
-    `dist/${shippedAs(rel)}`,
+  ...shipped.map((rel) => [
+    docs('source_examples', captureOf(rel)),
+    out(rel),
+    `dist/${rel}`,
   ]),
 ];
 
@@ -450,6 +459,24 @@ if (fs.existsSync(readme)) {
       process.exit(1);
     }
     asserted++;
+  }
+
+  /* Same treatment for the component counts. "15 components and 13 icons" is a
+   * fact about what shippable() computed, and a component added site-side would
+   * otherwise leave the sentence quietly wrong on the npm page. */
+  const counts = /(\d+) components and (\d+) icons/.exec(fs.readFileSync(readme, 'utf8'));
+  if (counts) {
+    const under = (sub, suffix) =>
+      shipped.filter((rel) => rel.startsWith(sub) && rel.endsWith(suffix)).length;
+    const real = [under('src/components/', '.vue'), under('src/assets/icons/', '.vue')];
+    if (Number(counts[1]) !== real[0] || Number(counts[2]) !== real[1]) {
+      console.error(
+        `build failed — README.md says ${counts[1]} components and ${counts[2]} icons; ` +
+          `dist ships ${real[0]} and ${real[1]}.`,
+      );
+      process.exit(1);
+    }
+    asserted += 2;
   }
 
   console.log(`@codecavepro/brand: ${asserted} README example value(s) verified.`);
