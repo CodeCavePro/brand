@@ -70,6 +70,15 @@ jobs:
       - name: Verify the storybook matches its sources
         run: node docs/tools/check-tw-bridge.mjs
 
+      # Same category, and the same reason it is not folded into the step
+      # above: both its inputs are committed, so it needs no site checkout and
+      # no install. An import map that has stopped resolving what the bundles
+      # import takes every specimen on the page down without an error anyone
+      # sees — the page still renders, it is just empty where the component
+      # was.
+      - name: Check the storybook import map
+        run: node docs/tools/check-importmap.mjs
+
       # The ports typecheck needs typescript, so it cannot go in the
       # dependency-free check above — it goes after it. An adapter that has
       # drifted from the interface its component imports compiles perfectly and

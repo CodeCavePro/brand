@@ -10,7 +10,8 @@
   ],
   "scripts": {
     "build": "npm run build --workspace @codecavepro/brand",
-    "check": "npm run check --workspace @codecavepro/brand && npm run check:ports && node docs/tools/check-tw-bridge.mjs && npm run check:collisions",
+    "check": "npm run check --workspace @codecavepro/brand && npm run check:ports && node docs/tools/check-tw-bridge.mjs && npm run check:collisions && npm run check:importmap",
+    "check:importmap": "node docs/tools/check-importmap.mjs",
     "check:ports": "tsc --noEmit --project docs/storybook/ports/tsconfig.json",
     "check:collisions": "node docs/tools/check-tw-collisions.mjs",
     "check:captures": "node docs/tools/check-captures.mjs",
