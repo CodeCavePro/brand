@@ -1,5 +1,5 @@
 ---
-import { paths } from "../../helpers/paths.ts";
+import { paths, websiteUrl } from "../../helpers/paths.ts";
 import { strapi } from "../../lib/strapi";
 import Button from "../common/Button.vue";
 import GlowButton from "../common/GlowButton.vue";
@@ -23,14 +23,25 @@ const entries = await strapi.testimonials.find({
         photo: true 
     },
 })
+/* Every @id here is built from websiteUrl, because @id is an opaque
+ * identifier and not a URL that gets normalised: the footer declares the
+ * Organization at `${websiteUrl}/#organization` and these referenced it at a
+ * hardcoded https://codecave.it/#organization, which is simply a different
+ * node. Six pages shipped both spellings, so every review and rating attached
+ * to an organization nothing defined.
+ *
+ * The review id is per-review for a related reason. It used to be one
+ * constant inside this map, so all six Review nodes claimed the same
+ * identity -- one node with six conflicting bodies and authors. documentId is
+ * what the filter above already selects them by, so it is the stable key. */
 const reviewsSchema = {
     review: entries.map((review) => ({
         "@context": "https://schema.org/",
-        "@id": "https://codecave.it/#review",
+        "@id": `${websiteUrl}/#review-${review.documentId}`,
         "@type": "Review",
         "itemReviewed": {
             "@type": "Organization",
-            "@id": "https://codecave.it/#organization",
+            "@id": `${websiteUrl}/#organization`,
             "name": "CodeCave",
         },
         "author": {
