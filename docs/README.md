@@ -234,10 +234,13 @@ defects and 25 design observations.** The ones that change runtime behavior:
   Tailwind's default theme, emitted because `transition-colors` is in use.
   Inside a Tailwind build the indicators ease; lift either component out and
   the shorthand collapses and they snap.
-- **`tailwind.config.ts` is never loaded.** Tailwind 4 is configured CSS-first
-  via `@theme`; a JS config only applies when a stylesheet names it with
-  `@config`, and none does. `darkMode`, `content` and `theme.extend` are inert —
-  including the `*.stories` exclusion in the content glob.
+- **`tailwind.config.ts` is never loaded**, by either of the two routes that
+  try. `global.css` opens with `@config "../../tailwind.config.js"` and the
+  file is `.ts`; `astro.config.mjs` passes `tailwindcss({ config: … })`, an
+  option `@tailwindcss/vite` has never had. `darkMode`, `content` and
+  `theme.extend` are inert — including the `*.stories` exclusion in the
+  content glob. Fixing the extension would be worse than leaving it: the glob
+  has no `.vue`, so loading the config would unstyle every Vue component.
 - **`Button`'s `isDisabled` does not disable.** It sets opacity and cursor only;
   the `disabled` attribute is never bound.
 - ~~**`PainPointsItem` renders unsanitized CMS markdown through `v-html`.**~~

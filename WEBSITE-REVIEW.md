@@ -168,9 +168,12 @@ section's own heading and flatten the document outline.
   silently repaints Tailwind's *default* gray palette for any future
   `text-gray-*` utility (none are used today — worth keeping that way or moving
   the ramps into `@theme`).
-- **`tailwind.config.ts` is never loaded.** Tailwind 4 CSS-first reads a JS
-  config only via `@config`, which no stylesheet declares. `darkMode`, content
-  globs and `theme.extend` are all inert. Delete it or wire it up.
+- **`tailwind.config.ts` is never loaded.** Two routes try. `global.css` says
+  `@config "../../tailwind.config.js"` and the file is `.ts`;
+  `astro.config.mjs` passes `tailwindcss({ config: … })`, an option
+  `@tailwindcss/vite` has never had. `darkMode`, content globs and
+  `theme.extend` are all inert. Delete it — wiring it up would unstyle every
+  Vue component, since the glob has no `.vue`.
 - **One real font cut.** Only `Satoshi-Regular.ttf` is shipped — no woff2, no
   `font-display`, and weights 500/700/900 are browser-synthesized (faux bold).
   The brand repo carries the real Satoshi cuts as woff2

@@ -248,12 +248,18 @@ import DocPage from '../../layouts/DocPage.astro';
     <p class="sb-note is-warn"><strong><code>tailwind.config.ts</code> is never loaded.</strong>
       The project is Tailwind 4.1.13 configured CSS-first
       (<code>@import "tailwindcss"</code> plus <code>@theme</code> in
-      <code>global.css</code>). In v4 a JS config is only read when a stylesheet
-      names it with <code>@config</code>, and no file does. So
+      <code>global.css</code>). Two things try to load the JS config and neither
+      arrives: <code>global.css</code> opens with
+      <code>@config "../../tailwind.config.js"</code>, and the file is
+      <code>.ts</code>; and <code>astro.config.mjs</code> passes
+      <code>tailwindcss(&#123; config: … &#125;)</code>, an option
+      <code>@tailwindcss/vite</code> does not have. So
       <code>darkMode: 'class'</code>, the <code>content</code> globs and the
       <code>theme.extend</code> block have no effect — including the
       <code>*.stories</code> exclusion that suggests a Storybook was once
-      planned.</p>
+      planned. Correcting the extension would be worse than leaving it: that
+      glob has no <code>.vue</code> in it, so loading the config would drop
+      every Vue component from the scan.</p>
 
     <p class="sb-note is-warn"><strong><code>Button</code>'s <code>isDisabled</code> does not disable anything.</strong>
       It sets opacity and a cursor. The <code>disabled</code> attribute is never
