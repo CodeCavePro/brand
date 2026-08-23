@@ -153,6 +153,14 @@ static build cannot carry gets an **interface and an adapter**, never a stub.
   on an unmapped import and on a mapped specifier nothing imports any more,
   which is a claim about the bundles that has stopped being true. Both inputs
   are committed, so it runs in CI.
+- **Adding or removing a finding moves a number in three other files.**
+  `docs/README.md`, `docs/pages/storybook/index.astro` and `docs/pages/index.astro`
+  each quote how many findings the story pages carry. Nothing checks them, and
+  they have already drifted once: a finding marked fixed upstream lost its
+  `is-warn` and the split stayed at 30/25 for a while when the pages said 29/26.
+  Count them — every `sb-note` after `<h2>Findings</h2>`, `index.astro`
+  excluded — rather than adjusting by one and hoping.
+  [CCWEB2-349](https://codecave.atlassian.net/browse/CCWEB2-349) makes it a check.
 
 Building the storybook needs a `codecave.pro` checkout beside this one. **That
 repo uses pnpm** — `pnpm install --frozen-lockfile`. Reaching for `npm` there
