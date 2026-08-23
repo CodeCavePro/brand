@@ -139,6 +139,14 @@ static build cannot carry gets an **interface and an adapter**, never a stub.
 - `npm run check:ports` typechecks every adapter against its interface, and CI
   runs it. A drifted adapter compiles fine and fails as an `undefined` in a
   reader's browser, which is the one place a specimen must not fail.
+- **The import map is checked against the bundles, both ways.** The compiled
+  specimens keep `vue` and the gsap entry points as bare imports, and only the
+  map in `docs/layouts/DocPage.astro` resolves them — where a key is matched
+  *exactly*. Miss one and the browser rejects the whole module graph: the page
+  renders, the canvas is empty, nothing errors. `npm run check:importmap` fails
+  on an unmapped import and on a mapped specifier nothing imports any more,
+  which is a claim about the bundles that has stopped being true. Both inputs
+  are committed, so it runs in CI.
 
 Building the storybook needs a `codecave.pro` checkout beside this one. **That
 repo uses pnpm** — `pnpm install --frozen-lockfile`. Reaching for `npm` there
@@ -150,12 +158,13 @@ produces an ERESOLVE that looks like a broken dependency graph and is not.
 npm run check
 ```
 
-That is four assertions in one: the package is byte-identical to its origin, every
-storybook port typechecks, the compiled storybook matches the captures it was
-built from, and no token silently redefines a Tailwind default. All four are
+That is five assertions in one: the package is byte-identical to its origin,
+every storybook port typechecks, the compiled storybook matches the captures it
+was built from, no token silently redefines a Tailwind default, and the
+storybook's import map resolves exactly what its bundles import. All five are
 things that would otherwise rot quietly.
 
-The last one is worth a sentence, because it catches a failure with no symptom
+The token one is worth a sentence, because it catches a failure with no symptom
 here at all. Tailwind declares its theme inside `@layer theme`;
 `colors_and_type.css` declares in a plain `:root`, and **unlayered CSS beats any
 cascade layer regardless of source order.** So a token that happens to share a

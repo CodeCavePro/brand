@@ -58,6 +58,25 @@ makes them a record of what codecave.pro ships rather than a rebuild of it, and
 `is:inline` on both tags is what keeps that true. `@astrojs/vue` is consequently
 exercised by nothing; it stays only as a bet on CCWEB2-318 phase 4.
 
+**That import map is checked against the bundles, both ways.** It is the only
+thing resolving the specifiers esbuild deliberately left external, and an
+import-map key is matched exactly — so a capture moving to a different entry
+point of the same package silently kills every specimen on the page. Nothing
+errors: the page renders, the canvas is simply empty. `npm run check:importmap`
+reads the bare specifiers out of `storybook/compiled/*.js` and the keys out of
+`DocPage.astro`'s `importmapJson` and fails on either mismatch, since a mapped
+specifier nothing imports is a claim that has stopped being true. Both inputs
+are committed, so unlike `check:captures` it needs no site checkout and runs in
+CI.
+
+**A layout may not derive a page's depth from `Astro.url.pathname`.** With
+`build.format: 'preserve'`, a directory index is requested at `/storybook` in
+dev and emitted at `/storybook/` by the build, so the same page counts a
+different number of levels in each mode — and nothing else in the request
+separates an index from a leaf. `DocPage.astro` asks `import.meta.glob` which
+pages are `index.astro` instead; Vite resolves that at transform time, so it is
+the same static list in both modes.
+
 ### Ports, not stubs
 
 Where a captured component depends on something the docs build cannot carry (a
