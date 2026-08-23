@@ -1,8 +1,8 @@
-/* GENERATED from source_examples/project/pain-points-item.vue by tools/build-storybook.mjs — do not edit. */
+/* GENERATED from @codecavepro/brand/components/project/pain-points-item.vue by tools/build-storybook.mjs — do not edit. */
 
-// source_examples/project/pain-points-item.vue
+// ../packages/brand/dist/src/components/project/pain-points-item.vue
 import { defineComponent as _defineComponent2 } from "vue";
-import { unref as _unref, createVNode as _createVNode, createElementVNode as _createElementVNode, openBlock as _openBlock2, createElementBlock as _createElementBlock2 } from "vue";
+import { createVNode as _createVNode, unref as _unref, createElementVNode as _createElementVNode, openBlock as _openBlock2, createElementBlock as _createElementBlock2 } from "vue";
 
 // ../../codecave.pro/node_modules/.pnpm/marked@18.0.5/node_modules/marked/lib/marked.esm.js
 function M() {
@@ -1243,18 +1243,7 @@ var Xt = g.parseInline;
 var Vt = b.parse;
 var Yt = x.lex;
 
-// storybook/ports/strapi.adapter.ts
-var adapter = {
-  strapiUrl: "https://strapi.azure.codecave.network"
-};
-var { strapiUrl } = adapter;
-
-// source_examples/helpers/image-url.ts
-var getImageUrl = (url) => {
-  return `${strapiUrl}/${url.replace(/^\/+/, "")}`;
-};
-
-// source_examples/common/images/LazyImage.vue
+// ../packages/brand/dist/src/components/common/images/LazyImage.vue
 import { defineComponent as _defineComponent } from "vue";
 import { openBlock as _openBlock, createElementBlock as _createElementBlock } from "vue";
 import { onMounted, onUnmounted, ref } from "vue";
@@ -2846,24 +2835,26 @@ function createDOMPurify() {
 var purify = createDOMPurify();
 
 // storybook/ports/sanitizer.adapter.ts
-var adapter2 = {
+var adapter = {
   // Wrapped rather than passed by reference: DOMPurify.sanitize is a method on
   // an instance bound to `window`, and handing the bare function to a caller
   // that invokes it unbound loses that receiver.
   sanitize: (html2) => purify.sanitize(html2)
 };
-var { sanitize } = adapter2;
+var { sanitize } = adapter;
 
-// source_examples/project/pain-points-item.vue
+// ../packages/brand/dist/src/components/project/pain-points-item.vue
 var _hoisted_12 = { class: "mx-1 md:mx-0 p-6 w-56 h-full md:h-auto rounded-3xl bg-surface-secondary space-y-6" };
 var _hoisted_2 = ["innerHTML"];
 var __sfc__2 = /* @__PURE__ */ _defineComponent2({
   __name: "pain-points-item",
   props: {
-    item: { type: null, required: true }
+    item: { type: Object, required: true },
+    resolveImage: { type: Function, required: false }
   },
   setup(__props) {
     const props = __props;
+    const imageUrl = (url) => props.resolveImage?.(url) ?? url;
     const marked = new q();
     const renderer = {
       paragraph({ tokens }) {
@@ -2881,7 +2872,7 @@ var __sfc__2 = /* @__PURE__ */ _defineComponent2({
     return (_ctx, _cache) => {
       return _openBlock2(), _createElementBlock2("div", _hoisted_12, [
         _createVNode(LazyImage_default, {
-          src: _unref(getImageUrl)(__props.item.image.url),
+          src: imageUrl(__props.item.image.url),
           alt: __props.item.image.name,
           class: "w-8 h-8"
         }, null, 8, ["src", "alt"]),

@@ -1,13 +1,30 @@
 <script setup lang="ts">
 import { formattedDate } from "../../helpers/date-formatter.ts";
-import { getImageUrl } from "../../helpers/image-url.ts";
 import { paths } from "../../helpers/paths.ts";
-import type { Article } from "../../lib/strapi/types";
 
-defineProps<{
-  article: Article
+/* The fields this component actually reads, instead of the generated Strapi
+ * `Article`. TypeScript is structural, so a real Article still satisfies this
+ * -- callers pass exactly what they passed before -- but the component no
+ * longer carries the CMS schema with it. */
+type ArticleSummary = {
+  slug: string | null
+  title: string
+  excerpt: string
+  date: Date | null
+  locale: string | null
+  readingtime: unknown
+  cover: { url: string; name: string }
+}
+
+const props = defineProps<{
+  article: ArticleSummary
   className?: string
+  /* CMS media URLs arrive relative ("uploads/x.png"). The site injects its own
+   * resolver; a caller whose URLs are already absolute passes nothing. */
+  resolveImage?: (url: string) => string
 }>()
+
+const imageUrl = (url: string) => props.resolveImage?.(url) ?? url
 </script>
 
 <template>
@@ -16,7 +33,7 @@ defineProps<{
       ${className ?? ''}`">
     <div class="flex flex-col sm:flex-row gap-5 sm:gap-8 h-fit">
       <img loading="lazy" class="sm:w-[132px] sm:h-[132px] rounded-xl object-cover" 
-        :src="getImageUrl(article.cover.url)" 
+        :src="imageUrl(article.cover.url)" 
         :alt="article.cover.name" 
         :width="100" 
         :height="100"/>

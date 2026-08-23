@@ -1,10 +1,10 @@
-/* GENERATED from source_examples/common/Review.vue by tools/build-storybook.mjs — do not edit. */
+/* GENERATED from @codecavepro/brand/components/common/Review.vue by tools/build-storybook.mjs — do not edit. */
 
-// source_examples/common/Review.vue
+// ../packages/brand/dist/src/components/common/Review.vue
 import { defineComponent as _defineComponent2 } from "vue";
-import { unref as _unref, openBlock as _openBlock4, createBlock as _createBlock, createCommentVNode as _createCommentVNode, toDisplayString as _toDisplayString, createElementVNode as _createElementVNode3, resolveDynamicComponent as _resolveDynamicComponent, createElementBlock as _createElementBlock4, createVNode as _createVNode, normalizeClass as _normalizeClass } from "vue";
+import { openBlock as _openBlock4, createBlock as _createBlock, createCommentVNode as _createCommentVNode, toDisplayString as _toDisplayString, createElementVNode as _createElementVNode3, resolveDynamicComponent as _resolveDynamicComponent, createElementBlock as _createElementBlock4, createVNode as _createVNode, normalizeClass as _normalizeClass } from "vue";
 
-// source_examples/assets/icons/linkedin-icon.vue
+// ../packages/brand/dist/src/assets/icons/linkedin-icon.vue
 import { createElementVNode as _createElementVNode, openBlock as _openBlock, createElementBlock as _createElementBlock } from "vue";
 var _hoisted_1 = {
   width: "21",
@@ -49,7 +49,7 @@ var __sfc__ = { render };
 __sfc__.__file = "source_examples/assets/icons/linkedin-icon.vue";
 var linkedin_icon_default = __sfc__;
 
-// source_examples/assets/icons/verified-icon.vue
+// ../packages/brand/dist/src/assets/icons/verified-icon.vue
 import { createElementVNode as _createElementVNode2, openBlock as _openBlock2, createElementBlock as _createElementBlock2 } from "vue";
 var _hoisted_12 = {
   width: "17",
@@ -78,18 +78,7 @@ var __sfc__2 = { render: render2 };
 __sfc__2.__file = "source_examples/assets/icons/verified-icon.vue";
 var verified_icon_default = __sfc__2;
 
-// storybook/ports/strapi.adapter.ts
-var adapter = {
-  strapiUrl: "https://strapi.azure.codecave.network"
-};
-var { strapiUrl } = adapter;
-
-// source_examples/helpers/image-url.ts
-var getImageUrl = (url) => {
-  return `${strapiUrl}/${url.replace(/^\/+/, "")}`;
-};
-
-// source_examples/common/images/LazyImage.vue
+// ../packages/brand/dist/src/components/common/images/LazyImage.vue
 import { defineComponent as _defineComponent } from "vue";
 import { openBlock as _openBlock3, createElementBlock as _createElementBlock3 } from "vue";
 import { onMounted, onUnmounted, ref } from "vue";
@@ -154,7 +143,7 @@ var __sfc__3 = /* @__PURE__ */ _defineComponent({
 __sfc__3.__file = "source_examples/common/images/LazyImage.vue";
 var LazyImage_default = __sfc__3;
 
-// source_examples/common/Review.vue
+// ../packages/brand/dist/src/components/common/Review.vue
 var _hoisted_14 = { class: "flex flex-col lg:flex-row gap-5 lg:items-center" };
 var _hoisted_2 = { class: "flex items-center gap-2" };
 var _hoisted_3 = { class: "text-heading text-lg lg:text-xl" };
@@ -168,10 +157,13 @@ var _hoisted_7 = {
 var __sfc__4 = /* @__PURE__ */ _defineComponent2({
   __name: "Review",
   props: {
-    item: { type: null, required: true },
-    className: { type: String, required: false }
+    item: { type: Object, required: true },
+    className: { type: String, required: false },
+    resolveImage: { type: Function, required: false }
   },
   setup(__props) {
+    const props = __props;
+    const imageUrl = (url) => props.resolveImage?.(url) ?? url;
     return (_ctx, _cache) => {
       return _openBlock4(), _createElementBlock4(
         "div",
@@ -183,7 +175,7 @@ var __sfc__4 = /* @__PURE__ */ _defineComponent2({
             __props.item.photo.name !== "no-image.svg" ? (_openBlock4(), _createBlock(LazyImage_default, {
               key: 0,
               class: "w-12 lg:w-16 h-12 lg:h-16",
-              src: _unref(getImageUrl)(__props.item.photo.url),
+              src: imageUrl(__props.item.photo.url),
               alt: __props.item.photo.name
             }, null, 8, ["src", "alt"])) : _createCommentVNode("v-if", true),
             _createElementVNode3("div", null, [

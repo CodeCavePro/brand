@@ -108,19 +108,14 @@ const NOT_SHIPPED = [
    'an Astro component. Nothing that installs this package can render one ' +
    'without Astro, and it imports build-time-only modules besides.'],
   ['homepage/testimonial.astro', 'ditto.'],
-  ['common/ArticlePreview.vue',
-   'CMS-shaped, not brand-shaped: it imports Article from lib/strapi/types, ' +
-   '74 KB of types generated from the Strapi schema, and getImageUrl from ' +
-   'helpers/image-url.ts, which reads a hardcoded CMS host and token out of ' +
-   'lib/strapi.ts. Shipping either would put the site\'s content model, and ' +
-   'its CMS address, inside its design system.'],
-  ['common/Review.vue', 'ditto.'],
-  ['project/pain-points-item.vue', 'ditto.'],
-  ['homepage/technologies.vue', 'ditto (Technology, from the same 74 KB).'],
   ['helpers/image-url.ts',
-   'the reason the four above are out. Inverting it site-side — take the base ' +
-   'URL rather than import lib/strapi — is what makes them shippable, and is ' +
-   'the same move CCWEB2-325 made for ContactUsForm. Filed as CCWEB2-332.'],
+   'the site\'s CMS URL joiner: it imports strapiUrl from lib/strapi.ts, ' +
+   'which carries the CMS host and the shape of a private token. Nothing ' +
+   'shippable reaches it any more — CCWEB2-332 inverted that dependency, so ' +
+   'the four CMS-shaped components now take an optional resolveImage() and ' +
+   'default to identity. It stays captured because sixteen site-only pages ' +
+   'still use it, and it stays out because a design system has no business ' +
+   'knowing where the content lives.'],
 ];
 const EXCLUDED = new Set(NOT_SHIPPED.map(([rel]) => rel));
 
@@ -130,6 +125,53 @@ function shippedAs(rel) {
   return ['assets', 'helpers', 'lib'].includes(top)
     ? `src/${rel}`
     : `src/components/${rel}`;
+}
+
+/**
+ * Every npm package the shipped components import must be a declared peer.
+ *
+ * The import walk below polices *relative* imports — it proves nothing about
+ * `import { Carousel } from "vue3-carousel"`. An undeclared one resolves fine
+ * here, because the site checkout next door has it installed, and then fails in
+ * the consumer's build, which is the worst place to find out. Promoting the
+ * four CMS-shaped components added three of these at once.
+ */
+function assertPeersDeclared(shippedFiles, byShipped) {
+  const manifest = JSON.parse(fs.readFileSync(path.join(pkg, 'package.json'), 'utf8'));
+  const declared = new Set(Object.keys(manifest.peerDependencies ?? {}));
+  const imported = new Map();
+
+  for (const shipped of shippedFiles) {
+    const src = fs.readFileSync(docs('source_examples', byShipped.get(shipped)), 'utf8');
+    const specs = [
+      ...[...src.matchAll(/from\s*["']([^."'][^"']*)["']/g)],
+      ...[...src.matchAll(/^\s*import\s+["']([^."'][^"']*)["']/gm)],
+    ].map((m) => m[1]);
+    for (const spec of specs) {
+      const parts = spec.split('/');
+      const name = spec.startsWith('@') ? parts.slice(0, 2).join('/') : parts[0];
+      if (!imported.has(name)) imported.set(name, new Set());
+      imported.get(name).add(shipped);
+    }
+  }
+
+  const undeclared = [...imported.keys()].filter((n) => !declared.has(n)).sort();
+  const unused = [...declared].filter((n) => !imported.has(n)).sort();
+  if (!undeclared.length && !unused.length) return;
+
+  console.error('build failed — package.json disagrees with what the components import:');
+  for (const name of undeclared) {
+    console.error(`  ${name} is imported but not a peerDependency, wanted by:`);
+    for (const f of [...imported.get(name)].sort()) console.error(`      dist/${f}`);
+  }
+  for (const name of unused) {
+    console.error(`  ${name} is a peerDependency but nothing shipped imports it.`);
+  }
+  console.error('');
+  console.error('An undeclared peer resolves here — the site checkout next door has it —');
+  console.error("and breaks in the consumer's build. Declare it, optional unless every");
+  console.error('component needs it, and say in README.md which components want it.');
+  process.exit(1);
 }
 
 /**
@@ -170,6 +212,8 @@ function shippable() {
     }
   };
   for (const shipped of roots) visit(shipped);
+
+  assertPeersDeclared(seen, byShipped);
 
   if (escaped.length) {
     console.error('build failed — a shipped component imports something the package does not carry:');

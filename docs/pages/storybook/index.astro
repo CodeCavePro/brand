@@ -347,10 +347,10 @@ import DocPage from '../../layouts/DocPage.astro';
   // Checkbox exposes no checked state (see its findings) — set on the DOM node.
   document.getElementById('t-cb1-el').checked = true;
 
-  // getImageUrl() prefixes media paths with the Strapi host, so swap in the
-  // local placeholders after mount — same as on the story pages. Two of these
-  // three thumbs render through LazyImage, which is why it goes via
-  // placeholders.js rather than assigning .src here.
+  // Fixture media paths are `/uploads/...` and resolve to nothing here, so
+  // swap in the local placeholders after mount — same as on the story
+  // pages. Two of these three thumbs render through LazyImage, which is why it
+  // goes via placeholders.js rather than assigning .src here.
   const swaps = [['t-article', 'sb-cover'], ['t-review', 'sb-avatar'], ['t-pain', 'sb-icon']];
   for (const [id, ph] of swaps) {
     usePlaceholders('#' + id + ' img', '../assets/images/' + ph + '.svg');

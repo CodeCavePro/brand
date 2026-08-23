@@ -6,11 +6,19 @@ import { BREAKPOINTS } from "../../helpers/breakpoints.ts";
 import GlowButton from "../common/GlowButton.vue";
 import TypingEffect from "../common/effects/TypingEffect.vue";
 import TechnologyCard from "./technology-card.vue";
-import type { Technology } from "../../lib/strapi/types";
 import { paths } from "../../helpers/paths.ts";
 
+/* See ArticlePreview.vue: the fields read here, not the generated Strapi
+ * `Technology`, which a caller may still pass unchanged. This component
+ * renders no images, so it needs no resolver. */
+type TechnologySummary = {
+  name: string
+  title1: string
+  title2: string
+}
+
 const props = defineProps<{
-  technologies: Technology[]
+  technologies: TechnologySummary[]
   hideSelected?: boolean
 }>()
 

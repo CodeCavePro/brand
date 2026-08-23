@@ -16,7 +16,7 @@ Open items for the brand package, all in
 [CCWEB2](https://codecave.atlassian.net/browse/CCWEB2) under the **`brand-kit`**
 label ([live query](https://codecave.atlassian.net/issues?jql=project%20%3D%20CCWEB2%20AND%20labels%20%3D%20%22brand-kit%22%20ORDER%20BY%20key%20ASC)):
 
--   [CCWEB2-318](https://codecave.atlassian.net/browse/CCWEB2-318) — **epic. All six phases have landed (2026-08-21).** 1.0.0 and 1.1.0 are on public npm; codecave.pro `development` installs the package and takes its palette from `/tokens.css`; and the package now ships the components as well as the tokens. What is left is the *rest* of phase 6's sentence — the site still keeps its own copies of components it could install — and it stays that way until [CCWEB2-332](https://codecave.atlassian.net/browse/CCWEB2-332) frees the four CMS-shaped components. The font half is also still open: the site has one Satoshi cut and faux-bolds every heading, and swapping in six real ones is a visible change that belongs in its own PR.
+-   [CCWEB2-318](https://codecave.atlassian.net/browse/CCWEB2-318) — **epic. All six phases have landed (2026-08-21).** The package is on public npm; codecave.pro `development` installs it and takes its palette from `/tokens.css`; and it ships the components as well as the tokens, the CMS-shaped four included. What is left is the *rest* of phase 6's sentence — the site still keeps its own copies of components it could install, and nothing blocks that swap any more. The font half is also still open: the site has one Satoshi cut and faux-bolds every heading, and swapping in six real ones is a visible change that belongs in its own PR.
 
     **Never build or publish a component from a stale capture — and read what
     "stale" is measured against.** `npm run check:captures` diffs
@@ -111,6 +111,15 @@ build and names itself. So a component is added by capturing it, and the only
 hand-written thing is `NOT_SHIPPED`, where each exclusion carries its reason as
 a string.
 
+**What a component imports from npm is checked against the manifest.** The
+relative-import walk proves every `../` resolves inside the package; it proves
+nothing about `import { Carousel } from 'vue3-carousel'`. An undeclared one
+resolves here anyway — the site checkout next door has it installed — and fails
+in the consumer's build, the one place nobody would look. So `build.mjs`
+collects every bare specifier the shipped files import and fails unless
+`peerDependencies` names exactly that set, in **both** directions: an import
+nothing declares, and a declared peer nothing imports any more.
+
 The storybook compiles from the package where the package has the component and
 from the captures where it does not, and **says which on every build.** A
 specimen quietly reverting to the captures is exactly the drift this
@@ -138,7 +147,7 @@ them, so **they are asserted, not trusted.** Any README line shaped
 ignored — verified by corrupting a value and watching it exit 1. Add values to
 the example freely in that shape; do **not** write one in a form the check
 cannot see. The same treatment covers the two counts the README quotes as
-prose — the `:root` property count and "15 components and 13 icons" — because
+prose — the `:root` property count and the components-and-icons count — because
 those are facts about what the build produced, not claims worth trusting. The registry is npm public — this repo is already a public repo,
 so nothing private was being protected.
 

@@ -1,21 +1,34 @@
 <script setup lang="ts">
 import LinkedinIcon from "../../assets/icons/linkedin-icon.vue";
 import VerifiedIcon from "../../assets/icons/verified-icon.vue";
-import { getImageUrl } from "../../helpers/image-url.ts";
-import type { Testimonial } from "../../lib/strapi/types";
 import LazyImage from "./images/LazyImage.vue"
 
-defineProps<{
-  item: Testimonial
+/* See ArticlePreview.vue: the fields read here, not the generated Strapi
+ * `Testimonial`, which a caller may still pass unchanged. */
+type TestimonialCard = {
+  name: string
+  position: string
+  review: string
+  verification: string | null
+  linkedinurl: string
+  photo: { url: string; name: string }
+}
+
+const props = defineProps<{
+  item: TestimonialCard
   className?: string
+  /* Injected by the site; omit it when the URLs are already absolute. */
+  resolveImage?: (url: string) => string
 }>()
+
+const imageUrl = (url: string) => props.resolveImage?.(url) ?? url
 </script>
 
 <template>
   <div :class="`mx-1 lg:mx-2 testimonial rounded-custom space-y-2 lg:space-y-3 py-10 px-6 lg:px-11 ${className}`">
     <div class="flex flex-col lg:flex-row gap-5 lg:items-center">
       <LazyImage v-if="item.photo.name !== 'no-image.svg'" 
-            class="w-12 lg:w-16 h-12 lg:h-16" :src="getImageUrl(item.photo.url)"
+            class="w-12 lg:w-16 h-12 lg:h-16" :src="imageUrl(item.photo.url)"
            :alt=item.photo.name />
       <div>
         <div class="flex items-center gap-2">

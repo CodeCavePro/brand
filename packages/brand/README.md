@@ -142,8 +142,8 @@ Two things to know about it:
 
 ## The components
 
-15 components and 13 icons — the buttons, form controls, menu, footer and cards
-codecave.pro renders — ship as **source**, byte-for-byte the files the site builds
+19 components and 13 icons — the buttons, form controls, menu, footer, and the
+article, testimonial and technology cards codecave.pro renders — ship as **source**, byte-for-byte the files the site builds
 from. Not a reimplementation of them, and not a bundle compiled from a snapshot:
 the same files, kept identical by a check that runs on every push.
 
@@ -166,8 +166,11 @@ plugin — `@vitejs/plugin-vue`, `@astrojs/vue`, `vue-loader`. In exchange their
 styles go through your own pipeline and you can read the source of anything that
 surprises you.
 
-`vue` is a peer dependency. `gsap` is an optional one, wanted only by `GlowButton`,
-`TypingEffect` and `ContactUsForm`; leave it out and the rest are unaffected.
+`vue` is the only required peer. Four more are optional, each wanted by one or two
+components; leave one out and only those are affected — `gsap` by `GlowButton.vue`,
+`effects/TypingEffect.vue` and `forms/ContactUsForm.vue`; `vue3-carousel` by
+`homepage/technologies.vue`; `marked` and `isomorphic-dompurify` by
+`project/pain-points-item.vue`.
 
 ### Import the theme, not just the tokens
 
@@ -192,15 +195,24 @@ cascade layer — or leave it out — and those names resolve to nothing.
 Import only `tokens.css` and the components mount and behave correctly and render
 nearly unstyled.
 
-### What is not here, and why
+### The content-shaped four resolve their own image URLs
 
-Four components stay out: `ArticlePreview`, `Review`, `pain-points-item` and
-`technologies`. They are CMS-shaped rather than brand-shaped — their props are types
-generated from the Strapi schema, and they build image URLs through a helper that reads
-a hardcoded CMS host and token. Shipping them would put the site's content layer inside
-a brand package. Inverting that dependency site-side is
-[CCWEB2-332](https://codecave.atlassian.net/browse/CCWEB2-332); they arrive when it
-lands.
+`ArticlePreview`, `Review`, `pain-points-item` and `technologies` render CMS content, so
+they used to reach a helper that knew codecave.pro's CMS host. They no longer do. The
+three that show images take an optional resolver and default to leaving the URL alone:
+
+```vue
+<!-- URLs already absolute — nothing to pass -->
+<Review :item="testimonial" />
+
+<!-- URLs relative to your own media host -->
+<Review :item="testimonial" :resolve-image="(u) => `https://cdn.example.com/${u}`" />
+```
+
+Their props are declared as the fields each one reads — `item.photo.url`,
+`article.cover.url` — not as a generated CMS schema. Anything with those fields
+satisfies them, so a Strapi entity, a Contentful entry or a plain object all work
+unchanged.
 
 ## Controls are 48px, and it is a floor
 

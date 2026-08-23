@@ -1,14 +1,13 @@
 /* ===========================================================================
- * placeholders.js — swap CMS-hosted media for local stand-ins after mount.
+ * placeholders.js — swap unresolvable media for local stand-ins after mount.
  *
- * getImageUrl() prefixes every media path with the Strapi host
- * (ports/strapi.adapter.ts), so an image a captured component asks for lives on
- * a CMS this page cannot read. StrapiPort can supply the base URL but not the
- * private token behind it, so this is the one place a specimen genuinely cannot
- * reproduce production: the request is real, the response is not ours to get.
- * Every page therefore points those <img>s at docs/assets/images/ after mount.
- * Everything else about the element — classes, sizing, object-fit, alt wiring —
- * stays the component's own.
+ * The CMS-shaped components resolve media through an injected resolveImage(),
+ * which defaults to identity and which no specimen passes — so a media path
+ * reaches the <img> exactly as the story's fixture wrote it, `/uploads/foo.png`.
+ * That is a real path on the site and on no host these pages can read, so it
+ * 404s here whichever origin it is aimed at. Every page therefore points those
+ * <img>s at docs/assets/images/ after mount. Everything else about the element
+ * — classes, sizing, object-fit, alt wiring — stays the component's own.
  *
  * Why this is a module and not four copies of `img.src = …`:
  *
