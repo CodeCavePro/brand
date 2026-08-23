@@ -446,10 +446,12 @@ storybook where the component on screen was not the component in production, in
 exactly the behaviour anyone visits that page to check.
 
 Where an adapter genuinely cannot reach production, the specimen says so on its
-face. `StrapiPort` can give a media URL its host but not the private token
-behind it, so every page swaps in a local placeholder after mount — via
-`storybook/placeholders.js`, which knows that `LazyImage` reads `data-src` and
-that assigning `.src` to one of those loses a race with its
+face. No specimen needs that today: since CCWEB2-332 the CMS-shaped components
+resolve media through an injected `resolveImage()` that defaults to identity, so
+a fixture's `/uploads/foo.png` reaches the `<img>` unchanged and 404s on whatever
+origin serves the page. Every page therefore swaps in a local placeholder after
+mount — via `storybook/placeholders.js`, which knows that `LazyImage` reads
+`data-src` and that assigning `.src` to one of those loses a race with its
 `IntersectionObserver`.
 
 The distinction is not vocabulary. A stub is unchecked — it fails as an
