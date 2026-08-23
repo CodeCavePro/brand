@@ -26,7 +26,6 @@ label ([live query](https://codecave.atlassian.net/issues?jql=project%20%3D%20CC
     *ships*: put the checkout on `development` before believing the answer.
 
 -   [CCWEB2-335](https://codecave.atlassian.net/browse/CCWEB2-335) — **a decision, not a defect.** CCWEB2-332 left `StrapiPort` exercised by nothing: no compiled specimen imports `lib/strapi` any more, so the `PORTS` entry, `strapi.adapter.ts` and the interface describe machinery that runs for nothing. `check:ports` still typechecks it, which is the problem — a green check reads as coverage of something no page does. Delete all three, or keep it and have the build say which ports were exercised; drifting into neither is the one bad outcome.
--   [CCWEB2-336](https://codecave.atlassian.net/browse/CCWEB2-336) — **`astro dev` only, the deployed site is correct.** `DocPage.astro` derives its `up` prefix from `Astro.url.pathname`, which dev reports without the trailing slash for a directory index. So `/storybook/` and `/preview/` load no stylesheets and mount no components locally, while their built pages are fine. Same `trailingSlash` default as CCWEB2-330, biting differently.
 
 Open bugs in what codecave.pro ships, found while resyncing the captures or
 while working on the site itself. **These are the site's to fix, not the

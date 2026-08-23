@@ -45,8 +45,35 @@ if (/&(#\d+|#x[0-9a-fA-F]+|[a-zA-Z][a-zA-Z0-9]*);/.test(title)) {
   );
 }
 
-const dir = Astro.url.pathname.replace(/^\//, '').replace(/[^/]*$/, '');
-const up = '../'.repeat((dir.match(/\//g) ?? []).length);
+/* How far this page sits below the site root. Every URL in this head is built
+ * from it, and it cannot be read off the request path: a directory index is
+ * served at `/storybook` by dev and emitted as `/storybook/` by the build, so
+ * the same page counts one level in one mode and none in the other. That is
+ * CCWEB2-336 — it left /storybook/ and /preview/ with no stylesheets and, on
+ * the storybook, an import map whose values were bare specifiers the browser
+ * discarded, so no specimen mounted. Nothing was wrong with the built pages,
+ * which is why it survived.
+ *
+ * `/preview` and `/brand-kit` are the same shape and different depths, so no
+ * amount of squinting at the URL separates them. Depth is a fact about where
+ * the page's SOURCE sits, so ask the source tree. import.meta.glob is resolved
+ * by Vite at transform time, so this is a static list in both modes and not a
+ * filesystem read — the layout is a bundled chunk by the time it runs. */
+const INDEX_ROUTES = new Set(
+  Object.keys(import.meta.glob('../pages/**/index.astro'))
+    .map((f) => f.replace('../pages/', '').replace(/index\.astro$/, '')),
+);
+
+const segments = Astro.url.pathname
+  .replace(/^\//, '')
+  .replace(/\.html$/, '')
+  .split('/')
+  .filter(Boolean);
+
+/* An index page sits IN the directory its route names; a leaf page sits beside
+ * its siblings, one level up. */
+const isIndex = INDEX_ROUTES.has(segments.length ? segments.join('/') + '/' : '');
+const up = '../'.repeat(isIndex ? segments.length : Math.max(0, segments.length - 1));
 
 /* A page with a second bar of its own — brand-kit's section links — needs both
  * bars to stick as one block, which means one positioned wrapper around them
