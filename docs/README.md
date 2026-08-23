@@ -225,8 +225,9 @@ written on the story page rather than silently papered over.
 | Compositions | `LinkGroup` |
 
 Each story page carries the real `defineProps` signature, a variant/state
-matrix rendered live, and a findings section. **55 findings were recorded — 30
-defects and 25 design observations.** The ones that change runtime behavior:
+matrix rendered live, and a findings section. **55 findings are recorded — 29
+flagged as defects, 26 as design observations.** The ones that change runtime
+behavior:
 
 - **`--default-transition-duration` is not the project's variable.**
   `Checkbox.vue`:75 and `Radio.vue`:61 both use it in a `transition` shorthand.
@@ -234,18 +235,8 @@ defects and 25 design observations.** The ones that change runtime behavior:
   Tailwind's default theme, emitted because `transition-colors` is in use.
   Inside a Tailwind build the indicators ease; lift either component out and
   the shorthand collapses and they snap.
-- **`tailwind.config.ts` is never loaded**, by either of the two routes that
-  try. `global.css` opens with `@config "../../tailwind.config.js"` and the
-  file is `.ts`; `astro.config.mjs` passes `tailwindcss({ config: … })`, an
-  option `@tailwindcss/vite` has never had. `darkMode`, `content` and
-  `theme.extend` are inert — including the `*.stories` exclusion in the
-  content glob. Fixing the extension would be worse than leaving it: the glob
-  has no `.vue`, so loading the config would unstyle every Vue component.
 - **`Button`'s `isDisabled` does not disable.** It sets opacity and cursor only;
   the `disabled` attribute is never bound.
-- ~~**`PainPointsItem` renders unsanitized CMS markdown through `v-html`.**~~
-  Fixed upstream 2026-08-20 — the parse now runs through `isomorphic-dompurify`,
-  and the specimen's third story re-checks it on every page load.
 - **`TextField` syncs its model on `change`, not `input`** — so `v-model`
   updates on blur while `InputText` in the same form updates per keystroke.
 

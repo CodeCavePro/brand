@@ -232,9 +232,9 @@ import DocPage from '../../layouts/DocPage.astro';
 
   <section class="sb-group">
     <h2>What this storybook found</h2>
-    <p>55 findings across the thirteen components — 30 defects and 25 design
-       observations — each recorded on its own story page. The six that would
-       change behavior in production:</p>
+    <p>55 findings across the thirteen components — 29 flagged as defects, 26
+       as design observations — each recorded on its own story page. The four
+       that would change behavior in production:</p>
 
     <p class="sb-note is-warn"><strong>Two components animate against a variable they never define.</strong>
       <code>Checkbox.vue</code>:75 and <code>Radio.vue</code>:61 both declare
@@ -245,30 +245,10 @@ import DocPage from '../../layouts/DocPage.astro';
       use. Lift either component out of a Tailwind build and the shorthand
       collapses, snapping the indicator instead of easing it.</p>
 
-    <p class="sb-note is-warn"><strong><code>tailwind.config.ts</code> is never loaded.</strong>
-      The project is Tailwind 4.1.13 configured CSS-first
-      (<code>@import "tailwindcss"</code> plus <code>@theme</code> in
-      <code>global.css</code>). Two things try to load the JS config and neither
-      arrives: <code>global.css</code> opens with
-      <code>@config "../../tailwind.config.js"</code>, and the file is
-      <code>.ts</code>; and <code>astro.config.mjs</code> passes
-      <code>tailwindcss(&#123; config: … &#125;)</code>, an option
-      <code>@tailwindcss/vite</code> does not have. So
-      <code>darkMode: 'class'</code>, the <code>content</code> globs and the
-      <code>theme.extend</code> block have no effect — including the
-      <code>*.stories</code> exclusion that suggests a Storybook was once
-      planned. Correcting the extension would be worse than leaving it: that
-      glob has no <code>.vue</code> in it, so loading the config would drop
-      every Vue component from the scan.</p>
-
     <p class="sb-note is-warn"><strong><code>Button</code>'s <code>isDisabled</code> does not disable anything.</strong>
       It sets opacity and a cursor. The <code>disabled</code> attribute is never
       bound, so the control stays clickable and keyboard-reachable — and as a link
       it still navigates.</p>
-
-    <p class="sb-note is-warn"><strong><code>PainPointsItem</code> renders unsanitized CMS markdown through <code>v-html</code>.</strong>
-      Markdown permits raw HTML and no sanitizer runs, so the field is an XSS sink
-      gated only by Strapi access control.</p>
 
     <p class="sb-note is-warn"><strong><code>TextField</code> syncs its model on <code>change</code>, not <code>input</code>.</strong>
       The parent's <code>v-model</code> only updates on blur, while

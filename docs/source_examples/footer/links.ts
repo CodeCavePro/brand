@@ -47,6 +47,6 @@ export const reviews: Link[] = [
 ]
 
 export const legal: Link[] = [
-    {name: 'Cookie policy', href: '/cookie-policy'},
-    {name: 'Privacy policy', href: '/privacy-policy'},
+    {name: 'Cookie policy', href: paths.cookiePolicy},
+    {name: 'Privacy policy', href: paths.privacyPolicy},
 ]

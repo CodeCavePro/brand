@@ -19,18 +19,18 @@ var formattedDate = (locale, date) => {
 var services = "/services";
 var paths = {
   home: "/",
-  devops: `${services}/devops`,
-  autodesk: `${services}/autodesk`,
-  hubspot: `${services}/hubspot`,
-  ecommerce: `${services}/ecommerce`,
-  automation: `${services}/automation`,
-  arVr: `${services}/ar-vr`,
-  workflow: "/workflow",
-  projects: "/projects",
-  insights: "/insights",
+  devops: `${services}/devops/`,
+  autodesk: `${services}/autodesk/`,
+  hubspot: `${services}/hubspot/`,
+  ecommerce: `${services}/ecommerce/`,
+  automation: `${services}/automation/`,
+  arVr: `${services}/ar-vr/`,
+  workflow: "/workflow/",
+  projects: "/projects/",
+  insights: "/insights/",
   contactUs: "/#contact-us",
-  cookiePolicy: "/cookie-policy",
-  privacyPolicy: "/privacy-policy",
+  cookiePolicy: "/cookie-policy/",
+  privacyPolicy: "/privacy-policy/",
   testimonials: "/#testimonials",
   strongPoints: "/workflow/#our-strong-point",
   toolsAndTechnologies: "/workflow/#tools-and-technologies"
@@ -58,7 +58,7 @@ var __sfc__ = /* @__PURE__ */ _defineComponent({
     const imageUrl = (url) => props.resolveImage?.(url) ?? url;
     return (_ctx, _cache) => {
       return _openBlock(), _createElementBlock("a", {
-        href: `${_unref(paths).insights}/${__props.article.slug}`,
+        href: `${_unref(paths).insights}${__props.article.slug}/`,
         class: _normalizeClass(`mx-1 lg:mx-2 w-full h-full self-start sm:self-auto p-6 flex flex-col gap-5 sm:gap-8
       rounded-[2.25rem] bg-surface-secondary hover:bg-surface-secondary transition-colors cursor-pointer border-surface-tertiary border
       ${__props.className ?? ""}`)

@@ -28,7 +28,7 @@ const imageUrl = (url: string) => props.resolveImage?.(url) ?? url
 </script>
 
 <template>
-  <a :href="`${paths.insights}/${article.slug}`" :class="`mx-1 lg:mx-2 w-full h-full self-start sm:self-auto p-6 flex flex-col gap-5 sm:gap-8
+  <a :href="`${paths.insights}${article.slug}/`" :class="`mx-1 lg:mx-2 w-full h-full self-start sm:self-auto p-6 flex flex-col gap-5 sm:gap-8
       rounded-[2.25rem] bg-surface-secondary hover:bg-surface-secondary transition-colors cursor-pointer border-surface-tertiary border
       ${className ?? ''}`">
     <div class="flex flex-col sm:flex-row gap-5 sm:gap-8 h-fit">
