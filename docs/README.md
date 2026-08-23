@@ -423,11 +423,10 @@ of this package from quietly rewriting the site's lockfile.
 
 ### Ports — what a component depends on outside itself
 
-Some captured components import something a static docs page cannot resolve the
-way production does: `helpers/image-url.ts` wants the Strapi base URL out of a
-module that otherwise constructs an authenticated client, and
-`project/pain-points-item.vue` sanitises its markdown with `isomorphic-dompurify`,
-whose job is to pair DOMPurify with `jsdom` so the call also works during SSR.
+A captured component sometimes imports something a static docs page cannot
+resolve the way production does. One does today: `project/pain-points-item.vue`
+sanitises its markdown with `isomorphic-dompurify`, whose job is to pair
+DOMPurify with `jsdom` so the call also works during SSR.
 
 Those dependencies are **inverted, not stubbed**. `storybook/ports/ports.d.ts`
 declares the narrow interface the component actually needs; an adapter beside it
@@ -466,3 +465,17 @@ npm run check:ports
 which `npm run check` runs for you. The bar for adding a port is narrow, and
 `ports.d.ts` states it: if swapping the implementation would change what the
 specimen **looks like**, it is not a port — it belongs in the bundle.
+
+The bar for keeping one is just as narrow, and it is the build that holds it.
+`check:ports` typechecks an adapter whether or not a specimen imports it, so a
+green check on its own can be coverage of nothing — which is what `StrapiPort`
+quietly became once the CMS-shaped components took an injected `resolveImage()`
+and stopped reaching for a Strapi base URL. Every `build-storybook.mjs` run
+therefore ends by naming the specimens each port stood in for:
+
+```
+SanitizerPort stood in for 1 specimen(s): project/pain-points-item.vue
+```
+
+and names any port nothing reached for, which is the cue to delete it or to
+capture the component that needs it.

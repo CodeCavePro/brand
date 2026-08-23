@@ -25,7 +25,6 @@ label ([live query](https://codecave.atlassian.net/issues?jql=project%20%3D%20CC
     branch's own fixes as capture drift. The captures record what the site
     *ships*: put the checkout on `development` before believing the answer.
 
--   [CCWEB2-335](https://codecave.atlassian.net/browse/CCWEB2-335) — **a decision, not a defect.** CCWEB2-332 left `StrapiPort` exercised by nothing: no compiled specimen imports `lib/strapi` any more, so the `PORTS` entry, `strapi.adapter.ts` and the interface describe machinery that runs for nothing. `check:ports` still typechecks it, which is the problem — a green check reads as coverage of something no page does. Delete all three, or keep it and have the build say which ports were exercised; drifting into neither is the one bad outcome.
 
 Open bugs in what codecave.pro ships, found while resyncing the captures or
 while working on the site itself. **These are the site's to fix, not the
@@ -94,8 +93,16 @@ if the two drift — not a pass-through; the wrapper's `jsdom` half is what gets
 dropped, because a docs page is only ever a browser. It shipped as an identity
 function for a day and that was the wrong call: it made the one page people
 visit to check sanitising the one page not doing it. Where an adapter truly
-cannot reach production (`StrapiPort` has the CMS host but not its token), the
-specimen must say so on its face, not in a comment.
+cannot reach production, the specimen must say so on its face, not in a
+comment. No port is in that position today.
+
+**A port exists because a captured component needs it, and every build says
+which ones a specimen actually reached for.** `check:ports` typechecks every
+adapter whether or not anything imports it, so on its own a green check reads
+as coverage of something that may be running for nothing — which is exactly
+what `StrapiPort` became once the CMS-shaped components took an injected
+`resolveImage()`. So `build-storybook.mjs` names the specimens each port stood
+in for, and names any port nothing reached for at all.
 
 Related rule: **nothing under `docs/source_examples/` is authored.** A
 hand-written stub used to live there as `lib/strapi.ts`; it is gone.

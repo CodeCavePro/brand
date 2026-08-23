@@ -139,6 +139,12 @@ static build cannot carry gets an **interface and an adapter**, never a stub.
 - `npm run check:ports` typechecks every adapter against its interface, and CI
   runs it. A drifted adapter compiles fine and fails as an `undefined` in a
   reader's browser, which is the one place a specimen must not fail.
+- **A port exists because a captured component needs it.** That check typechecks
+  an adapter whether or not anything imports it, so on its own a green result
+  reads as coverage of something that may be running for nothing. Every
+  `build-storybook.mjs` run therefore names the specimens each port stood in
+  for, and names any port nothing reached for — delete those, or capture what
+  needs them.
 - **The import map is checked against the bundles, both ways.** The compiled
   specimens keep `vue` and the gsap entry points as bare imports, and only the
   map in `docs/layouts/DocPage.astro` resolves them — where a key is matched

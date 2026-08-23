@@ -234,11 +234,6 @@ function tryFile(p) {
 const PORTS_DIR = path.join(docs, 'storybook', 'ports');
 const PORTS = [
   {
-    port: 'StrapiPort',
-    specifier: /(?:^|\/)lib\/strapi(?:\.ts)?$/,
-    adapter: 'strapi.adapter.ts',
-  },
-  {
     port: 'SanitizerPort',
     // Swaps the isomorphic wrapper for the DOMPurify inside it — same engine,
     // same version, without jsdom, which exists to give the sanitiser a DOM on
@@ -249,6 +244,16 @@ const PORTS = [
     adapter: 'sanitizer.adapter.ts',
   },
 ];
+
+/* Which specimens each port actually stood in for, filled in as esbuild
+ * resolves and printed at the end. `npm run check:ports` typechecks every
+ * adapter whether or not a specimen imports it, so on its own a green check
+ * reads as coverage of something that may run for nothing — which is how
+ * StrapiPort came to sit here for a week after CCWEB2-332 removed its last
+ * importer. A port exists because a captured component needs it; when that
+ * stops being true the build is the only place it shows. */
+const exercised = new Map(PORTS.map((p) => [p.port, new Set()]));
+let currentEntry = null;
 
 /* SanitizerPort is only honest while its DOMPurify is the DOMPurify the site
  * ships. That was a comment asking whoever bumped one to bump the other, and it
@@ -295,6 +300,7 @@ const vuePlugin = {
     build.onResolve({ filter: /.*/ }, (args) => {
       const bare = args.path.replace(/^(?:\.\.?\/)+/, '');
       const hit = PORTS.find((p) => p.specifier.test(bare));
+      if (hit) exercised.get(hit.port).add(currentEntry);
       return hit ? { path: path.join(PORTS_DIR, hit.adapter) } : null;
     });
     build.onResolve({ filter: /^\.\.\// }, (args) => {
@@ -316,6 +322,7 @@ for (const entry of ENTRIES) {
   const name = path.basename(entry, '.vue');
   const { file, label } = rootOf(entry);
   if (label === 'captures') fromCaptures.push(entry);
+  currentEntry = entry;
   const from = label === 'package'
     ? `@codecavepro/brand/components/${entry}`
     : `source_examples/${entry}`;
@@ -354,6 +361,21 @@ if (fromCaptures.length) {
   console.log('Those are not shipped — packages/brand/scripts/build.mjs names the reason for each.');
 } else {
   console.log(`\nall ${ENTRIES.length} specimens came from the package.`);
+}
+
+/* And say the same about the ports, for the same reason. */
+const idle = PORTS.filter((p) => !exercised.get(p.port).size);
+console.log('');
+for (const { port } of PORTS) {
+  const users = [...exercised.get(port)].sort();
+  console.log(users.length
+    ? `${port} stood in for ${users.length} specimen(s): ${users.join(', ')}`
+    : `! ${port} was exercised by nothing — no compiled specimen imports it.`);
+}
+if (idle.length) {
+  console.log('A port exists because a captured component needs it. Delete the idle');
+  console.log('one(s), and their interfaces in ports.d.ts, or capture what needs them:');
+  for (const { port, adapter } of idle) console.log(`  ${port}  (storybook/ports/${adapter})`);
 }
 
 /* ---- tw-bridge.css: the site's Tailwind, only the utilities in use ------- */
