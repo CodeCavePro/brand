@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import InputText from '../InputText.vue'
 import Button from '../Button.vue'
-import { isCorrectEmailFormat } from "../../../helpers/form-validator.ts";
+import { isCorrectEmailFormat } from "@helpers/form-validator.ts";
 
 const email = ref('')
 

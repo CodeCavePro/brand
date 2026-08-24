@@ -51,6 +51,7 @@ import path from 'node:path';
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 import { sourceDigest, DIGEST_PREFIX } from './source-digest.mjs';
+import { unalias, usesAlias } from './helpers-alias.mjs';
 
 const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const siteDir = path.resolve(process.argv[2] ?? path.join(docs, '..', '..', 'codecave.pro'));
@@ -104,12 +105,22 @@ if (!fs.existsSync(PKG)) {
  * `npm run build -w @codecavepro/brand` after it — and nothing else here would
  * notice: the bytes still compile, the specimen still renders, and it renders
  * the OLD component. Caught doing exactly that on 2026-08-21, refreshing five
- * captures and rebuilding the storybook before the package. */
+ * captures and rebuilding the storybook before the package.
+ *
+ * "Equal" means equal once the @helpers alias is resolved (CCWEB2-355). The
+ * package rewrites that alias to a relative path on the way into dist/, because
+ * a consumer has no tsconfig of the site's — so for the nine captures that use
+ * it, identical bytes would mean the package was NOT built from this capture.
+ * Both sides read the rule from helpers-alias.mjs rather than restating it. */
 function rootOf(entry) {
   const shipped = path.join(PKG, 'components', entry);
   if (!fs.existsSync(shipped)) return { file: path.join(SRC, entry), root: SRC, label: 'captures' };
   const capture = path.join(SRC, entry);
-  if (!fs.readFileSync(shipped).equals(fs.readFileSync(capture))) {
+  const captured = fs.readFileSync(capture, 'utf8');
+  const expected = usesAlias(captured)
+    ? unalias(captured, `src/components/${entry}`)
+    : captured;
+  if (fs.readFileSync(shipped, 'utf8') !== expected) {
     console.error(`the package's ${entry} is not the capture it was copied from.`);
     console.error('dist/ is stale. Run: npm run build -w @codecavepro/brand');
     process.exit(1);

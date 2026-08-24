@@ -2,11 +2,11 @@
 import { computed, ref } from "vue";
 import { Carousel, type CarouselConfig, Slide } from "vue3-carousel";
 import "vue3-carousel/carousel.css";
-import { BREAKPOINTS } from "../../helpers/breakpoints.ts";
+import { BREAKPOINTS } from "@helpers/breakpoints.ts";
 import GlowButton from "../common/GlowButton.vue";
 import TypingEffect from "../common/effects/TypingEffect.vue";
 import TechnologyCard from "./technology-card.vue";
-import { paths } from "../../helpers/paths.ts";
+import { paths } from "@helpers/paths.ts";
 
 /* See ArticlePreview.vue: the fields read here, not the generated Strapi
  * `Technology`, which a caller may still pass unchanged. This component

@@ -7,7 +7,7 @@
  *
  * The digest below covers every file under source_examples/, this file's only
  * source. Verify with: node docs/tools/check-tw-bridge.mjs
- * source-digest: sha256:805b7b6c8baa06cc176c056725cb5e9aa31f6d15248a6a55534159a93a09d27d
+ * source-digest: sha256:047cc2bf872e20f202f94be94bf2ee2f6117b6bce356f7372fde5f9532972e29
  */
 /*! tailwindcss v4.3.0 | MIT License | https://tailwindcss.com */
 @layer properties;

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { paths } from "../../helpers/paths.ts";
+import { paths } from "@helpers/paths.ts";
 import Button from "../common/Button.vue";
 
 defineProps<{

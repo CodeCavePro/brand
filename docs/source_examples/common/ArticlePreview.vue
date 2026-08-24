@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { formattedDate } from "../../helpers/date-formatter.ts";
-import { paths } from "../../helpers/paths.ts";
+import { formattedDate } from "@helpers/date-formatter.ts";
+import { paths } from "@helpers/paths.ts";
 
 /* The fields this component actually reads, instead of the generated Strapi
  * `Article`. TypeScript is structural, so a real Article still satisfies this

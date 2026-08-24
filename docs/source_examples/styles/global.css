@@ -1,3 +1,13 @@
+/* No @source rule follows this on purpose, but know what that buys: Tailwind 4
+ * detects content automatically, which means it scans every file the repo
+ * tracks -- src/, but also scripts/ and any .mjs or .md beside them -- and
+ * takes anything word-shaped as a candidate class. Prose counts. A utility's
+ * bare name written in a code comment ships that utility's rule to every page,
+ * and the only trace is a content hash moving on a stylesheet nobody diffs;
+ * one comment in scripts/check-seo.mjs did exactly that under CCWEB2-353.
+ * Narrowing the scan with @source would fix the class of problem and would
+ * also silently drop any class this site builds by concatenation, so it is
+ * not a change to make casually. */
 @import "tailwindcss";
 @import "@codecavepro/brand/tokens.css";
 @font-face {

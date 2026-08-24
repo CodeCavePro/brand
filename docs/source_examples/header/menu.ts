@@ -1,4 +1,4 @@
-import { paths } from "../../helpers/paths.ts";
+import { paths } from "@helpers/paths.ts";
 import type { Component } from "vue";
 import CloudIcon from "../../assets/icons/cloud-icon.vue";
 import CartIcon from "../../assets/icons/cart-icon.vue";

@@ -14,7 +14,7 @@ import type {
   CrmSubmitResult,
   ICrmFormClient,
 } from "../../../lib/crm/types";
-import { isCorrectEmailFormat, isCorrectLinkedInFormat } from "../../../helpers/form-validator.ts";
+import { isCorrectEmailFormat, isCorrectLinkedInFormat } from "@helpers/form-validator.ts";
 
 /* This component knows nothing about HubSpot, or about any other CRM. It is
  * handed the labels to render and something that can accept a submission; who

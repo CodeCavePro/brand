@@ -42,6 +42,7 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
 import path from 'node:path';
+import { HELPERS_ALIAS, aliasTarget, unalias, usesAlias } from '../../../docs/tools/helpers-alias.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const pkg = path.resolve(here, '..');
@@ -128,6 +129,74 @@ function shippedAs(rel) {
 }
 
 /**
+ * The site imports its helpers through an @helpers alias (CCWEB2-354), and that
+ * alias is a tsconfig `paths` entry in codecave.pro — which this package does
+ * not ship and a consumer does not have. So it can neither survive into dist/
+ * nor be treated as an npm package, and it was silently both: the walk below
+ * followed only `./`-shaped specifiers, so every helper would have dropped out
+ * of the package the moment the captures were resynced, while
+ * assertPeersDeclared read `@helpers/paths.ts` as a scoped package nothing
+ * declares. Two failures, one cause, neither visible until someone rebuilt.
+ *
+ * The rule itself lives in docs/tools/helpers-alias.mjs, because the storybook
+ * build needs the same answer and must not keep its own copy of it. What is
+ * local to here is where it gets applied: resolved by the walk, rewritten on
+ * copy, and asserted afterwards against the built output.
+ */
+/** A shipped file whose bytes are not its capture's is one of these. */
+const isAliased = (rel) => usesAlias(fs.readFileSync(docs('source_examples', captureOf(rel)), 'utf8'));
+
+/**
+ * Every import in dist/ must resolve inside dist/ — checked on the BUILT files,
+ * not on the captures the walk read.
+ *
+ * shippable() already refuses a relative import that escapes the package, but it
+ * asks the question of the capture, and the @helpers rewrite happens after. That
+ * gap is not theoretical: stop the walk from following the alias and the build
+ * stays green while src/helpers/ vanishes from the tarball and every rewritten
+ * `../../helpers/paths.ts` points at nothing. It publishes, it installs, and it
+ * dies in the consumer's bundler. Verified by doing exactly that.
+ *
+ * So the artifact is asked instead. Anything the rewrite missed still says
+ * @helpers and is named; anything the rewrite produced that leads nowhere is
+ * named too, whatever put it there.
+ */
+function assertDistResolves() {
+  const built = new Set(shipped);
+  const stale = [];
+  const dangling = [];
+  for (const rel of shipped) {
+    const file = out(rel);
+    if (!fs.existsSync(file)) continue;
+    const src = fs.readFileSync(file, 'utf8');
+    if (usesAlias(src)) stale.push(rel);
+    const specs = [
+      ...[...src.matchAll(/from\s*["'](\.[^"']*)["']/g)],
+      ...[...src.matchAll(/^\s*import\s+["'](\.[^"']*)["']/gm)],
+    ].map((m) => m[1]);
+    for (const spec of specs) {
+      const joined = path.posix.join(path.posix.dirname(rel), spec);
+      if (![joined, `${joined}.ts`, `${joined}.vue`].some((c) => built.has(c))) {
+        dangling.push([rel, spec]);
+      }
+    }
+  }
+  if (!stale.length && !dangling.length) return;
+  console.error('build failed — dist/ does not hold together:');
+  for (const rel of stale) console.error(`  dist/${rel} still says @helpers`);
+  for (const [rel, spec] of dangling) {
+    console.error(`  dist/${rel} imports ${spec}, which this package does not carry`);
+  }
+  console.error('');
+  console.error(
+    'unalias() rewrites `from "@helpers/x"` and nothing else, and shippable()',
+  );
+  console.error('only follows what it recognises. An import spelled some other way needs');
+  console.error('handling in both.');
+  process.exit(1);
+}
+
+/**
  * Every npm package the shipped components import must be a declared peer.
  *
  * The import walk below polices *relative* imports — it proves nothing about
@@ -148,6 +217,9 @@ function assertPeersDeclared(shippedFiles, byShipped) {
       ...[...src.matchAll(/^\s*import\s+["']([^."'][^"']*)["']/gm)],
     ].map((m) => m[1]);
     for (const spec of specs) {
+      /* Not an npm package, however much `@helpers/paths.ts` looks like one to
+       * the split below. It is resolved by the walk and rewritten on copy. */
+      if (aliasTarget(spec)) continue;
       const parts = spec.split('/');
       const name = spec.startsWith('@') ? parts.slice(0, 2).join('/') : parts[0];
       if (!imported.has(name)) imported.set(name, new Set());
@@ -204,8 +276,13 @@ function shippable() {
     if (seen.has(shipped)) return;
     seen.add(shipped);
     const src = fs.readFileSync(docs('source_examples', byShipped.get(shipped)), 'utf8');
-    for (const m of src.matchAll(/from\s*["'](\.[^"']*)["']/g)) {
-      const joined = path.posix.join(path.posix.dirname(shipped), m[1]);
+    for (const m of src.matchAll(/from\s*["']((?:\.|@helpers\/)[^"']*)["']/g)) {
+      /* Both forms land in the same coordinate system -- the shipped layout --
+       * so an aliased helper is followed exactly like a relative one, and a
+       * helper stays in the package because something imports it rather than
+       * because of how that import happens to be spelled. */
+      const joined = aliasTarget(m[1])
+        ?? path.posix.join(path.posix.dirname(shipped), m[1]);
       const hit = [joined, `${joined}.ts`, `${joined}.vue`].find((c) => byShipped.has(c));
       if (!hit) { escaped.push([shipped, m[1]]); continue; }
       visit(hit);
@@ -242,6 +319,7 @@ const COPIES = [
     docs('source_examples', captureOf(rel)),
     out(rel),
     `dist/${rel}`,
+    rel,
   ]),
 ];
 
@@ -493,13 +571,22 @@ if (checkOnly) {
   // drift between the package and its origin, which is the one thing this
   // arrangement must never allow.
   let drifted = 0;
-  for (const [src, target, label] of COPIES) {
+  for (const [src, target, label, rel] of COPIES) {
     if (!fs.existsSync(target)) {
       console.error(`  not built: ${label}`);
       drifted++;
       continue;
     }
-    if (!fs.readFileSync(src).equals(fs.readFileSync(target))) {
+    /* An aliased capture is compared against what it REWRITES to, the same way
+     * a derived file is compared against what it extracts to. The guarantee is
+     * unchanged in kind: dist/ is still provably a function of docs/ alone. */
+    const rewritten = rel && isAliased(rel)
+      ? unalias(fs.readFileSync(src, 'utf8'), rel)
+      : null;
+    const matches = rewritten === null
+      ? fs.readFileSync(src).equals(fs.readFileSync(target))
+      : fs.readFileSync(target, 'utf8').replace(/\r\n/g, '\n') === rewritten;
+    if (!matches) {
       console.error(`  drifted: ${label} differs from ${path.relative(repo, src)}`);
       drifted++;
     }
@@ -525,8 +612,10 @@ if (checkOnly) {
     process.exit(1);
   }
   const known = themeAgrees();
+  const rewritten = COPIES.filter(([, , , rel]) => rel && isAliased(rel)).length;
   console.log(
-    `@codecavepro/brand: ${COPIES.length} file(s) match their origin byte-for-byte, ` +
+    `@codecavepro/brand: ${COPIES.length - rewritten} file(s) match their origin ` +
+      `byte-for-byte, ${rewritten} match it once @helpers is resolved, ` +
       `${DERIVED.length} re-derive unchanged, theme.css agrees with ${known} token(s).`,
   );
   process.exit(0);
@@ -537,10 +626,16 @@ fs.rmSync(tmp(), { recursive: true, force: true });
 fs.mkdirSync(out(), { recursive: true });
 fs.mkdirSync(tmp('tokens'), { recursive: true });
 
-for (const [src, target] of COPIES) {
+for (const [src, target, , rel] of COPIES) {
   fs.mkdirSync(path.dirname(target), { recursive: true });
-  fs.copyFileSync(src, target);
+  /* Byte-for-byte unless the capture uses the @helpers alias, which cannot
+   * survive into a consumer's node_modules. Deciding per file keeps the
+   * guarantee for everything else literally true rather than nearly true. */
+  if (rel && isAliased(rel)) fs.writeFileSync(target, unalias(fs.readFileSync(src, 'utf8'), rel));
+  else fs.copyFileSync(src, target);
 }
+
+assertDistResolves();
 
 for (const [produce, dest] of DERIVED) {
   fs.writeFileSync(out(dest), derive(produce, dest));

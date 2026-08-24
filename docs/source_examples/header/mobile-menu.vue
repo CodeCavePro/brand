@@ -3,7 +3,7 @@ import { menu } from "./menu.ts";
 import Button from "../common/Button.vue";
 import Shevron from "../../assets/icons/shevron.vue";
 import { onUnmounted, ref, watch } from "vue";
-import { paths } from "../../helpers/paths.ts";
+import { paths } from "@helpers/paths.ts";
 import Logo from "../../assets/images/logo.svg";
 import BackIcon from "../../assets/icons/back-icon.vue";
 import ServicesList from "./services-list.vue";
