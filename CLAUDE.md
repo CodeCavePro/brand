@@ -152,13 +152,23 @@ one excused difference, and the exception carries its reason in `build.mjs`.
 457px)` at build time, where a `var()` would be invalid CSS.
 
 **The component list is computed, never written down.** `build.mjs` takes every
-non-excluded `.vue` under `source_examples/` as a root and follows its relative
-imports transitively — *in the layout the package ships*, which is why
+non-excluded `.vue` under `source_examples/` as a root and follows everything it
+*reaches* transitively — *in the layout the package ships*, which is why
 `dist/src/` restores the site's `src/components/…` depth rather than keeping the
-captures' flattened one. An import that lands outside the package fails the
+captures' flattened one. A reference that lands outside the package fails the
 build and names itself. So a component is added by capturing it, and the only
 hand-written thing is `NOT_SHIPPED`, where each exclusion carries its reason as
 a string.
+
+**"Reaches" means imports *and* `url()` targets in a `<style>` block, and it did
+not always.** Following imports alone shipped `logo.svg`, because a menu happens
+to `import` it, while `Checkbox.vue`'s tick — a `background-image` — was never
+an edge at all: the icon stayed out of the tarball, and every check agreed,
+because `assertDistResolves()` read the built files with the same two import
+patterns and so was blind in exactly the same place. It surfaced as a 404 and a
+checkbox that would not tick. Assets are not a category the build knows; a file
+ships because something reaches it, so **a new spelling of "reaches" has to be
+taught to `referencesOf()`, which both the walk and the backstop now call.**
 
 **What a component imports from npm is checked against the manifest.** The
 relative-import walk proves every `../` resolves inside the package; it proves

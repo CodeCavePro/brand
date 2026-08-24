@@ -147,7 +147,45 @@ function shippedAs(rel) {
 const isAliased = (rel) => usesAlias(fs.readFileSync(docs('source_examples', captureOf(rel)), 'utf8'));
 
 /**
- * Every import in dist/ must resolve inside dist/ — checked on the BUILT files,
+ * Every file a source file points at, in the spelling it points at them with.
+ *
+ * WHY url() IS IN HERE. It was not, and the walk below is what decides which
+ * files the package ships. Checkbox.vue draws its tick as a background-image on
+ * a pseudo-element -- `url("../../assets/images/checked-icon.svg")` inside its
+ * <style> block, which is not an import and so was not an edge. The icon never
+ * entered the tarball, and nothing anywhere said so: the build was green, the
+ * byte-identity check had nothing to compare because the file was not in the
+ * shipped set, and assertDistResolves() read the built files with these same two
+ * import patterns and so shared the blind spot exactly. It reached a consumer as
+ * a 404 on /assets/images/checked-icon.svg and a checkbox that would not tick.
+ *
+ * logo.svg was carried the whole time and hid the gap, because a component
+ * happens to reach IT through `import Logo from "../../assets/images/logo.svg"`.
+ * Assets were never shipped as a category -- only ever as a side effect of the
+ * one spelling the walk knew.
+ *
+ * What is deliberately NOT returned: a scheme (`https:`, `data:`), a
+ * protocol-relative `//host`, and a bare `#fragment` -- an SVG's own gradient
+ * and filter references are that last form, and this text scan reads shipped
+ * SVGs too. Everything else is a file, and must be one this package carries;
+ * a root-relative `/assets/x.svg` is not exempt, because a consumer has no
+ * codecave.pro public/ directory to serve it from.
+ */
+const NOT_A_FILE = /^(?:[a-z][a-z0-9+.-]*:|\/\/|#)/i;
+
+function referencesOf(src) {
+  const found = [];
+  for (const m of src.matchAll(/from\s*["']((?:\.|@helpers\/)[^"']*)["']/g)) found.push(m[1]);
+  for (const m of src.matchAll(/^\s*import\s+["']((?:\.|@helpers\/)[^"']*)["']/gm)) found.push(m[1]);
+  for (const m of src.matchAll(/\burl\(\s*(?:"([^"]*)"|'([^']*)'|([^)'"\s]*))\s*\)/g)) {
+    const target = m[1] ?? m[2] ?? m[3];
+    if (target && !NOT_A_FILE.test(target)) found.push(target);
+  }
+  return found;
+}
+
+/**
+ * Every reference in dist/ must resolve inside dist/ — checked on the BUILT files,
  * not on the captures the walk read.
  *
  * shippable() already refuses a relative import that escapes the package, but it
@@ -170,11 +208,9 @@ function assertDistResolves() {
     if (!fs.existsSync(file)) continue;
     const src = fs.readFileSync(file, 'utf8');
     if (usesAlias(src)) stale.push(rel);
-    const specs = [
-      ...[...src.matchAll(/from\s*["'](\.[^"']*)["']/g)],
-      ...[...src.matchAll(/^\s*import\s+["'](\.[^"']*)["']/gm)],
-    ].map((m) => m[1]);
-    for (const spec of specs) {
+    /* Alias specifiers are reported as stale just above; joining one here would
+     * only name the same file twice, under a path it never had. */
+    for (const spec of referencesOf(src).filter((s) => !aliasTarget(s))) {
       const joined = path.posix.join(path.posix.dirname(rel), spec);
       if (![joined, `${joined}.ts`, `${joined}.vue`].some((c) => built.has(c))) {
         dangling.push([rel, spec]);
@@ -185,14 +221,14 @@ function assertDistResolves() {
   console.error('build failed — dist/ does not hold together:');
   for (const rel of stale) console.error(`  dist/${rel} still says @helpers`);
   for (const [rel, spec] of dangling) {
-    console.error(`  dist/${rel} imports ${spec}, which this package does not carry`);
+    console.error(`  dist/${rel} reaches ${spec}, which this package does not carry`);
   }
   console.error('');
   console.error(
     'unalias() rewrites `from "@helpers/x"` and nothing else, and shippable()',
   );
-  console.error('only follows what it recognises. An import spelled some other way needs');
-  console.error('handling in both.');
+  console.error('only follows what referencesOf() returns. A reference spelled some other way --');
+  console.error('an import, a url(), anything else -- needs handling in both.');
   process.exit(1);
 }
 
@@ -249,10 +285,11 @@ function assertPeersDeclared(shippedFiles, byShipped) {
 /**
  * The shippable captures, computed rather than listed.
  *
- * Every .vue that is not excluded is a root; each root's relative imports are
+ * Every .vue that is not excluded is a root; every file each root REACHES —
+ * relative imports, aliased helpers, and the url() targets in its styles — is
  * followed transitively and pulled in with it. A list written by hand goes
- * stale the first time a component gains an import — this cannot, and it fails
- * loudly rather than shipping a component whose import resolves to nothing.
+ * stale the first time a component gains a reference; this cannot, and it fails
+ * loudly rather than shipping a component whose reference resolves to nothing.
  */
 function shippable() {
   const all = (function walk(dir) {
@@ -276,15 +313,15 @@ function shippable() {
     if (seen.has(shipped)) return;
     seen.add(shipped);
     const src = fs.readFileSync(docs('source_examples', byShipped.get(shipped)), 'utf8');
-    for (const m of src.matchAll(/from\s*["']((?:\.|@helpers\/)[^"']*)["']/g)) {
-      /* Both forms land in the same coordinate system -- the shipped layout --
-       * so an aliased helper is followed exactly like a relative one, and a
-       * helper stays in the package because something imports it rather than
-       * because of how that import happens to be spelled. */
-      const joined = aliasTarget(m[1])
-        ?? path.posix.join(path.posix.dirname(shipped), m[1]);
+    for (const spec of referencesOf(src)) {
+      /* Every form lands in the same coordinate system -- the shipped layout --
+       * so an aliased helper is followed exactly like a relative import, and a
+       * stylesheet url() exactly like both. A file stays in the package because
+       * something reaches it, rather than because of how that reach is spelled. */
+      const joined = aliasTarget(spec)
+        ?? path.posix.join(path.posix.dirname(shipped), spec);
       const hit = [joined, `${joined}.ts`, `${joined}.vue`].find((c) => byShipped.has(c));
-      if (!hit) { escaped.push([shipped, m[1]]); continue; }
+      if (!hit) { escaped.push([shipped, spec]); continue; }
       visit(hit);
     }
   };
@@ -293,10 +330,10 @@ function shippable() {
   assertPeersDeclared(seen, byShipped);
 
   if (escaped.length) {
-    console.error('build failed — a shipped component imports something the package does not carry:');
+    console.error('build failed — a shipped file reaches for something the package does not carry:');
     for (const [shipped, spec] of escaped) console.error(`  dist/${shipped}  ->  ${spec}`);
     console.error('');
-    console.error('Capture what it imports, or add the component to NOT_SHIPPED with a reason.');
+    console.error('Capture what it reaches for, or add the component to NOT_SHIPPED with a reason.');
     process.exit(1);
   }
   return [...seen].sort();
