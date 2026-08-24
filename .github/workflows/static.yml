@@ -88,6 +88,15 @@ jobs:
       - name: Check the findings counts against the story pages
         run: node docs/tools/check-findings.mjs
 
+      # The six files under docs/examples/raw/ are the only things here that are
+      # not pages: standalone documents a client is handed, which Astro never
+      # renders and nothing else looks at. Moving them one directory deeper broke
+      # the wordmark and the Satoshi @font-face rules in four of the six, and every
+      # check in the repo stayed green -- including the wrapper pages that embed
+      # them, because an <iframe> reports nothing about what happens inside it.
+      - name: Check the deliverables’ references still resolve
+        run: node docs/tools/check-examples.mjs
+
       # The ports typecheck needs typescript, so it cannot go in the
       # dependency-free check above — it goes after it. An adapter that has
       # drifted from the interface its component imports compiles perfectly and

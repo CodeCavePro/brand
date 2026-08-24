@@ -5,13 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>CODECAVE — Pitch deck</title>
     
-    <link rel="stylesheet" href="../colors_and_type.css" />
+    <link rel="stylesheet" href="../../colors_and_type.css" />
     <style>
+    :root {
+    /* ---- TYPE RAMP ------------------------------------------------------
+       Container-relative, and derived rather than chosen. A slide has to read
+       the same projected at 1920 as it does on a laptop, so the deck cannot
+       use the rem-based --text-* tokens: cqi is the correct unit here and
+       that is not the thing that was wrong.
+  
+       What was wrong is that the container scale had no scale. This file used
+       TWENTY distinct cqi sizes -- 1.25, 1.3, 1.35, 1.4, 1.45, 1.5, 1.55,
+       1.6, 1.7, 1.75, 1.85, 1.9, 1.95, 2, 2.1, 2.6, 3.4, 4.6, 5, 8 -- some
+       0.05 apart, each picked per element. The design system declares nine
+       type steps. That mismatch is why the deck read as adjacent to the
+       system rather than of it.
+  
+       Each step below is the SAME RATIO as its --text-* counterpart, against
+       a deck body of 1.6cqi. Change the base and the whole deck rescales in
+       proportion. `display` is the one addition and is deck-only: a cover
+       word is bigger than anything the web ramp has to name. */
+    --d-base: 1.6cqi;
+    --d-display: 8cqi;  /* 5 x base — deck-only: the cover word, larger than any web heading */
+    --d-heading-lg: 5.6cqi;  /* 3.5 x base — --text-heading-lg */
+    --d-heading-md: 4.4cqi;  /* 2.75 x base — --text-heading-md */
+    --d-stat: 3.6cqi;  /* 2.25 x base — --text-stat */
+    --d-heading-sm: 3.2cqi;  /* 2 x base — --text-heading-sm */
+    --d-subhead: 2.4cqi;  /* 1.5 x base — --text-subhead */
+    --d-md: 2cqi;  /* 1.25 x base — --text-md */
+    --d-label: 1.8cqi;  /* 1.125 x base — --text-label */
+    --d-body: 1.6cqi;  /* 1 x base — --text-body */
+    --d-caption: 1.4cqi;  /* 0.875 x base — --text-caption */
+    }
+
       * { box-sizing: border-box; }
       html, body { margin: 0; padding: 0; }
       body {
         font-family: var(--font-sans);
-        font-size: var(--text-body);
+        font-size: var(--d-body);
         line-height: var(--leading-body);
         color: var(--color-body-primary);
         background: var(--color-surface-primary);
@@ -34,7 +65,7 @@
         display: block;
         text-transform: uppercase;
         letter-spacing: 0.14em;
-        font-size: var(--text-caption);
+        font-size: var(--d-caption);
         font-weight: var(--font-weight-bold);
         color: var(--color-action);
         margin-bottom: 0.75rem;
@@ -94,7 +125,7 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
          sees it. That height is not free — it deepens the shrink on the five dense
          slides — so the outer padding gives a little back: the bands sit slightly
          closer to the frame edge and the clearance goes where it is being read. */
-      .f-head { display: flex; justify-content: space-between; align-items: center; gap: 2cqi; padding: 2.6cqi 5cqi 2.4cqi; color: var(--color-neutral); font-size: 1.35cqi; }
+      .f-head { display: flex; justify-content: space-between; align-items: center; gap: 2cqi; padding: 2.6cqi 5cqi 2.4cqi; color: var(--color-neutral); font-size: var(--d-caption); }
       /* The wordmark is the logo file, not the six letters retyped in Satoshi.
          The lockup is drawn — the mark, the letter spacing, the violet — and
          none of that survives being set as text, which is what every slide was
@@ -110,23 +141,23 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
          flex:none keeps its natural (unshrunk) height so the runtime can
          measure the true overflow instead of a flex-shrunk box. */
       .f-fit { flex: none; width: 100%; transform-origin: center center; will-change: transform; }
-      .f-foot { display: flex; justify-content: space-between; align-items: center; gap: 2cqi; padding: 1.8cqi 5cqi 2.6cqi; color: var(--color-neutral); font-size: 1.25cqi; }
+      .f-foot { display: flex; justify-content: space-between; align-items: center; gap: 2cqi; padding: 1.8cqi 5cqi 2.6cqi; color: var(--color-neutral); font-size: var(--d-caption); }
 
       /* #5F20FE is 2.94:1 on this ground, so the kicker TEXT carries the readable
          violet. The rule drawn before it stays the action violet: a 3px bar is a
          mark, not type. DESIGN.md sect. 10.5. */
-      .s-kicker { display: inline-flex; align-items: center; gap: 1.1cqi; text-transform: uppercase; letter-spacing: 0.18em; font-size: 1.3cqi; color: var(--color-hovered); font-weight: var(--font-weight-bold); margin-bottom: 2cqi; }
+      .s-kicker { display: inline-flex; align-items: center; gap: 1.1cqi; text-transform: uppercase; letter-spacing: 0.18em; font-size: var(--d-caption); color: var(--color-hovered); font-weight: var(--font-weight-bold); margin-bottom: 2cqi; }
       .s-kicker::before { content: ""; width: 2.6cqi; height: 0.32cqi; border-radius: 1cqi; background: var(--color-action); }
-      .s-eyebrow { font-size: 1.7cqi; color: var(--color-body-secondary); margin: 0 0 1.6cqi; max-width: 70cqi; }
-      .s-title { font-family: var(--font-sans); font-size: 4.6cqi; line-height: 1.1; letter-spacing: -0.02em; margin: 0; color: var(--color-body-primary); max-width: 82cqi; }
-      .s-mega { font-family: var(--font-sans); font-size: 8cqi; line-height: 1.02; letter-spacing: -0.025em; margin: 0; color: var(--color-body-primary); }
+      .s-eyebrow { font-size: var(--d-label); color: var(--color-body-secondary); margin: 0 0 1.6cqi; max-width: 70cqi; }
+      .s-title { font-family: var(--font-sans); font-size: var(--d-heading-md); line-height: 1.1; letter-spacing: -0.02em; margin: 0; color: var(--color-body-primary); max-width: 82cqi; }
+      .s-mega { font-family: var(--font-sans); font-size: var(--d-display); line-height: 1.02; letter-spacing: -0.025em; margin: 0; color: var(--color-body-primary); }
       /* The cover carries the logo at display size, not the name set in the
          display scale. 40cqi is about what "CODECAVE" occupied as 8cqi type, so
          the slide keeps its composition; the height follows from the file's own
          proportion instead of from a line-height. */
       .s-logo { margin: 0; }
       .s-logo img { display: block; width: 40cqi; aspect-ratio: 357 / 110; height: auto; }
-      .s-lede { font-size: 1.95cqi; line-height: 1.5; color: var(--color-body-secondary-lighter); max-width: 66cqi; margin: 2.4cqi 0 0; }
+      .s-lede { font-size: var(--d-md); line-height: 1.5; color: var(--color-body-secondary-lighter); max-width: 66cqi; margin: 2.4cqi 0 0; }
       /* Line breaking, decided by the browser rather than by hand. Display type
          balances (every line about the same length, so a heading never ends on a
          single stranded word — "…mapped / out." was doing exactly that); prose
@@ -140,38 +171,38 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
       .s-grid { display: grid; gap: 2cqi; margin-top: 4cqi; }
       .s-card { position: relative; background: var(--color-surface-secondary); border: 1px solid var(--color-surface-quaternary); border-radius: 1.4cqi; padding: 2.6cqi; min-width: 0; }
       .frame--surface .s-card { background: var(--color-surface-secondary); }
-      .s-card h3 { font-size: 2cqi; line-height: 1.22; margin: 0 0 1cqi; letter-spacing: -0.01em; }
-      .s-card p { font-size: 1.55cqi; line-height: 1.5; color: var(--color-body-secondary-lighter); margin: 0; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
+      .s-card h3 { font-size: var(--d-md); line-height: 1.22; margin: 0 0 1cqi; letter-spacing: -0.01em; }
+      .s-card p { font-size: var(--d-body); line-height: 1.5; color: var(--color-body-secondary-lighter); margin: 0; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
       .s-card .tick { display: inline-flex; align-items: center; justify-content: center; width: 3.4cqi; height: 3.4cqi; border-radius: 1cqi; background: var(--color-brand-800); color: var(--color-hovered); margin-bottom: 1.6cqi; }
       .s-card .tick svg { width: 1.9cqi; height: 1.9cqi; }
 
-      .s-num { font-family: var(--font-sans); font-size: 3.4cqi; font-weight: var(--font-weight-bold); line-height: 1; color: var(--color-hovered); margin-bottom: 1.4cqi; letter-spacing: -0.02em; }
+      .s-num { font-family: var(--font-sans); font-size: var(--d-stat); font-weight: var(--font-weight-bold); line-height: 1; color: var(--color-hovered); margin-bottom: 1.4cqi; letter-spacing: -0.02em; }
 
       /* metric tiles (market / traction) */
       .s-metric { min-width: 0; }
-      .s-metric .v { font-family: var(--font-sans); font-size: 5cqi; font-weight: var(--font-weight-bold); line-height: 1; letter-spacing: -0.03em; color: var(--color-body-primary); }
+      .s-metric .v { font-family: var(--font-sans); font-size: var(--d-heading-lg); font-weight: var(--font-weight-bold); line-height: 1; letter-spacing: -0.03em; color: var(--color-body-primary); }
       .frame--accent .s-metric .v { color: var(--color-heading); }
-      .s-metric .l { margin-top: 1.2cqi; font-size: 1.5cqi; line-height: 1.35; color: var(--color-body-secondary); }
+      .s-metric .l { margin-top: 1.2cqi; font-size: var(--d-body); line-height: 1.35; color: var(--color-body-secondary); }
       .frame--accent .s-metric .l { color: var(--color-body-secondary); }
 
       /* market funnel bars — value labels live OUTSIDE the proportional track in
          their own auto column, so a long label can never wrap/clip the bar. */
       .s-bars { display: flex; flex-direction: column; gap: 1.8cqi; margin-top: 3.4cqi; max-width: 82cqi; }
       .s-bar { display: grid; grid-template-columns: 12cqi 1fr auto; align-items: center; gap: 2cqi; }
-      .s-bar .tag { font-size: 1.5cqi; font-weight: var(--font-weight-bold); color: var(--color-body-secondary-lighter); letter-spacing: 0.04em; }
+      .s-bar .tag { font-size: var(--d-body); font-weight: var(--font-weight-bold); color: var(--color-body-secondary-lighter); letter-spacing: 0.04em; }
       .s-bar .lane { min-width: 0; }
       .s-bar .track { height: 4.2cqi; border-radius: 0.8cqi; }
-      .s-bar .val { font-family: var(--font-sans); font-weight: var(--font-weight-bold); font-size: 1.9cqi; color: var(--color-body-primary); white-space: nowrap; }
+      .s-bar .val { font-family: var(--font-sans); font-weight: var(--font-weight-bold); font-size: var(--d-label); color: var(--color-body-primary); white-space: nowrap; }
       .frame--accent .s-bar .val { color: var(--color-heading); }
 
       /* competition matrix */
       .s-matrix { display: grid; gap: 1.6cqi; margin-top: 3.4cqi; }
       .s-matrix .row { display: grid; align-items: center; gap: 1.6cqi; padding: 1.8cqi 2.4cqi; border-radius: 1.2cqi; }
-      .s-matrix .row.head { color: var(--color-body-secondary); font-size: 1.4cqi; letter-spacing: 0.08em; text-transform: uppercase; padding-top: 0; padding-bottom: 0; }
+      .s-matrix .row.head { color: var(--color-body-secondary); font-size: var(--d-caption); letter-spacing: 0.08em; text-transform: uppercase; padding-top: 0; padding-bottom: 0; }
       .s-matrix .row.them { background: var(--color-surface-secondary); border: 1px solid var(--color-surface-quaternary); }
       .s-matrix .row.us { background: var(--color-brand-800); border: 1.5px solid var(--color-brand-800); }
-      .s-matrix .cell { font-size: 1.6cqi; min-width: 0; }
-      .s-matrix .who { font-family: var(--font-sans); font-weight: var(--font-weight-bold); font-size: 1.85cqi; letter-spacing: -0.01em; }
+      .s-matrix .cell { font-size: var(--d-body); min-width: 0; }
+      .s-matrix .who { font-family: var(--font-sans); font-weight: var(--font-weight-bold); font-size: var(--d-label); letter-spacing: -0.01em; }
       .s-matrix .us .who { color: var(--color-hovered); }
       .s-matrix .mk { display: inline-flex; align-items: center; justify-content: center; width: 3cqi; height: 3cqi; border-radius: 50%; }
       .s-matrix .mk svg { width: 1.7cqi; height: 1.7cqi; }
@@ -182,20 +213,20 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
 
       /* team initials */
       .s-team { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2cqi; margin-top: 4cqi; }
-      .s-avatar { display: inline-flex; align-items: center; justify-content: center; width: 7cqi; height: 7cqi; border-radius: 50%; font-family: var(--font-sans); font-weight: var(--font-weight-bold); font-size: 2.6cqi; background: var(--color-brand-800); color: var(--color-hovered); margin-bottom: 1.6cqi; letter-spacing: 0.02em; }
+      .s-avatar { display: inline-flex; align-items: center; justify-content: center; width: 7cqi; height: 7cqi; border-radius: 50%; font-family: var(--font-sans); font-weight: var(--font-weight-bold); font-size: var(--d-subhead); background: var(--color-brand-800); color: var(--color-hovered); margin-bottom: 1.6cqi; letter-spacing: 0.02em; }
 
       /* quote / why-now */
-      .s-quote { font-family: var(--font-sans); font-size: 3.4cqi; line-height: 1.32; letter-spacing: -0.015em; color: var(--color-body-primary); max-width: 80cqi; margin: 0; }
+      .s-quote { font-family: var(--font-sans); font-size: var(--d-stat); line-height: 1.32; letter-spacing: -0.015em; color: var(--color-body-primary); max-width: 80cqi; margin: 0; }
       .s-byline { display: flex; align-items: center; gap: 1.8cqi; margin-top: 3.6cqi; }
-      .s-byline .av { display: inline-flex; align-items: center; justify-content: center; width: 4.6cqi; height: 4.6cqi; border-radius: 50%; background: var(--color-brand-800); color: var(--color-hovered); font-weight: var(--font-weight-bold); font-size: 1.7cqi; }
-      .s-byline .n { font-weight: var(--font-weight-bold); font-size: 1.75cqi; color: var(--color-body-primary); }
-      .s-byline .r { font-size: 1.45cqi; color: var(--color-body-secondary); }
+      .s-byline .av { display: inline-flex; align-items: center; justify-content: center; width: 4.6cqi; height: 4.6cqi; border-radius: 50%; background: var(--color-brand-800); color: var(--color-hovered); font-weight: var(--font-weight-bold); font-size: var(--d-label); }
+      .s-byline .n { font-weight: var(--font-weight-bold); font-size: var(--d-label); color: var(--color-body-primary); }
+      .s-byline .r { font-size: var(--d-caption); color: var(--color-body-secondary); }
 
       /* ask checklist */
       /* 82cqi, the same measure .s-title uses. At 70cqi the longest item ran two
          words past the line and left "us." stranded on a line of its own. */
       .s-ask { display: flex; flex-direction: column; gap: 1.8cqi; margin-top: 3.6cqi; max-width: 82cqi; }
-      .s-ask .item { display: flex; align-items: flex-start; gap: 1.8cqi; font-size: 2cqi; line-height: 1.4; color: var(--color-body-primary); }
+      .s-ask .item { display: flex; align-items: flex-start; gap: 1.8cqi; font-size: var(--d-md); line-height: 1.4; color: var(--color-body-primary); }
       .s-ask .item .b { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; width: 3.4cqi; height: 3.4cqi; border-radius: 0.9cqi; background: var(--color-brand-800); color: var(--color-hovered); margin-top: 0.2cqi; }
       .s-ask .item .b svg { width: 1.9cqi; height: 1.9cqi; }
       .s-ask .item .k { font-family: var(--font-sans); font-weight: var(--font-weight-bold); }
@@ -218,7 +249,7 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
          reserve was still slicing the last 17px off flat — the seam this was
          meant to remove. Reserve the blur's own value and there is nothing left
          to cut. DO NOT change this to inline-flex or shorten the margin. */
-      .s-cta { display: flex; width: fit-content; align-items: center; gap: 1.4cqi; margin: 4cqi 0 64px; height: 6cqi; padding: 0 3.4cqi; border-radius: var(--radius-pill); background: var(--color-glow-25); color: var(--color-brand-800); box-shadow: var(--shadow-glow-button); font-family: var(--font-sans); font-weight: var(--font-weight-bold); font-size: 2.1cqi; letter-spacing: -0.01em; }
+      .s-cta { display: flex; width: fit-content; align-items: center; gap: 1.4cqi; margin: 4cqi 0 64px; height: 6cqi; padding: 0 3.4cqi; border-radius: var(--radius-pill); background: var(--color-glow-25); color: var(--color-brand-800); box-shadow: var(--shadow-glow-button); font-family: var(--font-sans); font-weight: var(--font-weight-bold); font-size: var(--d-md); letter-spacing: -0.01em; }
       .s-cta svg { width: 2cqi; height: 2cqi; }
 
       /* product wireframe motif (div/SVG, no screenshots) */
@@ -238,7 +269,7 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
 
       /* solution: oversized signature line */
       .s-pillars { display: flex; flex-wrap: wrap; gap: 1.2cqi; margin-top: 3.6cqi; }
-      .s-pill { display: inline-flex; align-items: center; gap: 1cqi; padding: 1.2cqi 2cqi; border-radius: 6cqi; border: 1px solid var(--color-surface-quaternary); font-size: 1.6cqi; font-weight: var(--font-weight-bold); color: var(--color-body-secondary-lighter); }
+      .s-pill { display: inline-flex; align-items: center; gap: 1cqi; padding: 1.2cqi 2cqi; border-radius: 6cqi; border: 1px solid var(--color-surface-quaternary); font-size: var(--d-body); font-weight: var(--font-weight-bold); color: var(--color-body-secondary-lighter); }
       .s-pill .dot { width: 1cqi; height: 1cqi; border-radius: 50%; background: var(--color-action); }
 
       /* pager UI */
@@ -247,13 +278,13 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
         width: 38px; height: 38px; border-radius: 50%; cursor: pointer;
         border: 1px solid var(--color-surface-quaternary);
         background: var(--color-surface-secondary); color: var(--color-body-secondary-lighter);
-        font-size: var(--text-caption); line-height: 1; display: inline-flex; align-items: center; justify-content: center;
+        font-size: var(--d-caption); line-height: 1; display: inline-flex; align-items: center; justify-content: center;
         transition: border-color .15s ease, color .15s ease;
       }
       /* Hover gains contrast. Moving the label to #5F20FE (2.94:1) would dim it -
          anti-pattern 7. */
       .deck-ui button:hover { border-color: var(--color-action); color: var(--color-hovered); }
-      .deck-counter { font-size: var(--text-caption); color: var(--color-body-secondary); font-variant-numeric: tabular-nums; min-width: 48px; text-align: center; letter-spacing: 0.04em; }
+      .deck-counter { font-size: var(--d-caption); color: var(--color-body-secondary); font-variant-numeric: tabular-nums; min-width: 48px; text-align: center; letter-spacing: 0.04em; }
       .deck-dots { position: fixed; left: 50%; transform: translateX(-50%); bottom: 26px; z-index: 30; display: flex; gap: 8px; }
       .deck-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-surface-quaternary); cursor: pointer; transition: all .2s ease; }
       .deck-dot.on { background: var(--color-action); transform: scale(1.3); }
@@ -264,12 +295,12 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
     <main class="deck">
       <section class="slide">
         <div class="frame frame--accent">
-          <div class="f-head"><img class="wm" src="../assets/codecave-wide.svg" alt="CODECAVE"><span class="ix">PLAIN · SPECIFIC · SENIOR</span></div>
+          <div class="f-head"><img class="wm" src="../../assets/codecave-wide.svg" alt="CODECAVE"><span class="ix">PLAIN · SPECIFIC · SENIOR</span></div>
           <div class="f-body">
             <div class="f-fit">
           <span class="s-kicker">Plain · Specific · Senior</span>
-          <h1 class="s-logo"><img src="../assets/codecave-wide.svg" alt="CODECAVE"></h1>
-          <p class="s-lede" style="font-size:2.6cqi;">A software delivery studio. Fifteen years, forty-plus customers, six services — each one named for what it produces.</p>
+          <h1 class="s-logo"><img src="../../assets/codecave-wide.svg" alt="CODECAVE"></h1>
+          <p class="s-lede" style="font-size:var(--d-subhead);">A software delivery studio. Fifteen years, forty-plus customers, six services — each one named for what it produces.</p>
             </div>
           </div>
           <div class="f-foot"><span>codecave.pro</span><span class="ix">01 / 11</span></div>
@@ -277,7 +308,7 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
       </section>
       <section class="slide">
         <div class="frame frame--surface">
-          <div class="f-head"><img class="wm" src="../assets/codecave-wide.svg" alt="CODECAVE"><span class="ix">THE PROBLEM</span></div>
+          <div class="f-head"><img class="wm" src="../../assets/codecave-wide.svg" alt="CODECAVE"><span class="ix">THE PROBLEM</span></div>
           <div class="f-body">
             <div class="f-fit">
           <span class="s-kicker">The problem</span>
@@ -295,7 +326,7 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
       </section>
       <section class="slide">
         <div class="frame">
-          <div class="f-head"><img class="wm" src="../assets/codecave-wide.svg" alt="CODECAVE"><span class="ix">HOW WE WORK</span></div>
+          <div class="f-head"><img class="wm" src="../../assets/codecave-wide.svg" alt="CODECAVE"><span class="ix">HOW WE WORK</span></div>
           <div class="f-body">
             <div class="f-fit">
           <span class="s-kicker">How we work</span>
@@ -313,7 +344,7 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
       </section>
       <section class="slide">
         <div class="frame">
-          <div class="f-head"><img class="wm" src="../assets/codecave-wide.svg" alt="CODECAVE"><span class="ix">POSITION</span></div>
+          <div class="f-head"><img class="wm" src="../../assets/codecave-wide.svg" alt="CODECAVE"><span class="ix">POSITION</span></div>
           <div class="f-body">
             <div class="f-fit">
           <span class="s-kicker">Position</span>
@@ -329,7 +360,7 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
       </section>
       <section class="slide">
         <div class="frame frame--surface">
-          <div class="f-head"><img class="wm" src="../assets/codecave-wide.svg" alt="CODECAVE"><span class="ix">ENGAGEMENT</span></div>
+          <div class="f-head"><img class="wm" src="../../assets/codecave-wide.svg" alt="CODECAVE"><span class="ix">ENGAGEMENT</span></div>
           <div class="f-body">
             <div class="f-fit">
           <span class="s-kicker">Engagement</span>
@@ -345,7 +376,7 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
               <div class="lane"><div class="track" style="width:100%;background:var(--color-action);"></div></div>
               <span class="val">A full delivery team, end to end</span></div>
           </div>
-          <p class="s-lede" style="font-size:1.5cqi;margin-top:2.6cqi;">&ldquo;Considering hiring a single specialist or a harmonious team? Our specialists perform well in both cases.&rdquo; — codecave.pro/workflow</p>
+          <p class="s-lede" style="font-size:var(--d-body);margin-top:2.6cqi;">&ldquo;Considering hiring a single specialist or a harmonious team? Our specialists perform well in both cases.&rdquo; — codecave.pro/workflow</p>
             </div>
           </div>
           <div class="f-foot"><span>codecave.pro</span><span class="ix">05 / 11</span></div>
@@ -353,7 +384,7 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
       </section>
       <section class="slide">
         <div class="frame">
-          <div class="f-head"><img class="wm" src="../assets/codecave-wide.svg" alt="CODECAVE"><span class="ix">THE WORK</span></div>
+          <div class="f-head"><img class="wm" src="../../assets/codecave-wide.svg" alt="CODECAVE"><span class="ix">THE WORK</span></div>
           <div class="f-body">
             <div class="f-fit">
           <span class="s-kicker">The work</span>
@@ -372,7 +403,7 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
       </section>
       <section class="slide">
         <div class="frame frame--surface">
-          <div class="f-head"><img class="wm" src="../assets/codecave-wide.svg" alt="CODECAVE"><span class="ix">SERVICES</span></div>
+          <div class="f-head"><img class="wm" src="../../assets/codecave-wide.svg" alt="CODECAVE"><span class="ix">SERVICES</span></div>
           <div class="f-body">
             <div class="f-fit">
           <span class="s-kicker">Services</span>
@@ -392,7 +423,7 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
       </section>
       <section class="slide">
         <div class="frame">
-          <div class="f-head"><img class="wm" src="../assets/codecave-wide.svg" alt="CODECAVE"><span class="ix">THE CHOICE</span></div>
+          <div class="f-head"><img class="wm" src="../../assets/codecave-wide.svg" alt="CODECAVE"><span class="ix">THE CHOICE</span></div>
           <div class="f-body">
             <div class="f-fit">
           <span class="s-kicker">The choice</span>
@@ -414,7 +445,7 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
               <span class="cell"><span class="mk yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></span><span class="cell"><span class="mk yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></span><span class="cell"><span class="mk yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span></span>
             </div>
           </div>
-          <p class="s-lede" style="font-size:1.4cqi;margin-top:2.4cqi;">Categories, not companies. We do not name competitors in a deck we cannot show them.</p>
+          <p class="s-lede" style="font-size:var(--d-caption);margin-top:2.4cqi;">Categories, not companies. We do not name competitors in a deck we cannot show them.</p>
             </div>
           </div>
           <div class="f-foot"><span>codecave.pro</span><span class="ix">08 / 11</span></div>
@@ -422,18 +453,18 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
       </section>
       <section class="slide">
         <div class="frame frame--accent">
-          <div class="f-head"><img class="wm" src="../assets/codecave-wide.svg" alt="CODECAVE"><span class="ix">TRACTION</span></div>
+          <div class="f-head"><img class="wm" src="../../assets/codecave-wide.svg" alt="CODECAVE"><span class="ix">TRACTION</span></div>
           <div class="f-body">
             <div class="f-fit">
           <span class="s-kicker">Traction</span>
-          <h2 class="s-title" style="font-size:5cqi;">Fifteen years is the part that cannot be bought.</h2>
+          <h2 class="s-title" style="font-size:var(--d-heading-lg);">Fifteen years is the part that cannot be bought.</h2>
           <div class="s-grid" style="grid-template-columns:repeat(4,1fr);margin-top:5cqi;">
             <div class="s-metric"><div class="v">15</div><div class="l">Years delivering</div></div>
             <div class="s-metric"><div class="v">40+</div><div class="l">Customers</div></div>
             <div class="s-metric"><div class="v">50+</div><div class="l">Projects shipped</div></div>
             <div class="s-metric"><div class="v">6</div><div class="l">Service lines</div></div>
           </div>
-          <p class="s-lede" style="font-size:1.5cqi;max-width:64cqi;margin-top:3.4cqi;">As published on codecave.pro/workflow. Every figure on this slide has a page you can open.</p>
+          <p class="s-lede" style="font-size:var(--d-body);max-width:64cqi;margin-top:3.4cqi;">As published on codecave.pro/workflow. Every figure on this slide has a page you can open.</p>
             </div>
           </div>
           <div class="f-foot"><span>codecave.pro</span><span class="ix">09 / 11</span></div>
@@ -441,7 +472,7 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
       </section>
       <section class="slide">
         <div class="frame frame--surface">
-          <div class="f-head"><img class="wm" src="../assets/codecave-wide.svg" alt="CODECAVE"><span class="ix">TEAM</span></div>
+          <div class="f-head"><img class="wm" src="../../assets/codecave-wide.svg" alt="CODECAVE"><span class="ix">TEAM</span></div>
           <div class="f-body">
             <div class="f-fit">
           <span class="s-kicker">Team</span>
@@ -449,21 +480,21 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
           <div class="s-team">
             <div class="s-card" style="background:transparent;border:none;padding:0;">
               <span class="s-avatar">01</span>
-              <h3 style="font-size:1.9cqi;margin:0 0 0.4cqi;">Delivery lead</h3>
+              <h3 style="font-size:var(--d-label);margin:0 0 0.4cqi;">Delivery lead</h3>
               <p style="-webkit-line-clamp:3;">Owns scope, milestones and the weekly truth about where it stands.</p>
             </div>
             <div class="s-card" style="background:transparent;border:none;padding:0;">
               <span class="s-avatar">02</span>
-              <h3 style="font-size:1.9cqi;margin:0 0 0.4cqi;">Senior engineers</h3>
+              <h3 style="font-size:var(--d-label);margin:0 0 0.4cqi;">Senior engineers</h3>
               <p style="-webkit-line-clamp:3;">The people who write it are the people you met. No bench, no swap-out.</p>
             </div>
             <div class="s-card" style="background:transparent;border:none;padding:0;">
               <span class="s-avatar">03</span>
-              <h3 style="font-size:1.9cqi;margin:0 0 0.4cqi;">Domain specialist</h3>
+              <h3 style="font-size:var(--d-label);margin:0 0 0.4cqi;">Domain specialist</h3>
               <p style="-webkit-line-clamp:3;">Autodesk, HubSpot, cloud — whichever one your problem actually lives in.</p>
             </div>
           </div>
-          <p class="s-lede" style="font-size:1.4cqi;margin-top:2.6cqi;">Seats, not people. Swap in the three names who will actually be on the call before this deck goes out.</p>
+          <p class="s-lede" style="font-size:var(--d-caption);margin-top:2.6cqi;">Seats, not people. Swap in the three names who will actually be on the call before this deck goes out.</p>
             </div>
           </div>
           <div class="f-foot"><span>codecave.pro</span><span class="ix">10 / 11</span></div>
@@ -471,11 +502,11 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
       </section>
       <section class="slide">
         <div class="frame frame--accent">
-          <div class="f-head"><img class="wm" src="../assets/codecave-wide.svg" alt="CODECAVE"><span class="ix">THE ASK</span></div>
+          <div class="f-head"><img class="wm" src="../../assets/codecave-wide.svg" alt="CODECAVE"><span class="ix">THE ASK</span></div>
           <div class="f-body">
             <div class="f-fit">
           <span class="s-kicker">The ask</span>
-          <h2 class="s-mega" style="font-size:6.4cqi;">Fifteen minutes, and you leave with your next steps mapped out.</h2>
+          <h2 class="s-mega" style="font-size:var(--d-heading-lg);">Fifteen minutes, and you leave with your next steps mapped out.</h2>
           <div class="s-ask">
             <div class="item"><span class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span><span class="k">Book the call</span> — fifteen minutes, free, no strings attached.</span></div>
             <div class="item"><span class="b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span><span class="k">Leave with a plan</span> — the next steps mapped out, whether or not you hire us.</span></div>
