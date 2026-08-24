@@ -76,6 +76,10 @@ export const SUB: Record<string, MenuItem[]> = {
   'kitchen-sink': [
     { name: 'tokens', label: 'Tokens & assets', href: 'kitchen-sink/index.html#tokens' },
     { name: 'css', label: 'CSS components', href: 'kitchen-sink/index.html#css-components' },
+    /* Sits between the two halves it compares, because that is where a reader
+       crosses from `<button class="btn">` to `<Button>` and needs to know why
+       both exist. Scrolling past it is how it was missed before it was written. */
+    { name: 'two-deliveries', label: 'CSS vs Vue', href: 'kitchen-sink/index.html#two-deliveries' },
     { name: 'primitives', label: 'Primitives', href: 'kitchen-sink/index.html#primitives' },
     { name: 'content', label: 'Content', href: 'kitchen-sink/index.html#content' },
     { name: 'compositions', label: 'Compositions', href: 'kitchen-sink/index.html#compositions' },

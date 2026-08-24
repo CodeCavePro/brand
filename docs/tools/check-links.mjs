@@ -38,6 +38,7 @@ const walk = (dir, out = []) => {
 
 const routes = new Set();
 const anchors = new Map(); // route -> Set of ids it declares
+const anchorClassed = new Map(); // 'route#id' -> does it carry .ds-anchor
 const unlayouted = [];
 
 /* A page under pages/ emits at its own path with build.format: 'preserve'. */
@@ -48,6 +49,15 @@ for (const file of walk(pages)) {
   if (r.endsWith('index.html')) routes.add(r.slice(0, -'index.html'.length)); // the directory form
   const src = fs.readFileSync(file, 'utf8');
   anchors.set(r, new Set([...src.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1])));
+
+  /* An element a sub-nav link jumps to has to carry .ds-anchor, which is the
+     only thing offsetting it past the two sticky bars. Without it the jump
+     "works" — the URL changes, the page scrolls — and the heading lands
+     underneath the navigation, which is how eight of thirteen targets shipped
+     that way without anyone noticing. */
+  for (const m of src.matchAll(/<[a-z0-9]+\b([^>]*\bid="([^"]+)"[^>]*)>/gi)) {
+    anchorClassed.set(`${r}#${m[2]}`, /\bds-anchor\b/.test(m[1]));
+  }
 
   /* The main menu is the same on every page because DocPage renders it with no
      prop to override — there is no way for a page to get a DIFFERENT menu. The
@@ -78,6 +88,35 @@ if (routes.size < 40) {
   console.error(
     `only ${routes.size} route(s) derived from docs/ — the layout moved, and this ` +
       `check would report every link as dead if it kept going.`,
+  );
+  process.exit(1);
+}
+
+/* ---- every sub-nav target must clear the sticky bars --------------------- */
+const menuSrc = fs.readFileSync(path.join(docs, 'components', 'menu.ts'), 'utf8');
+const targets = [...menuSrc.matchAll(/href: '([^']+#[a-z0-9-]+)'/g)].map((m) => m[1]);
+if (targets.length < 6) {
+  console.error(
+    `only ${targets.length} sub-nav target(s) read out of menu.ts — the shape changed, ` +
+      `and this check would assert nothing if it kept going.`,
+  );
+  process.exit(1);
+}
+const badTargets = [
+  ...targets.filter((t) => anchorClassed.get(t) === undefined)
+    .map((t) => `  ${t}  — nothing on that page declares that id`),
+  ...targets.filter((t) => anchorClassed.get(t) === false)
+    .map((t) => `  ${t}  — the element exists but carries no .ds-anchor`),
+];
+if (badTargets.length) {
+  console.error(
+    `${badTargets.length} sub-nav target(s) will land behind the navigation:\n` +
+      badTargets.join('\n') +
+      '\n\nA sub-nav link jumps to an element the two sticky bars sit on top of, and' +
+      '\n.ds-anchor is the only thing offsetting it clear of them. Without it the jump' +
+      '\n"works" — the URL changes, the page scrolls — and the reader is left looking' +
+      '\nat whatever sits below a heading they cannot see. Eight of thirteen targets' +
+      '\nshipped that way before this asked.',
   );
   process.exit(1);
 }

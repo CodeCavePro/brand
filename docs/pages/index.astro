@@ -136,18 +136,17 @@ body {
    codecave.pro now render): a bar at the very top, ghost-button links split
    around the centred wordmark, riding the translucent primary surface + blur
    its dropdown uses. */
-/* The two bars stick as ONE element rather than as two bars that have to agree
-   on a number. This used to be `.bk-topbar { top: var(--ds-nav-height) }`, which
-   is correct only while that token equals the bar's real rendered height — and
-   any disagreement shows up as the section bar sliding under the global one on
-   the first scroll and back out on the way up, which is what "the menu shrinks
-   when I scroll" was. Sticking the pair means there is no number to disagree
-   with: whatever the global bar measures, the section bar is directly under it,
-   at rest and while stuck. It also survives a browser holding a stale copy of
-   ds-nav.css, because the rule and the markup it needs both arrive with this
-   document. */
-/* Anchor jumps land below BOTH bars. */
-.bk-section { scroll-margin-top: 9rem; }
+/* The stack, the sticky behaviour and the anchor offset all live in nav.css
+   now, linked by DocPage on every page — this file used to restate them because
+   it was the only page with a second bar, and that stopped being true when the
+   site collapsed to two surfaces.
+
+   The leftover was doing active harm, not just sitting there: a stale
+   `.bk-section { scroll-margin-top: 9rem }` here and `.ds-anchor` there are both
+   single-class selectors, so source order decided, and this file comes after the
+   linked stylesheet. Every section on this page kept the old 9rem and landed
+   under the navigation while nav.css said otherwise and a probe element proved
+   nav.css was winning everywhere else. The sections carry `.ds-anchor` instead. */
 
 /* The wayfinding grid, carried over from the home page this file absorbed.
    Its own classes rather than the old page's `.cards`, because that name came
@@ -476,7 +475,7 @@ body {
   </section>
 
   <!-- ===================== LOGO ===================== -->
-  <section class="bk-section" id="logo">
+  <section class="bk-section ds-anchor" id="logo">
     <span class="bk-eyebrow">01 — Logo</span>
     <h2 class="bk-h2">The horizontal wordmark is primary</h2>
     <p class="bk-note">Drawn at 357&times;110. The chevron is always
@@ -587,7 +586,7 @@ body {
   </section>
 
   <!-- ===================== PALETTE ===================== -->
-  <section class="bk-section" id="palette">
+  <section class="bk-section ds-anchor" id="palette">
     <span class="bk-eyebrow">02 — Palette</span>
     <h2 class="bk-h2">Six roles carry the brand</h2>
     <p class="bk-note">Depth never comes from contrast. The page is
@@ -656,7 +655,7 @@ body {
   </section>
 
   <!-- ===================== TYPOGRAPHY ===================== -->
-  <section class="bk-section" id="type">
+  <section class="bk-section ds-anchor" id="type">
     <span class="bk-eyebrow">03 — Typography</span>
     <h2 class="bk-h2">Satoshi, two weights</h2>
     <p class="bk-note">Regular 400 and Bold 700 carry everything. Production
@@ -714,7 +713,7 @@ body {
   </section>
 
   <!-- ===================== COMPONENTS ===================== -->
-  <section class="bk-section" id="components">
+  <section class="bk-section ds-anchor" id="components">
     <span class="bk-eyebrow">04 — Components</span>
     <h2 class="bk-h2">Pill buttons, hairline cards</h2>
     <p class="bk-note">Every control is a 48px pill: <code>padding: 4px 24px</code>,
@@ -829,7 +828,7 @@ body {
   </section>
 
   <!-- ===================== VOICE ===================== -->
-  <section class="bk-section" id="voice">
+  <section class="bk-section ds-anchor" id="voice">
     <span class="bk-eyebrow">05 — Voice &amp; tone</span>
     <h2 class="bk-h2">A small senior team, talking straight</h2>
     <p class="bk-note">First-person plural, present tense, short declaratives.
@@ -878,7 +877,7 @@ body {
   </section>
 
   <!-- ===================== POSTURE ===================== -->
-  <section class="bk-section" id="posture">
+  <section class="bk-section ds-anchor" id="posture">
     <span class="bk-eyebrow">06 — Layout posture</span>
     <h2 class="bk-h2">Round, asymmetric, lit from below</h2>
     <p class="bk-note">How a page is <em>built</em>, as opposed to what it is coloured.

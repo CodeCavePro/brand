@@ -64,9 +64,37 @@
 }
 
 /* Anchor jumps have to clear BOTH bars, so any element a sub-nav link targets
-   carries this rather than the pages guessing an offset each. */
+   carries this rather than the pages guessing an offset each.
+ *
+ * This used to be a flat `9rem`, which is the one thing in this file the header
+ * above promises is not here: a measured number. It was 144px against a stack
+ * that measures 146, so it was always 2px short — invisible, and therefore
+ * never fixed. Adding a seventh item to the kitchen sink's sub-nav made it
+ * visible: the bar wrapped to two rows, the stack became 198px, and the heading
+ * landed 54px underneath it.
+ *
+ * So it is derived now. Both tiers are the same construction — a
+ * --control-height control with 0.75rem of padding above and below and a 1px
+ * rule under it — which is why one name describes both.
+ */
+:root {
+  --ds-bar: calc(var(--control-height) + 1.5rem + 1px);
+  /* A sub-nav that wraps adds one more control, plus the row gap. */
+  --ds-bar-wrapped-row: calc(var(--control-height) + 0.25rem);
+}
+
 .ds-anchor {
-  scroll-margin-top: 9rem;
+  /* Two bars, and a sub-nav wrapped to two rows.
+   *
+   * Two rows is the worst case wherever this matters, and provably rather than
+   * hopefully: the widest sub-nav measures 986px laid out on one row, so it
+   * cannot need a third until about 493px — well below the 767px where the
+   * stack stops being sticky at all and this offset stops applying.
+   *
+   * On a wide screen the sub-nav is one row and this over-clears by ~52px.
+   * That is the right direction to be wrong in: over-clearing is breathing
+   * room under a sticky bar, under-clearing hides the heading being linked to. */
+  scroll-margin-top: calc(2 * var(--ds-bar) + var(--ds-bar-wrapped-row));
 }
 
 @media (max-width: 767px) {

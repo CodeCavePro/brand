@@ -87,7 +87,7 @@ import DocPage from '../../layouts/DocPage.astro';
        it does. Full rules live in <code>DESIGN.md</code>.</p>
   </header>
 
-  <h2 class="pv-group" id="tokens">Tokens &amp; assets</h2>
+  <h2 class="pv-group ds-anchor" id="tokens">Tokens &amp; assets</h2>
   <p class="pv-group-note">The foundation: what the colours, type, spacing and radii
      <em>are</em>, and the real asset files that ship with them.</p>
 
@@ -157,13 +157,14 @@ import DocPage from '../../layouts/DocPage.astro';
     </a>
   </div>
 
-  <h2 class="pv-group" id="css-components">CSS components</h2>
+  <h2 class="pv-group ds-anchor" id="css-components">CSS components</h2>
   <p class="pv-group-note">The class layer that sits on those tokens — <code>.btn</code>,
      <code>.field</code>, <code>.checkbox</code>, <code>.chip</code>, <code>.rule</code> and
-     the rest, all defined directly in <code>../colors_and_type.css</code>. This is what you
-     write when you build with the package: there is nothing to import, so these classes
-     <em>are</em> the component library. Not to be confused with <strong>Live components</strong>
-     in the bar above, which mounts the site&rsquo;s real <code>.vue</code> islands.</p>
+     the rest, all defined directly in <code>../colors_and_type.css</code>. You write these as
+     plain HTML: <code>&lt;button class="btn btn-primary"&gt;</code>, one stylesheet, nothing to
+     import and no framework. <strong>Primitives</strong>, further down this page, is the same
+     design delivered a second way — as Vue components. <a href="#two-deliveries">Why both
+     exist</a> is explained where the two halves meet.</p>
 
   <div class="cards">
     <a class="pv-card" href="components-buttons.html">
@@ -190,12 +191,78 @@ import DocPage from '../../layouts/DocPage.astro';
   </div>
 
   <section class="pv-block">
-    <h2>The layer above these cards</h2>
-    <p class="pv-note">A card here proves one token. <code></code> proves one
-       component. <code>../examples/</code> proves they compose — a pitch deck, a contact
-       form, two emails, a landing page and a print poster, each a single self-contained
-       file carrying real density.</p>
-    <a class="btn btn-tertiary" href="../examples/index.html">Open the artifacts</a>
+    <h2 class="ds-anchor" id="two-deliveries">Two deliveries of one design</h2>
+
+    <p class="pv-note">Everything above is CSS. Everything below is Vue. They are not two
+       levels of one stack and neither is built on the other — they are the same design
+       shipped twice, for two kinds of consumer, and they meet at the tokens and nowhere
+       above them.</p>
+
+    <table class="pv-table">
+      <thead>
+        <tr><th>&nbsp;</th><th>CSS components</th><th>Primitives</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>What you write</td>
+          <td><code>&lt;button class="btn btn-primary"&gt;</code></td>
+          <td><code>&lt;Button variant="primary" /&gt;</code></td>
+        </tr>
+        <tr>
+          <td>Where it is defined</td>
+          <td><code>colors_and_type.css</code> — one stylesheet</td>
+          <td><code>.vue</code> sources, compiled into the package</td>
+        </tr>
+        <tr>
+          <td>What it needs</td>
+          <td>a <code>&lt;link&gt;</code>, and nothing else</td>
+          <td>Vue 3, plus Tailwind told to scan the package</td>
+        </tr>
+        <tr>
+          <td>What it can express</td>
+          <td>appearance and the states CSS can reach: <code>:hover</code>,
+              <code>:focus-visible</code>, <code>:disabled</code>, <code>:checked</code></td>
+          <td>all of that, plus props, slots, <code>v-model</code>, the
+              <code>&lt;a&gt;</code>-or-<code>&lt;button&gt;</code> decision, and a glow that
+              follows the cursor</td>
+        </tr>
+        <tr>
+          <td>Where it works</td>
+          <td>anywhere HTML does — an email, a Rails or Django template, a CMS theme,
+              a static page</td>
+          <td>a Vue application</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="pv-note"><strong>They meet at the tokens, and only there.</strong>
+       <code>&lt;Button&gt;</code> does not render <code>.btn</code>. It emits Tailwind
+       utilities — <code>bg-primary-500</code>, <code>min-h-12</code>,
+       <code>rounded-full</code> — which resolve through <code>theme.css</code> to the same
+       custom properties <code>.btn</code> reads. Change a token and both move. Change
+       <code>.btn</code> and only the CSS layer moves.</p>
+
+    <p class="pv-note">That independence is the point rather than an oversight. A Vue
+       component that rendered <code>.btn</code> would drag the whole stylesheet into every
+       consumer&rsquo;s bundle, and a class layer that needed Vue would be useless in an
+       email — which is exactly where two of the six artifacts live.</p>
+
+    <p class="pv-note is-warn"><strong>The cost is drift, and it is worth knowing before you
+       edit either one.</strong> Because nothing connects them above the token layer, a fix
+       applied to one does not reach the other, and nothing fails when they disagree.
+       <a href="glow-button.html">GlowButton</a> is that showing: it renders a 44px control
+       against the 48px <code>--control-height</code> every button in the CSS layer uses.
+       If you change a control&rsquo;s shape, check the other delivery.</p>
+
+    <p class="pv-note"><strong>Which to use.</strong> In a Vue application, the primitive —
+       it carries behaviour the class layer cannot. Anywhere else, the class. Do not put both
+       on one element: the utilities and <code>.btn</code> are all single-class selectors, so
+       which wins comes down to stylesheet order, and neither layer promises one.</p>
+
+    <p class="pv-note">Both surfaces prove parts. <code>../examples/</code> proves they
+       compose — a pitch deck, a contact form, two emails, a landing page and a print poster,
+       each a single self-contained file carrying real density.</p>
+    <a class="btn btn-tertiary" href="../examples/index.html">Open the examples</a>
   </section>
 </div>
 
@@ -222,7 +289,10 @@ import DocPage from '../../layouts/DocPage.astro';
 
   <section class="sb-group">
     <h2 class="ds-anchor" id="primitives">Primitives</h2>
-    <p>The reusable controls. Everything else on the site is built from these.</p>
+    <p>The reusable controls, as Vue. Everything else on the site is built from these — and
+       each has a counterpart in <a href="#css-components">CSS components</a> above, which is
+       the same design without the framework. <a href="#two-deliveries">Two deliveries of one
+       design</a> explains why both ship.</p>
     <div class="sb-cat">
 
       <div class="sb-card">
