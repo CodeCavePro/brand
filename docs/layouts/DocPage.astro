@@ -7,7 +7,7 @@
  * absolute hrefs would be simpler and would be wrong for this repository: the
  * doc pages are reviewed by opening them from disk, and the unported half of
  * the site still links relatively. Under 'preserve' the pathname is
- * '/preview/foo.html' for a normal page and '/preview/' for an index page —
+ * '/kitchen-sink/foo.html' for a normal page and '/kitchen-sink/' for an index page —
  * stripping the last segment handles both without a special case.
  *
  * Page-specific CSS goes in through the `head` slot as <style is:inline>.
@@ -16,12 +16,17 @@
  * that the page's own markup relies on.
  */
 import DsNav from '../components/DsNav.astro';
+import SubNav from '../components/SubNav.astro';
 
 interface Props {
   /** Full <title>, including the "CODECAVE — " prefix the pages already use. */
   title: string;
   /** Which nav section to mark current. Omit on a page in none of them. */
-  nav?: 'brand-kit' | 'foundations' | 'storybook' | 'artifacts';
+  nav?: string;
+  /** Which SUB item to mark, for a section whose second bar is sibling pages.
+   *  Omit inside a single-page section, where the bar is in-page anchors and
+   *  nothing is "current" until the reader scrolls. */
+  sub?: string;
   /** Extra stylesheets, resolved relative to the page (e.g. "preview.css"). */
   stylesheets?: string[];
   /** Emit the vendored-ESM import map. Every storybook page that mounts a
@@ -29,7 +34,7 @@ interface Props {
   importmap?: boolean;
 }
 
-const { title, nav, stylesheets = [], importmap = false } = Astro.props;
+const { title, nav, sub, stylesheets = [], importmap = false } = Astro.props;
 
 /* `title` is plain text — {title} escapes it on the way out. Passing HTML
  * already escaped, which is how it is written in the .html pages this layout
@@ -47,9 +52,9 @@ if (/&(#\d+|#x[0-9a-fA-F]+|[a-zA-Z][a-zA-Z0-9]*);/.test(title)) {
 
 /* How far this page sits below the site root. Every URL in this head is built
  * from it, and it cannot be read off the request path: a directory index is
- * served at `/storybook` by dev and emitted as `/storybook/` by the build, so
+ * served at `/storybook` by dev and emitted as `/kitchen-sink/` by the build, so
  * the same page counts one level in one mode and none in the other. That is
- * CCWEB2-336 — it left /storybook/ and /preview/ with no stylesheets and, on
+ * CCWEB2-336 — it left /kitchen-sink/ and /kitchen-sink/ with no stylesheets and, on
  * the storybook, an import map whose values were bare specifiers the browser
  * discarded, so no specimen mounted. Nothing was wrong with the built pages,
  * which is why it survived.
@@ -81,7 +86,11 @@ const up = '../'.repeat(isIndex ? segments.length : Math.max(0, segments.length 
  * `navstack` slot is that second bar, and it is what turns the wrapper on: the
  * div cannot be the page's own, because DsNav has to be inside it. The class it
  * carries is styled by whichever page fills the slot. */
-const stacked = Astro.slots.has('navstack');
+/* The stack is unconditional. It used to switch on whether a page filled the
+ * `navstack` slot, which meant one page had a second bar and twenty-nine did
+ * not -- and the bar it had was seven <li>s written into that page. SubNav
+ * renders nothing for a section with no SUB entry, so wrapping every page costs
+ * an empty <div> on the pages without one and removes the question entirely. */
 
 /* The import map is the one piece of head that cannot be written as ordinary
  * markup here. Astro does not evaluate {expressions} inside a <script>, so the
@@ -113,20 +122,17 @@ const importmapJson = `
 <title>{title}</title>
 <link rel="icon" href={`${up}build/favicon.svg`}>
 <link rel="stylesheet" href={`${up}colors_and_type.css`}>
+<link rel="stylesheet" href={`${up}nav.css`}>
 {stylesheets.map((href) => <link rel="stylesheet" href={href} />)}
 <slot name="head" />
 {importmap && <script type="importmap" is:inline set:html={importmapJson} />}
 </head>
 <body>
 
-{stacked ? (
-  <div class="ds-nav-stack">
-    <DsNav current={nav} up={up} />
-    <slot name="navstack" />
-  </div>
-) : (
+<div class="ds-nav-stack">
   <DsNav current={nav} up={up} />
-)}
+  <SubNav section={nav} current={sub} up={up} />
+</div>
 
 <slot />
 

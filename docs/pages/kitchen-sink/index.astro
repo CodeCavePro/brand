@@ -1,0 +1,511 @@
+---
+/* The kitchen sink: every token and every component, one section.
+ *
+ * This file is the two hub pages the site used to have -- preview/index.astro
+ * ("Twelve focused cards, one concern each") and storybook/index.astro
+ * ("13 components, extracted from codecave.pro") -- merged, because they were
+ * two front doors onto one idea. The whole point of the rationalisation was
+ * that a reader should not have to know whether the thing they want is called a
+ * "preview" or a "story".
+ *
+ * WHY BOTH STYLE BLOCKS SURVIVE, rather than being reconciled into one. The
+ * foundations cards are `pv-*` and the component cards are `sb-*`; they are
+ * different grids with different card anatomies, and merging the CSS would be a
+ * visual redesign wearing the clothes of a file move. The two vocabularies are
+ * still distinguishable in the markup, which is the honest state of it -- one
+ * page, two systems, and a later commit can unify them on purpose.
+ *
+ * The back-links are gone from both. They pointed at "Design system", which is
+ * the wordmark's job now that every page carries the same bar, and a second
+ * route home was one of the things this collapse was meant to remove.
+ */
+import DocPage from '../../layouts/DocPage.astro';
+---
+<DocPage
+  title="CODECAVE — Kitchen sink"
+  nav="kitchen-sink"
+  stylesheets={['preview.css','components.css','storybook.css']}
+>
+<style slot="head" is:inline>
+  .cards { display: grid; gap: 1.25rem; margin-top: 2rem;
+           grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr)); }
+  a.pv-card { display: grid; gap: 0.625rem; align-content: start;
+              padding: 1.75rem 1.75rem 2rem;
+              border-radius: var(--radius-card);
+              background: var(--color-surface-secondary);
+              border: 1px solid var(--color-surface-quaternary);
+              color: var(--color-body-primary); text-decoration: none;
+              transition: background-color var(--transition-base),
+                          border-color var(--transition-base); }
+  a.pv-card:hover { background: var(--color-surface-tertiary);
+                    border-color: var(--color-brand-200); }
+  a.pv-card .k    { color: var(--color-action); font-size: var(--text-caption);
+                    font-weight: var(--font-weight-bold); letter-spacing: 0.08em;
+                    text-transform: uppercase; }
+  a.pv-card h3    { font-size: var(--text-subhead); line-height: var(--leading-subhead); }
+  /* Group headings. The twelve cards document two different layers — the token
+     and asset foundation, and the CSS component classes that sit on it — and a
+     flat list said so nowhere. "Live components" in the nav bar means the Vue
+     islands in ; these are the plain-CSS classes a consumer of the
+     package actually writes, and they had no name anywhere in the navigation. */
+  .pv-group      { margin: 3.5rem 0 0; font-size: var(--text-md);
+                   line-height: var(--leading-md); color: var(--color-heading); }
+  .pv-group:first-of-type { margin-top: 2.5rem; }
+  .pv-group + .pv-group-note { max-width: 62ch; margin: 0.5rem 0 0;
+                   color: var(--color-body-secondary-lighter);
+                   font-size: var(--text-caption);
+                   line-height: var(--leading-caption); }
+  .pv-group + .pv-group-note + .cards { margin-top: 1.25rem; }
+  a.pv-card p     { margin: 0; color: var(--color-body-secondary-lighter);
+                    font-size: var(--text-caption); line-height: var(--leading-caption); }
+  a.pv-card .f    { margin-top: 0.375rem; color: var(--color-body-secondary-lighter);
+                    font-family: var(--font-mono); font-size: 0.75rem; }
+</style>
+<style slot="head" is:inline>
+  .sb-lead { max-width: 68ch; margin: 1.25rem 0 0;
+             color: var(--color-body-secondary-lighter);
+             font-size: var(--text-md); line-height: var(--leading-md); }
+  .sb-group { margin-top: 3.5rem; }
+  .sb-group > h2 { margin: 0 0 0.25rem; font-size: var(--text-subhead);
+                   line-height: var(--leading-subhead); }
+  .sb-group > p { margin: 0 0 1.5rem; color: var(--color-body-secondary-lighter);
+                  font-size: var(--text-caption); line-height: var(--leading-caption); }
+  /* Thumbnail stage for mounted components that are too big for an 8rem thumb:
+     a fixed-width, non-shrinking wrapper scaled down as a whole. */
+  .mini { flex: none; transform-origin: center; }
+  /* TechnologyCard positions itself absolutely from its six-slot table; inside
+     a thumb there is no stage to land on, so pin it back into the flow. */
+  .thumb .card-wrapper { position: static !important; }
+</style>
+<div class="pv-shell">
+  <header class="pv-head">
+    <span class="eyebrow">Foundations</span>
+    <h1>Twelve focused cards, one concern each</h1>
+    <p>Each card links <code>../colors_and_type.css</code> and renders the real tokens, real
+       components and real preserved asset files — no screenshots, no redrawn marks. Start with
+       the dark canvas if you are new to the system; it explains why everything else looks the way
+       it does. Full rules live in <code>DESIGN.md</code>.</p>
+  </header>
+
+  <h2 class="pv-group" id="tokens">Tokens &amp; assets</h2>
+  <p class="pv-group-note">The foundation: what the colours, type, spacing and radii
+     <em>are</em>, and the real asset files that ship with them.</p>
+
+  <div class="cards">
+    <a class="pv-card" href="colors-primary.html">
+      <span class="k">Color 1/3</span>
+      <h3>Primary &amp; the brand ramp</h3>
+      <p>The action violet, the reserved cyan, all 24 ramp steps and the error ramp, each labelled
+         with its job.</p>
+      <span class="f">colors-primary.html</span>
+    </a>
+    <a class="pv-card" href="colors-theme-dark.html">
+      <span class="k">Color 2/3</span>
+      <h3>The dark canvas</h3>
+      <p>Four surface steps one hair apart, the foreground ramp with contrast ratios, and cards
+         in situ. The system&rsquo;s defining decision.</p>
+      <span class="f">colors-theme-dark.html</span>
+    </a>
+    <a class="pv-card" href="colors-theme-light.html">
+      <span class="k">Color 3/3</span>
+      <h3>Light-surface exceptions</h3>
+      <p>The three — and only three — light surfaces that exist, plus why no light theme may be
+         derived.</p>
+      <span class="f">colors-theme-light.html</span>
+    </a>
+    <a class="pv-card" href="typography-specimens.html">
+      <span class="k">Typography</span>
+      <h3>Satoshi specimens</h3>
+      <p>Real cuts from <code>fonts/</code>, the nine-step scale at true size, and the eyebrow
+         signature with a counter-example.</p>
+      <span class="f">typography-specimens.html</span>
+    </a>
+    <a class="pv-card" href="spacing-tokens.html">
+      <span class="k">Spacing 1/3</span>
+      <h3>Gutters &amp; rhythm</h3>
+      <p>Container gutters, the asymmetric 200/120 section rhythm, bottom-heavy card padding and
+         the two control heights.</p>
+      <span class="f">spacing-tokens.html</span>
+    </a>
+    <a class="pv-card" href="spacing-radius.html">
+      <span class="k">Spacing 2/3</span>
+      <h3>Radius census</h3>
+      <p>Eight steps at true size, the measured homepage census, and what the same card looks like
+         at 4px.</p>
+      <span class="f">spacing-radius.html</span>
+    </a>
+    <a class="pv-card" href="spacing-shadows.html">
+      <span class="k">Spacing 3/3</span>
+      <h3>The inverted glow</h3>
+      <p>Violet light thrown upward, side by side with the conventional drop shadow that destroys
+         it. Plus the CTA and input halos.</p>
+      <span class="f">spacing-shadows.html</span>
+    </a>
+    <a class="pv-card" href="brand-assets.html">
+      <span class="k">Assets</span>
+      <h3>Brand assets</h3>
+      <p>Every wordmark, glyph, favicon and app icon loaded from the real preserved files in
+         <code>build/</code> and <code>assets/</code>.</p>
+      <span class="f">brand-assets.html</span>
+    </a>
+    <a class="pv-card" href="brand-imagery.html">
+      <span class="k">Imagery</span>
+      <h3>Decorative art</h3>
+      <p>The line-and-glow layer — seven stroke-only section backgrounds, the opacity ladder that
+         makes the falloff, and the two ramp steps they were hiding.</p>
+      <span class="f">brand-imagery.html</span>
+    </a>
+  </div>
+
+  <h2 class="pv-group" id="css-components">CSS components</h2>
+  <p class="pv-group-note">The class layer that sits on those tokens — <code>.btn</code>,
+     <code>.field</code>, <code>.checkbox</code>, <code>.chip</code>, <code>.rule</code> and
+     the rest, all defined directly in <code>../colors_and_type.css</code>. This is what you
+     write when you build with the package: there is nothing to import, so these classes
+     <em>are</em> the component library. Not to be confused with <strong>Live components</strong>
+     in the bar above, which mounts the site&rsquo;s real <code>.vue</code> islands.</p>
+
+  <div class="cards">
+    <a class="pv-card" href="components-buttons.html">
+      <span class="k">Components 1/3</span>
+      <h3>Buttons</h3>
+      <p>Eight variants with rest, hover, active, focus and disabled shown together, and the one
+         sanctioned CTA pairing.</p>
+      <span class="f">components-buttons.html</span>
+    </a>
+    <a class="pv-card" href="components-inputs.html">
+      <span class="k">Components 2/3</span>
+      <h3>Inputs</h3>
+      <p>Floating-label field in five states, textarea, both checkbox variants, and the assembled
+         consultation form.</p>
+      <span class="f">components-inputs.html</span>
+    </a>
+    <a class="pv-card" href="components-progress.html">
+      <span class="k">Components 3/3</span>
+      <h3>Rule &amp; progress</h3>
+      <p>The gradient line carried forward from the previous docs site — as a masthead accent, as a
+         determinate bar, and three ways to break it.</p>
+      <span class="f">components-progress.html</span>
+    </a>
+  </div>
+
+  <section class="pv-block">
+    <h2>The layer above these cards</h2>
+    <p class="pv-note">A card here proves one token. <code></code> proves one
+       component. <code>../examples/</code> proves they compose — a pitch deck, a contact
+       form, two emails, a landing page and a print poster, each a single self-contained
+       file carrying real density.</p>
+    <a class="btn btn-tertiary" href="../examples/index.html">Open the artifacts</a>
+  </section>
+</div>
+
+<!-- The components half opens its own shell; the foundations shell closed
+     directly above. Two grids, two vocabularies, one page. -->
+<div class="sb">
+  <header class="sb-head">
+    <p class="eyebrow">Live components</p>
+    <h2 class="ds-anchor" id="live-components">13 components, extracted from codecave.pro</h2>
+    <p class="sb-lead">Twelve of the thirteen stories mount the real components —
+       the verbatim <code>.vue</code> sources compiled by
+       <code>tools/build-storybook.mjs</code> and rendered by the vendored Vue and
+       GSAP runtimes against the site's own Tailwind theme
+       (<code>tw-bridge.css</code>). The thumbnails below are those same mounts,
+       miniaturized. The one <code>.astro</code> component is a hand-translated
+       HTML port, and every gap between this storybook and production is written
+       down on its page.</p>
+    <div class="sb-tags">
+      <span class="sb-tag is-vue">12 live Vue mounts</span>
+      <span class="sb-tag is-astro">1 Astro port (HTML)</span>
+      <span class="sb-tag">Astro 7 · Vue 3.5 · Tailwind 4.1</span>
+    </div>
+  </header>
+
+  <section class="sb-group">
+    <h2 class="ds-anchor" id="primitives">Primitives</h2>
+    <p>The reusable controls. Everything else on the site is built from these.</p>
+    <div class="sb-cat">
+
+      <div class="sb-card">
+        <div class="thumb sb-mount" inert>
+          <div id="t-btn1"></div>
+          <div id="t-btn2"></div>
+        </div>
+        <a class="meta" href="button.html">
+          <strong>Button</strong>
+          <span>Seven variants off one prop — four pills and three bare text links that share no box.</span>
+          <code>common/Button.vue</code>
+        </a>
+      </div>
+
+      <div class="sb-card">
+        <div class="thumb sb-mount" inert>
+          <div id="t-glow" class="mini" style="transform:scale(0.8)"></div>
+        </div>
+        <a class="meta" href="glow-button.html">
+          <strong>GlowButton</strong>
+          <span>The single conversion CTA. Pointer-tracked glow, GSAP-driven.</span>
+          <code>common/GlowButton.vue</code>
+        </a>
+      </div>
+
+      <div class="sb-card">
+        <div class="thumb sb-mount" inert>
+          <div id="t-input" class="mini" style="width:15rem;transform:scale(0.85)"></div>
+        </div>
+        <a class="meta" href="input-text.html">
+          <strong>InputText</strong>
+          <span>Stacked label over the field. Focus is a halo, never an outline.</span>
+          <code>common/InputText.vue</code>
+        </a>
+      </div>
+
+      <div class="sb-card">
+        <div class="thumb sb-mount" inert>
+          <div id="t-textfield" class="mini" style="width:18rem;transform:scale(0.7)"></div>
+        </div>
+        <a class="meta" href="text-field.html">
+          <strong>TextField</strong>
+          <span>Auto-resizing textarea; halo on the wrapper via <code>:focus-within</code>.</span>
+          <code>common/TextField.vue</code>
+        </a>
+      </div>
+
+      <div class="sb-card">
+        <div class="thumb sb-mount" inert>
+          <div id="t-cb1"></div>
+          <div id="t-cb2"></div>
+        </div>
+        <a class="meta" href="checkbox.html">
+          <strong>Checkbox</strong>
+          <span>Two variants × two sizes. Stateless — no <code>v-model</code>, no emit.</span>
+          <code>common/Checkbox.vue</code>
+        </a>
+      </div>
+
+      <div class="sb-card">
+        <div class="thumb sb-mount" inert>
+          <div id="t-r1"></div>
+          <div id="t-r2"></div>
+        </div>
+        <a class="meta" href="radio.html">
+          <strong>Radio</strong>
+          <span>Variant names are inverted relative to Checkbox — same word, opposite treatment.</span>
+          <code>common/Radio.vue</code>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="sb-group">
+    <h2 class="ds-anchor" id="content">Content</h2>
+    <p>Cards and blocks, mostly fed from Strapi.</p>
+    <div class="sb-cat">
+
+      <div class="sb-card">
+        <div class="thumb sb-mount" inert style="align-items:flex-start">
+          <div id="t-article" class="mini" style="width:20rem;transform:scale(0.55);transform-origin:top center"></div>
+        </div>
+        <a class="meta" href="article-preview.html">
+          <strong>ArticlePreview</strong>
+          <span>The insight card, at a 2.25rem radius that exists nowhere else.</span>
+          <code>common/ArticlePreview.vue</code>
+        </a>
+      </div>
+
+      <div class="sb-card">
+        <!-- testimonials-background.svg: the plate named for the section this
+             card ships in. The thumbnail used partnership-background.svg, which
+             is a different section's art, so the one component that can only be
+             judged on art was being shown on the wrong art. -->
+        <div class="thumb sb-mount" inert style="background:var(--color-surface-primary) url('../imagery/testimonials-background.svg') center/cover no-repeat">
+          <div id="t-review" class="mini" style="width:24rem;transform:scale(0.5)"></div>
+        </div>
+        <a class="meta" href="review.html">
+          <strong>Review</strong>
+          <span>No background of its own — only a 32px backdrop blur. Judge it on art.</span>
+          <code>common/Review.vue</code>
+        </a>
+      </div>
+
+      <div class="sb-card">
+        <div class="thumb sb-mount" inert>
+          <div id="t-tech"></div>
+        </div>
+        <a class="meta" href="technology-card.html">
+          <strong>TechnologyCard</strong>
+          <span>A masked gradient stroke around a transparent fill — violet end to end since the palette rebuild; the teal survives only in the 10% body wash.</span>
+          <code>homepage/technology-card.vue</code>
+        </a>
+      </div>
+
+      <div class="sb-card">
+        <div class="thumb" inert>
+          <span class="cc-chip" style="padding:0.5rem 1rem;font-size:0.8125rem">Autodesk Revit</span>
+          <span class="cc-chip" style="padding:0.5rem 1rem;font-size:0.8125rem">Azure</span>
+        </div>
+        <a class="meta" href="project-chip.html">
+          <strong>ProjectChip</strong>
+          <span>The smallest component in the system: one div, one slot, no props. The one HTML port — Astro doesn't run in a browser.</span>
+          <code>project/project-chip.astro</code>
+        </a>
+      </div>
+
+      <div class="sb-card">
+        <div class="thumb sb-mount" inert>
+          <div id="t-typing" class="mini" style="width:34rem;transform:scale(0.45)"></div>
+        </div>
+        <a class="meta" href="typing-effect.html">
+          <strong>TypingEffect</strong>
+          <span>Two-line display heading; a sanctioned large-text use of <code>#5F20FE</code>.</span>
+          <code>common/effects/TypingEffect.vue</code>
+        </a>
+      </div>
+
+      <div class="sb-card">
+        <div class="thumb sb-mount" inert style="align-items:flex-start">
+          <div id="t-pain" class="mini" style="transform:scale(0.6);transform-origin:top center"></div>
+        </div>
+        <a class="meta" href="pain-points-item.html">
+          <strong>PainPointsItem</strong>
+          <span>CMS markdown through <code>v-html</code> with a custom <code>marked</code> renderer.</span>
+          <code>project/pain-points-item.vue</code>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="sb-group">
+    <h2 class="ds-anchor" id="compositions">Compositions</h2>
+    <p>Not primitives — assemblies worth documenting because they define styling
+       that lives nowhere else.</p>
+    <div class="sb-cat">
+
+      <div class="sb-card">
+        <div class="thumb sb-mount" inert>
+          <div id="t-links"></div>
+        </div>
+        <a class="meta" href="link-group.html">
+          <strong>LinkGroup</strong>
+          <span>Heading plus N <code>Button variant="text"</code> — the footer's link styling.</span>
+          <code>footer/link-group.vue</code>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="sb-group">
+    <h2 class="ds-anchor" id="findings">What this storybook found</h2>
+    <p>55 findings across the thirteen components — 29 flagged as defects, 26
+       as design observations — each recorded on its own story page. The four
+       that would change behavior in production:</p>
+
+    <p class="sb-note is-warn"><strong>Two components animate against a variable they never define.</strong>
+      <code>Checkbox.vue</code>:75 and <code>Radio.vue</code>:61 both declare
+      <code>transition: var(--default-transition-duration) transform ease-in-out;</code>,
+      and <code>--default-transition-duration</code> appears nowhere in the
+      project's own code. It resolves anyway — to 150ms from Tailwind's default
+      theme, which the build emits because <code>transition-colors</code> is in
+      use. Lift either component out of a Tailwind build and the shorthand
+      collapses, snapping the indicator instead of easing it.</p>
+
+    <p class="sb-note is-warn"><strong><code>Button</code>'s <code>isDisabled</code> does not disable anything.</strong>
+      It sets opacity and a cursor. The <code>disabled</code> attribute is never
+      bound, so the control stays clickable and keyboard-reachable — and as a link
+      it still navigates.</p>
+
+    <p class="sb-note is-warn"><strong><code>TextField</code> syncs its model on <code>change</code>, not <code>input</code>.</strong>
+      The parent's <code>v-model</code> only updates on blur, while
+      <code>InputText</code> in the same form updates per keystroke.</p>
+
+    <p class="sb-note"><strong>Two dead styles.</strong>
+      <code>Radio</code>'s secondary hover needs a <code>group</code> ancestor that
+      nothing renders, and <code>Button</code>'s <code>type</code> prop is declared
+      but never bound.</p>
+  </section>
+
+</div>
+
+<script is:inline type="module">
+  import { createApp } from 'vue';
+  import Button from './compiled/Button.js';
+  import GlowButton from './compiled/GlowButton.js';
+  import InputText from './compiled/InputText.js';
+  import TextField from './compiled/TextField.js';
+  import Checkbox from './compiled/Checkbox.js';
+  import Radio from './compiled/Radio.js';
+  import ArticlePreview from './compiled/ArticlePreview.js';
+  import Review from './compiled/Review.js';
+  import TechnologyCard from './compiled/technology-card.js';
+  import TypingEffect from './compiled/TypingEffect.js';
+  import PainPointsItem from './compiled/pain-points-item.js';
+  import LinkGroup from './compiled/link-group.js';
+  import { usePlaceholders } from './placeholders.js';
+
+  // Every thumbnail is the real component at real size (scaled wrappers where
+  // it wouldn't fit). The thumbs are `inert` — the card's one control is the
+  // stretched .meta link. Full stories and args live on each component's page.
+  const mounts = [
+    [Button,    't-btn1', { title: 'Primary', class: 'h-11 px-6 py-1' }],
+    [Button,    't-btn2', { title: 'Tertiary', variant: 'tertiary' }],
+    [GlowButton,'t-glow', { title: 'Book a call' }],
+    [InputText, 't-input', { id: 't-input-el', label: 'Email', type: 'email',
+                             placeholder: 'you@company.com' }],
+    [TextField, 't-textfield', { id: 't-tf-el', label: 'Message',
+                                 placeholder: 'Tell us about your project' }],
+    [Checkbox,  't-cb1', { id: 't-cb1-el', label: 'I agree',
+                           variant: 'primary', size: 'small' }],
+    [Checkbox,  't-cb2', { id: 't-cb2-el', label: 'Cloud & DevOps',
+                           variant: 'secondary', size: 'small' }],
+    [Radio,     't-r1', { id: 't-r1-el', label: '$10–25k', name: 't-budget',
+                          isChecked: true, variant: 'primary' }],
+    [Radio,     't-r2', { id: 't-r2-el', label: '$25–50k', name: 't-budget',
+                          variant: 'primary' }],
+    [ArticlePreview, 't-article', { article: {
+      slug: 'bim-export-loop',
+      cover: { url: '/uploads/bim-export-hero.png', name: 'bim-export-hero.png' },
+      date: '2026-04-18',
+      locale: 'en-GB',
+      title: 'Cutting a BIM export step out of the delivery loop',
+      excerpt: 'A manual Revit export sat between the model and the ERP.',
+      readingtime: 6,
+    } }],
+    [Review, 't-review', { item: {
+      photo: { name: 'marta-feld.png', url: '/uploads/marta-feld.png' },
+      name: 'Marta Feld',
+      position: 'CTO, Northwind Logistics',
+      review: 'They scoped the smallest thing that would prove the integration worked.',
+      linkedinurl: '#!',
+      verification: 'Verified on Clutch',
+    }, className: '' }],
+    [TechnologyCard, 't-tech', { name: 'Cloud & DevOps', active: false,
+                                 index: 0, className: 'w-28 h-28' }],
+    [TypingEffect, 't-typing', { text1: 'We build software',
+                                 text2: 'that survives contact with your business.' }],
+    [PainPointsItem, 't-pain', { item: {
+      image: { url: '/uploads/pain-icon.svg', name: 'pain-icon.svg' },
+      content: 'Manual exports between Revit and the ERP.',
+    } }],
+    [LinkGroup, 't-links', { groupName: 'Services', items: [
+      { name: 'Cloud services', href: '/services/devops' },
+      { name: 'E-commerce', href: '/services/ecommerce' },
+      { name: 'AR & VR', href: '/services/ar-vr' },
+    ] }],
+  ];
+  for (const [comp, el, props] of mounts) createApp(comp, props).mount('#' + el);
+
+  // Checkbox exposes no checked state (see its findings) — set on the DOM node.
+  document.getElementById('t-cb1-el').checked = true;
+
+  // Fixture media paths are `/uploads/...` and resolve to nothing here, so
+  // swap in the local placeholders after mount — same as on the story
+  // pages. Two of these three thumbs render through LazyImage, which is why it
+  // goes via placeholders.js rather than assigning .src here.
+  const swaps = [['t-article', 'sb-cover'], ['t-review', 'sb-avatar'], ['t-pain', 'sb-icon']];
+  for (const [id, ph] of swaps) {
+    usePlaceholders('#' + id + ' img', '../assets/images/' + ph + '.svg');
+  }
+</script>
+</DocPage>

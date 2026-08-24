@@ -1,0 +1,235 @@
+---
+/* Ported from docs/kitchen-sink/components-inputs.html (CCWEB2-317 phase 2).
+ * Shell extraction only — same reason as components-buttons: these are live
+ * controls, and a reader must be able to focus one and see the real state.
+ */
+import DocPage from '../../layouts/DocPage.astro';
+---
+<DocPage
+  title="CODECAVE — Inputs: InputText, TextField, Checkbox"
+  nav="kitchen-sink"
+  stylesheets={['preview.css']}
+>
+<style slot="head" is:inline>
+  .state-grid { display: grid; gap: 1.5rem; }
+  @media (min-width: 900px) { .state-grid { grid-template-columns: repeat(2, 1fr); } }
+  .state-cell .pv-meta { margin-top: 0.625rem; }
+  /* Forced clones so hover and focus are reviewable without a pointer. */
+  .force-hover input, .force-hover textarea { background: var(--color-surface-tertiary); }
+  .force-focus input, .force-focus textarea { background: var(--color-surface-tertiary);
+                                              box-shadow: var(--shadow-input-focus); }
+  /* The pill takes 8px (`rounded-lg` in source); the box inside it takes the
+     site's 4px. This page used to give both the same token and rendered the
+     16px box as a perfect circle — the exact failure the note below describes. */
+  .chip-check { display: inline-flex; align-items: center; gap: 0.5rem;
+                padding: 0.5rem 0.75rem; border-radius: var(--radius-control);
+                background: var(--color-surface-secondary);
+                font-size: var(--text-caption); cursor: pointer; }
+  /* The -sm step, not --radius-control: the box is 16px, so 8px would be
+     exactly half its side — a perfect circle, i.e. a radio button rendering for
+     a pick-any control. The pill above it does take --radius-control. */
+  .chip-check input { appearance: none; -webkit-appearance: none; display: grid;
+                      place-content: center; width: 1rem; height: 1rem; margin: 0;
+                      border-radius: var(--radius-control-sm); cursor: pointer;
+                      outline: 2px solid var(--color-surface-quaternary);
+                      transition: outline-color var(--transition-base),
+                                  background-color var(--transition-base); }
+  .chip-check input:hover   { outline-color: var(--color-action); }
+  .chip-check input:checked { background: var(--color-action); outline: none; }
+  .chip-check input::before { content: ""; width: 0.5em; height: 0.5em; transform: scale(0);
+                              transition: transform var(--transition-base) ease-in-out;
+                              background: var(--color-heading);
+                              clip-path: polygon(14% 52%, 0 66%, 39% 100%, 100% 20%, 85% 8%, 37% 72%); }
+  .chip-check input:checked::before { transform: scale(1); }
+  /* Radio — same chip, round box and a solid dot (source: common/Radio.vue) */
+  .chip-check input[type="radio"] { border-radius: var(--radius-pill); }
+  .chip-check input[type="radio"]::before { clip-path: none;
+                                            border-radius: var(--radius-pill); }
+  .form-demo { display: grid; gap: 1.25rem; max-width: 32rem; }
+</style>
+
+<div class="pv-shell">
+  <a class="pv-back" href="index.html">&larr; All foundations</a>
+
+  <header class="pv-head">
+    <span class="eyebrow">Components · card 2 of 3</span>
+    <h1>Inputs — the floating label and the violet halo</h1>
+    <p>Transcribed from <code>source_examples/common/InputText.vue</code>,
+       <code>TextField.vue</code> and <code>Checkbox.vue</code>. Text inputs are 64px tall with an
+       8px radius — one of only two small radii the system permits — and focus draws a halo rather
+       than an outline. Every field below is live: click, type, hover, and tab through them.</p>
+  </header>
+
+  <section class="pv-block">
+    <h2>Text input — five states</h2>
+    <p class="pv-note">The bold 14px label sits absolutely at <code>12px / 12px</code> and the value
+       is padded <code>28px 12px 12px</code>, so label and value never collide. Placeholders drop to
+       14px <code>--color-body-secondary</code>; the value itself is <code>--color-hovered</code>.</p>
+    <div class="pv-tile state-grid">
+      <div class="state-cell">
+        <div class="field">
+          <label for="in-rest">Full name</label>
+          <input id="in-rest" type="text" placeholder="How should we address you?">
+        </div>
+        <span class="pv-meta">rest — fill #0F0F15</span>
+      </div>
+      <div class="state-cell">
+        <div class="field force-hover">
+          <label for="in-hover">Full name</label>
+          <input id="in-hover" type="text" placeholder="How should we address you?">
+        </div>
+        <span class="pv-meta">hover — fill lifts to #1C1C27</span>
+      </div>
+      <div class="state-cell">
+        <div class="field force-focus">
+          <label for="in-focus">Work email<span class="required">*</span></label>
+          <input id="in-focus" type="email" value="cto@acme.io">
+        </div>
+        <span class="pv-meta">focus — violet halo, no outline · required marker in --color-action</span>
+      </div>
+      <div class="state-cell">
+        <div class="field is-error">
+          <label for="in-error">Work email<span class="required">*</span></label>
+          <input id="in-error" type="email" value="cto@acme" aria-invalid="true">
+          <span class="error-message">Enter a valid work email address.</span>
+        </div>
+        <span class="pv-meta">error — red halo, value and message in #FE9A9A (8.4:1)</span>
+      </div>
+      <div class="state-cell">
+        <div class="field">
+          <label for="in-filled">Company</label>
+          <input id="in-filled" type="text" value="Acme Manufacturing">
+        </div>
+        <span class="pv-meta">filled — value in --color-hovered</span>
+      </div>
+      <div class="state-cell">
+        <div class="field" style="opacity:0.2">
+          <label for="in-disabled">Company</label>
+          <input id="in-disabled" type="text" value="Acme Manufacturing" disabled>
+        </div>
+        <span class="pv-meta">disabled — opacity 0.2, the only permitted contrast drop</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-block">
+    <h2>Textarea — <code>TextField.vue</code></h2>
+    <p class="pv-note">Min-height 120px, same 8px radius and fill. In production it auto-resizes on
+       input and the halo is applied to the wrapper via <code>:focus-within</code>, so the label
+       glows with the field.</p>
+    <div class="pv-tile" style="max-width:32rem">
+      <div class="field">
+        <label for="ta-rest">Tell us about your project</label>
+        <textarea id="ta-rest" placeholder="Scope, timeline, and what success looks like."></textarea>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-block">
+    <h2>Checkbox — two variants</h2>
+    <p class="pv-note">Default: 24px box, 2px <code>#1B0D4E</code> border brightening to
+       <code>--color-action</code> on hover. Secondary is the chip form used for service selection —
+       a 16px box seated in a <code>#0F0F15</code> pill with an 8px corner
+       (<code>--radius-control</code>, <code>rounded-lg</code> in source). The tick scales
+       <code>0 &rarr; 1</code> on both hover and check.</p>
+    <p class="pv-note">The 24px box takes <code>--radius-control</code> (8px), the same corner as
+       every other input. It used to take 4px, and that was nobody's decision:
+       <code>Checkbox.vue</code>'s scoped style asked for <code>--radius-sm</code>, the site declared
+       no such name, and the box fell through to Tailwind's default <code>0.25rem</code>. Fixed on
+       both sides on 2026-08-20 — this package renamed its colliding radii to
+       <code>--radius-control</code> and <code>--radius-tile</code>, and the site now declares
+       <code>--radius-control: 0.5rem</code> in its own <code>:root</code> rather than inheriting a
+       name it never defined (<a href="https://codecave.atlassian.net/browse/CCWEB2-313">CCWEB2-313</a>).</p>
+    <p class="pv-note is-warn">The <strong>16px box takes <code>--radius-control-sm</code> (4px)</strong>,
+       and the corner cannot be size-independent. Half of 16 is 8, so the 8px control corner on the
+       small box renders a perfect circle — a radio button for a pick-any control.
+       <code>Checkbox.vue</code> keys this off a <code>data-size</code> attribute rather than a
+       utility class, so it survives outside a Tailwind build. Note this variant is currently
+       unreachable on the live site:
+       <code>Checkbox.vue</code> types <code>variant?: 'primary'</code> and its
+       <code>case 'secondary'</code> branch is dead code no caller passes, so the only checkboxes
+       that render are the contact form's two 24px ones. The specimen stays because the branch is
+       still in source.</p>
+    <div class="pv-grid pv-grid-2">
+      <div class="pv-tile" style="display:grid;gap:1rem;justify-items:start">
+        <span class="pv-label">Default</span>
+        <label class="checkbox"><input type="checkbox"><span>I have read the privacy policy</span></label>
+        <label class="checkbox"><input type="checkbox" checked><span>Send me the delivery brief</span></label>
+        <span class="pv-meta">24px · 2px border · gap 12px</span>
+      </div>
+      <div class="pv-tile" style="display:grid;gap:1rem;justify-items:start">
+        <span class="pv-label">Secondary (service chips)</span>
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem">
+          <label class="chip-check"><input type="checkbox" checked><span>Cloud &amp; DevOps</span></label>
+          <label class="chip-check"><input type="checkbox"><span>E-Commerce</span></label>
+          <label class="chip-check"><input type="checkbox" checked><span>Autodesk plugins</span></label>
+          <label class="chip-check"><input type="checkbox"><span>Automation &amp; AI</span></label>
+          <label class="chip-check"><input type="checkbox"><span>HubSpot</span></label>
+          <label class="chip-check"><input type="checkbox"><span>AR &amp; VR</span></label>
+        </div>
+        <span class="pv-meta">16px box · 2px outline · checked fill --color-action</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-block">
+    <h2>Assembled — the consultation form</h2>
+    <p class="pv-note">
+      Field-for-field from <code>source_examples/common/forms/ContactUsForm.vue</code>: e-mail is the only
+      required field, name and company sit side by side above <code>xl</code>, then service chips,
+      budget radios, the free-text brief, and two consent checkboxes. The submit is the
+      <strong>glow button</strong> — in the real page this section is its own viewport, so the glow
+      here is the single primary for the form, not a second copy of the hero CTA.
+    </p>
+    <form class="card form-demo" onsubmit="return false">
+      <h3 class="eyebrow-lead" style="margin:0 0 0.5rem">
+        <span class="lead">Tell us about your project</span>
+        <span class="eyebrow">the consultation is free</span>
+      </h3>
+      <div class="field">
+        <label for="cf-email">E-mail<span class="required">*</span></label>
+        <input id="cf-email" type="email" autocomplete="email" placeholder="The only necessary thing to get a free consultation." required>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:0.5rem">
+        <div class="field">
+          <label for="cf-name">Name</label>
+          <input id="cf-name" type="text" autocomplete="name" placeholder="How should we address you?">
+        </div>
+        <div class="field">
+          <label for="cf-company">Company name</label>
+          <input id="cf-company" type="text" placeholder="So we know your domain in advance.">
+        </div>
+      </div>
+      <fieldset style="border:0;padding:0;margin:0;display:grid;gap:0.75rem">
+        <legend style="padding-left:0.75rem;color:var(--color-heading);font-size:var(--text-caption);font-weight:700">Services</legend>
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem">
+          <label class="chip-check"><input type="checkbox"><span>Cloud &amp; DevOps</span></label>
+          <label class="chip-check"><input type="checkbox"><span>E-Commerce</span></label>
+          <label class="chip-check"><input type="checkbox"><span>Autodesk plugins</span></label>
+          <label class="chip-check"><input type="checkbox"><span>Automation &amp; AI</span></label>
+          <label class="chip-check"><input type="checkbox"><span>HubSpot</span></label>
+          <label class="chip-check"><input type="checkbox"><span>AR &amp; VR</span></label>
+        </div>
+      </fieldset>
+      <fieldset style="border:0;padding:0;margin:0;display:grid;gap:0.75rem">
+        <legend style="padding-left:0.75rem;color:var(--color-heading);font-size:var(--text-caption);font-weight:700">Budget</legend>
+        <div style="display:flex;flex-wrap:wrap;gap:0.5rem">
+          <label class="chip-check"><input type="radio" name="cf-budget" checked><span>Not defined yet</span></label>
+          <label class="chip-check"><input type="radio" name="cf-budget"><span>Up to $10k</span></label>
+          <label class="chip-check"><input type="radio" name="cf-budget"><span>$10k&ndash;50k</span></label>
+          <label class="chip-check"><input type="radio" name="cf-budget"><span>$50k+</span></label>
+        </div>
+      </fieldset>
+      <div class="field">
+        <label for="cf-brief">Describe project or an issue you want to discuss</label>
+        <textarea id="cf-brief" placeholder="Even a few words could make our consultation more constructive."></textarea>
+      </div>
+      <label class="checkbox"><input type="checkbox" required><span>I agree with the privacy policy</span></label>
+      <label class="checkbox"><input type="checkbox"><span>I agree to receive promotional materials</span></label>
+      <span class="btn-glow-field" style="justify-self:center"><button class="btn btn-glow" type="submit"><span>Leave consultation request</span></button></span>
+      <span class="pv-meta">On success the form raises a bordered alert: &ldquo;Sent! We will contact you within next 1-3 business days.&rdquo;</span>
+    </form>
+  </section>
+</div>
+
+</DocPage>

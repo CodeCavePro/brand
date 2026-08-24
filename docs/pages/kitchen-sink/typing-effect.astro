@@ -1,0 +1,112 @@
+---
+/* Ported from docs/kitchen-sink/typing-effect.html (CCWEB2-317 phase 3).
+ *
+ * Shell extraction. Mounting pattern and why it is not an island: button.astro.
+
+ * The only page whose specimen needs the gsap and gsap/dist/SplitText entries
+ * in the import map. They are in it on all thirteen because the map is one
+ * shared prop; this is the page that proves they resolve. */
+import DocPage from '../../layouts/DocPage.astro';
+---
+<DocPage
+  title="TypingEffect — CODECAVE storybook"
+  nav="kitchen-sink"
+  stylesheets={['../storybook/tw-bridge.css','storybook.css']}
+  importmap
+>
+<div class="sb">
+  <a class="sb-back" href="index.html">&larr; All components</a>
+
+  <header class="sb-head">
+    <p class="eyebrow">Content · 11 of 13</p>
+    <h1>TypingEffect</h1>
+    <p>The two-line display heading. Its second line is one of the few sanctioned
+       uses of <code>#5F20FE</code> on text — legitimate only because it runs at
+       32–56px, where the 3:1 large-text floor applies.</p>
+    <div class="sb-tags">
+      <span class="sb-tag is-vue">Vue island</span>
+      <span class="sb-tag">src/components/common/effects/TypingEffect.vue</span>
+      <span class="sb-tag">rendered live from compiled/TypingEffect.js</span>
+      <span class="sb-tag">GSAP SplitText</span>
+    </div>
+  </header>
+
+  <section class="sb-section">
+    <h2>Props</h2>
+    <table class="sb-props">
+      <thead><tr><th>Prop</th><th>Type</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>text1 <span class="sb-req">*</span></td><td><code>string</code></td><td>First line, <code>--color-heading</code>.</td></tr>
+        <tr><td>text2 <span class="sb-req">*</span></td><td><code>string</code></td><td>Second line, <code>--color-action</code>.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="sb-section">
+    <h2>Stories</h2>
+    <p>Live — this is the real component and the real GSAP SplitText (3.15,
+       vendored). On mount, once <code>document.fonts.ready</code> resolves, it
+       breaks the text into characters and staggers them from
+       <code>opacity: 0.5</code> at 0.1s intervals. Reload to replay.</p>
+    <div class="sb-stories is-single">
+
+      <div class="sb-story">
+        <div class="sb-canvas is-tall">
+          <div id="story-typing"></div>
+        </div>
+        <div class="sb-story-body">
+          <span class="sb-story-name">Default</span>
+          <span class="sb-story-args">text1="We build software" text2="that survives…"</span>
+          <span class="sb-story-note">2rem base, stepping to 3.5rem at the lg breakpoint. Bold, 130% leading.</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="sb-section">
+    <h2>Findings</h2>
+
+    <p class="sb-note is-warn"><strong>The selector is global, so multiple instances collide.</strong>
+      <code>SplitText.create('.split-text span', …)</code> queries the whole
+      document, not the component root. A second TypingEffect on the same page
+      causes each mount to re-split <em>every</em> instance's spans — including
+      ones already split — and the later mount animates characters belonging to
+      the earlier one. The fix is a template ref scoped to this component.</p>
+
+    <p class="sb-note is-warn"><strong>No reduced-motion guard.</strong>
+      The stagger runs unconditionally from <code>onMounted</code> and again on
+      every prop change. It is GSAP rather than CSS, and the current site ships
+      no <code>prefers-reduced-motion</code> handling at all — this is the
+      site's largest piece of moving text, so it is the animation most worth
+      guarding.</p>
+
+    <p class="sb-note is-warn"><strong><code>gsap.registerPlugin</code> runs on every call.</strong>
+      It sits inside <code>splitAnimation</code>, so it re-registers on mount and
+      on each <code>watch</code> firing rather than once at module scope. Harmless
+      but repeated, and it makes the watch path heavier than it needs to be.</p>
+
+    <p class="sb-note"><strong>Waiting on <code>document.fonts.ready</code> is the right call.</strong>
+      Splitting before Satoshi loads would measure fallback glyphs and produce
+      character boxes that jump when the real font arrives. The component defers
+      until fonts settle — worth preserving in any rewrite.</p>
+
+    <p class="sb-note"><strong>The heading is an <code>&lt;h2&gt;</code> with two block spans.</strong>
+      Both lines live inside one heading element, so the accessible name is the
+      full sentence — correct. The <code>:key="text1"</code> forces a fresh node
+      when the copy changes, which is what makes the <code>watch</code> re-split
+      work.</p>
+  </section>
+
+</div>
+
+<script is:inline type="module">
+  import { createApp } from 'vue';
+  import TypingEffect from './compiled/TypingEffect.js';
+
+  createApp(TypingEffect, {
+    text1: 'We build software',
+    text2: 'that survives contact with your business.',
+  }).mount('#story-typing');
+</script>
+</DocPage>

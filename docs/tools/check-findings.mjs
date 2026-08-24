@@ -30,17 +30,37 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const stories = path.join(docs, 'pages', 'storybook');
+const stories = path.join(docs, 'pages', 'kitchen-sink');
 const rel = (p) => path.relative(process.cwd(), p);
+
+/* The story pages moved from pages/storybook/ into pages/kitchen-sink/, where
+ * they now sit beside the twelve foundations pages -- and a foundations page has
+ * no Findings section, correctly, because nothing was extracted to find
+ * anything about. So "every .astro that is not the index" stopped being the
+ * right filter the moment the folders merged.
+ *
+ * Selecting on the heading instead would exempt a story page the moment it lost
+ * its Findings section, which is the silent failure this whole file exists to
+ * prevent. So the heading selects, AND the count of selected pages is asserted:
+ * lose a story page's findings and the total drops below EXPECTED_STORIES and
+ * the build says which pages it could see. */
+const EXPECTED_STORIES = 13;
 
 /* ---- count what the story pages carry ----------------------------------- */
 const HEADING = '<h2>Findings</h2>';
 const pages = fs.readdirSync(stories)
   .filter((f) => f.endsWith('.astro') && f !== 'index.astro')
+  .filter((f) => fs.readFileSync(path.join(stories, f), 'utf8').includes(HEADING))
   .sort();
 
-if (!pages.length) {
-  console.error(`no story pages in ${rel(stories)} — nothing to count.`);
+if (pages.length !== EXPECTED_STORIES) {
+  console.error(
+    `expected ${EXPECTED_STORIES} story page(s) carrying ${HEADING} in ` +
+    `${rel(stories)}, found ${pages.length}:\n` +
+    pages.map((f) => `  ${f}`).join('\n') +
+    `\n\nA story page records what the extraction found. One that lost its` +
+    `\nheading would drop out of this count silently and shrink the totals,` +
+    `\nso the number of pages is asserted alongside the number of findings.`);
   process.exit(1);
 }
 
@@ -51,6 +71,9 @@ const headless = [];
 for (const file of pages) {
   const src = fs.readFileSync(path.join(stories, file), 'utf8');
   const at = src.indexOf(HEADING);
+  /* Unreachable while the filter above selects on the heading -- kept because
+     the two would have to be changed together, and a guard that costs nothing
+     is cheaper than discovering they were not. */
   if (at === -1) { headless.push(file); continue; }
   const section = src.slice(at + HEADING.length);
   defects += (section.match(/class="sb-note is-warn"/g) ?? []).length;
@@ -77,6 +100,8 @@ const CLAIMS = [
     reads: ['total', 'defects', 'observations'],
   },
   {
+    /* Was storybook/index.astro; that page and preview/index.astro merged into
+       the one kitchen-sink index, so the sentence lives there now. */
     file: path.join(stories, 'index.astro'),
     pattern: /(\d+) findings across the thirteen components — (\d+) flagged as defects, (\d+) as design observations/,
     reads: ['total', 'defects', 'observations'],

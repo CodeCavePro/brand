@@ -1,0 +1,154 @@
+---
+/* Ported from docs/kitchen-sink/input-text.html (CCWEB2-317 phase 3).
+ *
+ * Shell extraction. Mounting pattern and why it is not an island: button.astro.
+
+ * `isRequired={true}` and `isError={true}` in the story args are prose about
+ * Vue; each literal brace is emitted as a string so it renders as itself. */
+import DocPage from '../../layouts/DocPage.astro';
+---
+<DocPage
+  title="InputText — CODECAVE storybook"
+  nav="kitchen-sink"
+  stylesheets={['../storybook/tw-bridge.css','storybook.css']}
+  importmap
+>
+<div class="sb">
+  <a class="sb-back" href="index.html">&larr; All components</a>
+
+  <header class="sb-head">
+    <p class="eyebrow">Primitive · 3 of 13</p>
+    <h1>InputText</h1>
+    <p>A stacked-label field: the label is absolutely positioned <em>over</em> the
+       input, and the input reserves room for it with top padding. Focus is a
+       halo, never an outline.</p>
+    <div class="sb-tags">
+      <span class="sb-tag is-vue">Vue island</span>
+      <span class="sb-tag">src/components/common/InputText.vue</span>
+      <span class="sb-tag">rendered live from compiled/InputText.js</span>
+      <span class="sb-tag">v-model</span>
+    </div>
+  </header>
+
+  <section class="sb-section">
+    <h2>Props</h2>
+    <table class="sb-props">
+      <thead><tr><th>Prop</th><th>Type</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>id <span class="sb-req">*</span></td><td><code>string</code></td><td>Wires <code>label[for]</code> to <code>input[id]</code>.</td></tr>
+        <tr><td>label <span class="sb-req">*</span></td><td><code>string</code></td><td>Rendered over the field, always visible.</td></tr>
+        <tr><td>type <span class="sb-req">*</span></td><td><code>'text' | 'email'</code></td><td>No <code>tel</code>, <code>url</code> or <code>password</code>.</td></tr>
+        <tr><td>placeholder <span class="sb-req">*</span></td><td><code>string</code></td><td>Renders at 12px in <code>--color-body-secondary</code>.</td></tr>
+        <tr><td>autocomplete</td><td><code>string</code></td><td>Passed straight through.</td></tr>
+        <tr><td>isRequired</td><td><code>boolean</code></td><td>Adds the asterisk icon <em>and</em> the native <code>required</code> attribute.</td></tr>
+        <tr><td>isError</td><td><code>boolean</code></td><td>Swaps text and halo to the error ramp.</td></tr>
+        <tr><td>errorMessage</td><td><code>string</code></td><td>Only rendered when <code>isError</code>.</td></tr>
+        <tr><td>modelValue</td><td><code>string</code></td><td><code>v-model</code> via <code>update:modelValue</code> on <code>input</code>.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="sb-section">
+    <h2>States</h2>
+    <p>The real <code>InputText.vue</code>, compiled and mounted. Click into the
+       fields — hover, focus, <code>v-model</code> and the error halo are all live.</p>
+    <div class="sb-stories is-wide">
+
+      <div class="sb-story">
+        <div class="sb-canvas is-block">
+          <div id="story-name" class="sb-mount"></div>
+        </div>
+        <div class="sb-story-body">
+          <span class="sb-story-name">Default</span>
+          <span class="sb-story-args">type="text" label="Name"</span>
+          <span class="sb-story-note">Resting fill #0F0F15; hover lifts to #1C1C27
+            (the site&rsquo;s gray-1100 &rarr; gray-900).</span>
+        </div>
+      </div>
+
+      <div class="sb-story">
+        <div class="sb-canvas is-block">
+          <div id="story-email" class="sb-mount"></div>
+        </div>
+        <div class="sb-story-body">
+          <span class="sb-story-name">Required</span>
+          <span class="sb-story-args">isRequired={'{'}true{'}'} type="email"</span>
+          <span class="sb-story-note">The asterisk is an inline SVG component in source, tinted <code>--color-action</code>.</span>
+        </div>
+      </div>
+
+      <div class="sb-story">
+        <div class="sb-canvas is-block">
+          <div id="story-focus" class="sb-mount"></div>
+        </div>
+        <div class="sb-story-body">
+          <span class="sb-story-name">Filled &amp; focus</span>
+          <span class="sb-story-args">:focus</span>
+          <span class="sb-story-note">Two-layer violet halo at 50% and 60% alpha. Value text is <code>--color-hovered</code>.</span>
+        </div>
+      </div>
+
+      <div class="sb-story">
+        <div class="sb-canvas is-block">
+          <div id="story-err" class="sb-mount"></div>
+        </div>
+        <div class="sb-story-body">
+          <span class="sb-story-name">Error</span>
+          <span class="sb-story-args">isError={'{'}true{'}'} errorMessage="..."</span>
+          <span class="sb-story-note">Halo switches to <code>error-200</code>/<code>error-100</code>; text to <code>--color-error</code>.</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="sb-section">
+    <h2>Findings</h2>
+
+    <p class="sb-note is-warn"><strong>The error message is not announced.</strong>
+      It renders in a plain <code>&lt;span&gt;</code> with no <code>role="alert"</code>,
+      no <code>aria-live</code>, and no <code>aria-describedby</code> linking it to
+      the input. The input also never gets <code>aria-invalid</code>. A screen
+      reader user gets no signal that the field failed — the error is conveyed by
+      color and position only.</p>
+
+    <p class="sb-note is-warn"><strong>Error text is #B42318 at 12px — 3.01:1.</strong>
+      Below the 4.5:1 floor for body text, and error copy is exactly the text a
+      user most needs to read. The system carries <code>error-100</code>
+      <code>#FE9A9A</code>, which clears it comfortably (9.71:1) on the #0A0A0B
+      page. Recorded in <code>DESIGN.md</code> §10.2.</p>
+
+    <p class="sb-note"><strong>Placeholder and label can collide.</strong>
+      The label sits at <code>pl-3 pt-3</code> and the input reserves
+      <code>pt-7</code>, so the two clear each other at the default 14px label. A
+      longer label that wraps to a second line will overlap the value, because the
+      reserved padding is a fixed 1.75rem rather than measured.</p>
+
+    <p class="sb-note"><strong>Autofill is handled deliberately.</strong>
+      Four <code>:-webkit-autofill</code> rules force a 1000px inset shadow in
+      <code>--color-surface-tertiary</code> and re-tint the text to
+      <code>--color-heading</code>, defeating Chrome's default light-yellow fill.
+      Without this the field would flash white on a dark form.</p>
+  </section>
+
+</div>
+
+<script is:inline type="module">
+  import { createApp } from 'vue';
+  import InputText from './compiled/InputText.js';
+
+  const stories = {
+    'story-name':  { id: 'sb-name',  label: 'Name',    type: 'text',
+                     placeholder: 'How should we call you?' },
+    'story-email': { id: 'sb-email', label: 'Email',   type: 'email',
+                     placeholder: 'you@company.com', isRequired: true },
+    'story-focus': { id: 'sb-focus', label: 'Company', type: 'text',
+                     placeholder: 'Focus me', modelValue: 'Acme Industries' },
+    'story-err':   { id: 'sb-err',   label: 'Email',   type: 'email',
+                     placeholder: 'you@company.com', isRequired: true, isError: true,
+                     modelValue: 'not-an-email',
+                     errorMessage: 'Please enter a valid email address.' },
+  };
+  for (const [el, props] of Object.entries(stories)) createApp(InputText, props).mount('#' + el);
+</script>
+</DocPage>

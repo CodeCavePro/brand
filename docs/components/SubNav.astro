@@ -1,0 +1,56 @@
+---
+/* The second navigation tier.
+ *
+ * Renders whichever bar `menu.ts` defines for the section, so a page cannot
+ * write its own. That is the whole point: this replaced seven <li>s typed by
+ * hand into brand-kit.astro, which is why "the menu is the same everywhere"
+ * could not be checked before -- there was nothing to check a page against.
+ *
+ * Nothing renders when a section has no SUB entry, so DocPage can hand every
+ * page to this component without asking whether it has a second bar. A section
+ * gains one by gaining a key in menu.ts, not by any page changing.
+ *
+ * It must sit inside DocPage's `.ds-nav-stack` wrapper, next to DsNav. Styled
+ * by docs/nav.css, which the layout links on every page.
+ */
+import { SUB, type MenuItem } from './menu.ts';
+
+interface Props {
+  /** The MAIN item name this page sits under. */
+  section?: string;
+  /** The SUB item name to mark current, if any. */
+  current?: string;
+  /** '../' repeated once per directory level below the docs root. */
+  up: string;
+}
+
+const { section, current, up } = Astro.props;
+const items: MenuItem[] = (section && SUB[section]) || [];
+
+/* An unknown `current` is a typo that would otherwise render a bar with nothing
+   marked -- which looks exactly like a page that is legitimately not in the bar,
+   so it is worth failing on rather than reading past. */
+if (current && !items.some((i) => i.name === current)) {
+  throw new Error(
+    `SubNav: no item named "${current}" in SUB["${section}"].\n` +
+      `Available: ${items.map((i) => i.name).join(', ') || '(none)'}`,
+  );
+}
+---
+{items.length > 0 && (
+  <nav class="ds-subnav" aria-label="Section">
+    <div class="page-container ds-subnav-inner">
+      <ul>
+        {items.map((i) => (
+          <li>
+            <a
+              class="btn btn-ghost"
+              href={`${up}${i.href}`}
+              aria-current={i.name === current ? 'true' : undefined}
+            >{i.label}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </nav>
+)}

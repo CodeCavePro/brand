@@ -1,0 +1,127 @@
+---
+/* Ported from docs/kitchen-sink/radio.html (CCWEB2-317 phase 3).
+ *
+ * Shell extraction. Mounting pattern and why it is not an island: button.astro. */
+import DocPage from '../../layouts/DocPage.astro';
+---
+<DocPage
+  title="Radio — CODECAVE storybook"
+  nav="kitchen-sink"
+  stylesheets={['../storybook/tw-bridge.css','storybook.css']}
+  importmap
+>
+<div class="sb">
+  <a class="sb-back" href="index.html">&larr; All components</a>
+
+  <header class="sb-head">
+    <p class="eyebrow">Primitive · 6 of 13</p>
+    <h1>Radio</h1>
+    <p>Two variants that differ far more than the name suggests: one is a small
+       filled pill, the other a 44px-radius outlined card. Note the variant naming
+       is inverted relative to Checkbox.</p>
+    <div class="sb-tags">
+      <span class="sb-tag is-vue">Vue island</span>
+      <span class="sb-tag">src/components/common/Radio.vue</span>
+      <span class="sb-tag">rendered live from compiled/Radio.js</span>
+      <span class="sb-tag">v-model</span>
+    </div>
+  </header>
+
+  <section class="sb-section">
+    <h2>Props</h2>
+    <table class="sb-props">
+      <thead><tr><th>Prop</th><th>Type</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>id <span class="sb-req">*</span></td><td><code>string</code></td><td>Doubles as the input's <code>value</code> and the emitted payload.</td></tr>
+        <tr><td>label <span class="sb-req">*</span></td><td><code>string</code></td><td>12px, <code>whitespace-nowrap</code>.</td></tr>
+        <tr><td>name <span class="sb-req">*</span></td><td><code>string</code></td><td>Groups the inputs natively.</td></tr>
+        <tr><td>isChecked</td><td><code>boolean</code></td><td>Bound to <code>:checked</code>.</td></tr>
+        <tr><td>modelValue</td><td><code>string</code></td><td>Declared, but the component emits <code>id</code> rather than reading this.</td></tr>
+        <tr><td>variant</td><td><code>'primary' | 'secondary'</code></td><td>primary = filled pill; secondary = outlined card.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="sb-section">
+    <h2>Stories</h2>
+    <div class="sb-stories">
+
+      <div class="sb-story">
+        <div class="sb-canvas">
+          <div id="story-r1"></div>
+          <div id="story-r2"></div>
+        </div>
+        <div class="sb-story-body">
+          <span class="sb-story-name">Primary</span>
+          <span class="sb-story-args">variant="primary"</span>
+          <span class="sb-story-note">Filled pill on #0F0F15 (the site&rsquo;s gray-1100), 8px radius. The budget selector in the consultation form.</span>
+        </div>
+      </div>
+
+      <div class="sb-story">
+        <div class="sb-canvas">
+          <span class="group"><div id="story-r3"></div></span>
+          <span class="group"><div id="story-r4"></div></span>
+        </div>
+        <div class="sb-story-body">
+          <span class="sb-story-name">Secondary</span>
+          <span class="sb-story-args">variant="secondary"</span>
+          <span class="sb-story-note">2px border, 2.75rem radius, 30%-alpha ground. Mounted inside a <code>.group</code> wrapper here so hover works at all.</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="sb-section">
+    <h2>Findings</h2>
+
+    <p class="sb-note is-warn"><strong>The secondary hover is dead code.</strong>
+      Source styles it with <code>group-hover:bg-surface-tertiary</code>, which
+      Tailwind only resolves when an ancestor carries the <code>group</code> class.
+      The component renders no such ancestor and no caller adds one, so the hover
+      never fires in the real app. The story above wraps each control in a
+      <code>.group</code> equivalent purely so the intended behavior is visible —
+      that wrapper is scaffolding, not source.</p>
+
+    <p class="sb-note is-warn"><strong>Same borrowed transition as Checkbox.</strong>
+      Line 61 declares
+      <code>transition: var(--default-transition-duration) transform ease-in-out;</code>
+      against a custom property the project never defines — it resolves to 150ms
+      only because Tailwind's default theme supplies it. Inside the site build
+      (and here) the dot eases; outside one, it snaps.</p>
+
+    <p class="sb-note is-warn"><strong><code>modelValue</code> is declared but never read.</strong>
+      The component emits <code>update:modelValue</code> with its own
+      <code>id</code> on change, and drives its visual state from the separate
+      <code>isChecked</code> prop. So <code>v-model</code> alone will not check the
+      button — the parent has to pass <code>isChecked</code> as well. Two props
+      express one piece of state, and they can disagree.</p>
+
+    <p class="sb-note"><strong>Variant naming is inverted against Checkbox.</strong>
+      Checkbox's <code>secondary</code> is the boxed-pill treatment and
+      <code>primary</code> is bare. Radio's <code>primary</code> is the boxed pill
+      and <code>secondary</code> is the larger card. Reaching for the same variant
+      name across the two components gives opposite results.</p>
+
+    <p class="sb-note"><strong>The dot is 7px inside a 17px box.</strong>
+      Unlike Checkbox the sizes are hard-coded pixels rather than token steps, and
+      there is no <code>size</code> prop — so a radio cannot be matched to a small
+      checkbox in the same row.</p>
+  </section>
+
+</div>
+
+<script is:inline type="module">
+  import { createApp } from 'vue';
+  import Radio from './compiled/Radio.js';
+
+  const stories = {
+    'story-r1': { id: 'r1', label: '$10–25k',      name: 'sb-budget', isChecked: true,  variant: 'primary' },
+    'story-r2': { id: 'r2', label: '$25–50k',      name: 'sb-budget',                   variant: 'primary' },
+    'story-r3': { id: 'r3', label: 'Cloud & DevOps',   name: 'sb-svc',    isChecked: true,  variant: 'secondary' },
+    'story-r4': { id: 'r4', label: 'AR & VR',          name: 'sb-svc',                      variant: 'secondary' },
+  };
+  for (const [el, props] of Object.entries(stories)) createApp(Radio, props).mount('#' + el);
+</script>
+</DocPage>

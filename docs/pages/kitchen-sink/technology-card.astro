@@ -1,0 +1,162 @@
+---
+/* Ported from docs/kitchen-sink/technology-card.html (CCWEB2-317 phase 3).
+ *
+ * Shell extraction. Mounting pattern and why it is not an island: button.astro.
+
+ * The head <style> is story-only — the card positions itself absolutely, so
+ * each story has to supply a positioned stage. It goes through the `head` slot
+ * as `is:inline`, without which Astro would scope its selectors and .sb-slot
+ * would stop matching the markup below. Its @media braces are inside a <style>
+ * and are left alone; the ones in the story args are prose and are guarded. */
+import DocPage from '../../layouts/DocPage.astro';
+---
+<DocPage
+  title="TechnologyCard — CODECAVE storybook"
+  nav="kitchen-sink"
+  stylesheets={['../storybook/tw-bridge.css','storybook.css']}
+  importmap
+>
+<style slot="head" is:inline>
+  /* Story-only. The card positions itself absolutely from its six-slot table,
+     so each story provides a positioned stage for it to land on. The active
+     story reserves headroom for the xl lift. */
+  .sb-slot { position: relative; height: 21rem; }
+  @media (min-width: 1280px) { .sb-slot.sb-lift { margin-top: 6rem; } }
+</style>
+<div class="sb">
+  <a class="sb-back" href="index.html">&larr; All components</a>
+
+  <header class="sb-head">
+    <p class="eyebrow">Content · 9 of 13</p>
+    <h1>TechnologyCard</h1>
+    <p>Its gradient border is a masked pseudo-element — the technique that makes
+       a gradient <em>stroke</em> possible around a transparent fill. Since the
+       palette rebuild the stroke is violet end to end; the teal survives only in
+       the card's 10% body wash.</p>
+    <div class="sb-tags">
+      <span class="sb-tag is-vue">Vue island</span>
+      <span class="sb-tag">src/components/homepage/technology-card.vue</span>
+      <span class="sb-tag">rendered live from compiled/technology-card.js</span>
+      <span class="sb-tag">mask-composite</span>
+    </div>
+  </header>
+
+  <section class="sb-section">
+    <h2>Props</h2>
+    <table class="sb-props">
+      <thead><tr><th>Prop</th><th>Type</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>name <span class="sb-req">*</span></td><td><code>string</code></td><td>Both the label and the routing key — matched against six literal service names.</td></tr>
+        <tr><td>active <span class="sb-req">*</span></td><td><code>boolean</code></td><td>Lifts the card and reveals the CTA.</td></tr>
+        <tr><td>index</td><td><code>number</code></td><td>Optional in the type, but indexes two six-element position tables unguarded.</td></tr>
+        <tr><td>className</td><td><code>string</code></td><td>Appended last.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="sb-section">
+    <h2>Stories</h2>
+    <p>Mounted with real slots from the six-position table: the inactive card
+       takes slot 0 (<code>-rotate-4 left-2 top-10</code>), the active card
+       slot 3 (<code>rotate-4 right-2 top-10</code>). On an xl viewport the
+       active card also lifts by a third.</p>
+    <div class="sb-stories is-wide">
+
+      <div class="sb-story">
+        <div class="sb-canvas is-block">
+          <div class="sb-slot"><div id="story-tc1"></div></div>
+        </div>
+        <div class="sb-story-body">
+          <span class="sb-story-name">Inactive</span>
+          <span class="sb-story-args">active={'{'}false{'}'} index={'{'}0{'}'} className="w-72 h-72"</span>
+          <span class="sb-story-note">The CTA is <code>hidden</code> below xl, and <code>opacity-0</code> above it — present but invisible. The sizing comes entirely from <code>className</code>; the card has none of its own.</span>
+        </div>
+      </div>
+
+      <div class="sb-story">
+        <div class="sb-canvas is-block">
+          <div class="sb-slot sb-lift"><div id="story-tc2"></div></div>
+        </div>
+        <div class="sb-story-body">
+          <span class="sb-story-name">Active</span>
+          <span class="sb-story-args">active={'{'}true{'}'} index={'{'}3{'}'} className="w-72 h-72"</span>
+          <span class="sb-story-note">Lifts by a third (or a half for the bottom two slots) over 500ms and shows the tertiary "Explore service" Button — its href comes from the name switch, here <code>/services/autodesk</code>.</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="sb-section">
+    <h2>The border technique</h2>
+    <p>Three layers doing one job. This is the only place in the system where the
+       teal appears — <code>--color-technology-gradient-0</code> (#077689), at 10%
+       alpha inside the body wash. Pre-redesign the cyan #20EFFE was the stroke's
+       middle stop; current <code>brand-400</code> is #5F3ABD, so the stroke is
+       violet end to end.</p>
+    <table class="sb-props">
+      <thead><tr><th>Layer</th><th>Value</th><th>Role</th></tr></thead>
+      <tbody>
+        <tr><td>.card-wrapper</td><td><code>technology-gradient-25 → -0 → -50</code> (#1A0452 → #077689 → #070312), all at 10% alpha</td><td>The faint body wash — the teal's only appearance.</td></tr>
+        <tr><td>.card</td><td><code>backdrop-filter: blur(14px)</code></td><td>Frosts whatever sits behind, fill stays transparent.</td></tr>
+        <tr><td>.card::before</td><td><code>brand-500 @35% → brand-400 @67.5% → brand-500</code> (#5F20FE / #5F3ABD)</td><td>The gradient stroke, clipped to a 1px ring by <code>mask-composite: subtract</code>.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="sb-section">
+    <h2>Findings</h2>
+
+    <p class="sb-note is-warn"><strong><code>index</code> is optional but indexed unguarded.</strong>
+      The type is <code>index?: number</code>, yet the template evaluates
+      <code>rotate[index]</code> and <code>translate[index]</code> directly.
+      Omitting the prop yields <code>rotate[undefined]</code> →
+      <code>undefined</code>, which is interpolated into the class string as the
+      literal text. Passing an index above 5 does the same. Neither table has a
+      fallback — and the mobile carousel call site really does omit it
+      (<code>technologies.vue</code> passes <code>:index</code> only on desktop).</p>
+
+    <p class="sb-note is-warn"><strong>Routing is a string match on display copy.</strong>
+      <code>getTechnologyUrl</code> switches on the same <code>name</code> that is
+      rendered to the user, returning <code>''</code> for anything unmatched. So
+      editing a service label — fixing capitalization, translating the site —
+      silently turns the CTA into a link to the current page. The six names are
+      duplicated here, in <code>header/menu.ts</code>, and in
+      <code>footer/links.ts</code>.</p>
+
+    <p class="sb-note is-warn"><strong>The heading level is <code>&lt;h2&gt;</code> for a card title.</strong>
+      Six of these render per homepage section, each emitting an <code>h2</code>
+      alongside the section's own heading. Same outline problem as ArticlePreview.</p>
+
+    <p class="sb-note"><strong><code>-webkit-mask-composite</code> is absent from source.</strong>
+      Only the standard <code>mask-composite: subtract</code> is declared. Where
+      the prefixed pairing (<code>-webkit-mask-composite: xor</code>) is still
+      required, the mask does not subtract and the pseudo-element fills solid,
+      covering the card with a violet block instead of ringing it. The compiled
+      component above ships the source CSS verbatim, so a browser that needs the
+      prefix reproduces the bug rather than masking it.</p>
+  </section>
+
+</div>
+
+<script is:inline type="module">
+  import { createApp } from 'vue';
+  import TechnologyCard from './compiled/technology-card.js';
+
+  // Real desktop call-site shape (technologies.vue): sizing via className,
+  // slot placement via index. The .sb-slot wrappers are the positioned stage.
+  createApp(TechnologyCard, {
+    name: 'Cloud & DevOps',
+    active: false,
+    index: 0,
+    className: 'w-72 h-72',
+  }).mount('#story-tc1');
+
+  createApp(TechnologyCard, {
+    name: 'Autodesk plugins',
+    active: true,
+    index: 3,
+    className: 'w-72 h-72',
+  }).mount('#story-tc2');
+</script>
+</DocPage>

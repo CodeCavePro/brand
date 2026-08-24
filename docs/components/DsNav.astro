@@ -12,41 +12,61 @@
  * has carried unused since the migration. No `client:*` directive: BrandNav
  * emits static HTML and ships no JavaScript, exactly as the old markup did.
  *
+ * THE ITEMS ARE NOT WRITTEN HERE ANY MORE. They were, until the site collapsed
+ * to two surfaces; menu.ts owns them now, and this file owns only how they are
+ * handed to BrandNav. A page cannot pass items in -- there is no prop -- so
+ * "the main menu is the same on every page" is true by construction rather than
+ * by everyone remembering. The one thing a page contributes is which item is
+ * current, and that is a name out of menu.ts rather than a string of its own.
+ *
  * `up` comes from the layout rather than being computed here, because the
  * layout needs the same prefix for its stylesheet hrefs and computing it twice
  * is how the two drift apart. Relative rather than root-absolute so a page
- * still opens from disk — which is how these cards are reviewed.
+ * still opens from disk -- which is how these pages are reviewed.
  *
- * The six artifact specimens deliberately have no nav at all: an HTML email
- * with a documentation bar welded to the top is no longer a valid email. Only
- * artifacts/index.html, the gallery, carries this.
+ * The six artifacts under examples/ deliberately have no nav at all: an HTML
+ * email with a documentation bar welded to the top is no longer a valid email,
+ * and a deck would repeat it on every slide. Each is reached through a wrapper
+ * PAGE that carries this bar, so every route has the menu while every artifact
+ * stays the thing it demonstrates.
  */
 import BrandNav from '../authored/common/BrandNav.vue';
+import { MAIN, UNLISTED, assertMenu } from './menu.ts';
 
 interface Props {
-  /** Which section is being viewed, or nothing on a page in none of them. */
-  current?: 'brand-kit' | 'foundations' | 'storybook' | 'artifacts';
+  /** A MAIN item name, or nothing on a page in no section. */
+  current?: string;
   /** '../' repeated once per directory level below the docs root. */
   up: string;
 }
 
 const { current, up } = Astro.props;
 
-/* The section each item stands for is not its label, so `current` is matched
-   against these names and the labels are free to change. */
-const left = [
-  { name: 'brand-kit', label: 'Brand kit', href: `${up}brand-kit.html` },
-  { name: 'foundations', label: 'Foundations', href: `${up}preview/index.html` },
-];
-const right = [
-  { name: 'storybook', label: 'Live components', href: `${up}storybook/index.html` },
-  { name: 'artifacts', label: 'Templates', href: `${up}artifacts/index.html` },
-];
+assertMenu();
+
+/* An unknown `current` would render a bar with nothing marked, which is
+   indistinguishable from a page legitimately outside every section -- so a
+   typo is worth failing on. An UNLISTED name passes and marks nothing, which
+   is correct rather than a loophole: `home` is a real section with a real
+   second bar, and the wordmark is its entry in this one. */
+const known = [...MAIN.map((i) => i.name), ...UNLISTED];
+if (current && !known.includes(current)) {
+  throw new Error(
+    `DsNav: no section named "${current}".\n` +
+      `Known sections are: ${known.join(', ')}`,
+  );
+}
+
+/* BrandNav splits its items around the centred wordmark. With two surfaces that
+   is one per side, and the split is arithmetic rather than a layout decision
+   taken here -- a third surface would fall out of the same line. */
+const half = Math.ceil(MAIN.length / 2);
+const toNav = (i: (typeof MAIN)[number]) => ({ name: i.label, href: `${up}${i.href}` });
 ---
 <BrandNav
-  left={left.map((i) => ({ name: i.label, href: i.href }))}
-  right={right.map((i) => ({ name: i.label, href: i.href }))}
-  current={[...left, ...right].find((i) => i.name === current)?.label}
+  left={MAIN.slice(0, half).map(toNav)}
+  right={MAIN.slice(half).map(toNav)}
+  current={MAIN.find((i) => i.name === current)?.label}
   logo={`${up}assets/codecave-wide.svg`}
   logoHref={`${up}index.html`}
   logoAlt="CODECAVE"

@@ -1,0 +1,83 @@
+/* The two navigation tiers, owned by the layout.
+ *
+ * These rules used to live inside brand-kit.astro's <style>, next to a comment
+ * saying `.ds-nav-stack` "is this page's arrangement and no other page has it".
+ * That was true when one page had a second bar. It stopped being true when the
+ * site collapsed to two surfaces, one of which is a single long page that
+ * cannot be navigated without one -- so the arrangement moved here, and DocPage
+ * links this file on every page rather than each page restating it.
+ *
+ * The stack is what makes the two bars behave as one block. Without it they
+ * race for the same top edge: both want to be sticky, so the second scrolls
+ * under the first. Sticking the WRAPPER and leaving both children static means
+ * neither needs to know the other's height -- which is the bug this replaced,
+ * where the sub-bar carried `top: var(--ds-nav-height)` and drifted whenever
+ * the main bar's padding changed. Nothing here depends on a measured number.
+ */
+
+.ds-nav-stack {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+/* --- the second tier ------------------------------------------------------ */
+
+.ds-subnav {
+  /* Placed by the stack above, not by an offset of its own. */
+  position: static;
+  border-bottom: 1px solid var(--color-surface-quaternary);
+  background: var(--color-surface-primary-transparent);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+}
+
+.ds-subnav-inner {
+  box-sizing: border-box; /* the site resets this globally; these pages do not */
+  display: flex;
+  /* The wordmark belongs to the global bar directly above, so this row has
+     nothing to split around -- the links close up and read as one centred row. */
+  justify-content: center;
+  align-items: center;
+  gap: 0.25rem;
+  position: relative;
+  min-height: 0; /* .page-container's 100% floor is for pages, not bars */
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.ds-subnav ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The current section, marked the same way BrandNav marks the current item:
+   by weight and foreground, never by a box that shifts the row's height. */
+.ds-subnav a[aria-current='true'] {
+  color: var(--color-heading);
+  font-weight: var(--font-weight-bold);
+}
+
+/* Anchor jumps have to clear BOTH bars, so any element a sub-nav link targets
+   carries this rather than the pages guessing an offset each. */
+.ds-anchor {
+  scroll-margin-top: 9rem;
+}
+
+@media (max-width: 767px) {
+  /* Below the drawer breakpoint the two bars stop being one block: the main bar
+     collapses to a drawer and sticking a wrapper around both would pin the
+     sub-bar over the content it is meant to navigate. `display: contents`
+     dissolves the wrapper so each bar lays out on its own. */
+  .ds-nav-stack {
+    display: contents;
+  }
+  .ds-subnav-inner {
+    flex-wrap: wrap;
+  }
+}

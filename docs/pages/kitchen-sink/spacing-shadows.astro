@@ -1,0 +1,110 @@
+---
+/* Ported from docs/kitchen-sink/spacing-shadows.html — the proof page for CCWEB2-317
+ * phase 1. The prose, the demos and the page-specific CSS are unchanged; what
+ * left the file is the head boilerplate and the fourteen lines of nav.
+ *
+ * Chosen as the first port because it is the smallest page that still exercises
+ * every part of the shell: a page-specific <style>, a sibling stylesheet, real
+ * form controls, and a nav section to mark current.
+ */
+import DocPage from '../../layouts/DocPage.astro';
+---
+<DocPage
+  title="CODECAVE — Elevation: the inverted glow"
+  nav="kitchen-sink"
+  stylesheets={['preview.css']}
+>
+<style slot="head" is:inline>
+  .glow-stage { padding: 5rem 1.5rem 3rem; border-radius: var(--radius-tile);
+                background: var(--color-surface-primary);
+                border: 1px dashed var(--color-surface-quaternary); }
+  .panel-demo { background: var(--color-surface-primary);
+                border-radius: var(--radius-section); padding: 2.5rem 2rem;
+                text-align: center; font-family: var(--font-mono);
+                font-size: 0.8125rem; color: var(--color-body-secondary-lighter); }
+  .wrong      { box-shadow: 0 24px 48px 0 hsl(from #000 h s l / 0.8); }
+  .halo-stage { display: grid; place-items: center; padding: 3rem 1.5rem;
+                border-radius: var(--radius-tile);
+                background: var(--color-surface-primary);
+                border: 1px dashed var(--color-surface-quaternary); }
+</style>
+
+<div class="pv-shell">
+  <a class="pv-back" href="index.html">&larr; All foundations</a>
+
+  <header class="pv-head">
+    <span class="eyebrow">Spacing · card 3 of 3</span>
+    <h1>Elevation — the light comes from below</h1>
+    <p>CODECAVE has no conventional drop shadow. Section panels cast violet light
+       <strong>upward</strong>: the source sits under the panel edge. It is physically wrong and
+       instantly recognizable, and it is the single most important thing not to normalise.</p>
+  </header>
+
+  <section class="pv-block">
+    <h2><code>--shadow-section</code> — all three offsets negative on Y</h2>
+    <p class="pv-note">Three stacked layers seeded from <code>--color-shadow-0</code>
+       (<code>#281470</code>) at 20%, 10% and 8% alpha. Inspect the space <em>above</em> the panel:
+       that is where the violet has to appear.</p>
+    <div class="glow-stage">
+      <div class="panel-demo" style="box-shadow:var(--shadow-section)">
+        correct — light emitted upward from beneath the edge
+      </div>
+    </div>
+<pre class="pv-tile" style="margin-top:1.5rem;overflow-x:auto"><code style="font-family:var(--font-mono);font-size:0.8125rem;color:var(--color-hovered)">--shadow-section:
+  0 <strong>-64px</strong> 64px 0 hsl(from #281470 h s l / 0.20),
+  0 <strong>-10px</strong> 24px 0 hsl(from #281470 h s l / 0.10),
+  0  <strong>-6px</strong>  6px 0 hsl(from #281470 h s l / 0.08);</code></pre>
+  </section>
+
+  <section class="pv-block">
+    <h2>The one substitution that breaks the brand</h2>
+    <p class="pv-note">Same panel, same radius, conventional downward shadow. Everything
+       recognizable is gone. This is anti-pattern #1 in DESIGN.md for a reason.</p>
+    <div class="glow-stage">
+      <div class="panel-demo wrong">
+        off-system — positive Y offset, neutral black
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-block">
+    <h2><code>--shadow-glow-button</code> — the CTA halo</h2>
+    <p class="pv-note">Three concentric violet rings at 64px, 16px and 4px spread, all with zero
+       offset. Source: <code>source_examples/common/GlowButton.vue</code>. Hover and press the
+       control — it brightens and scales to 0.98, and the foreground never dims.</p>
+    <div class="halo-stage">
+      <span class="btn-glow-field"><a class="btn btn-glow" href="#"><span>Get a free consultation</span></a></span>
+    </div>
+  </section>
+
+  <section class="pv-block">
+    <h2>Input halos — focus and error</h2>
+    <p class="pv-note">Focus draws a violet halo instead of an outline; error swaps it to the red
+       ramp. Click into the first field to see the real focus state, not a mock-up of one.</p>
+    <div class="pv-grid pv-grid-2">
+      <div class="pv-tile">
+        <div class="field">
+          <label for="sh-focus">Work email</label>
+          <input id="sh-focus" type="email" placeholder="you@company.com">
+        </div>
+        <span class="pv-meta" style="margin-top:0.75rem">--shadow-input-focus · #5F20FE at 50% / 60%</span>
+      </div>
+      <div class="pv-tile">
+        <div class="field is-error">
+          <label for="sh-error">Work email</label>
+          <input id="sh-error" type="email" value="not-an-email" aria-invalid="true">
+          <span class="error-message">Enter a valid work email address.</span>
+        </div>
+        <span class="pv-meta" style="margin-top:0.75rem">--shadow-input-error · #FE2020 / #FE9A9A</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="pv-block">
+    <p class="pv-warn"><strong>Cards get no shadow at all.</strong> Only section panels glow, and
+      only upward. A card separates from the page with 24px of radius and a 1px
+      <code>#2B2848</code> border — that is the whole mechanism.</p>
+  </section>
+</div>
+
+</DocPage>

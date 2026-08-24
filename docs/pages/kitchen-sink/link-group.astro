@@ -1,0 +1,132 @@
+---
+/* Ported from docs/kitchen-sink/link-group.html (CCWEB2-317 phase 3).
+ *
+ * Shell extraction. Mounting pattern and why it is not an island: button.astro.
+
+ * The services array is copied from links.ts and contains 'UX\UI design' — a
+ * backslash escaped for JavaScript. It survives because `is:inline` hands the
+ * script through untouched; checked in a browser, the link reads UX\UI design. */
+import DocPage from '../../layouts/DocPage.astro';
+---
+<DocPage
+  title="LinkGroup — CODECAVE storybook"
+  nav="kitchen-sink"
+  stylesheets={['../storybook/tw-bridge.css','storybook.css']}
+  importmap
+>
+<div class="sb">
+  <a class="sb-back" href="index.html">&larr; All components</a>
+
+  <header class="sb-head">
+    <p class="eyebrow">Composition · 12 of 13</p>
+    <h1>LinkGroup</h1>
+    <p>A composition rather than a primitive: an uppercase group heading plus N
+       <code>Button variant="text"</code>. Included because it is the only place
+       the footer's link styling is defined.</p>
+    <div class="sb-tags">
+      <span class="sb-tag is-vue">Vue island</span>
+      <span class="sb-tag">src/components/footer/link-group.vue</span>
+      <span class="sb-tag">rendered live from compiled/link-group.js</span>
+      <span class="sb-tag">composes Button</span>
+    </div>
+  </header>
+
+  <section class="sb-section">
+    <h2>Props</h2>
+    <table class="sb-props">
+      <thead><tr><th>Prop</th><th>Type</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>groupName <span class="sb-req">*</span></td><td><code>string</code></td><td>Uppercased in CSS, 12px, <code>--color-body-secondary</code>.</td></tr>
+        <tr><td>items <span class="sb-req">*</span></td><td><code>Link[]</code></td><td>From <code>footer/links.ts</code>. Each has <code>name</code> and <code>href</code>.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="sb-section">
+    <h2>Stories</h2>
+    <div class="sb-stories">
+
+      <div class="sb-story">
+        <div class="sb-canvas is-start">
+          <div id="story-lg1"></div>
+        </div>
+        <div class="sb-story-body">
+          <span class="sb-story-name">Services</span>
+          <span class="sb-story-args">groupName="Services" items = links.ts verbatim (12)</span>
+          <span class="sb-story-note">Hover a link: #C7C7DB → #B19AFE. The items are the real
+            <code>footer/links.ts</code> services array — five of the twelve share the
+            e-commerce path.</span>
+        </div>
+      </div>
+
+      <div class="sb-story">
+        <div class="sb-canvas is-start">
+          <div id="story-lg2"></div>
+        </div>
+        <div class="sb-story-body">
+          <span class="sb-story-name">Short group</span>
+          <span class="sb-story-args">items={'{'}2{'}'}</span>
+          <span class="sb-story-note">Row gap tightens from 0.75rem to 0.5rem at the xl breakpoint.</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="sb-section">
+    <h2>Findings</h2>
+
+    <p class="sb-note is-warn"><strong>The group heading is not a heading, and the links are not a list.</strong>
+      <code>groupName</code> renders as a <code>&lt;p&gt;</code> and each link sits
+      in a bare <code>&lt;div&gt;</code>. Nothing associates the heading with its
+      links, so assistive tech reports one flat run of anchors across the whole
+      footer with no group boundaries and no count. A <code>&lt;nav&gt;</code> with
+      an <code>aria-labelledby</code> heading and a <code>&lt;ul&gt;</code> would
+      fix it without changing a pixel. The mounted stories above render the
+      component's real markup — flat divs and all; inspect them.</p>
+
+    <p class="sb-note is-warn"><strong><code>:key="index"</code> on a v-for over links.</strong>
+      Keying by array position rather than by <code>href</code> means a reorder or
+      splice re-uses the wrong DOM nodes. Low impact for a static footer, but it
+      is the kind of thing that only bites once the list becomes CMS-driven.</p>
+
+    <p class="sb-note"><strong>It inherits Button's text variant wholesale.</strong>
+      Because <code>variant="text"</code> carries no padding, the hit target is
+      exactly the glyph height — around 20px at 14px type, under the 24px minimum
+      most touch guidance asks for. The spacing between rows comes from the
+      parent's <code>space-y</code>, not from the target itself.</p>
+  </section>
+
+</div>
+
+<script is:inline type="module">
+  import { createApp } from 'vue';
+  import LinkGroup from './compiled/link-group.js';
+
+  // links.ts's services array, verbatim — link-group.vue only imports its TYPE,
+  // so the data is passed at the call site exactly as footer.astro does.
+  const services = [
+    { name: 'AR & VR', href: '/services/ar-vr' },
+    { name: 'Cloud services', href: '/services/devops' },
+    { name: 'DevOps', href: '/services/devops' },
+    { name: 'E-commerce', href: '/services/ecommerce' },
+    { name: 'Web development', href: '/services/ecommerce' },
+    { name: 'UX\\UI design', href: '/services/ecommerce' },
+    { name: 'QA & testing', href: '/services/ecommerce' },
+    { name: 'Automation & AI', href: '/services/automation' },
+    { name: 'Autodesk plugins', href: '/services/autodesk' },
+    { name: 'Legacy modernization', href: '/services/ecommerce' },
+    { name: 'Data migration', href: '/services/hubspot' },
+    { name: 'HubSpot', href: '/services/hubspot' },
+  ];
+
+  createApp(LinkGroup, { groupName: 'Services', items: services }).mount('#story-lg1');
+  createApp(LinkGroup, {
+    groupName: 'Company',
+    items: [
+      { name: 'Workflow', href: '/workflow' },
+      { name: 'Insights', href: '/insights' },
+    ],
+  }).mount('#story-lg2');
+</script>
+</DocPage>
