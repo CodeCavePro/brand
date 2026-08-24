@@ -19,12 +19,11 @@
 /* ---------------------------------------------------------------------------
  * Font faces
  *
- * PROVENANCE NOTE — this differs from production on purpose.
- * codecave.pro ships exactly ONE real cut (Satoshi-Regular.ttf, weight 400)
- * and lets the browser synthesize 300 and 700. This package ships the real
- * Satoshi cuts captured in the brand asset upload, so bound weights render
- * genuinely rather than faux-bolded. Designs built here will look very
- * slightly tighter at 700 than the live site does today.
+ * The ten faces are bound to explicit numeric weights in both styles. The
+ * vendor's own stylesheet.css declares Bold and Black as the same
+ * `font-weight: bold`, and their italics likewise, so four cuts collide into
+ * two slots there and the last one declared silently wins. That is the defect
+ * these declarations exist to avoid; do not replace them with the vendor file.
  * ------------------------------------------------------------------------ */
 
 @font-face {
@@ -33,6 +32,15 @@
        url("./fonts/Satoshi-Light.woff") format("woff");
   font-weight: 300;
   font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: Satoshi;
+  src: url("./fonts/Satoshi-LightItalic.woff2") format("woff2"),
+       url("./fonts/Satoshi-LightItalic.woff") format("woff");
+  font-weight: 300;
+  font-style: italic;
   font-display: swap;
 }
 
@@ -65,6 +73,15 @@
 
 @font-face {
   font-family: Satoshi;
+  src: url("./fonts/Satoshi-MediumItalic.woff2") format("woff2"),
+       url("./fonts/Satoshi-MediumItalic.woff") format("woff");
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: Satoshi;
   src: url("./fonts/Satoshi-Bold.woff2") format("woff2"),
        url("./fonts/Satoshi-Bold.woff") format("woff");
   font-weight: 700;
@@ -74,10 +91,28 @@
 
 @font-face {
   font-family: Satoshi;
+  src: url("./fonts/Satoshi-BoldItalic.woff2") format("woff2"),
+       url("./fonts/Satoshi-BoldItalic.woff") format("woff");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: Satoshi;
   src: url("./fonts/Satoshi-Black.woff2") format("woff2"),
        url("./fonts/Satoshi-Black.woff") format("woff");
   font-weight: 900;
   font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: Satoshi;
+  src: url("./fonts/Satoshi-BlackItalic.woff2") format("woff2"),
+       url("./fonts/Satoshi-BlackItalic.woff") format("woff");
+  font-weight: 900;
+  font-style: italic;
   font-display: swap;
 }
 

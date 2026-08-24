@@ -4,16 +4,17 @@
  * package root. This file exists so `fonts/` can be dropped into another
  * project on its own; the paths here are relative to fonts/ itself.
  *
- * PROVENANCE
- * The production site (codecave.pro/src/styles/global.css) declares ONE face:
+ * WHY THE WEIGHTS ARE NUMBERS
+ * The vendor's own stylesheet.css cannot be used: it declares Bold and Black
+ * BOTH as `font-weight: bold`, and their italics likewise, so four cuts
+ * collide into two slots and whichever is declared last silently wins. The
+ * ten faces below bind 300/400/500/700/900 in each style explicitly, which is
+ * the whole point of shipping real cuts rather than letting a browser
+ * synthesize them.
  *
- *     @font-face { font-family: Satoshi; src: url("../assets/fonts/Satoshi-Regular.ttf"); }
- *
- * with no font-weight descriptor, which is why live 300 and 700 text is
- * browser-synthesized rather than a real cut. The brand asset upload supplied
- * genuine Light / Regular / Medium / Bold / Black cuts, so this package binds
- * them properly. Expect package output at 700 to be marginally tighter than
- * the live site until production ships the same files.
+ * The binaries are not in the npm package -- see the note in
+ * packages/brand/scripts/build.mjs -- so a consumer supplies the files and
+ * these ten declarations tell it what to supply.
  */
 
 @font-face {
@@ -22,6 +23,15 @@
        url("./Satoshi-Light.woff") format("woff");
   font-weight: 300;
   font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: Satoshi;
+  src: url("./Satoshi-LightItalic.woff2") format("woff2"),
+       url("./Satoshi-LightItalic.woff") format("woff");
+  font-weight: 300;
+  font-style: italic;
   font-display: swap;
 }
 
@@ -54,6 +64,15 @@
 
 @font-face {
   font-family: Satoshi;
+  src: url("./Satoshi-MediumItalic.woff2") format("woff2"),
+       url("./Satoshi-MediumItalic.woff") format("woff");
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: Satoshi;
   src: url("./Satoshi-Bold.woff2") format("woff2"),
        url("./Satoshi-Bold.woff") format("woff");
   font-weight: 700;
@@ -63,9 +82,27 @@
 
 @font-face {
   font-family: Satoshi;
+  src: url("./Satoshi-BoldItalic.woff2") format("woff2"),
+       url("./Satoshi-BoldItalic.woff") format("woff");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: Satoshi;
   src: url("./Satoshi-Black.woff2") format("woff2"),
        url("./Satoshi-Black.woff") format("woff");
   font-weight: 900;
   font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: Satoshi;
+  src: url("./Satoshi-BlackItalic.woff2") format("woff2"),
+       url("./Satoshi-BlackItalic.woff") format("woff");
+  font-weight: 900;
+  font-style: italic;
   font-display: swap;
 }
