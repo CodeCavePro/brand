@@ -35,6 +35,19 @@
         "dist"
       ],
       "port": 8129
+    },
+    {
+      "name": "site",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": [
+        "--dir",
+        "../codecave.pro",
+        "run",
+        "dev",
+        "--port",
+        "4331"
+      ],
+      "port": 4331
     }
   ]
 }

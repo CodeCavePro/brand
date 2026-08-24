@@ -51,7 +51,7 @@ import path from 'node:path';
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 import { sourceDigest, DIGEST_PREFIX } from './source-digest.mjs';
-import { HELPERS_ALIAS, unalias, usesAlias } from './helpers-alias.mjs';
+import { HELPERS_ALIAS, unalias, usesAlias } from './import-aliases.mjs';
 
 const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const siteDir = path.resolve(process.argv[2] ?? path.join(docs, '..', '..', 'codecave.pro'));

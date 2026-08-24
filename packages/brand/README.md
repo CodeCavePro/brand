@@ -149,18 +149,22 @@ Two things to know about it:
 
 ## The components
 
-13 components and 13 icons — the buttons, the form controls and the forms
-themselves, the review card and the typing effect codecave.pro renders — ship as
+19 components and 13 icons — the buttons, the form controls and the forms
+themselves, the nav bar, the footer link group, the article and technology
+cards, the review card and the typing effect codecave.pro renders — ship as
 **source**, byte-for-byte the files the site builds from. Not a reimplementation
 of them, and not a bundle compiled from a snapshot: the same files, kept
 identical by a check that runs on every push.
 
-**The site's own menus are deliberately absent, and `BrandNav` is why they can
-be.** The footer link group, the article and technology cards and the two menus
-all reach codecave.pro's route table and menu data, so shipping them would put
-one site's navigation behind an npm release — changing a menu item would mean
-publishing. `BrandNav` is the same bar with the coupling removed: it takes its
-items, its wordmark and its active state as props and reaches nothing.
+**None of them knows your routes.** Six of these shipped for the first time in
+2.1.0 and were held back before it, because each read codecave.pro's own route
+table or menu data directly — installing one would have put that site's
+navigation behind an npm release, so changing a menu item would mean publishing.
+They now take the same information as props: `basePath` on `ArticlePreview`,
+`items` on `link-group` and `services-list`, `serviceLinks` and `ctaHref` on
+`technologies`, `href` on `technology-card`, `items` and `logo` on
+`mobile-menu`. `BrandNav` was the first to be built that way and is the reason
+the rest could follow.
 
 ```vue
 <BrandNav

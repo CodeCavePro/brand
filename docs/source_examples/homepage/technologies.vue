@@ -6,7 +6,6 @@ import { BREAKPOINTS } from "@helpers/breakpoints.ts";
 import GlowButton from "@codecavepro/brand/components/common/GlowButton.vue";
 import TypingEffect from "@codecavepro/brand/components/common/effects/TypingEffect.vue";
 import TechnologyCard from "./technology-card.vue";
-import { paths } from "@helpers/paths.ts";
 import { carouselGestureLocker } from "@helpers/carousel-gesture-locker.ts";
 
 /* See ArticlePreview.vue: the fields read here, not the generated Strapi
@@ -21,6 +20,14 @@ type TechnologySummary = {
 const props = defineProps<{
   technologies: TechnologySummary[]
   hideSelected?: boolean
+  /* Where the consultation button goes. Was `paths.contactUs`, read straight
+   * off this site's route table. */
+  ctaHref?: string
+  /* Technology name to service URL. Plain data rather than a resolver function
+   * because every call site mounts this with `client:only`, and Astro can only
+   * hand an island props it can serialise. @helpers/service-links.ts holds the
+   * site's map; a name that is missing renders an inert button. */
+  serviceLinks?: Record<string, string>
 }>()
 
 const activeIndex = ref(0)
@@ -80,7 +87,7 @@ const carouselLocker = carouselGestureLocker()
       </div>
     </div>
     <div v-if="!hideSelected" class="self-center pt-10 pb-[4.5rem] md:pt-14 md:pb-16">
-      <GlowButton title="Get a free consultation" :href="paths.contactUs" />
+      <GlowButton title="Get a free consultation" :href="ctaHref" />
     </div>
     <div v-else class="pt-[7.5rem] pb-20 space-y-7 text-center">
       <h2 class="font-bold text-heading-md text-heading">
@@ -99,6 +106,7 @@ const carouselLocker = carouselGestureLocker()
       >
         <TechnologyCard
             :name="item.name"
+            :href="serviceLinks?.[item.name]"
             :active="activeIndex === index"
             className="w-72 h-72"
             :index="index"
@@ -115,6 +123,7 @@ const carouselLocker = carouselGestureLocker()
             <div class="flex items-center w-[190px] h-[220px]">
             <TechnologyCard
                 :name="item.name"
+                :href="serviceLinks?.[item.name]"
                 :active="activeIndex === index"
                 :className="`w-full h-full ${activeIndex === index ? 'max-h-full' : 'max-h-[190px]'}`"
             />

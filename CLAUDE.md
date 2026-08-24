@@ -18,9 +18,11 @@ label ([live query](https://codecave.atlassian.net/issues?jql=project%20%3D%20CC
 
 -   [CCWEB2-318](https://codecave.atlassian.net/browse/CCWEB2-318) — **epic. All six phases have landed (2026-08-21), and phase 6's sentence is now finished on the styling side.** The package is on public npm; codecave.pro `development` installs **1.6.1**, imports both `/tokens.css` and `/theme.css` from it, and no longer keeps a palette or an `@theme` block of its own — which is why `docs/theme.css` is now the ORIGIN of that block rather than the site's `global.css` capture. Deriving it from the site had quietly become a circle, and it survived only while the capture was stale. Twelve components moved with it — Button, GlowButton, Checkbox, InputText, TextField, Radio, Review, TypingEffect, ContactUsForm, ResearchForm, LazyImage, pain-points-item — and are gone from the site's `src/`.
 
-    Seven stay site-owned on purpose: ArticlePreview, link-group, desktop-menu, mobile-menu, services-list, technologies and technology-card all reach the site's `paths.ts`, `links.ts` or `menu.ts`. Installing them would put codecave.pro's navigation behind an npm release — changing a menu item would mean publishing. That is a coupling decision, not a mechanical swap.
+    Seven used to stay site-owned: ArticlePreview, link-group, desktop-menu, mobile-menu, services-list, technologies and technology-card each read the site's `paths.ts`, `links.ts` or `menu.ts`, so installing one would have put codecave.pro's navigation behind an npm release — changing a menu item would mean publishing. 2.0.0 stopped shipping them for that reason.
 
-    **As of 2.0.1 the package does not ship them either, and that took a major bump.** It had been shipping all seven — not by decision, but because every non-excluded `.vue` is a root. Nobody installed them, so nothing said so, until the site began importing the package by name and those seven became the only shipped captures with a live origin left to drift. Refreshing them would have written `@codecavepro/brand/components/common/Button.vue` into the package's own source: the package importing itself, `assertPeersDeclared` demanding the package as its own peer, and a consumer with two versions installed getting one component's Button from the other. The alternative was a second rewrite rule taught to four places to keep shipping files nobody installs, so they went into `NOT_SHIPPED` instead and `assertNoSelfImport()` keeps the class shut. What is left with a live origin — thirteen icons, two leaf modules, one SVG — renders no shared component and so can never acquire that import. Three storybook specimens compile from the captures now, and the build says which.
+    **2.1.0 ships six of the seven, because the reach was removed rather than tolerated.** The exclusion was never about the components; it was about what they read. Each now takes the same information as props — `basePath`, `items`, `serviceLinks`, `ctaHref`, `href`, `logo` — exactly as BrandNav did, and codecave.pro passes it in from the modules it still owns. **`paths.ts` consequently dropped out of the tarball**: nothing shipped imports it any more, so the package no longer carries one site's route table at all. Nineteen components and thirteen icons ship, and all twelve storybook specimens compile from the package rather than three of them falling back to the captures.
+
+    **desktop-menu.vue is the one that stays out, and it is not coming back.** BrandNav replaces it outright, so codecave.pro drops the file rather than importing it; keeping it would ship two implementations of one bar. Its entry in `NOT_SHIPPED` says so.
 
     **The fonts are settled.** The package declares ten `@font-face` rules — 300/400/500/700/900, upright and italic, every weight Satoshi has — and codecave.pro declares the same ten. **The binaries are still not in the tarball**: that is a redistribution question, recorded in `build.mjs`, and no release changes it. The vendor's own `stylesheet.css` is unusable and both stylesheets say why next to the declarations.
 
@@ -158,20 +160,38 @@ Radio transitioned correctly here and on the site and instantly for everybody
 else. **A property the site happens to declare is not a property the package
 has**, and the only way to tell the difference is to ask the tarball.
 
-**One rewrite happens on the way in, and it is the only one.** The site imports
-its helpers as `@helpers/paths.ts` — a tsconfig `paths` entry in codecave.pro,
-which this package does not ship and a consumer has never heard of. So the nine
-captures that use it are rewritten to the relative form as they are copied, and
-those nine "match their origin once `@helpers` is resolved" rather than
-byte-for-byte; `check` says which count is which. The rule lives in
-`docs/tools/helpers-alias.mjs` because `build-storybook.mjs` needs the same
-answer when it compares the package's copy of a component against the capture it
-came from — an identical-bytes test there would mean the package was *not* built
-from that capture. **Do not add a second alias without reading what the first
-one cost:** it was silently both un-followed and mistaken for an npm package,
-which would have dropped every helper out of the tarball while the build stayed
-green. `assertDistResolves()` is the backstop and asks the built files, not the
-captures — every import in `dist/` must resolve inside `dist/`.
+**Two rewrites happen on the way in, and they are the same problem twice.** A
+capture names a file the package already ships, but spells it in a form that
+only resolves from *outside* the package — so copied verbatim it produces a
+tarball that looks complete and breaks in a consumer's build. Both live in
+`docs/tools/import-aliases.mjs`, which is also read by `build-storybook.mjs`
+when it compares the package's copy of a component against the capture it came
+from: an identical-bytes test there would mean the package was *not* built from
+that capture. The rewritten captures "match their origin once `@helpers` is
+resolved" rather than byte-for-byte, and `check` says which count is which.
+
+-   `@helpers/paths.ts` — a tsconfig `paths` entry in codecave.pro, which this
+    package does not ship and a consumer has never heard of. It was silently
+    both un-followed and mistaken for an npm package, which would have dropped
+    every helper out of the tarball while the build stayed green (CCWEB2-355).
+-   `@codecavepro/brand/components/common/Button.vue` — **the package's own
+    name.** The site installs this package, so any component that renders a
+    Button imports it that way. Node would *resolve* a self-reference through
+    the `exports` map, which is what makes it worse than a plain error: it would
+    work here, work in a consumer that installed a matching version, and demand
+    `@codecavepro/brand` as its own peerDependency. Only the four subpaths that
+    map into `dist/src/` are rewritten; anything else is left alone so
+    `assertNoSelfImport()` catches it by name rather than a wrong path resolving
+    to nothing.
+
+**A third is not routine.** The bar is the one both clear: the specifier must
+name a file the package already ships, so the rewrite is pure path arithmetic
+with no judgement in it. `assertDistResolves()` is the backstop and asks the
+built files, not the captures — every import in `dist/` must resolve inside
+`dist/`. Two checks that reason about imports read `shippedText()`, the
+post-rewrite bytes, rather than the capture: judging a specifier the rewrite
+removes is how `assertNoSelfImport()` and `assertPeersDeclared()` both fired on
+a spelling that never reaches the tarball.
 
 **`theme.css` is the half that makes the components visible, and its import order
 is load-bearing.** `tokens.css` carries the token *values*; only an `@theme` entry

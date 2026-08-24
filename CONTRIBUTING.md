@@ -187,14 +187,19 @@ three files quote agree with the story pages. All six are things that would
 otherwise rot quietly.
 
 "Byte-identical" has one exception, and it is stated by the check itself rather
-than left to be discovered: the site imports its helpers through an `@helpers`
-alias that only exists in codecave.pro's `tsconfig.json`, so the nine captures
-using it are rewritten to the relative form on the way into `dist/`. Those nine
-match their origin *once the alias is resolved*, and the check prints the two
-counts separately so neither claim is doing the other's work. The rewrite is in
-`docs/tools/helpers-alias.mjs`, shared with `build-storybook.mjs` — which needs
-the same answer, because for those nine files identical bytes would mean the
-package was **not** built from that capture.
+than left to be discovered. Two spellings the site uses cannot survive the copy,
+because each names a file the package already ships in a form that only resolves
+from *outside* the package: `@helpers/breakpoints.ts`, an alias that exists only
+in codecave.pro's `tsconfig.json`, and `@codecavepro/brand/components/common/
+Button.vue`, the package's own name — which the site writes because it installs
+this package, and which Node would resolve through the `exports` map into a
+second, separately installed copy of the very package doing the importing. Both
+are rewritten to relative form on the way into `dist/`. Those captures match
+their origin *once the alias is resolved*, and the check prints the two counts
+separately so neither claim is doing the other's work. The rewrite is in
+`docs/tools/import-aliases.mjs`, shared with `build-storybook.mjs` — which needs
+the same answer, because for those files identical bytes would mean the package
+was **not** built from that capture.
 
 The token one is worth a sentence, because it catches a failure with no symptom
 here at all. Tailwind declares its theme inside `@layer theme`;

@@ -1,10 +1,10 @@
-/* GENERATED from source_examples/common/ArticlePreview.vue by tools/build-storybook.mjs — do not edit. */
+/* GENERATED from @codecavepro/brand/components/common/ArticlePreview.vue by tools/build-storybook.mjs — do not edit. */
 
-// source_examples/common/ArticlePreview.vue
+// ../packages/brand/dist/src/components/common/ArticlePreview.vue
 import { defineComponent as _defineComponent } from "vue";
-import { unref as _unref, createElementVNode as _createElementVNode, toDisplayString as _toDisplayString, normalizeClass as _normalizeClass, openBlock as _openBlock, createElementBlock as _createElementBlock } from "vue";
+import { createElementVNode as _createElementVNode, unref as _unref, toDisplayString as _toDisplayString, normalizeClass as _normalizeClass, openBlock as _openBlock, createElementBlock as _createElementBlock } from "vue";
 
-// source_examples/helpers/date-formatter.ts
+// ../packages/brand/dist/src/helpers/date-formatter.ts
 var formattedDate = (locale, date) => {
   if (!locale || !date) return "";
   const newDate = new Date(date);
@@ -15,28 +15,7 @@ var formattedDate = (locale, date) => {
   }).format(newDate);
 };
 
-// source_examples/helpers/paths.ts
-var services = "/services";
-var paths = {
-  home: "/",
-  devops: `${services}/devops/`,
-  autodesk: `${services}/autodesk/`,
-  hubspot: `${services}/hubspot/`,
-  ecommerce: `${services}/ecommerce/`,
-  automation: `${services}/automation/`,
-  arVr: `${services}/ar-vr/`,
-  workflow: "/workflow/",
-  projects: "/projects/",
-  insights: "/insights/",
-  contactUs: "/#contact-us",
-  cookiePolicy: "/cookie-policy/",
-  privacyPolicy: "/privacy-policy/",
-  testimonials: "/#testimonials",
-  strongPoints: "/workflow/#our-strong-point",
-  toolsAndTechnologies: "/workflow/#tools-and-technologies"
-};
-
-// source_examples/common/ArticlePreview.vue
+// ../packages/brand/dist/src/components/common/ArticlePreview.vue
 var _hoisted_1 = ["href"];
 var _hoisted_2 = { class: "flex flex-col sm:flex-row gap-5 sm:gap-8 h-fit" };
 var _hoisted_3 = ["src", "alt"];
@@ -51,14 +30,15 @@ var __sfc__ = /* @__PURE__ */ _defineComponent({
   props: {
     article: { type: Object, required: true },
     className: { type: String, required: false },
-    resolveImage: { type: Function, required: false }
+    resolveImage: { type: Function, required: false },
+    basePath: { type: String, required: false }
   },
   setup(__props) {
     const props = __props;
     const imageUrl = (url) => props.resolveImage?.(url) ?? url;
     return (_ctx, _cache) => {
       return _openBlock(), _createElementBlock("a", {
-        href: `${_unref(paths).insights}${__props.article.slug}/`,
+        href: `${__props.basePath ?? ""}${__props.article.slug}/`,
         class: _normalizeClass(`mx-1 lg:mx-2 w-full h-full self-start sm:self-auto p-6 flex flex-col gap-5 sm:gap-8
       rounded-[2.25rem] bg-surface-secondary hover:bg-surface-secondary transition-colors cursor-pointer border-surface-tertiary border
       ${__props.className ?? ""}`)

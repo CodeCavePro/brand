@@ -1,6 +1,6 @@
-/* GENERATED from source_examples/footer/link-group.vue by tools/build-storybook.mjs — do not edit. */
+/* GENERATED from @codecavepro/brand/components/footer/link-group.vue by tools/build-storybook.mjs — do not edit. */
 
-// source_examples/footer/link-group.vue
+// ../packages/brand/dist/src/components/footer/link-group.vue
 import { defineComponent as _defineComponent2 } from "vue";
 import { toDisplayString as _toDisplayString2, createElementVNode as _createElementVNode2, renderList as _renderList, Fragment as _Fragment, openBlock as _openBlock2, createElementBlock as _createElementBlock2, createVNode as _createVNode } from "vue";
 
@@ -81,7 +81,7 @@ w-fit max-w-full min-w-12 min-h-12 rounded-full text-body-primary font-bold tran
 __sfc__.__file = "source_examples/common/Button.vue";
 var Button_default = __sfc__;
 
-// source_examples/footer/link-group.vue
+// ../packages/brand/dist/src/components/footer/link-group.vue
 var _hoisted_12 = { class: "space-y-4" };
 var _hoisted_2 = { class: "text-body-secondary uppercase font-bold text-xs" };
 var _hoisted_3 = { class: "space-y-3 xl:space-y-2 text-sm" };

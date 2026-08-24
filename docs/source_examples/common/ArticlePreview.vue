@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { formattedDate } from "@helpers/date-formatter.ts";
-import { paths } from "@helpers/paths.ts";
 
 /* The fields this component actually reads, instead of the generated Strapi
  * `Article`. TypeScript is structural, so a real Article still satisfies this
@@ -22,13 +21,17 @@ const props = defineProps<{
   /* CMS media URLs arrive relative ("uploads/x.png"). The site injects its own
    * resolver; a caller whose URLs are already absolute passes nothing. */
   resolveImage?: (url: string) => string
+  /* Prefix the slug is appended to. Was `paths.insights`, read straight off
+   * this site's route table -- the last thing keeping this component from
+   * being installable. The caller owns where its articles live. */
+  basePath?: string
 }>()
 
 const imageUrl = (url: string) => props.resolveImage?.(url) ?? url
 </script>
 
 <template>
-  <a :href="`${paths.insights}${article.slug}/`" :class="`mx-1 lg:mx-2 w-full h-full self-start sm:self-auto p-6 flex flex-col gap-5 sm:gap-8
+  <a :href="`${basePath ?? ''}${article.slug}/`" :class="`mx-1 lg:mx-2 w-full h-full self-start sm:self-auto p-6 flex flex-col gap-5 sm:gap-8
       rounded-[2.25rem] bg-surface-secondary hover:bg-surface-secondary transition-colors cursor-pointer border-surface-tertiary border
       ${className ?? ''}`">
     <div class="flex flex-col sm:flex-row gap-5 sm:gap-8 h-fit">

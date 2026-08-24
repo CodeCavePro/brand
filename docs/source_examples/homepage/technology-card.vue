@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import { paths } from "@helpers/paths.ts";
 import Button from "@codecavepro/brand/components/common/Button.vue";
 
 defineProps<{
   active: boolean
   name: string
+  /* Where "Explore service" goes. The card used to switch on `name` over this
+   * site's six service routes; that map is now @helpers/service-links.ts and
+   * the caller passes the result, so the card reaches no route table. An empty
+   * string renders the button inert, exactly as the switch's default did. */
+  href?: string
   className?: string
   index?: number
 }>()
@@ -26,24 +30,6 @@ const translate = [
   'xl:-translate-y-1/2',
   'xl:-translate-y-1/2',
 ]
-const getTechnologyUrl = (name: string) => {
-  switch (name) {
-    case 'AR & VR':
-      return paths.arVr
-    case 'Autodesk plugins':
-      return paths.autodesk
-    case 'Automation & AI':
-      return paths.automation
-    case 'Cloud & DevOps':
-      return paths.devops
-    case 'E-Commerce':
-      return paths.ecommerce
-    case 'HubSpot':
-      return paths.hubspot
-    default:
-      return ''
-  }
-}
 </script>
 
 <template>
@@ -53,7 +39,7 @@ const getTechnologyUrl = (name: string) => {
       <h3 class="max-w-[8rem] text-center text-xl font-bold text-heading text-balance">
         {{ name }}
       </h3>
-      <Button as="link" :href="getTechnologyUrl(name)" title="Explore service" variant="tertiary" :class="`${active ? 'block' : 'hidden xl:block xl:opacity-0'}`" />
+      <Button as="link" :href="href ?? ''" title="Explore service" variant="tertiary" :class="`${active ? 'block' : 'hidden xl:block xl:opacity-0'}`" />
     </div>
   </div>
 </template>

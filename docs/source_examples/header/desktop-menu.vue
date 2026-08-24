@@ -17,7 +17,7 @@ import ServicesList from "./services-list.vue";
               <Shevron class="ml-1" />
             </Button>
             <div class="dropdown-content bg-surface-primary-transparent backdrop-blur-3xl rounded-2xl p-5">
-              <ServicesList />
+              <ServicesList :items="menu[0].submenu ?? []" />
             </div>
           </div>
           <Button v-else as="link" variant="ghost" :title="item.name" :href="item.link" />

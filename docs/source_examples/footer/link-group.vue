@@ -1,10 +1,19 @@
 <script setup lang="ts">
 import Button from "@codecavepro/brand/components/common/Button.vue";
-import type { Link } from "./links.ts";
+
+/* Declared here rather than imported from ./links.ts, which is this site's
+ * footer content. TypeScript is structural, so every existing caller still
+ * passes exactly what it passed before -- links.ts's own `Link` satisfies this
+ * -- but the component no longer reaches out of itself for a two-field shape.
+ * Same reasoning as ArticlePreview.vue's ArticleSummary. */
+type LinkItem = {
+  name: string
+  href: string
+}
 
 defineProps<{
   groupName: string
-  items: Link[]
+  items: LinkItem[]
 }>()
 </script>
 

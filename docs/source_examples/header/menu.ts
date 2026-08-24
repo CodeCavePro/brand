@@ -19,6 +19,14 @@ interface Menu {
     link?: string
     submenuTitle?: string
     submenu?: Submenu[]
+    /* The drawer calls two of these something else -- it has the room, and a
+       phone gets one shot at the label. These used to be `item.name ===
+       'Workflow'` and `item.name === 'Contact us'` branches inside
+       mobile-menu.vue, which made the component's markup depend on the exact
+       wording of this file. */
+    mobileTitle?: string
+    /* Renders as the drawer's one solid button rather than a ghost link. */
+    emphasis?: boolean
 }
 
 export const menu: Menu[] = [
@@ -34,8 +42,8 @@ export const menu: Menu[] = [
             {icon: PanoramaIcon, name: 'AR & VR', description: 'Stunning visualisations for your business', link: paths.arVr},
         ]
     },
-    {name: 'Workflow', link: paths.workflow},
+    {name: 'Workflow', link: paths.workflow, mobileTitle: 'About us | Workflow'},
     {name: 'Projects', link: paths.projects},
     {name: 'Insights', link: paths.insights},
-    {name: 'Contact us', link: paths.contactUs},
+    {name: 'Contact us', link: paths.contactUs, mobileTitle: 'Get a free consultation', emphasis: true},
 ]

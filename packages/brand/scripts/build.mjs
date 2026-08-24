@@ -42,7 +42,7 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
 import path from 'node:path';
-import { HELPERS_ALIAS, aliasTarget, unalias, usesAlias } from '../../../docs/tools/helpers-alias.mjs';
+import { HELPERS_ALIAS, aliasTarget, unalias, usesAlias } from '../../../docs/tools/import-aliases.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const pkg = path.resolve(here, '..');
@@ -118,33 +118,27 @@ const NOT_SHIPPED = [
    'still use it, and it stays out because a design system has no business ' +
    'knowing where the content lives.'],
 
-  /* THE SEVEN THE SITE KEPT. Each one reaches codecave.pro's own route table,
-   * link list or menu data -- paths.ts, links.ts, menu.ts -- so installing one
-   * would put the site's navigation behind an npm release: changing a menu item
-   * would mean publishing. That decision was already made and written down. The
-   * package shipped them anyway, not by decision but because every non-excluded
-   * .vue is a root and nobody had said otherwise.
+  /* THE ONE THE SITE KEPT.
    *
-   * It surfaced when the site began importing this package by name. These are
-   * the only shipped captures whose origin is still alive, so they are the only
-   * ones that can drift -- and refreshing them would have written
-   * `@codecavepro/brand/components/common/Button.vue` into the package's own
-   * source: the package importing itself, and assertPeersDeclared demanding the
-   * package as its own peer. The alternative was a second rewrite rule, taught
-   * to four places, existing only to keep shipping files nobody installs.
+   * Seven used to sit here. Each reached codecave.pro's own route table, link
+   * list or menu data -- paths.ts, links.ts, menu.ts -- so installing one would
+   * have put the site's navigation behind an npm release: changing a menu item
+   * would mean publishing. That is why 2.0.0 stopped shipping them.
    *
-   * So they come out, and assertNoSelfImport() below keeps the class shut. What
-   * is left with a live origin renders no shared component -- icons, helpers, a
-   * type file -- and so can never acquire an import of this package. (CCWEB2-371)
+   * Six of the seven have since had that reach REMOVED rather than tolerated.
+   * They take the same information as props -- basePath, items, serviceLinks,
+   * ctaHref, href, logo -- which is what let BrandNav ship when desktop-menu
+   * could not, and the site passes it in from the modules it still owns. The
+   * exclusion was never about the components; it was about what they read.
+   *
+   * desktop-menu.vue is the exception and is not coming back: BrandNav replaces
+   * it outright. Keeping it would ship two implementations of one bar, which is
+   * the thing this package exists to stop.
    */
-  ['common/ArticlePreview.vue', 'reaches @helpers/paths.ts for the article route.'],
-  ['footer/link-group.vue', 'reaches footer/links.ts, the site\x27s footer link list.'],
-  ['header/desktop-menu.vue', 'reaches header/menu.ts and @helpers/paths.ts.'],
-  ['header/mobile-menu.vue', 'ditto, plus the back arrow.'],
-  ['header/services-list.vue', 'reaches header/menu.ts; only the two menus render it.'],
-  ['homepage/technologies.vue', 'reaches @helpers/paths.ts, and is the only importer of' +
-   ' vue3-carousel -- which leaves peerDependencies with it.'],
-  ['homepage/technology-card.vue', 'reaches @helpers/paths.ts.'],
+  ['header/desktop-menu.vue',
+   'replaced by BrandNav. It reaches header/menu.ts and @helpers/paths.ts, and ' +
+   'unlike the other six there is no reason to fix that -- codecave.pro drops ' +
+   'the file when it moves onto BrandNav, so nothing would import it.'],
 ];
 const EXCLUDED = new Set(NOT_SHIPPED.map(([rel]) => rel));
 
@@ -268,16 +262,19 @@ function assertDistResolves() {
   }
   if (!stale.length && !dangling.length) return;
   console.error('build failed — dist/ does not hold together:');
-  for (const rel of stale) console.error(`  dist/${rel} still says @helpers`);
+  for (const rel of stale) {
+    console.error(`  dist/${rel} still imports through an alias`);
+  }
   for (const [rel, spec] of dangling) {
     console.error(`  dist/${rel} reaches ${spec}, which this package does not carry`);
   }
   console.error('');
   console.error(
-    'unalias() rewrites `from "@helpers/x"` and nothing else, and shippable()',
+    'unalias() rewrites a QUOTED @helpers/ or @codecavepro/brand/ specifier and',
   );
-  console.error('only follows what referencesOf() returns. A reference spelled some other way --');
-  console.error('an import, a url(), anything else -- needs handling in both.');
+  console.error('nothing else, and shippable() only follows what referencesOf() returns.');
+  console.error('A reference spelled some other way -- an import, a url(), anything');
+  console.error('else -- needs handling in both.');
   process.exit(1);
 }
 
@@ -362,11 +359,28 @@ function assertTokensSuffice() {
   process.exit(1);
 }
 
+/**
+ * The bytes a shipped file will CONTAIN, which are not the bytes of the capture
+ * it comes from wherever an alias is rewritten on copy.
+ *
+ * Every check that reasons about a file's IMPORTS has to read this rather than
+ * the capture, or it judges a specifier that never reaches the tarball. Both of
+ * the checks below read the capture, which was correct only while the sole
+ * alias was @helpers -- that one is not a bare specifier, so neither check ever
+ * looked at it. The package's own name IS bare, and both fired on a spelling
+ * the rewrite removes: assertNoSelfImport() by name, assertPeersDeclared() by
+ * demanding @codecavepro/brand as its own peer.
+ */
+function shippedText(shipped, byShipped) {
+  const src = fs.readFileSync(originOf(byShipped.get(shipped)), 'utf8');
+  return usesAlias(src) ? unalias(src, shipped) : src;
+}
+
 function assertNoSelfImport(shippedFiles, byShipped) {
   const self = JSON.parse(fs.readFileSync(path.join(pkg, 'package.json'), 'utf8')).name;
   const guilty = [];
   for (const shipped of shippedFiles) {
-    const src = fs.readFileSync(originOf(byShipped.get(shipped)), 'utf8');
+    const src = shippedText(shipped, byShipped);
     for (const m of src.matchAll(/from\s*["']([^."'][^"']*)["']/g)) {
       if (m[1] === self || m[1].startsWith(`${self}/`)) guilty.push([shipped, m[1]]);
     }
@@ -375,10 +389,14 @@ function assertNoSelfImport(shippedFiles, byShipped) {
   console.error(`build failed — a shipped file imports ${self}, which is this package:`);
   for (const [shipped, spec] of guilty) console.error(`  dist/${shipped}  ->  ${spec}`);
   console.error('');
-  console.error('That is the site\x27s spelling, and it arrived through a capture refresh.');
-  console.error('Either the component belongs to the site and belongs in NOT_SHIPPED,');
-  console.error('or the import has to be rewritten on copy the way @helpers is. Do not');
-  console.error(`declare ${self} as its own peerDependency.`);
+  console.error('That is the site\x27s spelling. It normally leaves on copy --');
+  console.error('import-aliases.mjs rewrites the four subpaths that map into dist/src/');
+  console.error('into relative form -- so what is above is either a subpath it does NOT');
+  console.error('rewrite, or a file the rewrite never ran on. Do not widen the rule');
+  console.error(`without reading why it is narrow, and never declare ${self}`);
+  console.error('as its own peerDependency: Node resolves a self-reference through the');
+  console.error('exports map, so the package would quietly depend on a separately');
+  console.error('installed copy of itself.');
   process.exit(1);
 }
 
@@ -388,7 +406,7 @@ function assertPeersDeclared(shippedFiles, byShipped) {
   const imported = new Map();
 
   for (const shipped of shippedFiles) {
-    const src = fs.readFileSync(originOf(byShipped.get(shipped)), 'utf8');
+    const src = shippedText(shipped, byShipped);
     const specs = [
       ...[...src.matchAll(/from\s*["']([^."'][^"']*)["']/g)],
       ...[...src.matchAll(/^\s*import\s+["']([^."'][^"']*)["']/gm)],

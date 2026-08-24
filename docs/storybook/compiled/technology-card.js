@@ -1,29 +1,8 @@
-/* GENERATED from source_examples/homepage/technology-card.vue by tools/build-storybook.mjs — do not edit. */
+/* GENERATED from @codecavepro/brand/components/homepage/technology-card.vue by tools/build-storybook.mjs — do not edit. */
 
-// source_examples/homepage/technology-card.vue
+// ../packages/brand/dist/src/components/homepage/technology-card.vue
 import { defineComponent as _defineComponent2 } from "vue";
 import { toDisplayString as _toDisplayString2, createElementVNode as _createElementVNode2, normalizeClass as _normalizeClass2, createVNode as _createVNode, openBlock as _openBlock2, createElementBlock as _createElementBlock2 } from "vue";
-
-// source_examples/helpers/paths.ts
-var services = "/services";
-var paths = {
-  home: "/",
-  devops: `${services}/devops/`,
-  autodesk: `${services}/autodesk/`,
-  hubspot: `${services}/hubspot/`,
-  ecommerce: `${services}/ecommerce/`,
-  automation: `${services}/automation/`,
-  arVr: `${services}/ar-vr/`,
-  workflow: "/workflow/",
-  projects: "/projects/",
-  insights: "/insights/",
-  contactUs: "/#contact-us",
-  cookiePolicy: "/cookie-policy/",
-  privacyPolicy: "/privacy-policy/",
-  testimonials: "/#testimonials",
-  strongPoints: "/workflow/#our-strong-point",
-  toolsAndTechnologies: "/workflow/#tools-and-technologies"
-};
 
 // ../packages/brand/dist/src/components/common/Button.vue
 import { defineComponent as _defineComponent } from "vue";
@@ -102,7 +81,7 @@ w-fit max-w-full min-w-12 min-h-12 rounded-full text-body-primary font-bold tran
 __sfc__.__file = "source_examples/common/Button.vue";
 var Button_default = __sfc__;
 
-// source_examples/homepage/technology-card.vue
+// ../packages/brand/dist/src/components/homepage/technology-card.vue
 var _hoisted_12 = { class: "card flex flex-col items-center justify-around" };
 var _hoisted_2 = { class: "max-w-[8rem] text-center text-xl font-bold text-heading text-balance" };
 var __sfc__2 = /* @__PURE__ */ _defineComponent2({
@@ -110,6 +89,7 @@ var __sfc__2 = /* @__PURE__ */ _defineComponent2({
   props: {
     active: { type: Boolean, required: true },
     name: { type: String, required: true },
+    href: { type: String, required: false },
     className: { type: String, required: false },
     index: { type: Number, required: false }
   },
@@ -130,24 +110,6 @@ var __sfc__2 = /* @__PURE__ */ _defineComponent2({
       "xl:-translate-y-1/2",
       "xl:-translate-y-1/2"
     ];
-    const getTechnologyUrl = (name) => {
-      switch (name) {
-        case "AR & VR":
-          return paths.arVr;
-        case "Autodesk plugins":
-          return paths.autodesk;
-        case "Automation & AI":
-          return paths.automation;
-        case "Cloud & DevOps":
-          return paths.devops;
-        case "E-Commerce":
-          return paths.ecommerce;
-        case "HubSpot":
-          return paths.hubspot;
-        default:
-          return "";
-      }
-    };
     return (_ctx, _cache) => {
       return _openBlock2(), _createElementBlock2(
         "div",
@@ -166,7 +128,7 @@ var __sfc__2 = /* @__PURE__ */ _defineComponent2({
             ),
             _createVNode(Button_default, {
               as: "link",
-              href: getTechnologyUrl(__props.name),
+              href: __props.href ?? "",
               title: "Explore service",
               variant: "tertiary",
               class: _normalizeClass2(`${__props.active ? "block" : "hidden xl:block xl:opacity-0"}`)

@@ -1,12 +1,32 @@
 <script setup lang="ts">
-import { menu } from "./menu.ts";
 import Button from "@codecavepro/brand/components/common/Button.vue";
 import Shevron from "../../assets/icons/shevron.vue";
-import { onUnmounted, ref, watch } from "vue";
-import { paths } from "@helpers/paths.ts";
-import Logo from "../../assets/images/logo.svg";
+import { computed, onUnmounted, ref, watch } from "vue";
 import BackIcon from "../../assets/icons/back-icon.vue";
 import ServicesList from "./services-list.vue";
+
+/* Everything this drawer used to read out of menu.ts, paths.ts and the site's
+ * logo asset now arrives as props, so it reaches no route table and no asset
+ * pipeline of its own.
+ *
+ * The Services branch keys off `submenu` being present rather than off the
+ * label being the string "Services"; mobileTitle and emphasis carry the two
+ * other wordings that were hard-coded here. */
+const props = defineProps<{
+  items: {
+    name: string
+    link?: string
+    submenuTitle?: string
+    submenu?: { icon: unknown; name: string; description: string; link: string }[]
+    mobileTitle?: string
+    emphasis?: boolean
+  }[]
+  /** Resolved URL of the wordmark. */
+  logo: string
+  homeHref?: string
+}>()
+
+const servicesItem = computed(() => props.items.find((i) => i.submenu?.length))
 
 const isMenuOpen = ref(false)
 const isServicesOpen = ref(false)
@@ -58,8 +78,8 @@ const handleCloseMenu = () => {
     <div :class="`fixed z-50 top-0 w-full bg-surface-primary-transparent backdrop-blur-3xl ${isMenuOpen ? 'rounded-b-3xl' : 'rounded-none'}`">
       <div :class="`h-full px-5 ${isMenuOpen ? 'pb-5' : 'pb-0'} flex flex-col gap-2 transition-all`">
         <div class="flex justify-between items-center py-1.5">
-          <a :href="paths.home" class="px-1.5 hover:opacity-80 transition-opacity">
-            <img :src="Logo.src" alt="CODECAVE" />
+          <a :href="homeHref" class="px-1.5 hover:opacity-80 transition-opacity">
+            <img :src="logo" alt="CODECAVE" />
           </a>
           <button @click="isMenuOpen = !isMenuOpen" :class="`burger-menu ${isMenuOpen ? 'text-action' : 'text-heading'} transition-colors`">
             <span></span>
@@ -68,23 +88,22 @@ const handleCloseMenu = () => {
         <nav v-if="isMenuOpen" class="h-full text-sm">
           <div v-if="isServicesOpen">
             <h2 class="text-center font-bold text-body-primary py-2.5">
-              {{ menu[0].submenuTitle }}
+              {{ servicesItem?.submenuTitle }}
             </h2>
-            <ServicesList />
+            <ServicesList :items="servicesItem?.submenu ?? []" />
             <button class="pt-4" @click="isServicesOpen = false">
               <component class="w-11 h-11 text-action" :is="BackIcon" />
             </button>
           </div>
           <ul v-else class="h-full flex flex-col items-center gap-3 justify-around px-4 pt-2">
-            <li v-for="(item, index) in menu" :key="index">
-              <div v-if="item.name === 'Services'">
+            <li v-for="(item, index) in items" :key="index">
+              <div v-if="item.submenu?.length">
                 <Button :title="item.name" variant="ghost" @click="isServicesOpen = true" class="transition-transform duration-150 pr-1">
                   <Shevron class="rotate-270 ml-1" />
                 </Button>
               </div>
-              <Button v-else-if="item.name === 'Workflow'" as="link" variant="ghost" title="About us | Workflow" :href="item.link" />
-              <Button v-else-if="item.name === 'Contact us'" as="link" :href="item.link" title="Get a free consultation" variant="tertiary" @click="handleCloseMenu" />
-              <Button v-else as="link" variant="ghost" :title="item.name" :href="item.link" />
+              <Button v-else-if="item.emphasis" as="link" :href="item.link" :title="item.mobileTitle ?? item.name" variant="tertiary" @click="handleCloseMenu" />
+              <Button v-else as="link" variant="ghost" :title="item.mobileTitle ?? item.name" :href="item.link" />
             </li>
           </ul>
         </nav>
