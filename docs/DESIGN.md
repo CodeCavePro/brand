@@ -44,7 +44,7 @@ Tailwind 4: 61 `.astro` files, 45 `.vue` files, **zero React**, no Storybook
 
 | Surface | Source |
 |---|---|
-| Site header with a Services mega-dropdown | `header/desktop-menu.vue`, `header/services-list.vue`, `header/menu.ts` |
+| Site header with a Services mega-dropdown | `common/BrandNav.vue`, `header/services-list.vue`, and the caller's own menu data |
 | Mobile menu drawer | `header/mobile-menu.vue` |
 | Service / hero heading block with the single glow CTA | `services/heading.astro` |
 | Consultation lead form | `common/forms/ContactUsForm.vue` |
@@ -486,14 +486,26 @@ masked gradient (`brand-500 → brand-400 → brand-500`), not a solid stroke.
 `--color-surface-primary` fill, `--shadow-section`, `z-index: 50`,
 `transform: translateZ(0)` and `contain: layout style` for paint containment.
 
-### Navigation — `header/desktop-menu.vue`, `header/services-list.vue`
+### Navigation — `common/BrandNav.vue`, `header/services-list.vue`
 
 Logo centred absolutely; three ghost links left, two right. The Services item
 opens a dropdown on hover: `--color-surface-primary-transparent` fill with
 `backdrop-blur(48px)`, 16px radius, 20px padding, holding a two-column grid of
 icon-tile + name + outcome-description rows. Icon tiles are 12px-radius
-`--color-surface-tertiary`. The last nav item carries a red pulsing dot
-(`box-shadow` on `--color-error-400`).
+`--color-surface-tertiary`. One nav item carries a red pulsing dot
+(`box-shadow` on `--color-error-400`) — codecave.pro puts it on "Contact us".
+
+The bar takes its items, its wordmark and its active state as props and reads no
+route table, which is what lets one component serve both the marketing site and
+this documentation site. It needs no JavaScript: the dropdown is CSS hover, so
+rendered from Astro without a client directive it emits static HTML.
+
+Until 2026-08-24 this described `header/desktop-menu.vue`, a second
+implementation that codecave.pro owned and that differed in five numbers — 14px
+links in 44px rows against 16px in 48px, a 24px wordmark against 28px, and no
+bottom rule. The dot was a `ul:last-of-type li:last-child::after` rule, so it
+marked a POSITION rather than an item and would have moved on its own the first
+time the menu was reordered.
 
 ### Rule and progress — the gradient line
 

@@ -172,34 +172,43 @@
      * imported :root is unlayered, exactly as this one was, so nothing about
      * how those values win changed either.
      *
-     * --duration-control stays because the package has no token for it. Like
-     * --radius-control (which does have one, and now comes from the package),
-     * it is read only from scoped <style> blocks in Checkbox.vue and Radio.vue
-     * and never used as a utility class, so it has to exist unconditionally
-     * rather than because some unrelated utility caused Tailwind to emit it. */
-    --duration-control: 150ms;
+     * --duration-control USED to stay here, because the package had no token
+     * for it -- Checkbox.vue and Radio.vue read it from scoped <style> blocks,
+     * so it transitioned correctly on this site and instantly for everybody who
+     * installed those components. tokens.css declares it now, and the package
+     * asserts that every var() a shipped component reads is one it ships, so a
+     * copy here would only be a second place for the value to live. */
 }
 
+/* .page-container and .section-container are DEFINED here but VALUED from the
+ * package. Both also exist in @codecavepro/brand's colors_and_type.css, which
+ * this file deliberately does not import: that stylesheet carries ten @font-face
+ * rules whose src paths resolve inside the package, so importing it would add
+ * ten broken font declarations beside the ten working ones above. The rules are
+ * restated and every number in them is now a token out of the tokens.css
+ * imported above -- which is the part that was genuinely duplicated. They read
+ * 0.5rem, 1rem, 2rem, 4rem, 7.5rem and a hand-written three-layer shadow until
+ * 2026-08-24, and that shadow had already drifted from the token's value. */
 .page-container {
     width: 100%;
     min-height: 100%;
     margin: 0 auto;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
+    padding-left: var(--gutter-base);
+    padding-right: var(--gutter-base);
 }
 
 @media (min-width: 768px) {
     .page-container {
-        padding-left: 1rem;
-        padding-right: 1rem;
+        padding-left: var(--gutter-md);
+        padding-right: var(--gutter-md);
     }
 }
 
 @media (min-width: 1280px) {
     .page-container {
         max-width: var(--max-width-desktop);
-        padding-left: 2rem;
-        padding-right: 2rem;
+        padding-left: var(--gutter-xl);
+        padding-right: var(--gutter-xl);
     }
 }
 
@@ -208,15 +217,13 @@
     background-position: center center;
     position: relative;
     z-index: 50;
-    border-radius: 4rem;
-    box-shadow: 0 -64px 64px 0 hsl(from var(--color-shadow-0) h s l / 0.20),
-    0 -10px 24px 0 hsl(from var(--color-shadow-0) h s l / 0.10),
-    0 -6px 6px 0 hsl(from var(--color-shadow-0) h s l / 0.08);
+    border-radius: var(--radius-section);
+    box-shadow: var(--shadow-section);
 }
 
 @media (min-width: 768px) {
     .section-container {
-        border-radius: 7.5rem;
+        border-radius: var(--radius-section-md);
     }
 }
 

@@ -82,10 +82,10 @@ const ROOT_VERBATIM = [[path.join(repo, 'LICENSE'), 'LICENSE']];
  * provably the same bytes as the site's.
  *
  * WHY THE LAYOUT CHANGES SHAPE. The captures flatten the site's
- * `src/components/` away — `header/desktop-menu.vue` on disk is
- * `src/components/header/desktop-menu.vue` on the site. Its imports did not
- * flatten with it: it still climbs `../../assets/images/logo.svg`, which from
- * the capture tree lands OUTSIDE source_examples/ entirely. Every capture with
+ * `src/components/` away — `common/Checkbox.vue` on disk is
+ * `src/components/common/Checkbox.vue` on the site. Its imports did not
+ * flatten with it: it still climbs `../../assets/icons/asterisk-icon.vue`,
+ * which from the capture tree lands OUTSIDE source_examples/ entirely. Every capture with
  * a two-level climb is in that position, and it has never been noticed because
  * build-storybook.mjs carries a resolver that re-roots an overshooting climb
  * back at source_examples/. A bundler plugin can do that; `import` in a
@@ -131,14 +131,14 @@ const NOT_SHIPPED = [
    * could not, and the site passes it in from the modules it still owns. The
    * exclusion was never about the components; it was about what they read.
    *
-   * desktop-menu.vue is the exception and is not coming back: BrandNav replaces
-   * it outright. Keeping it would ship two implementations of one bar, which is
-   * the thing this package exists to stop.
+   * The seventh, desktop-menu.vue, has no entry here because it no longer
+   * EXISTS. BrandNav replaced it outright, codecave.pro deleted the file on
+   * 2026-08-24, and the capture went with it -- source_examples/ records what
+   * the site ships, so a capture of a file the site does not have is not
+   * evidence of anything. Excluding it would have been the wrong shape of fix:
+   * NOT_SHIPPED is for captures that exist and must not ship, not for captures
+   * that should not exist.
    */
-  ['header/desktop-menu.vue',
-   'replaced by BrandNav. It reaches header/menu.ts and @helpers/paths.ts, and ' +
-   'unlike the other six there is no reason to fix that -- codecave.pro drops ' +
-   'the file when it moves onto BrandNav, so nothing would import it.'],
 ];
 const EXCLUDED = new Set(NOT_SHIPPED.map(([rel]) => rel));
 

@@ -148,9 +148,9 @@ second prints `every relative import and url() resolves`, walking the installed
 `dist/src/` and following every reference in it.
 
 That one is not ceremony. The captures flatten the site's `src/components/`
-level away while their imports still climb through it — `header/desktop-menu.vue`
-reaches `../../assets/images/logo.svg` — so the package ships at the site's
-depth to keep those resolving. The storybook cannot catch a regression here,
+level away while their imports still climb through it — `common/Checkbox.vue`
+reaches `../../assets/icons/asterisk-icon.vue` — so the package ships at the
+site's depth to keep those resolving. The storybook cannot catch a regression here,
 because `build-storybook.mjs` re-roots escaping imports with a resolver plugin
 and a consumer's `import` has no such plugin. `DANGLING` means the package is
 broken for every consumer while looking fine in this repo.

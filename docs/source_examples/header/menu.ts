@@ -1,11 +1,11 @@
 import { paths } from "@helpers/paths.ts";
 import type { Component } from "vue";
-import CartIcon from "@assets/icons/cart-icon.vue";
-import CloudIcon from "@assets/icons/cloud-icon.vue";
-import DatabaseIcon from "@assets/icons/database-icon.vue";
-import LightningIcon from "@assets/icons/lightning-icon.vue";
-import PanoramaIcon from "@assets/icons/panorama-icon.vue";
-import WidgetIcon from "@assets/icons/widget-icon.vue";
+import CartIcon from "@codecavepro/brand/assets/icons/cart-icon.vue";
+import CloudIcon from "@codecavepro/brand/assets/icons/cloud-icon.vue";
+import DatabaseIcon from "@codecavepro/brand/assets/icons/database-icon.vue";
+import LightningIcon from "@codecavepro/brand/assets/icons/lightning-icon.vue";
+import PanoramaIcon from "@codecavepro/brand/assets/icons/panorama-icon.vue";
+import WidgetIcon from "@codecavepro/brand/assets/icons/widget-icon.vue";
 
 interface Submenu {
     icon: Component

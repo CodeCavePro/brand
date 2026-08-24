@@ -131,9 +131,10 @@ body {
   color: var(--color-body-secondary-lighter);
 }
 /* --- top nav -------------------------------------------------------------
-   The site's actual header (header/desktop-menu.vue): a page-container bar
-   at the very top, ghost-button links split around the centred wordmark,
-   riding the translucent primary surface + blur its dropdown uses. */
+   The site's actual header (common/BrandNav.vue, which both this site and
+   codecave.pro now render): a bar at the very top, ghost-button links split
+   around the centred wordmark, riding the translucent primary surface + blur
+   its dropdown uses. */
 /* The two bars stick as ONE element rather than as two bars that have to agree
    on a number. This used to be `.bk-topbar { top: var(--ds-nav-height) }`, which
    is correct only while that token equals the bar's real rendered height — and

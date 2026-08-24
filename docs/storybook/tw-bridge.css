@@ -7,7 +7,7 @@
  *
  * The digest below covers every file under source_examples/, this file's only
  * source. Verify with: node docs/tools/check-tw-bridge.mjs
- * source-digest: sha256:a4992c50df552889964e6166520e8b3ff6015fe64380d49efd20af476d805a1e
+ * source-digest: sha256:8ec73c72210eb6b80e650e38474e3a06a6e5cd0fd33cbf6116e1a4c01935c5a5
  */
 /*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
 @layer properties;
@@ -34,7 +34,6 @@
     --font-weight-bold: 700;
     --radius-lg: 0.5rem;
     --radius-xl: 0.75rem;
-    --radius-2xl: 1rem;
     --radius-3xl: 1.5rem;
     --blur-3xl: 64px;
     --default-transition-duration: 150ms;
@@ -396,9 +395,6 @@
   .overflow-hidden {
     overflow: hidden;
   }
-  .rounded-2xl {
-    border-radius: var(--radius-2xl);
-  }
   .rounded-3xl {
     border-radius: var(--radius-3xl);
   }
@@ -516,9 +512,6 @@
   }
   .py-2\.5 {
     padding-block: calc(var(--spacing) * 2.5);
-  }
-  .py-3 {
-    padding-block: calc(var(--spacing) * 3);
   }
   .py-10 {
     padding-block: calc(var(--spacing) * 10);
@@ -1363,7 +1356,6 @@
   --text-xl--line-height: calc(1.75 / 1.25);
   --radius-lg: 0.5rem;
   --radius-xl: 0.75rem;
-  --radius-2xl: 1rem;
   --radius-3xl: 1.5rem;
   --blur-3xl: 64px;
   --default-transition-duration: 150ms;
