@@ -139,12 +139,12 @@ bytes, which is the package's central promise.
 
 ```bash
 node -e "console.log(require.resolve('@codecavepro/brand/components/common/Button.vue'))"
-node -e "const fs=require('fs'),path=require('path'),root=path.dirname(require.resolve('@codecavepro/brand/package.json'))+'/dist/src';const walk=d=>fs.readdirSync(d,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(path.join(d,e.name)):[path.join(d,e.name)]);const bad=[];for(const f of walk(root))for(const m of fs.readFileSync(f,'utf8').matchAll(/from\s*['\"](\.[^'\"]*)['\"]/g)){const j=path.resolve(path.dirname(f),m[1]);if(![j,j+'.ts',j+'.vue'].some(c=>fs.existsSync(c)))bad.push(path.relative(root,f)+' -> '+m[1]);}console.log(bad.length?'DANGLING: '+bad.join(', '):'every relative import resolves')"
+node -e "const fs=require('fs'),path=require('path'),root=path.dirname(require.resolve('@codecavepro/brand/package.json'))+'/dist/src';const walk=d=>fs.readdirSync(d,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(path.join(d,e.name)):[path.join(d,e.name)]);const skip=/^(?:[a-z][a-z0-9+.-]*:|\/\/|#)/i;const bad=[];for(const f of walk(root)){const s=fs.readFileSync(f,'utf8');const refs=[...s.matchAll(/from\s*['\"](\.[^'\"]*)['\"]/g)].map(m=>m[1]);for(const m of s.matchAll(/\burl\(\s*(?:\"([^\"]*)\"|'([^']*)'|([^)'\"\s]*))\s*\)/g)){const t=m[1]??m[2]??m[3];if(t&&!skip.test(t))refs.push(t);}for(const r of refs){const j=path.resolve(path.dirname(f),r);if(![j,j+'.ts',j+'.vue'].some(c=>fs.existsSync(c)))bad.push(path.relative(root,f)+' -> '+r);}}console.log(bad.length?'DANGLING: '+bad.join(', '):'every relative import and url() resolves')"
 ```
 
 The first prints a path — the `./components/*` subpath export resolves. The
-second prints `every relative import resolves`, walking the installed
-`dist/src/` and following every relative import in it.
+second prints `every relative import and url() resolves`, walking the installed
+`dist/src/` and following every reference in it.
 
 That one is not ceremony. The captures flatten the site's `src/components/`
 level away while their imports still climb through it — `header/desktop-menu.vue`
@@ -153,6 +153,14 @@ depth to keep those resolving. The storybook cannot catch a regression here,
 because `build-storybook.mjs` re-roots escaping imports with a resolver plugin
 and a consumer's `import` has no such plugin. `DANGLING` means the package is
 broken for every consumer while looking fine in this repo.
+
+**It follows `url()` because for one release it did not.** This command read
+only `from "..."`, printed `every relative import resolves` over a 1.6.0 tarball
+whose `Checkbox.vue` reached a `checked-icon.svg` that was not in it, and the
+bug shipped (CCWEB2-370). A background-image is a reference like any other; the
+build now agrees, and so does this. Keep the two in step — if `referencesOf()`
+in `build.mjs` learns a new spelling, this line has to learn it too, because
+this one runs against the tarball rather than the tree that produced it.
 
 ```bash
 ls node_modules/@codecavepro/brand/
