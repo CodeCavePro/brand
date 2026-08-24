@@ -219,6 +219,12 @@ typecheck reports no errors, and the affected elements render unstyled. Leaving 
 out while installing `Button.vue` alone cost codecave.pro 783 bytes of CSS and all 12 of
 the utilities only that component uses — every button on the site, silently.
 
+Because nothing reports it, it is worth checking rather than remembering. codecave.pro
+does it by asking Tailwind twice: its own scanner for the class names inside this
+package, its own compiler for which of those are real utilities, and then whether each
+one is in the CSS the build emitted. That reads the same answer Tailwind would, so it
+cannot go stale when this package gains a component.
+
 ### The content-shaped four resolve their own image URLs
 
 `ArticlePreview`, `Review`, `pain-points-item` and `technologies` render CMS content, so
