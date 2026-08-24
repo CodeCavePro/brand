@@ -36,6 +36,8 @@ label ([live query](https://codecave.atlassian.net/issues?jql=project%20%3D%20CC
     *ships*: put the checkout on `development` before believing the answer.
 
 
+-   [CCWEB2-372](https://codecave.atlassian.net/browse/CCWEB2-372) — **the package ships no logo.** It never shipped one deliberately: `logo.svg` was in the tarball because a menu imported it, and the menus left in 2.0.0. Putting the one SVG back would recreate the accident on purpose, so the question is which marks, in which formats — and whether an npm package is the right delivery for brand marks at all, next to the same unanswered question about the font binaries.
+
 Open bugs in what codecave.pro ships, found while resyncing the captures or
 while working on the site itself. **These are the site's to fix, not the
 package's** — do not "correct" them in `docs/`. A bug leaves this list the
