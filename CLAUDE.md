@@ -20,7 +20,7 @@ label ([live query](https://codecave.atlassian.net/issues?jql=project%20%3D%20CC
 
     Seven stay site-owned on purpose: ArticlePreview, link-group, desktop-menu, mobile-menu, services-list, technologies and technology-card all reach the site's `paths.ts`, `links.ts` or `menu.ts`. Installing them would put codecave.pro's navigation behind an npm release — changing a menu item would mean publishing. That is a coupling decision, not a mechanical swap.
 
-    **As of 2.0.0 the package does not ship them either, and that took a major bump.** It had been shipping all seven — not by decision, but because every non-excluded `.vue` is a root. Nobody installed them, so nothing said so, until the site began importing the package by name and those seven became the only shipped captures with a live origin left to drift. Refreshing them would have written `@codecavepro/brand/components/common/Button.vue` into the package's own source: the package importing itself, `assertPeersDeclared` demanding the package as its own peer, and a consumer with two versions installed getting one component's Button from the other. The alternative was a second rewrite rule taught to four places to keep shipping files nobody installs, so they went into `NOT_SHIPPED` instead and `assertNoSelfImport()` keeps the class shut. What is left with a live origin — thirteen icons, two leaf modules, one SVG — renders no shared component and so can never acquire that import. Three storybook specimens compile from the captures now, and the build says which.
+    **As of 2.0.1 the package does not ship them either, and that took a major bump.** It had been shipping all seven — not by decision, but because every non-excluded `.vue` is a root. Nobody installed them, so nothing said so, until the site began importing the package by name and those seven became the only shipped captures with a live origin left to drift. Refreshing them would have written `@codecavepro/brand/components/common/Button.vue` into the package's own source: the package importing itself, `assertPeersDeclared` demanding the package as its own peer, and a consumer with two versions installed getting one component's Button from the other. The alternative was a second rewrite rule taught to four places to keep shipping files nobody installs, so they went into `NOT_SHIPPED` instead and `assertNoSelfImport()` keeps the class shut. What is left with a live origin — thirteen icons, two leaf modules, one SVG — renders no shared component and so can never acquire that import. Three storybook specimens compile from the captures now, and the build says which.
 
     **The fonts are settled.** The package declares ten `@font-face` rules — 300/400/500/700/900, upright and italic, every weight Satoshi has — and codecave.pro declares the same ten. **The binaries are still not in the tarball**: that is a redistribution question, recorded in `build.mjs`, and no release changes it. The vendor's own `stylesheet.css` is unusable and both stylesheets say why next to the declarations.
 
@@ -35,8 +35,6 @@ label ([live query](https://codecave.atlassian.net/issues?jql=project%20%3D%20CC
     branch's own fixes as capture drift. The captures record what the site
     *ships*: put the checkout on `development` before believing the answer.
 
-
--   [CCWEB2-372](https://codecave.atlassian.net/browse/CCWEB2-372) — **the package ships no logo.** It never shipped one deliberately: `logo.svg` was in the tarball because a menu imported it, and the menus left in 2.0.0. Putting the one SVG back would recreate the accident on purpose, so the question is which marks, in which formats — and whether an npm package is the right delivery for brand marks at all, next to the same unanswered question about the font binaries.
 
 Open bugs in what codecave.pro ships, found while resyncing the captures or
 while working on the site itself. **These are the site's to fix, not the
@@ -127,6 +125,24 @@ copies the components out of `docs/source_examples/`, extracts `tokens.css` from
 tracked files are its manifest, build script and `README.md`, and `npm run
 check` asserts the byte-identity of every copy. **`docs/` remains the single
 origin; edit there, never in `packages/`.**
+
+**The package ships no brand marks, and that is now a decision rather than an
+accident.** `logo.svg` was only ever in the tarball because a menu imported it,
+and it left with the menus in 2.0.1. `BrandNav.vue` takes the wordmark as a
+`logo` prop — a URL the consumer resolves through its own asset pipeline — so
+the bar can be shared without the package distributing the mark. Same shape as
+the font binaries, which stay out for a different reason (redistributing
+third-party type), and the two answers agree about what "the brand kit ships":
+the system, not the assets.
+
+**`docs/authored/` is the second root, and the only one anyone writes into.**
+`source_examples/` is evidence and nothing there is authored; `authored/` is the
+opposite, and exists because `BrandNav.vue` has no upstream to be captured from —
+it is the site bar and the docs bar reconciled, so neither repo owns it. Two
+directories rather than a flag, because the rule that nothing under
+`source_examples/` is authored stops being checkable the moment the two sit side
+by side. **The directory name is the claim**, and a path present in both roots
+fails the build rather than letting whichever walked last win.
 
 **Two things a shipped component may reach for are checked at build time, and
 both were added after one got out.** `assertDistResolves()` asks whether every
