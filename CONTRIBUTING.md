@@ -171,8 +171,29 @@ static build cannot carry gets an **interface and an adapter**, never a stub.
   on an unmapped import and on a mapped specifier nothing imports any more,
   which is a claim about the bundles that has stopped being true. Both inputs
   are committed, so it runs in CI.
+- **The six deliverables under `docs/examples/raw/` are checked, because nothing
+  else looks at them.** Astro never renders them — that is what makes them
+  documents a client can be handed — and the wrapper pages that embed them
+  cannot see inside an `<iframe>`. Moving them one directory deeper broke the
+  wordmark in four and the Satoshi `@font-face` rules in two, with every check
+  green. `npm run check:examples` resolves every relative reference in them, and
+  holds their `font-size` and `border-radius` literals to the ramp: an email
+  writes values out in full because a mail client will not resolve a custom
+  property, but that constraint is about `var()`, not about the values. It also
+  rejects a bare `cqi` in the deck and the poster, which are container-scaled on
+  purpose and derive their ramps from the system's ratios. Exceptions carry
+  their reason and must be exercised.
+- **Every route carries the same main menu, and the way to break it is to skip
+  the layout.** `DocPage` renders `DsNav` with no prop to override, so a page
+  cannot get a *different* menu — only none, by not using the layout, which
+  builds and renders and passes everything while being absent from the
+  navigation. `npm run check:links` asserts every page under `pages/` imports
+  `DocPage`. It also asserts every documentation route the prose cites resolves,
+  anchors included, which is how the 49 citations the surface collapse broke get
+  found — a dead markdown link fails nowhere except for a reader. The route set
+  comes from committed source, not `dist/`, so it needs no build.
 - **Adding or removing a finding moves a number in three other files.**
-  `docs/README.md`, `docs/pages/storybook/index.astro` and `docs/pages/index.astro`
+  `docs/README.md`, `docs/pages/kitchen-sink/index.astro` and `docs/pages/index.astro`
   each quote how many findings the story pages carry. Do not adjust them by one
   and hope — `npm run check:findings` counts the pages and compares. A finding
   is an element carrying `sb-note` *after* that page's `<h2>Findings</h2>`, with

@@ -57,11 +57,41 @@ moment it is fixed; Jira keeps the history, so nothing here is a record:
 Finished under [CCWEB2-317](https://codecave.atlassian.net/browse/CCWEB2-317) on
 2026-08-21, so it is architecture now rather than open work. **Sources stay in
 `docs/`, output goes to gitignored `dist/`, and Pages deploys `dist/`.** Every
-page is an `.astro` under `docs/pages/`; the six specimens under `examples/` are
-never rendered and never will be — their gallery, `examples/index.html`, is the
-one exception and is now `docs/pages/artifacts/index.astro`. Everything else in `docs/` is payload and passes through, which
-`docs/tools/astro-passthrough.mjs` asserts every build — both halves are silent
-when they fail.
+page is an `.astro` under `docs/pages/`, and everything else in `docs/` is
+payload that passes through — which `docs/tools/astro-passthrough.mjs` asserts
+every build, both halves being silent when they fail.
+
+**There are two browsable surfaces, and that is the shape to hold in mind.**
+`kitchen-sink/` asks whether a *part* is right — 25 specimens, tokens through
+live components, on one hub; `examples/` asks whether the parts *compose*, as
+six deliverables behind a gallery. It used to be five surfaces: a brand page,
+`preview/`, `storybook/`, `artifacts/` and two indexes over them. The brand page
+folded into the front door as anchors, `preview/` and `storybook/` merged, and
+`artifacts/` became `examples/`. 30 routes became 34: the surfaces collapsed, the
+content did not. **`docs/storybook/` still exists and serves no pages** — it is
+the compiled bundles, ports and placeholders the specimens mount, and it keeps
+its name because every specimen identity derives from it.
+
+**The six files under `docs/examples/raw/` are never rendered by Astro and never
+will be.** Each has a wrapper page that documents it and embeds it in an
+`<iframe>`, which is what lets both rules hold at once: every ROUTE carries the
+menu, and every ARTIFACT stays a standalone document someone can be handed. That
+split has a cost worth knowing — an `<iframe>` reports nothing about what
+happens inside it, so nothing on the wrapper page can see a broken deliverable.
+Moving `artifacts/` one directory deeper broke the wordmark in four of the six
+and the Satoshi `@font-face` rules in two, and every check in the repo stayed
+green. `npm run check:examples` is what asks now.
+
+**Every route carries the same main menu, by construction.** `DocPage` renders
+`DsNav` with no prop to override it, and the items come from
+`docs/components/menu.ts`; a section's second bar comes from `SUB` in the same
+file and is the only half that varies. So the one real failure mode is a page
+getting *no* menu by skipping the layout — which builds, renders and passes
+everything while being absent from the navigation. `npm run check:links` asserts
+every page under `pages/` imports `DocPage`, and separately that every
+documentation route the prose cites still resolves, anchors included: collapsing
+the surfaces moved most of this site's URLs and broke 49 citations across nine
+files, which nothing else here would ever have noticed.
 
 Two rules survive the migration and are in [CONTRIBUTING.md](/CONTRIBUTING.md)
 with their reasons. The one that bites when adding a page: a `.html` at the same
