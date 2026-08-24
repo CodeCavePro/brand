@@ -39,6 +39,11 @@ export interface NavItem {
   href?: string;
   /** Names a slot to render as a hover dropdown under this item. */
   slot?: string;
+  /** Draws the attention dot. codecave.pro puts it on "Contact us"; it used to
+   *  be a `ul:last-of-type li:last-child::after` rule, which meant the marker
+   *  belonged to a POSITION rather than to an item and moved on its own the
+   *  first time the menu was reordered. Naming the item is the fix. */
+  badge?: boolean;
 }
 
 withDefaults(defineProps<{
@@ -72,7 +77,7 @@ withDefaults(defineProps<{
   <nav class="brand-nav" aria-label="Main">
     <div class="brand-nav-inner">
       <ul>
-        <li v-for="item in left" :key="item.name" :class="{ dropdown: item.slot }">
+        <li v-for="item in left" :key="item.name" :class="{ dropdown: item.slot, badged: item.badge }">
           <a
             v-if="item.href"
             class="brand-nav-link"
@@ -91,7 +96,7 @@ withDefaults(defineProps<{
       </a>
 
       <ul>
-        <li v-for="item in right" :key="item.name" :class="{ dropdown: item.slot }">
+        <li v-for="item in right" :key="item.name" :class="{ dropdown: item.slot, badged: item.badge }">
           <a
             v-if="item.href"
             class="brand-nav-link"
@@ -180,6 +185,22 @@ withDefaults(defineProps<{
 }
 .brand-nav-link:hover,
 .brand-nav-link:active { color: var(--color-hovered); }
+
+/* The attention dot. Sized and placed against the 48px row rather than the 40px
+   one the site drew it on, so it stays clear of the pill's right edge. */
+.badged { position: relative; }
+.badged::after {
+  content: "";
+  position: absolute;
+  top: 15px;
+  right: 8px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-error-400);
+  box-shadow: 0 0 12px 0 var(--color-error-400),
+              0 0 4px 0 hsl(from var(--color-error-400) h s l / 0.5);
+}
 
 .brand-nav-logo {
   position: absolute;
