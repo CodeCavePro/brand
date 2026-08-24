@@ -74,7 +74,7 @@ serves one TTF and lags behind. Design to 300/400/700 and do not reach for 500, 
   stylesheet.
 - `docs/preview/` — twelve review cards, one concern each, rendering live tokens and real
   components. `docs/storybook/` — thirteen components with variant matrices.
-- `docs/brand-kit.html` — lockups, clear space, palette and type scale on the real dark ground.
+- `docs/index.html` — lockups, clear space, palette and type scale on the real dark ground.
 
 ## A build looks like this
 

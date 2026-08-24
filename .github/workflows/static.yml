@@ -97,6 +97,14 @@ jobs:
       - name: Check the deliverables’ references still resolve
         run: node docs/tools/check-examples.mjs
 
+      # Collapsing five documentation surfaces into two moved most of this
+      # site’s URLs, and the dozens of places that CITE them are prose. A
+      # markdown link to a page that no longer exists fails nowhere — not the
+      # build, not any other check — except for a reader. The route set is
+      # derived from committed source rather than dist/, so this needs no build.
+      - name: Check every cited documentation route exists
+        run: node docs/tools/check-links.mjs
+
       # The ports typecheck needs typescript, so it cannot go in the
       # dependency-free check above — it goes after it. An adapter that has
       # drifted from the interface its component imports compiles perfectly and

@@ -34,8 +34,16 @@ import docsPassthrough from './docs/tools/astro-passthrough.mjs';
  * would land at `/preview.html` and every nav link to `preview/index.html`,
  * `storybook/index.html` and `artifacts/index.html` would 404. 'preserve' emits
  * each page exactly where it sits in the source tree, which is what keeps
- * today's URLs today's URLs. That matters beyond tidiness: twelve places cite
- * these paths, three of them inside the shipped colors_and_type.css.
+ * today's URLs today's URLs. That matters beyond tidiness: 35 citations across
+ * eight prose and config files address these paths, one of them inside the
+ * shipped colors_and_type.css.
+ *
+ * That sentence used to read "twelve places, three of them inside the shipped
+ * colors_and_type.css" — which is the count for WEBSITE-REVIEW.md's section
+ * numbers, borrowed here by mistake and describing a different thing entirely.
+ * The numbers above are measured, and check-links.mjs now asserts every one of
+ * those citations resolves, so the argument does not rest on a remembered
+ * count any more.
  */
 export default defineConfig({
   site: 'https://brand.codecave.pro',

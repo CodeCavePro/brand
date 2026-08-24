@@ -559,7 +559,7 @@ a:hover { color: var(--color-hovered); }
 
 /* The travelling highlight. Production drives x/y with GSAP quickTo on
  * pointermove; here the resting position (20% / 50%) is the default and a host
- * may animate it by writing --glow-x, as brand-kit.html does. */
+ * may animate it by writing --glow-x, as index.html does. */
 .btn-glow::after {
   content: "";
   position: absolute;

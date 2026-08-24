@@ -42,7 +42,7 @@ label ([live query](https://codecave.atlassian.net/issues?jql=project%20%3D%20CC
     *ships*: put the checkout on `development` before believing the answer.
 
 
--   [CCWEB2-374](https://codecave.atlassian.net/browse/CCWEB2-374) — **an open decision, and the analysis is already in the ticket: don't migrate.** The docs site reads like a documentation site and is not one — all 30 pages are specimens or galleries, and the only real prose it has (`DESIGN.md`, `README.md`, `SKILL.md`, `guide.md`, 1,565 lines) is not rendered as pages at all. Starlight would collide with `build.format: 'preserve'`, which is load-bearing because three of the twelve places citing these URLs are inside the shipped `colors_and_type.css`.
+-   [CCWEB2-374](https://codecave.atlassian.net/browse/CCWEB2-374) — **an open decision, and the analysis is already in the ticket: don't migrate.** The docs site reads like a documentation site and is not one — all 30 pages are specimens or galleries, and the only real prose it has (`DESIGN.md`, `README.md`, `SKILL.md`, `guide.md`, 1,565 lines) is not rendered as pages at all. Starlight would collide with `build.format: 'preserve'`, which is load-bearing because 35 citations across eight files address these URLs — one of them inside the shipped `colors_and_type.css` — and `npm run check:links` fails the build on any that stops resolving. (That sentence used to say "three of the twelve"; those are WEBSITE-REVIEW.md's section-number counts, borrowed here by mistake.)
 
 Open bugs in what codecave.pro ships, found while resyncing the captures or
 while working on the site itself. **These are the site's to fix, not the
@@ -57,8 +57,8 @@ moment it is fixed; Jira keeps the history, so nothing here is a record:
 Finished under [CCWEB2-317](https://codecave.atlassian.net/browse/CCWEB2-317) on
 2026-08-21, so it is architecture now rather than open work. **Sources stay in
 `docs/`, output goes to gitignored `dist/`, and Pages deploys `dist/`.** Every
-page is an `.astro` under `docs/pages/`; the six specimens under `artifacts/` are
-never rendered and never will be — their gallery, `artifacts/index.html`, is the
+page is an `.astro` under `docs/pages/`; the six specimens under `examples/` are
+never rendered and never will be — their gallery, `examples/index.html`, is the
 one exception and is now `docs/pages/artifacts/index.astro`. Everything else in `docs/` is payload and passes through, which
 `docs/tools/astro-passthrough.mjs` asserts every build — both halves are silent
 when they fail.
@@ -300,7 +300,7 @@ movable in bulk when one does. **Print colour space / CMYK is deliberately not
 filed anywhere:** it is Maria Shaban's decision and gets its own project later.
 
 Site-side flaws still go to [WEBSITE-REVIEW.md](/WEBSITE-REVIEW.md), which is
-already mirrored as CCWEB2-270…310. It stays a file only because twelve places
+already mirrored as CCWEB2-270…310. It stays a file only because ten places
 cite it by section number, three of them inside the shipped
 `docs/colors_and_type.css`.
 

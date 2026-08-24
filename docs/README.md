@@ -97,10 +97,10 @@ PDF and email builders, native apps. The CSS remains the source of truth.
 ## Package contents
 
 ```
-├── index.html                 dark front door — start here
+├── index.html                 dark front door, and the brand page it absorbed:
+│                              lockups, palette, type scale, voice, posture
 ├── DESIGN.md                  THE rules — canonical source of truth
 ├── colors_and_type.css        THE deliverable: tokens + component class layer
-├── brand-kit.html             the brand page: lockups, palette, type scale, glow CTA
 ├── README.md                  this file — package guide and preview manifest
 ├── SKILL.md                   agent-facing entry point
 ├── guide.md                   short orientation note
@@ -112,20 +112,41 @@ PDF and email builders, native apps. The CSS remains the source of truth.
 ├── imagery/                   decorative line-and-glow art, on its #050505 ground
 │   └── source/                the same 8 SVGs untouched, byte-for-byte
 ├── source_examples/           high-signal source files, the evidence behind the rules
-├── preview/                   12 focused review cards + index — layer 1, foundations
-├── storybook/                 13 component stories + index — layer 2, components
+├── authored/                  the second root — the only one anyone writes into
+├── pages/                     every route on the site, as .astro
+│   ├── kitchen-sink/          25 specimens + the index that gathers them
+│   └── examples/              6 wrapper pages + the gallery
+├── kitchen-sink/              the three stylesheets those specimens share
+├── storybook/                 build inputs, not routes — nothing here is served
+│   ├── compiled/              the real component bundles the specimens mount
 │   ├── ports/                 interfaces + docs-build adapters for what a
 │   │                          component depends on outside itself
 │   └── placeholders.js        local stand-ins for the CMS-hosted media the
 │                              captured components ask for
-└── artifacts/                 6 whole surfaces + index — layer 3, compositions
+└── examples/
+    ├── raw/                   6 standalone deliverables — Astro never renders these
+    └── examples.css           the chrome around them
 ```
 
-The three browsable layers answer three different questions. `preview/` asks
-whether a **token** is right, `storybook/` whether a **component** is right, and
-`artifacts/` whether the two **compose** into something a client receives.
-`DESIGN.md` and `colors_and_type.css` sit underneath all three as the rules and
-their machine-readable half.
+**There are two browsable surfaces, and they answer two different questions.**
+`kitchen-sink/` asks whether a **part** is right — a token, a specimen, a live
+component — and `examples/` asks whether the parts **compose** into something a
+client receives. `DESIGN.md` and `colors_and_type.css` sit underneath both as
+the rules and their machine-readable half.
+
+It used to be five: a brand page, `preview/` for tokens, `storybook/` for
+components, `artifacts/` for compositions, and two separate indexes over them.
+The split was real but nobody navigating it could hold five surfaces in mind, so
+the brand page folded into the front door as anchors, `preview/` and
+`storybook/` merged into one kitchen sink, and `artifacts/` became `examples/`.
+Route counts went from 30 to 34 — the surfaces collapsed, the content did not.
+
+**`storybook/` is now inputs rather than a surface**, which is worth knowing
+before looking for a page there. It holds the compiled bundles the specimens
+mount, their ports and their placeholders; the specimen PAGES live under
+`pages/kitchen-sink/`. The directory kept its name because every specimen
+identity — scoped style ids, `__file` — is derived from it, and renaming it
+would rewrite every `data-v-` attribute in every bundle for nothing.
 
 **`build/` is the runtime asset directory.** It holds the marks a packager or
 runtime consumes, under their original source filenames, copied byte-for-byte
@@ -174,37 +195,40 @@ described in prose only.
 
 ## Preview Manifest
 
-Twelve cards, one concern each. All are static HTML — open `preview/index.html`
-and work down, or open any card directly. Every card links
+Twelve cards, one concern each — the foundations half of the kitchen sink. Open
+`kitchen-sink/index.html` and work down from the *Tokens* and *CSS components*
+sections, or open any card directly. Every card links
 `../colors_and_type.css` and renders live tokens, live components and real
 preserved files: there are no screenshots and no redrawn marks anywhere in the
 set.
 
 | Card | What to inspect | What it demonstrates |
 |---|---|---|
-| `preview/index.html` | Launcher. Confirm all eleven cards open and the lockup renders. | `build/codecave.svg`, `.divider`, `.eyebrow` |
-| `preview/colors-primary.html` | That `#5F20FE` never fills a large area, and that cyan appears nowhere as a UI color. | `--color-action`, `--color-hovered`, `--color-glow-25`, `--gradient-brand`, the 12-step brand ramp, the 13-step gray ramp, the single-use accents, the technology wash, the 4-step error ramp. Source: `source_examples/styles/global.css`, `tokens/colors.css` |
-| `preview/colors-theme-dark.html` | Four surfaces one hair apart — check they still separate. Read the contrast ratios on the foreground ramp. | `--color-surface-primary/-secondary/-tertiary/-quaternary`, `--color-body-*`, `.card` in situ |
-| `preview/colors-theme-light.html` | The three light surfaces that legitimately exist, and why no light theme may be derived from them. | `gray-50` as ink vs. as a field, inverse lockup usage, `error-100` rationale |
-| `preview/typography-specimens.html` | Whether the six Satoshi cuts render distinctly. If they look identical, the `@font-face` binding is broken. | `fonts/Satoshi-*.woff2`, the nine-step scale at true size, `.eyebrow` / `.lead` / `.eyebrow-lead` with a counter-example. Source: `tokens/typography.css`, `homepage/expertise.astro` |
-| `preview/spacing-tokens.html` | The asymmetric section rhythm (200px above, 120px below) and bottom-heavy card padding. | `--gutter-*`, `--section-padding-top/-bottom`, `--card-padding`, `--control-height`, `--input-height`. Source: `tokens/layout.css` |
-| `preview/spacing-radius.html` | Eight radii at true size, the measured homepage census, and the same card at 4px and 0px for comparison. | `--radius-control` → `--radius-section-md`, `.card`, live `.section-container` across the 768px breakpoint |
-| `preview/spacing-shadows.html` | The space **above** the panel — that is where the violet has to appear. Then the conventional-shadow counter-example beside it. | `--shadow-section` (three negative-Y layers), `--shadow-glow-button`, `--shadow-input-focus`, `--shadow-input-error` |
-| `preview/components-buttons.html` | Rest, hover, active, focus and disabled shown together; tab through the focus row. | `.btn` + `-glow/-primary/-secondary/-tertiary/-ghost/-text/-link/:disabled`, and the one sanctioned CTA pairing. Source: `common/Button.vue`, `common/GlowButton.vue` |
-| `preview/components-inputs.html` | Click into the fields. The floating label must never collide with the value, and focus must be a halo rather than an outline. | `.field`, `.field.is-error`, `.error-message`, `label .required`, `.checkbox`, `.chip`, radios, the assembled consultation form. Source: `common/InputText.vue`, `TextField.vue`, `Checkbox.vue`, `Radio.vue`, `common/forms/ContactUsForm.vue` |
-| `preview/components-progress.html` | That the bar is violet at 15% and near-white only at 100%. If early progress reads near-white, the gradient is being sized to the fill instead of the track. | `.rule`, `.progress`, `.progress-value`, `.progress.is-indeterminate`, `--gradient-brand` as a field, and three counter-examples: stretched full width, gradient sized to the fill, thickened to 16px. Source: the brand repository's previously published `docs/index.html` |
-| `preview/brand-imagery.html` | Every plate must show visible strokes. A plate that reads as flat near-black means the `#050505` ground rect is missing from that file, not that the art is subtle. | The seven harvested section backgrounds on their required ground, the `0.8 / 0.65 / 0.55 / 0.45` opacity ladder that produces the falloff, the three gradient stops, and the two imagery-only literals recovered in the deep pass (`#391398`, `#4C4759`). Source: `codecave.pro/src/assets/images/` |
-| `preview/brand-assets.html` | Every frame must contain artwork. An empty frame means a missing file, not a styling bug. Check the 16px icon still reads as a chevron. | Real files from `build/` and `assets/` loaded via `<img>`, `<object>` and CSS `url(...)`: both lockups, the chevron, all four raster finishes at 256px, the seven-step `build/icons/` ramp at native size, the web runtime set (`favicon.ico`, `apple-touch-icon.png`, both PWA manifest icons), the production `logo.svg`, the 1024² app icon, and the six font specimens |
+| `kitchen-sink/index.html` | The hub over both halves. Confirm every card and story opens, and that the lockup renders. | `build/codecave.svg`, `.divider`, `.eyebrow` |
+| `kitchen-sink/colors-primary.html` | That `#5F20FE` never fills a large area, and that cyan appears nowhere as a UI color. | `--color-action`, `--color-hovered`, `--color-glow-25`, `--gradient-brand`, the 12-step brand ramp, the 13-step gray ramp, the single-use accents, the technology wash, the 4-step error ramp. Source: `source_examples/styles/global.css`, `tokens/colors.css` |
+| `kitchen-sink/colors-theme-dark.html` | Four surfaces one hair apart — check they still separate. Read the contrast ratios on the foreground ramp. | `--color-surface-primary/-secondary/-tertiary/-quaternary`, `--color-body-*`, `.card` in situ |
+| `kitchen-sink/colors-theme-light.html` | The three light surfaces that legitimately exist, and why no light theme may be derived from them. | `gray-50` as ink vs. as a field, inverse lockup usage, `error-100` rationale |
+| `kitchen-sink/typography-specimens.html` | Whether the six Satoshi cuts render distinctly. If they look identical, the `@font-face` binding is broken. | `fonts/Satoshi-*.woff2`, the nine-step scale at true size, `.eyebrow` / `.lead` / `.eyebrow-lead` with a counter-example. Source: `tokens/typography.css`, `homepage/expertise.astro` |
+| `kitchen-sink/spacing-tokens.html` | The asymmetric section rhythm (200px above, 120px below) and bottom-heavy card padding. | `--gutter-*`, `--section-padding-top/-bottom`, `--card-padding`, `--control-height`, `--input-height`. Source: `tokens/layout.css` |
+| `kitchen-sink/spacing-radius.html` | Eight radii at true size, the measured homepage census, and the same card at 4px and 0px for comparison. | `--radius-control` → `--radius-section-md`, `.card`, live `.section-container` across the 768px breakpoint |
+| `kitchen-sink/spacing-shadows.html` | The space **above** the panel — that is where the violet has to appear. Then the conventional-shadow counter-example beside it. | `--shadow-section` (three negative-Y layers), `--shadow-glow-button`, `--shadow-input-focus`, `--shadow-input-error` |
+| `kitchen-sink/components-buttons.html` | Rest, hover, active, focus and disabled shown together; tab through the focus row. | `.btn` + `-glow/-primary/-secondary/-tertiary/-ghost/-text/-link/:disabled`, and the one sanctioned CTA pairing. Source: `common/Button.vue`, `common/GlowButton.vue` |
+| `kitchen-sink/components-inputs.html` | Click into the fields. The floating label must never collide with the value, and focus must be a halo rather than an outline. | `.field`, `.field.is-error`, `.error-message`, `label .required`, `.checkbox`, `.chip`, radios, the assembled consultation form. Source: `common/InputText.vue`, `TextField.vue`, `Checkbox.vue`, `Radio.vue`, `common/forms/ContactUsForm.vue` |
+| `kitchen-sink/components-progress.html` | That the bar is violet at 15% and near-white only at 100%. If early progress reads near-white, the gradient is being sized to the fill instead of the track. | `.rule`, `.progress`, `.progress-value`, `.progress.is-indeterminate`, `--gradient-brand` as a field, and three counter-examples: stretched full width, gradient sized to the fill, thickened to 16px. Source: the brand repository's previously published `docs/index.html` |
+| `kitchen-sink/brand-imagery.html` | Every plate must show visible strokes. A plate that reads as flat near-black means the `#050505` ground rect is missing from that file, not that the art is subtle. | The seven harvested section backgrounds on their required ground, the `0.8 / 0.65 / 0.55 / 0.45` opacity ladder that produces the falloff, the three gradient stops, and the two imagery-only literals recovered in the deep pass (`#391398`, `#4C4759`). Source: `codecave.pro/src/assets/images/` |
+| `kitchen-sink/brand-assets.html` | Every frame must contain artwork. An empty frame means a missing file, not a styling bug. Check the 16px icon still reads as a chevron. | Real files from `build/` and `assets/` loaded via `<img>`, `<object>` and CSS `url(...)`: both lockups, the chevron, all four raster finishes at 256px, the seven-step `build/icons/` ramp at native size, the web runtime set (`favicon.ico`, `apple-touch-icon.png`, both PWA manifest icons), the production `logo.svg`, the 1024² app icon, and the six font specimens |
 
-The launcher links onward to the two layers above these cards: `storybook/index.html`
-and `artifacts/index.html`.
+These cards no longer sit on a surface of their own. `kitchen-sink/index.html`
+gathers them and the component stories below on one page, and the main menu
+carries the only other surface, `examples/index.html`.
 
 ---
 
 ## Component Storybook
 
 Thirteen components extracted from `codecave.pro` — twelve Vue islands and one
-Astro component. Open `storybook/index.html`.
+Astro component. The components half of the same page: open
+`kitchen-sink/index.html` and read down to *Live components*.
 
 The stories **mount the real components**: `tools/build-storybook.mjs`
 compiles each `.vue` source verbatim (vue/compiler-sfc + esbuild) into
@@ -212,7 +236,7 @@ compiles each `.vue` source verbatim (vue/compiler-sfc + esbuild) into
 own Tailwind theme plus every utility the components use, scoped to the story
 canvases with a preflight equivalent. Pages render them with the vendored Vue
 and GSAP runtimes; no external network, no build step at view time. The one
-`.astro` component cannot run in a browser, so `storybook/components.css`
+`.astro` component cannot run in a browser, so `kitchen-sink/components.css`
 survives only as its hand-translated port (`.cc-chip`). Where the storybook
 deviates from production — Strapi-hosted images swapped for local
 placeholders, positioning stages for absolutely-positioned cards — the gap is
@@ -248,7 +272,7 @@ written into that repo.
 
 ## Email CTAs
 
-`artifacts/email.html` shipped its two CTAs as green buttons. The cause
+`examples/raw/email.html` shipped its two CTAs as green buttons. The cause
 is a single attribute:
 
 ```html
@@ -325,7 +349,7 @@ all six artifacts now carry the company address.
    literals and the 150ms `transition-colors` — including the tertiary hover
    that darkens its border to `#1B0D4E`. The only addition is the
    `:focus-visible` ring, which production never implemented.
-7. **Start from `artifacts/`** when building a whole surface rather than a
+7. **Start from `examples/`** when building a whole surface rather than a
    control. Those six files show the system carrying real page density, which is
    where the 200/120 rhythm and the one-primary-action rule actually get tested.
 
@@ -352,13 +376,13 @@ set of custom properties on a different primary is worse than none, because a
 consumer who links it gets a brand that is not CODECAVE and no error to tell
 them so.
 
-What survived the removal is `artifacts/`, promoted to the top level and re-based
+What survived the removal is `examples/`, promoted to the top level and re-based
 on `colors_and_type.css`. `brand.json` and `guide.md` stay — both are on the real
 palette — though `guide.md` remains a short generated orientation note and lags
 this package in detail.
 
 This package — `colors_and_type.css`, `DESIGN.md`, `tokens/`, `preview/`,
-`storybook/`, `artifacts/` — is the source of truth.
+`storybook/`, `examples/` — is the source of truth.
 
 ## Verifying the package
 

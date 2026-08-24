@@ -34,8 +34,8 @@ places you change it. Knowing which category a file is in is most of the job:
 | **Provenance captures** | `docs/source_examples/**` | **Never edit.** Refresh *from the live site*, never by hand. |
 | **Generated** | `packages/brand/dist/`, the derived half of `ds-bundle/` (including its Components cards), `docs/storybook/compiled/`, `docs/storybook/tw-bridge.css` | Never edit. Rebuild. |
 | **Artwork** | SVGs under `docs/assets/`, `docs/build/`, `docs/imagery/`, `src/`, `favicons/` | Edit the hex literally — SVG has no cascade to inherit a token from. |
-| **Swatch captions** | `docs/index.html`, `docs/brand-kit.html`, `docs/pages/preview/colors-*.astro` | Edit the literal. Here the hex *is the content* — a `var()` would render nothing. On the ported page the literals are a data array at the top of the file; that is still a literal. |
-| **Email** | `docs/artifacts/email.html`, `newsletter.html` | Edit the literal. Email clients do not support custom properties; this is not a shortcut. |
+| **Swatch captions** | `docs/index.html`, `docs/index.html`, `docs/pages/preview/colors-*.astro` | Edit the literal. Here the hex *is the content* — a `var()` would render nothing. On the ported page the literals are a data array at the top of the file; that is still a literal. |
+| **Email** | `docs/examples/raw/email.html`, `newsletter.html` | Edit the literal. Email clients do not support custom properties; this is not a shortcut. |
 | **Prose** | `docs/DESIGN.md`, `README.md`, `docs/README.md`, `docs/SKILL.md` | Update the ones that state the value. `DESIGN.md` is the rulebook and always states it. |
 
 Everything else consumes `var(--color-*)` and needs no edit at all — which is the
@@ -293,8 +293,8 @@ build wrote back into `docs/`, the npm package's byte-identity assertion would b
 comparing a generated file against itself.
 
 Every page is ported: the thirteen `preview/` cards, the fourteen `storybook/`
-pages, `index.html` and `brand-kit.html`. Each is an `.astro` under
-`docs/pages/` and reaches the site by being rendered. `artifacts/` is the
+pages, `index.html` and `index.html`. Each is an `.astro` under
+`docs/pages/` and reaches the site by being rendered. `examples/` is the
 exception and always will be — see below.
 
 The half-migrated state is gone, but the machinery that made it survivable is
@@ -341,7 +341,7 @@ The fourth applies only to `storybook/`, and it is the one worth stating twice:
   identical on all thirteen mounting pages. `docs/pages/storybook/button.astro`
   says all of this at the point where undoing it would be easy.
 
-The six specimens under `artifacts/` are **never** rendered. They are the
+The six specimens under `examples/` are **never** rendered. They are the
 deliverable being shown, not pages about it, and an HTML email with a
 documentation bar welded to the top is not a valid email. They pass through
 untouched.
@@ -352,8 +352,8 @@ specimen — it always carried the documentation bar — and while it was payloa
 it carried its own hand-written copy of that bar's markup. Once the bar became
 a component, that copy would have been the only markup left in the repository
 claiming to be the nav while not being it. Its route did not move:
-`build.format: 'preserve'` emits it to `artifacts/index.html`, the href every
-nav already carries. Nothing else under `artifacts/` will follow it.
+`build.format: 'preserve'` emits it to `examples/index.html`, the href every
+nav already carries. Nothing else under `examples/` will follow it.
 
 ## Where open work is tracked
 

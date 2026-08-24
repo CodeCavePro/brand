@@ -524,7 +524,7 @@ package did not, and it is kept.
 ```
 
 Three rules govern it, and each has a visible failure mode — all three are shown
-side by side on `preview/components-progress.html`:
+side by side on `kitchen-sink/components-progress.html`:
 
 - **4px, never thicker.** At 16px the gradient stops being a line and becomes a
   violet field, which §9.4 forbids.
@@ -718,7 +718,7 @@ Ship-blocking, in rough order of how often they get attempted.
 13. **A thickened or full-width gradient rule.** Past 4px it becomes a violet
     field (see 4); past 320px the gradient flattens into a pale wash. Both
     failures are rendered as counter-examples in
-    `preview/components-progress.html`.
+    `kitchen-sink/components-progress.html`.
 
 ---
 
@@ -768,7 +768,7 @@ that `InputText.vue` uses for the same job. Filed as CCWEB2-320.
 This package keeps `#B42318` for icons, rules and non-text marks, and renders
 error *messages* in `--color-error-100` `#FE9A9A` (**9.71:1**). The error halo
 still uses `error-200`/`error-100` exactly as `InputText.vue` defines it, so the
-field itself is unchanged. See `preview/components-inputs.html`.
+field itself is unchanged. See `kitchen-sink/components-inputs.html`.
 
 ### 10.3 Synthesized vs. real font weights — retired divergence
 
@@ -834,7 +834,7 @@ step in the package's own chrome, and write down which is which.
 
 ### 10.6 Email artifacts render the CTA green
 
-`artifacts/email.html` ships both CTAs as lime green. The cause is one
+`examples/raw/email.html` ships both CTAs as lime green. The cause is one
 attribute:
 
 ```html
@@ -934,7 +934,7 @@ and the unchanged `#9980FF` / `#1B0D4E` CTA).
   a token file. They are accurate to the pixel but are not declared tokens
   upstream.
 - No Figma snapshot was decoded, so nothing here is Figma-derived.
-- `preview/colors-theme-light.html` documents light-surface *exceptions*; it is
+- `kitchen-sink/colors-theme-light.html` documents light-surface *exceptions*; it is
   not a light theme, because none exists.
 - The ground color of `work-process-img-*.jpg` is **unmeasured** — no raster
   decoder was available in this environment. Those files were excluded from

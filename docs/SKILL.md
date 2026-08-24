@@ -21,7 +21,7 @@ user-invocable: true
 | `fonts/` | Six real Satoshi cuts in woff2 + woff, bound by `colors_and_type.css`. |
 | `source_examples/` | The high-signal originals — brand token CSS, production `global.css`, and every Vue/Astro component the system documents — copied out of `context/` so they can be read directly. |
 | `storybook/` | One story per component, each mounting the real `.vue` single-file component with its props, variants and source path. |
-| `artifacts/` | Whole surfaces composed from the system — pitch deck, contact form, marketing email, newsletter, landing page, print poster. One self-contained file each. |
+| `examples/` | Whole surfaces composed from the system — pitch deck, contact form, marketing email, newsletter, landing page, print poster. One self-contained file each. |
 
 ## Source context
 
@@ -63,7 +63,7 @@ Use it when the work is CODECAVE-branded and visual:
 - Writing UI copy: `DESIGN.md` §8 covers the voice.
 
 Do **not** use it to derive a light theme. There is not one, and
-`preview/colors-theme-light.html` explains why the three light surfaces that
+`kitchen-sink/colors-theme-light.html` explains why the three light surfaces that
 exist cannot be generalized into one.
 
 ## How to use
@@ -79,10 +79,10 @@ exist cannot be generalized into one.
    hard-code a hex.
 4. **Use the component classes** rather than rebuilding them — `.btn` + variant,
    `.card`, `.field`, `.checkbox`, `.chip`, `.eyebrow-lead`, `.section-container`.
-5. **Open `preview/index.html`** to see any rule rendered live before applying
+5. **Open `kitchen-sink/index.html`** to see any rule rendered live before applying
    it. The Preview Manifest in `README.md` says what each card is for.
-6. **Open `storybook/index.html`** when the target is a component and
-   `artifacts/index.html` when it is a whole surface. The storybook mounts the
+6. **Open `kitchen-sink/index.html`** when the target is a component and
+   `examples/index.html` when it is a whole surface. The storybook mounts the
    genuine `.vue` files; the artifacts show the system at real page density.
 7. **Take assets from `build/` or `assets/`.** Copy them; do not regenerate them.
 8. **Check `DESIGN.md` §10** before matching production pixel-for-pixel — a

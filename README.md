@@ -30,7 +30,7 @@ Everything published lives under [docs/](/docs). Start at the front door and rea
 |---|---|---|
 | 1 | **The rules** — foundations, the 26-step ramp, components, motion, anti-patterns, known divergences | [docs/DESIGN.md](/docs/DESIGN.md) |
 | 2 | **The tokens** — every value as a CSS custom property, semantic layer over raw ramp | [docs/colors_and_type.css](/docs/colors_and_type.css) |
-| 3 | **The brand kit** — lockups, clear space, palette, type scale, the glow CTA | [docs/brand-kit.html](/docs/brand-kit.html) |
+| 3 | **The brand kit** — lockups, clear space, palette, type scale, the glow CTA | [docs/index.html](/docs/index.html) |
 | 4 | **The specimens** — 12 review cards, one concern each | [docs/preview/](/docs/preview/) |
 | 5 | **The storybook** — 13 components with real prop signatures and variant matrices | [docs/storybook/](/docs/storybook/) |
 
