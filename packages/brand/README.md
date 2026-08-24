@@ -186,14 +186,38 @@ you need both:
 @import "@codecavepro/brand/theme.css";
 ```
 
-**That order is load-bearing, and `tokens.css` must stay unlayered.** Several entries in
-`theme.css` are deliberate self-references (`--color-glow-25: var(--color-glow-25)`):
-the declaration is what makes Tailwind emit the utility, while the value comes from
-`tokens.css`, whose unlayered `:root` outranks `@layer theme`. Wrap `tokens.css` in a
-cascade layer — or leave it out — and those names resolve to nothing.
+**`tokens.css` must stay unlayered.** Several entries in `theme.css` are deliberate
+self-references (`--color-glow-25: var(--color-glow-25)`): the declaration is what makes
+Tailwind emit the utility, while the value comes from `tokens.css`, whose unlayered
+`:root` outranks `@layer theme`. Wrap `tokens.css` in a cascade layer — or leave it out —
+and those names resolve to nothing. Measured on codecave.pro: importing it as
+`layer(brand)` changes the emitted CSS and moves a stylesheet's content hash.
+
+The order of those two lines, by contrast, is convention rather than a constraint —
+Tailwind collects every `@theme` and `:root` in the stylesheet before it emits anything,
+so reversing them produced byte-identical output. They are written values-then-names
+because that is the direction of the dependency.
 
 Import only `tokens.css` and the components mount and behave correctly and render
 nearly unstyled.
+
+### Installing the components? Tailwind cannot see them
+
+**Tailwind's automatic content detection skips `node_modules`, and this package ships Vue
+source.** So a utility class used only inside a component you install exists nowhere
+Tailwind reads, and is simply never emitted. Add the package to the scan:
+
+```css
+@source "../../node_modules/@codecavepro/brand/dist/src";
+```
+
+Adjust the path to be relative to the stylesheet the `@source` sits in. It **adds** to the
+automatic scan rather than narrowing it.
+
+This is the failure mode to know about because nothing reports it: the build succeeds, a
+typecheck reports no errors, and the affected elements render unstyled. Leaving the line
+out while installing `Button.vue` alone cost codecave.pro 783 bytes of CSS and all 12 of
+the utilities only that component uses — every button on the site, silently.
 
 ### The content-shaped four resolve their own image URLs
 
