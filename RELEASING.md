@@ -17,7 +17,7 @@ reissued. Everything else in this runbook is reversible; that is not.
   preconditions the routine path does not.
 
 **Do not use it** for changes that do not reach the tarball. The package ships
-`dist/` plus `README.md` and `LICENSE` — 59 files as of 1.4.0. Storybook
+`dist/` plus `README.md` and `LICENSE` — 47 files as of 2.0.0. Storybook
 specimens, docs pages, `DESIGN.md` and `WEBSITE-REVIEW.md` are none of them.
 Those deploy with GitHub Pages on push and need no release.
 
@@ -95,9 +95,10 @@ npm run build && npm run check
 
 `check` asserts what the package promises: three files byte-identical to their
 origin (`docs/colors_and_type.css`, `docs/fonts/fonts.css`, the root `LICENSE`),
-`dist/tokens.css` still re-extracting from `docs/colors_and_type.css` to exactly
-what shipped, the ports typechecking, and the storybook matching
-`docs/source_examples/`. If the
+`dist/tokens.css` still re-extracting from `docs/colors_and_type.css` and
+`dist/theme.css` from `docs/theme.css` to exactly what shipped, every component
+matching the capture it was copied from, the ports typechecking, and the
+storybook matching `docs/source_examples/`. If the
 byte-identity assertion fails, **do not fix it in `packages/`** — the fix
 belongs in `docs/`, which is the origin. See [CLAUDE.md](/CLAUDE.md).
 

@@ -1,0 +1,88 @@
+/* The Tailwind @theme block — the ORIGIN, and authored here.
+ *
+ * These 45 entries are what makes Tailwind emit `bg-surface-primary` and the
+ * rest. tokens.css carries the values; without an @theme entry the utility does
+ * not exist at all, which is why a consumer needs both.
+ *
+ * WHY IT LIVES HERE NOW. It used to be extracted from the capture of
+ * codecave.pro src/styles/global.css, because that is where it was written and
+ * the site was the source of truth. CCWEB2-318 inverted that: the site deleted
+ * its own block and now writes
+ *
+ *   @import "@codecavepro/brand/theme.css";
+ *
+ * which made the old arrangement a circle — the package deriving from the site,
+ * the site importing it back from the package. It kept working only for as long
+ * as the capture stayed stale. The moment the capture was refreshed to the truth
+ * the build failed, correctly, with "expected exactly one @theme block, found 0".
+ *
+ * So the block is promoted, exactly as the twelve components were: the site gave
+ * it up, this repo owns it. These are the same bytes the site was importing
+ * before the refresh — taken from the last capture that still carried them, not
+ * retyped.
+ *
+ * EDIT THIS, NOT packages/. dist/theme.css is extracted from the block below and
+ * gets its header generated; anything above @theme is for readers here and does
+ * not ship. Where this and tokens.css both give a name a literal value they must
+ * agree, and build.mjs fails if they do not — see the note there for why a
+ * disagreement is invisible rather than merely wrong.
+ */
+@theme {
+
+    /* sizes */
+    --max-width-desktop: 1280px;
+    --breakpoint-sm: 457px;
+    --font-sans: Satoshi, sans-serif;
+    --text-heading-lg: 3.5rem;
+    --text-heading-lg--line-height: 130%;
+    --text-heading-md: 2.75rem;
+    --text-heading-md--line-height: 115%;
+    --text-heading-sm: 2rem;
+    --text-heading-sm--line-height: 110%;
+    --radius-custom: 2.75rem;
+
+    /* colors */
+
+    /* primary */
+    --color-primary-25: var(--color-brand-25);
+    --color-primary-50: var(--color-brand-50);
+    --color-primary-100: var(--color-brand-100);
+    --color-primary-200: var(--color-brand-200);
+    --color-primary-300: var(--color-brand-300);
+    --color-primary-400: var(--color-brand-400);
+    --color-primary-500: var(--color-brand-500); /* button primary*/
+    --color-primary-600: var(--color-brand-600);
+    --color-primary-700: var(--color-brand-700); /* button primary hover*/
+    --color-primary-800: var(--color-brand-800); 
+    --color-primary-900: var(--color-brand-900); /* button primary active*/
+
+
+    /* once used? */
+    --color-glow-25: var(--color-glow-25);
+    --color-progress-0: var(--color-progress-0);
+    --color-technology-gradient-0: var(--color-technology-gradient-0);
+    --color-technology-gradient-25: var(--color-technology-gradient-25);
+    --color-technology-gradient-50: var(--color-technology-gradient-50);
+    --color-shadow-0: var(--color-shadow-0);
+    --color-failureproof-0: var(--color-gray-1000);
+
+    --color-heading: var(--color-gray-50);
+    --color-action: var(--color-brand-500);
+    --color-neutral: var(--color-gray-600);
+    --color-hovered: var(--color-brand-200);
+    --color-outline-primary-hover: var(--color-brand-800);
+    --color-body-primary: var(--color-gray-50);
+    --color-text-body-primary: var(--color-gray-200);
+    --color-body-secondary: var(--color-gray-500);
+    --color-body-secondary-lighter: var(--color-gray-300);
+    --color-surface-primary: var(--color-brand-950);
+    --color-surface-primary-hover: var(--color-gray-800);
+    --color-surface-secondary: var(--color-gray-1100); /* Surface/background-secondary*/
+    --color-surface-tertiary: var(--color-gray-900);
+    --color-surface-primary-transparent: hsl(from var(--color-surface-primary) h s l / 0.3);
+    --color-surface-quaternary: var(--color-gray-700);
+    
+    --color-default-transparent: var(--color-gray-100);
+    
+    --color-error: var(--color-error-300);
+}

@@ -1,11 +1,11 @@
 import { paths } from "@helpers/paths.ts";
 import type { Component } from "vue";
-import CloudIcon from "../../assets/icons/cloud-icon.vue";
 import CartIcon from "../../assets/icons/cart-icon.vue";
-import WidgetIcon from "../../assets/icons/widget-icon.vue";
-import LightningIcon from "../../assets/icons/lightning-icon.vue";
+import CloudIcon from "../../assets/icons/cloud-icon.vue";
 import DatabaseIcon from "../../assets/icons/database-icon.vue";
+import LightningIcon from "../../assets/icons/lightning-icon.vue";
 import PanoramaIcon from "../../assets/icons/panorama-icon.vue";
+import WidgetIcon from "../../assets/icons/widget-icon.vue";
 
 interface Submenu {
     icon: Component
@@ -27,7 +27,7 @@ export const menu: Menu[] = [
         submenuTitle: 'Services',
         submenu: [
             {icon: CloudIcon, name: 'Cloud & DevOps', description: 'Optimize costs. Protect your Data', link: paths.devops},
-            {icon: CartIcon, name: 'E-Commerce', description: 'Maximize revenue, dominate Markets', link: paths.ecommerce},
+            {icon: CartIcon, name: 'eCommerce', description: 'Maximize revenue, dominate Markets', link: paths.ecommerce},
             {icon: WidgetIcon, name: 'Autodesk plugins', description: '10x efficiency with custom Plugins', link: paths.autodesk},
             {icon: LightningIcon, name: 'Automation & AI', description: 'Leverage virtual Workforce', link: paths.automation},
             {icon: DatabaseIcon, name: 'HubSpot', description: 'Aggregate data from all your Tools', link: paths.hubspot},

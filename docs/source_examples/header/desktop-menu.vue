@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { menu } from "./menu.ts";
-import Button from "../common/Button.vue";
+import Button from "@codecavepro/brand/components/common/Button.vue";
 import Shevron from "../../assets/icons/shevron.vue";
 import { paths } from "@helpers/paths.ts";
 import Logo from "../../assets/images/logo.svg";

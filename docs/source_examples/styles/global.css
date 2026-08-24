@@ -1,18 +1,164 @@
-/* No @source rule follows this on purpose, but know what that buys: Tailwind 4
- * detects content automatically, which means it scans every file the repo
+/* Tailwind 4 detects content automatically: it scans every file the repo
  * tracks -- src/, but also scripts/ and any .mjs or .md beside them -- and
  * takes anything word-shaped as a candidate class. Prose counts. A utility's
  * bare name written in a code comment ships that utility's rule to every page,
  * and the only trace is a content hash moving on a stylesheet nobody diffs;
  * one comment in scripts/check-seo.mjs did exactly that under CCWEB2-353.
- * Narrowing the scan with @source would fix the class of problem and would
- * also silently drop any class this site builds by concatenation, so it is
- * not a change to make casually. */
+ *
+ * The one @source below ADDS to that scan rather than narrowing it, and it is
+ * not optional -- see the note beside it. Narrowing the automatic scan is the
+ * change to think twice about: it would fix the class of problem above and
+ * would also silently drop any class this site builds by concatenation. */
 @import "tailwindcss";
+/* Values, then names. tokens.css declares the palette in a plain :root;
+ * theme.css declares the 45 @theme entries that make Tailwind emit
+ * bg-surface-primary and the rest, several of them deliberate self-references
+ * (--x: var(--x)) that take their value from that :root. Both used to be
+ * written out here by hand.
+ *
+ * Of the three things the package README asks of a consumer, exactly one is
+ * load-bearing for this build, and it is worth knowing which -- all three were
+ * tested by breaking them:
+ *
+ *   UNLAYERED matters. Import tokens.css as layer(brand) and the emitted CSS
+ *   changes and its content hash moves. An unlayered :root outranks
+ *   @layer theme, which is what makes the self-references resolve.
+ *
+ *   The ORDER of these two does not, with this toolchain. Tailwind collects
+ *   every @theme and :root in the stylesheet before it emits anything, so
+ *   swapping these two lines produces byte-identical output. They stay in this
+ *   order because values-then-names is the direction of the dependency.
+ *
+ *   The POSITION does not either, for the same reason: @tailwindcss/vite
+ *   resolves @import at build time rather than parsing this as a browser would,
+ *   and the same import placed below @font-face still works. It sits at the top
+ *   because that is where CSS says an @import belongs and where a reader looks
+ *   for one -- not because moving it breaks anything here.
+ *
+ * What is not optional is having theme.css at all: without it the build fails
+ * outright rather than quietly shipping an unstyled site. */
 @import "@codecavepro/brand/tokens.css";
+@import "@codecavepro/brand/theme.css";
+
+/* Tailwind's automatic scan skips node_modules, and the components installed
+ * from the package are Vue SOURCE -- their classes exist only as text in files
+ * Tailwind would otherwise never read. Without this line the site builds, every
+ * check passes, and the utilities used only inside those components are simply
+ * never emitted: measured at 783 bytes and 12 missing rules with Button.vue
+ * alone, which is every button on the site rendering unstyled.
+ *
+ * It adds a source; it does not restrict the automatic one. */
+@source "../../node_modules/@codecavepro/brand/dist/src";
+
+/* Ten real cuts, not one faux-bolded to death.
+ *
+ * This used to be a single Satoshi-Regular.ttf with NO font-weight descriptor,
+ * which makes it the face for every weight: 95 font-bold, 1 font-light and 1
+ * font-black across the site all resolved to Regular and were then synthesized
+ * by the browser -- smeared outlines rather than the drawn cut.
+ *
+ * The faces, the weights and the file names are the ones
+ * @codecavepro/brand/fonts.css declares, so the site and the design system
+ * describe the same typography. The package cannot ship the binaries
+ * themselves -- that is a font-redistribution question, not an engineering one
+ * -- so the files live here, exactly as its own provenance note anticipates.
+ * If that question is ever answered yes, this whole block becomes one @import.
+ *
+ * Declaring a face the site never asks for is free -- measured, not assumed:
+ * a browser downloads only the faces a rule actually matches. So the whole
+ * family is bound, upright and italic at every weight.
+ *
+ * The italics are not decoration. Seven rich-text renderers turn CMS markdown
+ * into <em>, and emphasis inside a bold heading wants the 700 italic; with
+ * only the 400 italic declared the browser slants the real Bold instead. */
 @font-face {
     font-family: Satoshi;
-    src: url("../assets/fonts/Satoshi-Regular.ttf");
+    src: url("../assets/fonts/Satoshi-Light.woff2") format("woff2"),
+         url("../assets/fonts/Satoshi-Light.woff") format("woff");
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: Satoshi;
+    src: url("../assets/fonts/Satoshi-LightItalic.woff2") format("woff2"),
+         url("../assets/fonts/Satoshi-LightItalic.woff") format("woff");
+    font-weight: 300;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: Satoshi;
+    src: url("../assets/fonts/Satoshi-Regular.woff2") format("woff2"),
+         url("../assets/fonts/Satoshi-Regular.woff") format("woff");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: Satoshi;
+    src: url("../assets/fonts/Satoshi-Italic.woff2") format("woff2"),
+         url("../assets/fonts/Satoshi-Italic.woff") format("woff");
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: Satoshi;
+    src: url("../assets/fonts/Satoshi-Medium.woff2") format("woff2"),
+         url("../assets/fonts/Satoshi-Medium.woff") format("woff");
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: Satoshi;
+    src: url("../assets/fonts/Satoshi-MediumItalic.woff2") format("woff2"),
+         url("../assets/fonts/Satoshi-MediumItalic.woff") format("woff");
+    font-weight: 500;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: Satoshi;
+    src: url("../assets/fonts/Satoshi-Bold.woff2") format("woff2"),
+         url("../assets/fonts/Satoshi-Bold.woff") format("woff");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: Satoshi;
+    src: url("../assets/fonts/Satoshi-BoldItalic.woff2") format("woff2"),
+         url("../assets/fonts/Satoshi-BoldItalic.woff") format("woff");
+    font-weight: 700;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: Satoshi;
+    src: url("../assets/fonts/Satoshi-Black.woff2") format("woff2"),
+         url("../assets/fonts/Satoshi-Black.woff") format("woff");
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: Satoshi;
+    src: url("../assets/fonts/Satoshi-BlackItalic.woff2") format("woff2"),
+         url("../assets/fonts/Satoshi-BlackItalic.woff") format("woff");
+    font-weight: 900;
+    font-style: italic;
+    font-display: swap;
 }
 
 :root {
@@ -32,66 +178,6 @@
      * and never used as a utility class, so it has to exist unconditionally
      * rather than because some unrelated utility caused Tailwind to emit it. */
     --duration-control: 150ms;
-}
-
-@theme {
-
-    /* sizes */
-    --max-width-desktop: 1280px;
-    --breakpoint-sm: 457px;
-    --font-sans: Satoshi, sans-serif;
-    --text-heading-lg: 3.5rem;
-    --text-heading-lg--line-height: 130%;
-    --text-heading-md: 2.75rem;
-    --text-heading-md--line-height: 115%;
-    --text-heading-sm: 2rem;
-    --text-heading-sm--line-height: 110%;
-    --radius-custom: 2.75rem;
-
-    /* colors */
-
-    /* primary */
-    --color-primary-25: var(--color-brand-25);
-    --color-primary-50: var(--color-brand-50);
-    --color-primary-100: var(--color-brand-100);
-    --color-primary-200: var(--color-brand-200);
-    --color-primary-300: var(--color-brand-300);
-    --color-primary-400: var(--color-brand-400);
-    --color-primary-500: var(--color-brand-500); /* button primary*/
-    --color-primary-600: var(--color-brand-600);
-    --color-primary-700: var(--color-brand-700); /* button primary hover*/
-    --color-primary-800: var(--color-brand-800); 
-    --color-primary-900: var(--color-brand-900); /* button primary active*/
-
-
-    /* once used? */
-    --color-glow-25: var(--color-glow-25);
-    --color-progress-0: var(--color-progress-0);
-    --color-technology-gradient-0: var(--color-technology-gradient-0);
-    --color-technology-gradient-25: var(--color-technology-gradient-25);
-    --color-technology-gradient-50: var(--color-technology-gradient-50);
-    --color-shadow-0: var(--color-shadow-0);
-    --color-failureproof-0: var(--color-gray-1000);
-
-    --color-heading: var(--color-gray-50);
-    --color-action: var(--color-brand-500);
-    --color-neutral: var(--color-gray-600);
-    --color-hovered: var(--color-brand-200);
-    --color-outline-primary-hover: var(--color-brand-800);
-    --color-body-primary: var(--color-gray-50);
-    --color-text-body-primary: var(--color-gray-200);
-    --color-body-secondary: var(--color-gray-500);
-    --color-body-secondary-lighter: var(--color-gray-300);
-    --color-surface-primary: var(--color-brand-950);
-    --color-surface-primary-hover: var(--color-gray-800);
-    --color-surface-secondary: var(--color-gray-1100); /* Surface/background-secondary*/
-    --color-surface-tertiary: var(--color-gray-900);
-    --color-surface-primary-transparent: hsl(from var(--color-surface-primary) h s l / 0.3);
-    --color-surface-quaternary: var(--color-gray-700);
-    
-    --color-default-transparent: var(--color-gray-100);
-    
-    --color-error: var(--color-error-300);
 }
 
 .page-container {

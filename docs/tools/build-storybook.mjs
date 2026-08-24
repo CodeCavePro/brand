@@ -51,7 +51,7 @@ import path from 'node:path';
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 import { sourceDigest, DIGEST_PREFIX } from './source-digest.mjs';
-import { unalias, usesAlias } from './helpers-alias.mjs';
+import { HELPERS_ALIAS, unalias, usesAlias } from './helpers-alias.mjs';
 
 const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const siteDir = path.resolve(process.argv[2] ?? path.join(docs, '..', '..', 'codecave.pro'));
@@ -327,6 +327,33 @@ const vuePlugin = {
   },
 };
 
+/**
+ * Resolve the site's @helpers alias when compiling a CAPTURE.
+ *
+ * A specimen built from the package never needs this — build.mjs rewrote the
+ * alias to a relative path on the way into dist/. A specimen built from the
+ * capture gets the site's spelling verbatim, and esbuild has never heard of the
+ * alias, so it fails outright: "Could not resolve @helpers/paths.ts".
+ *
+ * That was invisible while every aliased component happened to be in the
+ * package. Excluding the seven site-coupled ones (CCWEB2-371) put ArticlePreview
+ * back on the capture path and the build stopped, which is the good version of
+ * this: a loud failure rather than a specimen quietly missing.
+ *
+ * The alias prefix comes from helpers-alias.mjs rather than being spelled again
+ * here. The target differs from the package's, and that is the point — the
+ * package rewrites to its own shipped layout, while here the helpers are simply
+ * where the captures keep them.
+ */
+const helpersAlias = {
+  name: 'helpers-alias',
+  setup(build) {
+    build.onResolve({ filter: new RegExp(`^${HELPERS_ALIAS}`) }, (args) => ({
+      path: path.join(SRC, 'helpers', args.path.slice(HELPERS_ALIAS.length)),
+    }));
+  },
+};
+
 /* ---- bundle each entry: vue + gsap stay external, the rest inlines ------ */
 const fromCaptures = [];
 for (const entry of ENTRIES) {
@@ -353,7 +380,7 @@ for (const entry of ENTRIES) {
     // Bare imports (e.g. pain-points-item's `marked`) resolve from the SITE's
     // node_modules — source_examples lives in the brand repo, which has none.
     nodePaths: [path.join(siteDir, 'node_modules')],
-    plugins: [vuePlugin],
+    plugins: [helpersAlias, vuePlugin],
     banner: {
       js: `/* GENERATED from ${from} by tools/build-storybook.mjs — do not edit. */`,
     },
@@ -393,11 +420,31 @@ if (idle.length) {
 const twNode = req('@tailwindcss/node');
 const oxide = req('@tailwindcss/oxide');
 
+/* Both blocks used to come out of the site's global.css, because that is where
+ * they were written. They are not there any more: CCWEB2-318 moved the palette
+ * and the @theme entries into this repo, and the site now imports them back as
+ * @codecavepro/brand/tokens.css and theme.css. Its :root is down to a single
+ * declaration and it has no @theme at all, so reading them from the capture
+ * found nothing the moment that capture told the truth.
+ *
+ * The bridge still has to reproduce the SITE's cascade, which is now three
+ * sources rather than one: the 102 tokens this repo owns, the @theme block this
+ * repo owns, and whatever the site still declares for itself. That last part is
+ * not vestigial -- --duration-control lives there because the package has no
+ * token for it, and Checkbox.vue and Radio.vue read it from their scoped
+ * styles. Drop it and two specimens silently lose their transition. */
+const themeSrc = fs.readFileSync(path.join(docs, 'theme.css'), 'utf8');
+const themeBlock = themeSrc.match(/@theme \{[\s\S]*?\n\}/);
+if (!themeBlock) throw new Error('no @theme block found in docs/theme.css');
+
+const tokensSrc = fs.readFileSync(path.join(docs, 'colors_and_type.css'), 'utf8');
+const tokensRoot = tokensSrc.match(/^:root \{([\s\S]*?)^\}/m);
+if (!tokensRoot) throw new Error('no :root block found in docs/colors_and_type.css');
+
 const globalCss = fs.readFileSync(path.join(SRC, 'styles', 'global.css'), 'utf8');
-const themeBlock = globalCss.match(/@theme \{[\s\S]*?\n\}/);
-if (!themeBlock) throw new Error('no @theme block found in source_examples/styles/global.css');
-const rootBlock = globalCss.match(/^:root \{([\s\S]*?)^\}/m);
-if (!rootBlock) throw new Error('no :root block found in source_examples/styles/global.css');
+const siteRoot = globalCss.match(/^:root \{([\s\S]*?)^\}/m);
+if (!siteRoot) throw new Error('no :root block found in source_examples/styles/global.css');
+const rootBlock = [null, `${tokensRoot[1]}${siteRoot[1]}`];
 
 /* Utilities keep their var(--…) references — do NOT inline theme values.
  * The site defines its gray/brand ramps in plain :root, invisible to

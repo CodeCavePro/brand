@@ -117,6 +117,34 @@ const NOT_SHIPPED = [
    'default to identity. It stays captured because sixteen site-only pages ' +
    'still use it, and it stays out because a design system has no business ' +
    'knowing where the content lives.'],
+
+  /* THE SEVEN THE SITE KEPT. Each one reaches codecave.pro's own route table,
+   * link list or menu data -- paths.ts, links.ts, menu.ts -- so installing one
+   * would put the site's navigation behind an npm release: changing a menu item
+   * would mean publishing. That decision was already made and written down. The
+   * package shipped them anyway, not by decision but because every non-excluded
+   * .vue is a root and nobody had said otherwise.
+   *
+   * It surfaced when the site began importing this package by name. These are
+   * the only shipped captures whose origin is still alive, so they are the only
+   * ones that can drift -- and refreshing them would have written
+   * `@codecavepro/brand/components/common/Button.vue` into the package's own
+   * source: the package importing itself, and assertPeersDeclared demanding the
+   * package as its own peer. The alternative was a second rewrite rule, taught
+   * to four places, existing only to keep shipping files nobody installs.
+   *
+   * So they come out, and assertNoSelfImport() below keeps the class shut. What
+   * is left with a live origin renders no shared component -- icons, helpers, a
+   * type file -- and so can never acquire an import of this package. (CCWEB2-371)
+   */
+  ['common/ArticlePreview.vue', 'reaches @helpers/paths.ts for the article route.'],
+  ['footer/link-group.vue', 'reaches footer/links.ts, the site\x27s footer link list.'],
+  ['header/desktop-menu.vue', 'reaches header/menu.ts and @helpers/paths.ts.'],
+  ['header/mobile-menu.vue', 'ditto, plus the back arrow.'],
+  ['header/services-list.vue', 'reaches header/menu.ts; only the two menus render it.'],
+  ['homepage/technologies.vue', 'reaches @helpers/paths.ts, and is the only importer of' +
+   ' vue3-carousel -- which leaves peerDependencies with it.'],
+  ['homepage/technology-card.vue', 'reaches @helpers/paths.ts.'],
 ];
 const EXCLUDED = new Set(NOT_SHIPPED.map(([rel]) => rel));
 
@@ -241,6 +269,98 @@ function assertDistResolves() {
  * the consumer's build, which is the worst place to find out. Promoting the
  * four CMS-shaped components added three of these at once.
  */
+/**
+ * No shipped file may import this package by its own name.
+ *
+ * The site consumes the package that way -- 38 files say
+ * `@codecavepro/brand/components/common/Button.vue` -- and the captures are the
+ * site's files. So the spelling is one refresh away from landing inside the
+ * package at any time, and it does not announce itself: Node resolves a
+ * package's own name when `exports` is present, so it would very likely just
+ * work, right up until a consumer ends up with two versions installed and one
+ * component quietly renders another version's Button.
+ *
+ * assertPeersDeclared would catch it today, but with exactly the wrong advice --
+ * it would report an undeclared peer and tell you to declare it, which is how
+ * @codecavepro/brand ends up as a peerDependency of @codecavepro/brand. Hence a
+ * separate check that says the real thing.
+ *
+ * It passes because of what NOT_SHIPPED now excludes, not by luck: every shipped
+ * file whose origin is still alive on the site is an icon, a helper or a type
+ * file, and none of those render a shared component. The day that stops being
+ * true this fails, which is the point. (CCWEB2-371)
+ */
+/**
+ * Every custom property a shipped component READS must be one the package
+ * declares — in tokens.css, in theme.css, or in that component's own style
+ * block. Runs after the derived files exist, because those two ARE the
+ * declaration.
+ *
+ * WHY. The site declares things privately in its own :root, and a component
+ * that reads one of them looks perfect here and on codecave.pro while being
+ * broken for everyone else. --duration-control was exactly that: Checkbox.vue
+ * and Radio.vue transition their tick and dot through it, the site declared it,
+ * the package never did. A consumer got `transition: var(--duration-control)
+ * transform` with nothing behind the var — invalid at computed-value time, so
+ * the tick appeared instantly instead of scaling in. Nothing failed; it was
+ * simply wrong, in the quiet way.
+ *
+ * This is the CSS half of the question assertDistResolves() asks about imports
+ * and url(): does everything this package hands a consumer resolve inside what
+ * it hands them? (CCWEB2-371)
+ */
+function assertTokensSuffice() {
+  const declared = new Set();
+  for (const file of ['tokens.css', 'theme.css']) {
+    const css = fs.readFileSync(out(file), 'utf8');
+    for (const m of css.matchAll(/^\s*(--[a-zA-Z0-9-]+)\s*:/gm)) declared.add(m[1]);
+  }
+  const missing = new Map();
+  for (const rel of shipped) {
+    const src = fs.readFileSync(out(rel), 'utf8');
+    const blocks = src.match(/<style[\s\S]*?<\/style>/g) ?? [src];
+    for (const block of blocks) {
+      const own = new Set([...block.matchAll(/(--[a-zA-Z0-9-]+)\s*:/g)].map((m) => m[1]));
+      for (const m of block.matchAll(/var\((--[a-zA-Z0-9-]+)/g)) {
+        if (declared.has(m[1]) || own.has(m[1])) continue;
+        if (!missing.has(m[1])) missing.set(m[1], new Set());
+        missing.get(m[1]).add(rel);
+      }
+    }
+  }
+  if (!missing.size) return;
+  console.error('build failed — a shipped component reads a property this package does not declare:');
+  for (const [name, files] of [...missing].sort()) {
+    console.error(`  ${name}  <-  ${[...files].sort().join(', ')}`);
+  }
+  console.error('');
+  console.error('It resolves on codecave.pro because the site declares it privately, and');
+  console.error('nowhere else. Add it to docs/colors_and_type.css — or to docs/theme.css if');
+  console.error('a utility class should exist for it, which for a value read only from a');
+  console.error('scoped style block it should not.');
+  process.exit(1);
+}
+
+function assertNoSelfImport(shippedFiles, byShipped) {
+  const self = JSON.parse(fs.readFileSync(path.join(pkg, 'package.json'), 'utf8')).name;
+  const guilty = [];
+  for (const shipped of shippedFiles) {
+    const src = fs.readFileSync(docs('source_examples', byShipped.get(shipped)), 'utf8');
+    for (const m of src.matchAll(/from\s*["']([^."'][^"']*)["']/g)) {
+      if (m[1] === self || m[1].startsWith(`${self}/`)) guilty.push([shipped, m[1]]);
+    }
+  }
+  if (!guilty.length) return;
+  console.error(`build failed — a shipped file imports ${self}, which is this package:`);
+  for (const [shipped, spec] of guilty) console.error(`  dist/${shipped}  ->  ${spec}`);
+  console.error('');
+  console.error('That is the site\x27s spelling, and it arrived through a capture refresh.');
+  console.error('Either the component belongs to the site and belongs in NOT_SHIPPED,');
+  console.error('or the import has to be rewritten on copy the way @helpers is. Do not');
+  console.error(`declare ${self} as its own peerDependency.`);
+  process.exit(1);
+}
+
 function assertPeersDeclared(shippedFiles, byShipped) {
   const manifest = JSON.parse(fs.readFileSync(path.join(pkg, 'package.json'), 'utf8'));
   const declared = new Set(Object.keys(manifest.peerDependencies ?? {}));
@@ -327,6 +447,7 @@ function shippable() {
   };
   for (const shipped of roots) visit(shipped);
 
+  assertNoSelfImport(seen, byShipped);
   assertPeersDeclared(seen, byShipped);
 
   if (escaped.length) {
@@ -431,8 +552,14 @@ function extractRoot(src) {
 }
 
 /**
- * The Tailwind bridge, EXTRACTED from the site's global.css capture rather
- * than written. It is the `@theme` block and nothing else.
+ * The Tailwind bridge, EXTRACTED from docs/theme.css. It is the `@theme`
+ * block and nothing else.
+ *
+ * ITS ORIGIN MOVED, and the reason is written next to the block itself.
+ * Briefly: it used to be extracted from the capture of the site's global.css,
+ * until the site deleted its own @theme block and started importing this file
+ * instead. That made the derivation a circle, surviving only while the capture
+ * stayed stale. The block is now promoted into docs/, like the components were.
  *
  * WHY IT EXISTS. `./tokens.css` publishes the token *values*; it declares
  * --color-surface-primary. It does not make `.bg-surface-primary` exist. A
@@ -547,10 +674,10 @@ function assertThemeAgreesWithTokens(themeCss, tokensCss) {
     console.error(
       'build failed — theme.css and tokens.css disagree about ' +
         `${clashes.length} value(s):\n${clashes.join('\n')}\n\n` +
-        'tokens.css wins the cascade, so the theme.css value is already dead on\n' +
-        'the live site. This is a codecave.pro fix in src/styles/global.css (make\n' +
-        'the entry `var(--name)`, as the others are), then refresh the capture.\n' +
-        'Do not edit docs/source_examples/ — it is evidence, not source.',
+        'tokens.css wins the cascade, so the theme.css value is already dead\n' +
+        'wherever both are imported. Fix it in docs/theme.css — make the entry\n' +
+        '`var(--name)`, as the others are. That file is the origin now; do not\n' +
+        'chase this into docs/source_examples/, which is evidence, not source.',
     );
     process.exit(1);
   }
@@ -574,7 +701,7 @@ function derive(produce, dest) {
 /** Files derived from a docs/ source, as [produce, destination-inside-dist]. */
 const DERIVED = [
   [() => extractRoot(docs('colors_and_type.css')), 'tokens.css'],
-  [() => extractTheme(docs('source_examples', 'styles', 'global.css')), 'theme.css'],
+  [() => extractTheme(docs('theme.css')), 'theme.css'],
 ];
 
 /* Both derived stylesheets, re-derived, so the agreement check runs against
@@ -679,6 +806,7 @@ for (const [produce, dest] of DERIVED) {
 }
 
 themeAgrees();
+assertTokensSuffice();
 
 for (const name of TOKENS) {
   fs.copyFileSync(docs('tokens', `${name}.ts`), tmp('tokens', `${name}.ts`));

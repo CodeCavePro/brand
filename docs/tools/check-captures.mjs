@@ -90,8 +90,40 @@ function content(file) {
   return fs.readFileSync(file, 'utf8').replace(/\r\n/g, '\n');
 }
 
+/**
+ * Where a capture lives inside the published package, if it lives there at all.
+ * Mirrors build.mjs shippedAs(): assets/, helpers/ and lib/ keep their place
+ * under src/, everything else is a component.
+ */
+function shippedAs(rel) {
+  const top = rel.split('/')[0];
+  return ['assets', 'helpers', 'lib'].includes(top)
+    ? `src/${rel}`
+    : `src/components/${rel}`;
+}
+
+const dist = path.join(repo, 'packages', 'brand', 'dist');
+const built = fs.existsSync(dist);
+
+/**
+ * A capture with no origin left on the site is not automatically stale.
+ *
+ * Twelve components were deleted from codecave.pro BECAUSE this package took
+ * them over — that was the whole point of CCWEB2-318. Reporting those as "the
+ * site moved or deleted the file" is a reading from before the direction of
+ * truth flipped, and it is now the permanent state of every promoted component.
+ * A checker that is red whatever anyone does trains its reader to skip the list,
+ * which is the exact failure this file argues against in its own header.
+ *
+ * So the question is asked of the package: if it ships the file, the site
+ * deleting it is the arrangement working. If it does not, the capture really is
+ * documenting something that exists nowhere, and that is still an error.
+ */
+const promotedByPackage = (rel) => built && fs.existsSync(path.join(dist, shippedAs(rel)));
+
 const drifted = [];
 const unresolved = [];
+const promoted = [];
 let checked = 0;
 let skipped = 0;
 let eol = 0;
@@ -105,7 +137,7 @@ for (const file of walk(captures).sort()) {
 
   const origin = originOf(rel);
   if (origin === null) {
-    unresolved.push(rel);
+    (promotedByPackage(rel) ? promoted : unresolved).push(rel);
     continue;
   }
 
@@ -124,6 +156,12 @@ if (unresolved.length) {
   for (const rel of unresolved) console.error(`  ${rel}`);
   console.error('');
   console.error('Either the site moved the file, or it deleted it and the capture is stale.');
+  if (!built) {
+    console.error('');
+    console.error('packages/brand/dist/ is not built, so a component the package has');
+    console.error('TAKEN OVER cannot be told from one that is simply gone. Run');
+    console.error('`npm run build` and try again before believing this list.');
+  }
 }
 
 if (drifted.length) {
@@ -141,6 +179,17 @@ console.log(
   `source_examples/ matches ${path.basename(site)} ` +
   `(${checked} file(s), ${skipped} brand-repo capture(s) skipped).`,
 );
+
+// Named rather than merely not-failed. These are captures nothing on the site
+// can contradict any more, so they are the ones that would rot silently, and a
+// count that moves is the only warning anyone would get.
+if (promoted.length) {
+  console.log(
+    `${promoted.length} more have no origin left because the package now ships ` +
+    `them; the site deleted its copies. Frozen by definition — this check can ` +
+    `no longer say anything about them.`,
+  );
+}
 
 // Said out loud rather than left implicit, so nobody reads the line above as a
 // claim of byte-identity and then wonders why `fc` or `diff` disagrees with it.

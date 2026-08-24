@@ -297,6 +297,20 @@
   --control-height: 3rem;           /* 48px — every button and pill         */
   --input-height: 4rem;             /* 64px — floating-label text input     */
 
+  /* The tick and dot transition, read from the scoped styles of Checkbox.vue
+   * and Radio.vue and never used as a utility class — so it belongs here and
+   * NOT in theme.css: a Tailwind @theme entry would emit a duration-control
+   * utility nothing asks for, and this has to exist unconditionally rather than
+   * because some unrelated utility happened to pull it in.
+   *
+   * It was the one name a shipped component reached for that the package did
+   * not declare. codecave.pro carried it privately in its own :root, so the
+   * site looked right while any other consumer got `transition: var(...)` with
+   * nothing behind it — invalid at computed-value time, so the tick appeared
+   * instantly instead of scaling in. Same 150ms the site has always used;
+   * moving it changes nothing anywhere and makes the package self-contained. */
+  --duration-control: 150ms;
+
   /* =========================================================================
    * ELEVATION — CODECAVE's light comes from BELOW.
    * Never substitute a conventional downward drop shadow for --shadow-section.

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { paths } from "@helpers/paths.ts";
-import Button from "../common/Button.vue";
+import Button from "@codecavepro/brand/components/common/Button.vue";
 
 defineProps<{
   active: boolean

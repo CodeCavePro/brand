@@ -1,6 +1,6 @@
 {
   "name": "@codecavepro/brand",
-  "version": "1.6.1",
+  "version": "2.0.0",
   "description": "CODECAVE design system — colour, typography and layout tokens as CSS custom properties and as a typed module.",
   "license": "Unlicense",
   "type": "module",
@@ -41,8 +41,7 @@
     "gsap": "^3.13.0",
     "isomorphic-dompurify": "^3.22.0",
     "marked": "^18.0.5",
-    "vue": "^3.5.22",
-    "vue3-carousel": "^0.17.0"
+    "vue": "^3.5.22"
   },
   "peerDependenciesMeta": {
     "gsap": {
@@ -52,9 +51,6 @@
       "optional": true
     },
     "marked": {
-      "optional": true
-    },
-    "vue3-carousel": {
       "optional": true
     }
   },

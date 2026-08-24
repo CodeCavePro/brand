@@ -3,10 +3,11 @@ import { computed, ref } from "vue";
 import { Carousel, type CarouselConfig, Slide } from "vue3-carousel";
 import "vue3-carousel/carousel.css";
 import { BREAKPOINTS } from "@helpers/breakpoints.ts";
-import GlowButton from "../common/GlowButton.vue";
-import TypingEffect from "../common/effects/TypingEffect.vue";
+import GlowButton from "@codecavepro/brand/components/common/GlowButton.vue";
+import TypingEffect from "@codecavepro/brand/components/common/effects/TypingEffect.vue";
 import TechnologyCard from "./technology-card.vue";
 import { paths } from "@helpers/paths.ts";
+import { carouselGestureLocker } from "@helpers/carousel-gesture-locker.ts";
 
 /* See ArticlePreview.vue: the fields read here, not the generated Strapi
  * `Technology`, which a caller may still pass unchanged. This component
@@ -39,11 +40,11 @@ const handleMouseLeave = () => {
 const config = computed<Partial<CarouselConfig>>(() => ({
   gap: 8,
   itemsToShow: 'auto',
-  height: 220,
   autoplay: autoplay.value,
+  wrapAround: true,
+  height: 220,
   snapAlign: 'center',
   pauseAutoplayOnHover: true,
-  wrapAround: true,
   transition: 500,
   breakpoints: {
     [BREAKPOINTS.md]: {
@@ -54,6 +55,7 @@ const config = computed<Partial<CarouselConfig>>(() => ({
     },
   }
 }))
+const carouselLocker = carouselGestureLocker()
 </script>
 
 <template>
@@ -103,20 +105,22 @@ const config = computed<Partial<CarouselConfig>>(() => ({
         />
       </div>
     </div>
-    <Carousel
-        v-model="activeIndex"
-        v-bind="config"
-        class="-mx-4 xl:mx-0 xl:hidden"
-    >
-      <Slide v-for="(item, index) in technologies" :key="index">
-        <div class="flex items-center w-[190px] h-[220px]">
-        <TechnologyCard
-            :name="item.name"
-            :active="activeIndex === index"
-            :className="`w-full h-full ${activeIndex === index ? 'max-h-full' : 'max-h-[190px]'}`"
-        />
-        </div>
-      </Slide>
-    </Carousel>
+      <div ref="carouselLocker">
+        <Carousel
+            v-model="activeIndex"
+            v-bind="config"
+            class="-mx-4 xl:mx-0 xl:hidden"
+        >
+          <Slide v-for="(item, index) in technologies" :key="index">
+            <div class="flex items-center w-[190px] h-[220px]">
+            <TechnologyCard
+                :name="item.name"
+                :active="activeIndex === index"
+                :className="`w-full h-full ${activeIndex === index ? 'max-h-full' : 'max-h-[190px]'}`"
+            />
+            </div>
+          </Slide>
+        </Carousel>
+    </div>
   </section>
 </template>

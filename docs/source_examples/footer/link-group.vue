@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Button from "../common/Button.vue";
+import Button from "@codecavepro/brand/components/common/Button.vue";
 import type { Link } from "./links.ts";
 
 defineProps<{

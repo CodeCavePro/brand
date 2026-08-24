@@ -58,7 +58,7 @@ else:
 @import "@codecavepro/brand/tokens.css";
 ```
 
-Same 102 properties on `:root`, same values, zero rules. Nothing it declares can change
+Same 103 properties on `:root`, same values, zero rules. Nothing it declares can change
 how a single existing element renders — a `var()` only takes effect where you write
 one. Fonts come with it only as a *name*: `--font-sans` says Satoshi, and declaring the
 faces stays your call (see below).
@@ -149,10 +149,17 @@ Two things to know about it:
 
 ## The components
 
-19 components and 13 icons — the buttons, form controls, menu, footer, and the
-article, testimonial and technology cards codecave.pro renders — ship as **source**, byte-for-byte the files the site builds
-from. Not a reimplementation of them, and not a bundle compiled from a snapshot:
-the same files, kept identical by a check that runs on every push.
+12 components and 13 icons — the buttons, the form controls and the forms
+themselves, the review card and the typing effect codecave.pro renders — ship as
+**source**, byte-for-byte the files the site builds from. Not a reimplementation
+of them, and not a bundle compiled from a snapshot: the same files, kept
+identical by a check that runs on every push.
+
+**What is deliberately absent is the navigation.** The menus, the footer link
+group, the article and technology cards all reach codecave.pro's own route table
+and menu data, so shipping them would put one site's navigation behind an npm
+release — changing a menu item would mean publishing. They are components of a
+website, not of a design system.
 
 ```vue
 <script setup lang="ts">

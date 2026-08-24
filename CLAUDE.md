@@ -16,9 +16,11 @@ Open items for the brand package, all in
 [CCWEB2](https://codecave.atlassian.net/browse/CCWEB2) under the **`brand-kit`**
 label ([live query](https://codecave.atlassian.net/issues?jql=project%20%3D%20CCWEB2%20AND%20labels%20%3D%20%22brand-kit%22%20ORDER%20BY%20key%20ASC)):
 
--   [CCWEB2-318](https://codecave.atlassian.net/browse/CCWEB2-318) — **epic. All six phases have landed (2026-08-21), and phase 6's sentence is now finished on the styling side.** The package is on public npm; codecave.pro `development` installs **1.5.0**, imports both `/tokens.css` and `/theme.css` from it, and no longer keeps a palette or an `@theme` block of its own. Twelve components moved with it — Button, GlowButton, Checkbox, InputText, TextField, Radio, Review, TypingEffect, ContactUsForm, ResearchForm, LazyImage, pain-points-item — and are gone from the site's `src/`.
+-   [CCWEB2-318](https://codecave.atlassian.net/browse/CCWEB2-318) — **epic. All six phases have landed (2026-08-21), and phase 6's sentence is now finished on the styling side.** The package is on public npm; codecave.pro `development` installs **1.6.1**, imports both `/tokens.css` and `/theme.css` from it, and no longer keeps a palette or an `@theme` block of its own — which is why `docs/theme.css` is now the ORIGIN of that block rather than the site's `global.css` capture. Deriving it from the site had quietly become a circle, and it survived only while the capture was stale. Twelve components moved with it — Button, GlowButton, Checkbox, InputText, TextField, Radio, Review, TypingEffect, ContactUsForm, ResearchForm, LazyImage, pain-points-item — and are gone from the site's `src/`.
 
     Seven stay site-owned on purpose: ArticlePreview, link-group, desktop-menu, mobile-menu, services-list, technologies and technology-card all reach the site's `paths.ts`, `links.ts` or `menu.ts`. Installing them would put codecave.pro's navigation behind an npm release — changing a menu item would mean publishing. That is a coupling decision, not a mechanical swap.
+
+    **As of 2.0.0 the package does not ship them either, and that took a major bump.** It had been shipping all seven — not by decision, but because every non-excluded `.vue` is a root. Nobody installed them, so nothing said so, until the site began importing the package by name and those seven became the only shipped captures with a live origin left to drift. Refreshing them would have written `@codecavepro/brand/components/common/Button.vue` into the package's own source: the package importing itself, `assertPeersDeclared` demanding the package as its own peer, and a consumer with two versions installed getting one component's Button from the other. The alternative was a second rewrite rule taught to four places to keep shipping files nobody installs, so they went into `NOT_SHIPPED` instead and `assertNoSelfImport()` keeps the class shut. What is left with a live origin — thirteen icons, two leaf modules, one SVG — renders no shared component and so can never acquire that import. Three storybook specimens compile from the captures now, and the build says which.
 
     **The fonts are settled.** The package declares ten `@font-face` rules — 300/400/500/700/900, upright and italic, every weight Satoshi has — and codecave.pro declares the same ten. **The binaries are still not in the tarball**: that is a redistribution question, recorded in `build.mjs`, and no release changes it. The vendor's own `stylesheet.css` is unusable and both stylesheets say why next to the declarations.
 
@@ -117,11 +119,23 @@ hand-written stub used to live there as `lib/strapi.ts`; it is gone.
 
 `packages/brand/` is a **pure derivative of `docs/`** — it copies
 `colors_and_type.css` and `fonts.css` byte-for-byte, copies the root `LICENSE`,
-copies the components out of `docs/source_examples/`, extracts `tokens.css` and
-`theme.css`, and compiles `docs/tokens/*.ts`. No *design content* under `packages/` is authored; the only
+copies the components out of `docs/source_examples/`, extracts `tokens.css` from
+`colors_and_type.css` and `theme.css` from `docs/theme.css`, and compiles
+`docs/tokens/*.ts`. No *design content* under `packages/` is authored; the only
 tracked files are its manifest, build script and `README.md`, and `npm run
 check` asserts the byte-identity of every copy. **`docs/` remains the single
 origin; edit there, never in `packages/`.**
+
+**Two things a shipped component may reach for are checked at build time, and
+both were added after one got out.** `assertDistResolves()` asks whether every
+import and `url()` in `dist/` resolves inside `dist/` — that is CCWEB2-370, the
+checkbox tick. `assertTokensSuffice()` asks the same question of CSS: every
+`var(--x)` a shipped component reads must be declared by `tokens.css`,
+`theme.css` or the component itself. `--duration-control` was the one that was
+not — codecave.pro declared it privately in its own `:root`, so Checkbox and
+Radio transitioned correctly here and on the site and instantly for everybody
+else. **A property the site happens to declare is not a property the package
+has**, and the only way to tell the difference is to ask the tarball.
 
 **One rewrite happens on the way in, and it is the only one.** The site imports
 its helpers as `@helpers/paths.ts` — a tsconfig `paths` entry in codecave.pro,

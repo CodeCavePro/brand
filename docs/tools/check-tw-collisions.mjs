@@ -151,6 +151,30 @@ if (IMPORTS_TOKENS.test(globalCss)) {
   for (const name of declarations(origin.slice(open, close + 2)).keys()) siteGlobals.add(name);
 }
 
+/* And the same for the names that only an @theme entry declares.
+ *
+ * The --color-primary-* family is one of these: it aliases the brand ramp and
+ * it has never been in colors_and_type.css. It used to be found because the
+ * site wrote the @theme block itself; the site deleted that too and imports
+ * theme.css instead, so this reported 4 names as undeclared -- asterisk-icon's
+ * stroke among them -- all of them false, and all of them alarming, because an
+ * invisible required-field asterisk is exactly the bug this check should find.
+ *
+ * Same discipline as the block above: follow the import rather than assume it,
+ * and read the ORIGIN (docs/theme.css) rather than the generated dist/. */
+const IMPORTS_THEME = /^\s*@import\s+["']@codecavepro\/brand\/theme\.css["']/m;
+if (IMPORTS_THEME.test(globalCss)) {
+  const themeOrigin = fs.readFileSync(path.join(docs, 'theme.css'), 'utf8');
+  const open = themeOrigin.search(/^@theme\s*\{[ \t]*$/m);
+  const close = themeOrigin.indexOf(`\n}\n`, open);
+  if (open === -1 || close === -1) {
+    console.error('docs/theme.css has no single top-level @theme block to read names from.');
+    console.error('Direction A was not checked; nothing about undeclared names was verified.');
+    process.exit(1);
+  }
+  for (const name of declarations(themeOrigin.slice(open, close + 2)).keys()) siteGlobals.add(name);
+}
+
 /* The captures always, and the full site tree as well when one is beside us.
  *
  * CCWEB2-314 asks for both: "run it against the website checkout, not just the
