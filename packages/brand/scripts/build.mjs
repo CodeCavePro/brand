@@ -171,8 +171,29 @@ function shippedAs(rel) {
  * local to here is where it gets applied: resolved by the walk, rewritten on
  * copy, and asserted afterwards against the built output.
  */
+/**
+ * The two roots a shipped file can come from.
+ *
+ * source_examples/ is EVIDENCE — captured from codecave.pro, authored by nobody
+ * here, and check:captures proves it still matches. authored/ is the opposite
+ * and exists for exactly one reason: BrandNav.vue is the site bar and the docs
+ * bar reconciled into one component, so it has no upstream to be captured from.
+ * Neither repo owns it any more.
+ *
+ * Kept as two directories rather than a flag or a list, because the rule that
+ * matters — nothing under source_examples/ is authored — stops being checkable
+ * the moment the two live side by side. The directory name IS the claim.
+ */
+const ROOTS = ['source_examples', 'authored'];
+
+/** Which root holds a given capture-relative path. Filled by shippable(). */
+const rootOfRel = new Map();
+
+/** The file a shipped path was copied from, in whichever root holds it. */
+const originOf = (rel) => docs(rootOfRel.get(rel) ?? 'source_examples', rel);
+
 /** A shipped file whose bytes are not its capture's is one of these. */
-const isAliased = (rel) => usesAlias(fs.readFileSync(docs('source_examples', captureOf(rel)), 'utf8'));
+const isAliased = (rel) => usesAlias(fs.readFileSync(originOf(captureOf(rel)), 'utf8'));
 
 /**
  * Every file a source file points at, in the spelling it points at them with.
@@ -345,7 +366,7 @@ function assertNoSelfImport(shippedFiles, byShipped) {
   const self = JSON.parse(fs.readFileSync(path.join(pkg, 'package.json'), 'utf8')).name;
   const guilty = [];
   for (const shipped of shippedFiles) {
-    const src = fs.readFileSync(docs('source_examples', byShipped.get(shipped)), 'utf8');
+    const src = fs.readFileSync(originOf(byShipped.get(shipped)), 'utf8');
     for (const m of src.matchAll(/from\s*["']([^."'][^"']*)["']/g)) {
       if (m[1] === self || m[1].startsWith(`${self}/`)) guilty.push([shipped, m[1]]);
     }
@@ -367,7 +388,7 @@ function assertPeersDeclared(shippedFiles, byShipped) {
   const imported = new Map();
 
   for (const shipped of shippedFiles) {
-    const src = fs.readFileSync(docs('source_examples', byShipped.get(shipped)), 'utf8');
+    const src = fs.readFileSync(originOf(byShipped.get(shipped)), 'utf8');
     const specs = [
       ...[...src.matchAll(/from\s*["']([^."'][^"']*)["']/g)],
       ...[...src.matchAll(/^\s*import\s+["']([^."'][^"']*)["']/gm)],
@@ -412,12 +433,31 @@ function assertPeersDeclared(shippedFiles, byShipped) {
  * loudly rather than shipping a component whose reference resolves to nothing.
  */
 function shippable() {
-  const all = (function walk(dir) {
-    return fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
+  const walk = (dir) =>
+    fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
       e.isDirectory() ? walk(path.join(dir, e.name)) : [path.join(dir, e.name)]);
-  })(docs('source_examples'))
-    .map((f) => path.relative(docs('source_examples'), f).split(path.sep).join('/'))
-    .filter((rel) => !rel.startsWith('brand-repo'));
+
+  /* Both roots, flattened into one list of capture-relative paths, with each
+   * path remembering where it came from. A name colliding across the two would
+   * be a genuine ambiguity — the same shipped file with two different origins —
+   * so it fails here rather than letting whichever root walked last win. */
+  const all = [];
+  for (const root of ROOTS) {
+    const base = docs(root);
+    if (!fs.existsSync(base)) continue;
+    for (const file of walk(base)) {
+      const rel = path.relative(base, file).split(path.sep).join('/');
+      if (root === 'source_examples' && rel.startsWith('brand-repo')) continue;
+      if (rootOfRel.has(rel)) {
+        console.error(`build failed — ${rel} exists in both ${rootOfRel.get(rel)}/ and ${root}/.`);
+        console.error('One shipped file cannot have two origins. Rename one, or delete');
+        console.error('the authored copy if the site has since grown a real one to capture.');
+        process.exit(1);
+      }
+      rootOfRel.set(rel, root);
+      all.push(rel);
+    }
+  }
 
   /* Resolved in the SHIPPED layout, not the capture layout — that is the whole
    * assertion. `header/mobile-menu.vue` reaching `../../assets/images/logo.svg`
@@ -432,7 +472,7 @@ function shippable() {
   const visit = (shipped) => {
     if (seen.has(shipped)) return;
     seen.add(shipped);
-    const src = fs.readFileSync(docs('source_examples', byShipped.get(shipped)), 'utf8');
+    const src = fs.readFileSync(originOf(byShipped.get(shipped)), 'utf8');
     for (const spec of referencesOf(src)) {
       /* Every form lands in the same coordinate system -- the shipped layout --
        * so an aliased helper is followed exactly like a relative import, and a
@@ -474,7 +514,7 @@ const COPIES = [
   ...VERBATIM.map(([src, dest]) => [src, out(dest), `dist/${dest}`]),
   ...ROOT_VERBATIM.map(([src, dest]) => [src, path.join(pkg, dest), dest]),
   ...shipped.map((rel) => [
-    docs('source_examples', captureOf(rel)),
+    originOf(captureOf(rel)),
     out(rel),
     `dist/${rel}`,
     rel,

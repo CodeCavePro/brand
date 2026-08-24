@@ -149,17 +149,34 @@ Two things to know about it:
 
 ## The components
 
-12 components and 13 icons — the buttons, the form controls and the forms
+13 components and 13 icons — the buttons, the form controls and the forms
 themselves, the review card and the typing effect codecave.pro renders — ship as
 **source**, byte-for-byte the files the site builds from. Not a reimplementation
 of them, and not a bundle compiled from a snapshot: the same files, kept
 identical by a check that runs on every push.
 
-**What is deliberately absent is the navigation.** The menus, the footer link
-group, the article and technology cards all reach codecave.pro's own route table
-and menu data, so shipping them would put one site's navigation behind an npm
-release — changing a menu item would mean publishing. They are components of a
-website, not of a design system.
+**The site's own menus are deliberately absent, and `BrandNav` is why they can
+be.** The footer link group, the article and technology cards and the two menus
+all reach codecave.pro's route table and menu data, so shipping them would put
+one site's navigation behind an npm release — changing a menu item would mean
+publishing. `BrandNav` is the same bar with the coupling removed: it takes its
+items, its wordmark and its active state as props and reaches nothing.
+
+```vue
+<BrandNav
+  :left="[{ name: &apos;Workflow&apos;, href: &apos;/workflow&apos; }, { name: &apos;Services&apos;, slot: &apos;services&apos; }]"
+  :right="[{ name: &apos;Insights&apos;, href: &apos;/insights&apos; }]"
+  :logo="wordmarkUrl"
+  current="Workflow"
+>
+  <template #services><YourServicesPanel /></template>
+</BrandNav>
+```
+
+Render it without a `client:` directive and it ships no JavaScript: the dropdown
+is CSS hover and the responsive wrap is a media query. **The wordmark is a URL
+you pass in** — this package ships no brand marks, so the logo is yours to
+resolve through your own asset pipeline.
 
 ```vue
 <script setup lang="ts">
