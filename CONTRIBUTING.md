@@ -179,11 +179,22 @@ produces an ERESOLVE that looks like a broken dependency graph and is not.
 npm run check
 ```
 
-That is five assertions in one: the package is byte-identical to its origin,
+That is six assertions in one: the package is byte-identical to its origin,
 every storybook port typechecks, the compiled storybook matches the captures it
-was built from, no token silently redefines a Tailwind default, and the
-storybook's import map resolves exactly what its bundles import. All five are
-things that would otherwise rot quietly.
+was built from, no token silently redefines a Tailwind default, the storybook's
+import map resolves exactly what its bundles import, and the findings counts
+three files quote agree with the story pages. All six are things that would
+otherwise rot quietly.
+
+"Byte-identical" has one exception, and it is stated by the check itself rather
+than left to be discovered: the site imports its helpers through an `@helpers`
+alias that only exists in codecave.pro's `tsconfig.json`, so the nine captures
+using it are rewritten to the relative form on the way into `dist/`. Those nine
+match their origin *once the alias is resolved*, and the check prints the two
+counts separately so neither claim is doing the other's work. The rewrite is in
+`docs/tools/helpers-alias.mjs`, shared with `build-storybook.mjs` — which needs
+the same answer, because for those nine files identical bytes would mean the
+package was **not** built from that capture.
 
 The token one is worth a sentence, because it catches a failure with no symptom
 here at all. Tailwind declares its theme inside `@layer theme`;

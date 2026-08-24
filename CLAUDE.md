@@ -115,6 +115,21 @@ tracked files are its manifest, build script and `README.md`, and `npm run
 check` asserts the byte-identity of every copy. **`docs/` remains the single
 origin; edit there, never in `packages/`.**
 
+**One rewrite happens on the way in, and it is the only one.** The site imports
+its helpers as `@helpers/paths.ts` — a tsconfig `paths` entry in codecave.pro,
+which this package does not ship and a consumer has never heard of. So the nine
+captures that use it are rewritten to the relative form as they are copied, and
+those nine "match their origin once `@helpers` is resolved" rather than
+byte-for-byte; `check` says which count is which. The rule lives in
+`docs/tools/helpers-alias.mjs` because `build-storybook.mjs` needs the same
+answer when it compares the package's copy of a component against the capture it
+came from — an identical-bytes test there would mean the package was *not* built
+from that capture. **Do not add a second alias without reading what the first
+one cost:** it was silently both un-followed and mistaken for an npm package,
+which would have dropped every helper out of the tarball while the build stayed
+green. `assertDistResolves()` is the backstop and asks the built files, not the
+captures — every import in `dist/` must resolve inside `dist/`.
+
 **`theme.css` is the half that makes the components visible, and its import order
 is load-bearing.** `tokens.css` carries the token *values*; only an `@theme` entry
 makes `.bg-surface-primary` exist, so a consumer needs both. Several `@theme`
