@@ -79,6 +79,15 @@ jobs:
       - name: Check the storybook import map
         run: node docs/tools/check-importmap.mjs
 
+      # Third of the dependency-free three, and the one that guards prose
+      # rather than code. Three files quote how many findings the story pages
+      # carry; all three are hand-typed, and the split has already drifted
+      # without the total moving — a note marked fixed upstream lost its
+      # is-warn, turning a defect into an observation while 55 stayed 55. That
+      # is invisible to a reader and to every other check here.
+      - name: Check the findings counts against the story pages
+        run: node docs/tools/check-findings.mjs
+
       # The ports typecheck needs typescript, so it cannot go in the
       # dependency-free check above — it goes after it. An adapter that has
       # drifted from the interface its component imports compiles perfectly and
