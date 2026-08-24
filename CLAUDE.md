@@ -22,6 +22,8 @@ label ([live query](https://codecave.atlassian.net/issues?jql=project%20%3D%20CC
 
     **2.1.0 ships six of the seven, because the reach was removed rather than tolerated.** The exclusion was never about the components; it was about what they read. Each now takes the same information as props — `basePath`, `items`, `serviceLinks`, `ctaHref`, `href`, `logo` — exactly as BrandNav did, and codecave.pro passes it in from the modules it still owns. **`paths.ts` consequently dropped out of the tarball**: nothing shipped imports it any more, so the package no longer carries one site's route table at all. Nineteen components and thirteen icons ship, and all twelve storybook specimens compile from the package rather than three of them falling back to the captures.
 
+    **codecave.pro consumes all of it as of 2.1.1, and keeps no copies.** `src/components/header/` is `header.astro` and `menu.ts`; the six arrive from the package and `desktop-menu.vue` is deleted rather than imported. The header is Astro now, not Vue: it used to hold a `ref(window.innerWidth)` to pick between the two bars, which forced the whole thing to `client:only`, so **every page was served with no header at all** and grew one when Vue booted. A media query does that job, and BrandNav needs no JavaScript by construction — so the desktop bar is now static HTML and only the drawer hydrates, below `xl`.
+
     **desktop-menu.vue is the one that stays out, and it is not coming back.** BrandNav replaces it outright, so codecave.pro drops the file rather than importing it; keeping it would ship two implementations of one bar. Its entry in `NOT_SHIPPED` says so.
 
     **The fonts are settled.** The package declares ten `@font-face` rules — 300/400/500/700/900, upright and italic, every weight Satoshi has — and codecave.pro declares the same ten. **The binaries are still not in the tarball**: that is a redistribution question, recorded in `build.mjs`, and no release changes it. The vendor's own `stylesheet.css` is unusable and both stylesheets say why next to the declarations.
@@ -37,6 +39,8 @@ label ([live query](https://codecave.atlassian.net/issues?jql=project%20%3D%20CC
     branch's own fixes as capture drift. The captures record what the site
     *ships*: put the checkout on `development` before believing the answer.
 
+
+-   [CCWEB2-374](https://codecave.atlassian.net/browse/CCWEB2-374) — **an open decision, and the analysis is already in the ticket: don't migrate.** The docs site reads like a documentation site and is not one — all 30 pages are specimens or galleries, and the only real prose it has (`DESIGN.md`, `README.md`, `SKILL.md`, `guide.md`, 1,565 lines) is not rendered as pages at all. Starlight would collide with `build.format: 'preserve'`, which is load-bearing because three of the twelve places citing these URLs are inside the shipped `colors_and_type.css`.
 
 Open bugs in what codecave.pro ships, found while resyncing the captures or
 while working on the site itself. **These are the site's to fix, not the

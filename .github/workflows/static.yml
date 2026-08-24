@@ -62,7 +62,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '24'
 
       # Runs unconditionally and depends on nothing. If this fails, the
       # committed storybook does not match docs/source_examples/ and whatever
