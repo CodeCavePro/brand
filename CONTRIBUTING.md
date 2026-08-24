@@ -187,19 +187,25 @@ three files quote agree with the story pages. All six are things that would
 otherwise rot quietly.
 
 "Byte-identical" has one exception, and it is stated by the check itself rather
-than left to be discovered. Two spellings the site uses cannot survive the copy,
-because each names a file the package already ships in a form that only resolves
-from *outside* the package: `@helpers/breakpoints.ts`, an alias that exists only
-in codecave.pro's `tsconfig.json`, and `@codecavepro/brand/components/common/
-Button.vue`, the package's own name — which the site writes because it installs
-this package, and which Node would resolve through the `exports` map into a
-second, separately installed copy of the very package doing the importing. Both
-are rewritten to relative form on the way into `dist/`. Those captures match
-their origin *once the alias is resolved*, and the check prints the two counts
-separately so neither claim is doing the other's work. The rewrite is in
-`docs/tools/import-aliases.mjs`, shared with `build-storybook.mjs` — which needs
-the same answer, because for those files identical bytes would mean the package
-was **not** built from that capture.
+than left to be discovered. Some spellings the site uses cannot survive the
+copy, because each names a file the package already ships in a form that only
+resolves from *outside* the package: codecave.pro's path aliases — `@assets/`,
+`@components/`, `@helpers/`, `@lib/`, one per top-level directory under its
+`src/` and declared only in its own `tsconfig.json` — and
+`@codecavepro/brand/components/common/Button.vue`, the package's own name, which
+the site writes because it installs this package and which Node would resolve
+through the `exports` map into a second, separately installed copy of the very
+package doing the importing. All are rewritten to relative form on the way into
+`dist/`. Those captures match their origin *once the alias is resolved*, and the
+check prints the two counts separately so neither claim is doing the other's
+work. The rule is the table in `docs/tools/import-aliases.mjs`, shared with
+`build-storybook.mjs` — which needs the same answer, because for those files
+identical bytes would mean the package was **not** built from that capture.
+
+`@layouts/` and `@styles/` are in that table with a **null** target. The package
+ships neither, so the entry exists to make a shipped file reaching one fail by
+the right name: without it, `@styles/global.css` was reported as an undeclared
+npm peer called `@styles`.
 
 The token one is worth a sentence, because it catches a failure with no symptom
 here at all. Tailwind declares its theme inside `@layer theme`;

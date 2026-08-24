@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import Button from "@codecavepro/brand/components/common/Button.vue";
-import Shevron from "../../assets/icons/shevron.vue";
+import Shevron from "@assets/icons/shevron.vue";
 import { computed, onUnmounted, ref, watch } from "vue";
-import BackIcon from "../../assets/icons/back-icon.vue";
+import BackIcon from "@assets/icons/back-icon.vue";
 import ServicesList from "./services-list.vue";
 
 /* Everything this drawer used to read out of menu.ts, paths.ts and the site's

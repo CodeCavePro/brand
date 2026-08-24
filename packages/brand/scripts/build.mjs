@@ -42,7 +42,7 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
 import path from 'node:path';
-import { HELPERS_ALIAS, aliasTarget, unalias, usesAlias } from '../../../docs/tools/import-aliases.mjs';
+import { HELPERS_ALIAS, aliasTarget, isAlias, unalias, usesAlias } from '../../../docs/tools/import-aliases.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const pkg = path.resolve(here, '..');
@@ -253,7 +253,7 @@ function assertDistResolves() {
     if (usesAlias(src)) stale.push(rel);
     /* Alias specifiers are reported as stale just above; joining one here would
      * only name the same file twice, under a path it never had. */
-    for (const spec of referencesOf(src).filter((s) => !aliasTarget(s))) {
+    for (const spec of referencesOf(src).filter((s) => !isAlias(s))) {
       const joined = path.posix.join(path.posix.dirname(rel), spec);
       if (![joined, `${joined}.ts`, `${joined}.vue`].some((c) => built.has(c))) {
         dangling.push([rel, spec]);
@@ -269,12 +269,12 @@ function assertDistResolves() {
     console.error(`  dist/${rel} reaches ${spec}, which this package does not carry`);
   }
   console.error('');
-  console.error(
-    'unalias() rewrites a QUOTED @helpers/ or @codecavepro/brand/ specifier and',
-  );
-  console.error('nothing else, and shippable() only follows what referencesOf() returns.');
-  console.error('A reference spelled some other way -- an import, a url(), anything');
-  console.error('else -- needs handling in both.');
+  console.error('unalias() rewrites a QUOTED specifier whose prefix is in the table in');
+  console.error('docs/tools/import-aliases.mjs, and nothing else. An alias listed there');
+  console.error('with a null target is one this package deliberately does NOT ship --');
+  console.error('@styles and @layouts -- so a shipped file reaching one is the bug, not');
+  console.error('the missing rewrite. shippable() only follows what referencesOf()');
+  console.error('returns; a reference spelled some other way needs handling in both.');
   process.exit(1);
 }
 
@@ -414,7 +414,7 @@ function assertPeersDeclared(shippedFiles, byShipped) {
     for (const spec of specs) {
       /* Not an npm package, however much `@helpers/paths.ts` looks like one to
        * the split below. It is resolved by the walk and rewritten on copy. */
-      if (aliasTarget(spec)) continue;
+      if (isAlias(spec)) continue;
       const parts = spec.split('/');
       const name = spec.startsWith('@') ? parts.slice(0, 2).join('/') : parts[0];
       if (!imported.has(name)) imported.set(name, new Set());

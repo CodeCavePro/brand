@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { menu } from "./menu.ts";
 import Button from "@codecavepro/brand/components/common/Button.vue";
-import Shevron from "../../assets/icons/shevron.vue";
+import Shevron from "@assets/icons/shevron.vue";
 import { paths } from "@helpers/paths.ts";
-import Logo from "../../assets/images/logo.svg";
+import Logo from "@assets/images/logo.svg";
 import ServicesList from "./services-list.vue";
 </script>
 

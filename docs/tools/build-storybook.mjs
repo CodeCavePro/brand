@@ -51,7 +51,7 @@ import path from 'node:path';
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 import { sourceDigest, DIGEST_PREFIX } from './source-digest.mjs';
-import { HELPERS_ALIAS, unalias, usesAlias } from './import-aliases.mjs';
+import { SITE_ALIAS_PATTERN, sitePath, unalias, usesAlias } from './import-aliases.mjs';
 
 const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const siteDir = path.resolve(process.argv[2] ?? path.join(docs, '..', '..', 'codecave.pro'));
@@ -111,7 +111,7 @@ if (!fs.existsSync(PKG)) {
  * package rewrites that alias to a relative path on the way into dist/, because
  * a consumer has no tsconfig of the site's — so for the nine captures that use
  * it, identical bytes would mean the package was NOT built from this capture.
- * Both sides read the rule from helpers-alias.mjs rather than restating it. */
+ * Both sides read the rule from import-aliases.mjs rather than restating it. */
 function rootOf(entry) {
   const shipped = path.join(PKG, 'components', entry);
   if (!fs.existsSync(shipped)) return { file: path.join(SRC, entry), root: SRC, label: 'captures' };
@@ -340,16 +340,22 @@ const vuePlugin = {
  * back on the capture path and the build stopped, which is the good version of
  * this: a loud failure rather than a specimen quietly missing.
  *
- * The alias prefix comes from helpers-alias.mjs rather than being spelled again
+ * The alias table comes from import-aliases.mjs rather than being spelled again
  * here. The target differs from the package's, and that is the point — the
- * package rewrites to its own shipped layout, while here the helpers are simply
- * where the captures keep them.
+ * package rewrites to its own shipped layout, while here a capture's imports
+ * are simply resolved where the site keeps them.
+ *
+ * It resolves EVERY site alias, not just @helpers. It knew only @helpers while
+ * @helpers was the only one codecave.pro declared; the moment the site aliased
+ * one directory per top-level folder, a capture importing @assets/icons/
+ * shevron.vue stopped compiling with "could not resolve" — which names the
+ * specifier and not one word about why.
  */
-const helpersAlias = {
-  name: 'helpers-alias',
+const siteAliases = {
+  name: 'site-aliases',
   setup(build) {
-    build.onResolve({ filter: new RegExp(`^${HELPERS_ALIAS}`) }, (args) => ({
-      path: path.join(SRC, 'helpers', args.path.slice(HELPERS_ALIAS.length)),
+    build.onResolve({ filter: new RegExp(`^(?:${SITE_ALIAS_PATTERN})`) }, (args) => ({
+      path: path.join(SRC, sitePath(args.path)),
     }));
   },
 };
@@ -380,7 +386,7 @@ for (const entry of ENTRIES) {
     // Bare imports (e.g. pain-points-item's `marked`) resolve from the SITE's
     // node_modules — source_examples lives in the brand repo, which has none.
     nodePaths: [path.join(siteDir, 'node_modules')],
-    plugins: [helpersAlias, vuePlugin],
+    plugins: [siteAliases, vuePlugin],
     banner: {
       js: `/* GENERATED from ${from} by tools/build-storybook.mjs — do not edit. */`,
     },

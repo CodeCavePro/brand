@@ -1,4 +1,4 @@
-import { strapiUrl } from "../lib/strapi"
+import { strapiUrl } from "@lib/strapi"
 
 /* Callers pass both "uploads/x.png" and "/uploads/x.png". Joining naively
  * produced "…codecave.network//uploads/x.png" for the second form -- which

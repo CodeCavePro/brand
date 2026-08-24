@@ -160,38 +160,61 @@ Radio transitioned correctly here and on the site and instantly for everybody
 else. **A property the site happens to declare is not a property the package
 has**, and the only way to tell the difference is to ask the tarball.
 
-**Two rewrites happen on the way in, and they are the same problem twice.** A
+**Specifiers are rewritten on the way in, and they are all the same problem.** A
 capture names a file the package already ships, but spells it in a form that
 only resolves from *outside* the package — so copied verbatim it produces a
-tarball that looks complete and breaks in a consumer's build. Both live in
-`docs/tools/import-aliases.mjs`, which is also read by `build-storybook.mjs`
-when it compares the package's copy of a component against the capture it came
-from: an identical-bytes test there would mean the package was *not* built from
-that capture. The rewritten captures "match their origin once `@helpers` is
-resolved" rather than byte-for-byte, and `check` says which count is which.
+tarball that looks complete and breaks in a consumer's build. The whole rule is
+the table in `docs/tools/import-aliases.mjs`, which is also read by
+`build-storybook.mjs` when it compares the package's copy of a component against
+the capture it came from: an identical-bytes test there would mean the package
+was *not* built from that capture. Rewritten captures "match their origin once
+`@helpers` is resolved" rather than byte-for-byte, and `check` says which count
+is which.
 
--   `@helpers/paths.ts` — a tsconfig `paths` entry in codecave.pro, which this
-    package does not ship and a consumer has never heard of. It was silently
-    both un-followed and mistaken for an npm package, which would have dropped
-    every helper out of the tarball while the build stayed green (CCWEB2-355).
--   `@codecavepro/brand/components/common/Button.vue` — **the package's own
-    name.** The site installs this package, so any component that renders a
-    Button imports it that way. Node would *resolve* a self-reference through
-    the `exports` map, which is what makes it worse than a plain error: it would
-    work here, work in a consumer that installed a matching version, and demand
-    `@codecavepro/brand` as its own peerDependency. Only the four subpaths that
-    map into `dist/src/` are rewritten; anything else is left alone so
-    `assertNoSelfImport()` catches it by name rather than a wrong path resolving
-    to nothing.
+-   **codecave.pro's path aliases** — `@assets/`, `@components/`, `@helpers/`,
+    `@lib/`. tsconfig `paths` entries in that repo, one per top-level directory
+    under `src/`; this package ships no tsconfig and a consumer has never heard
+    of them. `@helpers` was silently both un-followed and mistaken for an npm
+    package, which would have dropped every helper out of the tarball while the
+    build stayed green (CCWEB2-355).
+-   **`@layouts/` and `@styles/`** — in the same table with a **null** target,
+    which is not an omission. The package deliberately ships neither, so a
+    shipped file reaching one is a bug rather than a missing rewrite; the entry
+    is what makes the build say so. Without it `@styles/global.css` fell through
+    as an unrecognised bare specifier and was reported as *an undeclared npm
+    peer named `@styles`* — a real fault under a name that sends the reader to
+    `package.json` to declare a package that does not exist.
+-   **`@codecavepro/brand/...`** — **the package's own name.** The site installs
+    this package, so any component that renders a Button imports it that way.
+    Node would *resolve* a self-reference through the `exports` map, which is
+    what makes it worse than a plain error: it would work here, work in a
+    consumer that installed a matching version, and demand `@codecavepro/brand`
+    as its own peerDependency. Only the four subpaths that map into `dist/src/`
+    are rewritten; anything else is left alone so `assertNoSelfImport()` catches
+    it by name rather than a wrong path resolving to nothing.
 
-**A third is not routine.** The bar is the one both clear: the specifier must
-name a file the package already ships, so the rewrite is pure path arithmetic
-with no judgement in it. `assertDistResolves()` is the backstop and asks the
-built files, not the captures — every import in `dist/` must resolve inside
-`dist/`. Two checks that reason about imports read `shippedText()`, the
-post-rewrite bytes, rather than the capture: judging a specifier the rewrite
-removes is how `assertNoSelfImport()` and `assertPeersDeclared()` both fired on
-a spelling that never reaches the tarball.
+**Adding one is not routine, even though the table makes it look it.** The bar
+every *rewritable* entry clears: the alias must name a directory the package
+ships, so the rewrite is pure path arithmetic with no judgement in it.
+`assertDistResolves()` is the backstop and asks the built files, not the
+captures — every import in `dist/` must resolve inside `dist/`. Three details
+were each a silent failure first, and are worth knowing before touching this:
+
+-   `assertNoSelfImport()` and `assertPeersDeclared()` read `shippedText()`, the
+    post-rewrite bytes, not the capture. Judging a specifier the rewrite removes
+    is how both fired on a spelling that never reaches the tarball.
+-   Both skip anything `isAlias()` recognises — not merely anything with a
+    target — which is the `@styles` case above.
+-   `usesAlias()` is a specifier-position regex, not a substring test. A comment
+    mentioning `@helpers/service-links.ts` in prose was once enough to fail the
+    build for carrying an unrewritten alias: it failed on its own documentation,
+    the same shape as a Tailwind utility named in prose.
+
+**A `url()` in a `<style>` block is never aliased**, on either side. It already
+resolves in the shipped layout, and `unalias()` only understands quoted
+specifiers — so aliasing one would break the tarball rather than the site build.
+codecave.pro's `tsconfig.json` says so where it declares the aliases;
+`Checkbox.vue`'s tick is the reason (CCWEB2-370).
 
 **`theme.css` is the half that makes the components visible, and its import order
 is load-bearing.** `tokens.css` carries the token *values*; only an `@theme` entry
