@@ -25,6 +25,11 @@ ds-bundle/tw-bridge.css
 ds-bundle/vendor/
 ds-bundle/compiled/
 ds-bundle/components/Components/
+# Placed by the card generator, not by hand: a compiled bundle injects its
+# scoped CSS at runtime, so a url() inside it resolves against the CARD, three
+# levels down. The generator reads those targets back out of the bundles and
+# copies each from docs/ to where the card will ask for it.
+ds-bundle/components/assets/
 
 # AUTHORED — tracked, and deliberately not listed here: README.md, styles.css,
 # guidelines/brand.md, and components/Foundations/*/*.html. Those seven files

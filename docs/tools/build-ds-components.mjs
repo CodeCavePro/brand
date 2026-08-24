@@ -26,6 +26,18 @@
  * which is the same failure a consumer hits when it forgets the @source line
  * for node_modules (CCWEB2-360).
  *
+ * AND A BUNDLE REACHES FOR MORE THAN CODE. A compiled bundle injects its scoped
+ * CSS at runtime, so every url() inside it resolves against the CARD's location,
+ * not the bundle's. The storybook pages sit two levels deep and the captures'
+ * `../../assets/images/…` happens to land on the site root there; a card sits
+ * three levels deep and the same string lands somewhere that does not exist.
+ * Checkbox's tick was 404ing here for exactly that reason — the third time this
+ * repo has been bitten by treating "what a component reaches for" as imports
+ * only (CCWEB2-370 was the first, in the package build). So copyAssets() reads
+ * the url() targets back out of the bundles rather than trusting a list, places
+ * each one where the card will ask for it, and fails the build if docs/ has no
+ * such file. Never hand-edit a bundle to fix a path: the bundle is the record.
+ *
  * Run: node docs/tools/build-ds-components.mjs
  * ======================================================================== */
 import fs from 'node:fs';
@@ -70,9 +82,13 @@ const STORIES = [
   {
     name: 'Checkbox',
     title: 'Checkbox',
-    lede: 'Two variants and two sizes. The tick is a background-image, which is why the icon has to ship beside the component — it is not an import, so a walk that followed only imports never saw it (CCWEB2-370).',
+    lede: 'Two variants and two sizes. The tick is a background-image, which is why the icon has to ship beside the component — it is not an import, so a walk that followed only imports never saw it (CCWEB2-370). Note the checked prop is modelValue here and isChecked on Radio; the two are not spelled the same.',
+    /* The checked story is not decoration. Every other story leaves the box
+     * empty, so a missing tick asset renders identically to a working one --
+     * which is how the 404 survived the first pass. */
     stories: {
       'primary · medium':   `{ id: 'cb1', label: 'I agree to the privacy policy', variant: 'primary', size: 'medium' }`,
+      'primary · checked':  `{ id: 'cb5', label: 'I agree to the privacy policy', variant: 'primary', size: 'medium', modelValue: true }`,
       'primary · small':    `{ id: 'cb2', label: 'Subscribe to insights', variant: 'primary', size: 'small' }`,
       'secondary · medium': `{ id: 'cb3', label: 'Cloud & DevOps', variant: 'secondary', size: 'medium' }`,
       'secondary · small':  `{ id: 'cb4', label: 'Automation & AI', variant: 'secondary', size: 'small' }`,
@@ -200,7 +216,48 @@ ${table}
 `;
 }
 
+/* Every url() a bundle carries, placed where the CARD will ask for it.
+ *
+ * The specifier is relative and was written for the storybook's page depth, so
+ * the leading ../ segments carry no information — what identifies the file is
+ * the remainder, which is a path under docs/. Resolve the specifier against the
+ * card's own directory to learn where it must LAND, and take the remainder to
+ * learn what to COPY. A specifier docs/ cannot satisfy fails the build: that is
+ * a component reaching outside what this bundle can carry, and it must be
+ * answered rather than 404'd in a reader's browser. */
+function copyAssets(name) {
+  const src = fs.readFileSync(path.join(BUNDLE, 'compiled', `${name}.js`), 'utf8');
+  const cardDir = path.posix.join('components', 'Components', name);
+  const placed = [];
+
+  for (const m of src.matchAll(/url\(\s*(?:"([^"]+)"|'([^']+)'|([^"')\s]+))\s*\)/g)) {
+    const spec = m[1] ?? m[2] ?? m[3];
+    if (/^(data:|https?:|\/\/|#)/.test(spec)) continue;
+
+    const bare = spec.replace(/^\.\//, '').replace(/^(\.\.\/)+/, '');
+    const from = path.join(docs, bare);
+    if (!fs.existsSync(from)) {
+      console.error(
+        `${name}.js reaches url(${spec}) — no docs/${bare} to satisfy it.\n` +
+          `Add the asset under docs/, or the card will 404 silently.`,
+      );
+      process.exit(1);
+    }
+
+    const to = path.resolve(path.join(BUNDLE, cardDir), spec);
+    fs.mkdirSync(path.dirname(to), { recursive: true });
+    fs.copyFileSync(from, to);
+    if (!fs.readFileSync(to).equals(fs.readFileSync(from))) {
+      console.error(`copy of docs/${bare} did not land intact`);
+      process.exit(1);
+    }
+    placed.push(path.relative(BUNDLE, to).split(path.sep).join('/'));
+  }
+  return placed;
+}
+
 let written = 0;
+const assets = [];
 for (const c of STORIES) {
   const bundle = path.join(BUNDLE, 'compiled', `${c.name}.js`);
   if (!fs.existsSync(bundle)) {
@@ -210,8 +267,14 @@ for (const c of STORIES) {
   const dir = path.join(OUT, c.name);
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(path.join(dir, `${c.name}.html`), card(c));
+  assets.push(...copyAssets(c.name));
   written += 1;
 }
 console.log(
   `ds-bundle component cards: ${written} written (${STORIES.map((c) => c.name).join(', ')})`,
+);
+console.log(
+  assets.length
+    ? `  + ${assets.length} bundle asset(s) placed: ${[...new Set(assets)].join(', ')}`
+    : '  no bundle reached for an asset — if a component has a background-image, that is a bug',
 );
