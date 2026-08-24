@@ -36,6 +36,33 @@
     --d-label: 1.8cqi;  /* 1.125 x base — --text-label */
     --d-body: 1.6cqi;  /* 1 x base — --text-body */
     --d-caption: 1.4cqi;  /* 0.875 x base — --text-caption */
+
+    /* ---- RADIUS RAMP ----------------------------------------------------
+       Same argument as the type ramp above, and the same fix. A corner drawn
+       in rem does not scale with the slide, so the same card has proportionally
+       tighter corners projected at 1920 than it does in a preview -- which is
+       why .frame, the slide itself, could not keep --radius-article.
+  
+       And the deck had SEVEN ad-hoc cqi radii -- 0.8, 0.9, 1, 1.2, 1.4, 1.6, 6
+       -- against the eight the system names. Three of the seven were within a
+       pixel of each other at slide scale.
+  
+       So: the system’s eight steps, at the system’s own ratios, anchored on
+       --radius-control the way the type ramp is anchored on body. Every value
+       below is that ratio x 0.8cqi. Three steps are in use today (control,
+       tile, article); the rest are declared because the point of a scale is
+       that the next corner reaches for a name instead of inventing a number.
+  
+       Not on this ramp, correctly: `50%`, which is a circle rather than a
+       radius, and --radius-pill, which is scale-free by construction. */
+    --dr-control-sm: 0.4cqi;  /* 0.5 x — --radius-control-sm  0.25rem */
+    --dr-control: 0.8cqi;  /* 1 x — --radius-control     0.5rem  — the anchor */
+    --dr-tile: 1.2cqi;  /* 1.5 x — --radius-tile        0.75rem */
+    --dr-card: 2.4cqi;  /* 3 x — --radius-card        1.5rem */
+    --dr-article: 3.6cqi;  /* 4.5 x — --radius-article     2.25rem */
+    --dr-custom: 4.4cqi;  /* 5.5 x — --radius-custom      2.75rem */
+    --dr-section: 6.4cqi;  /* 8 x — --radius-section     4rem */
+    --dr-section-md: 12cqi;  /* 15 x — --radius-section-md  7.5rem */
     }
 
       * { box-sizing: border-box; }
@@ -91,7 +118,7 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
         container-type: size;
         background: var(--color-surface-secondary);
         border: 1px solid var(--color-surface-quaternary);
-        border-radius: var(--radius-article);
+        border-radius: var(--dr-article);
         /* The inverted glow. A positive Y offset here is anti-pattern 1. */
         box-shadow: var(--shadow-section);
         overflow: hidden; display: flex; flex-direction: column;
@@ -147,7 +174,7 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
          violet. The rule drawn before it stays the action violet: a 3px bar is a
          mark, not type. DESIGN.md sect. 10.5. */
       .s-kicker { display: inline-flex; align-items: center; gap: 1.1cqi; text-transform: uppercase; letter-spacing: 0.18em; font-size: var(--d-caption); color: var(--color-hovered); font-weight: var(--font-weight-bold); margin-bottom: 2cqi; }
-      .s-kicker::before { content: ""; width: 2.6cqi; height: 0.32cqi; border-radius: 1cqi; background: var(--color-action); }
+      .s-kicker::before { content: ""; width: 2.6cqi; height: 0.32cqi; border-radius: var(--dr-control); background: var(--color-action); }
       .s-eyebrow { font-size: var(--d-label); color: var(--color-body-secondary); margin: 0 0 1.6cqi; max-width: 70cqi; }
       .s-title { font-family: var(--font-sans); font-size: var(--d-heading-md); line-height: 1.1; letter-spacing: -0.02em; margin: 0; color: var(--color-body-primary); max-width: 82cqi; }
       .s-mega { font-family: var(--font-sans); font-size: var(--d-display); line-height: 1.02; letter-spacing: -0.025em; margin: 0; color: var(--color-body-primary); }
@@ -169,11 +196,11 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
       .s-accent { color: var(--color-hovered); }
 
       .s-grid { display: grid; gap: 2cqi; margin-top: 4cqi; }
-      .s-card { position: relative; background: var(--color-surface-secondary); border: 1px solid var(--color-surface-quaternary); border-radius: 1.4cqi; padding: 2.6cqi; min-width: 0; }
+      .s-card { position: relative; background: var(--color-surface-secondary); border: 1px solid var(--color-surface-quaternary); border-radius: var(--dr-tile); padding: 2.6cqi; min-width: 0; }
       .frame--surface .s-card { background: var(--color-surface-secondary); }
       .s-card h3 { font-size: var(--d-md); line-height: 1.22; margin: 0 0 1cqi; letter-spacing: -0.01em; }
       .s-card p { font-size: var(--d-body); line-height: 1.5; color: var(--color-body-secondary-lighter); margin: 0; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
-      .s-card .tick { display: inline-flex; align-items: center; justify-content: center; width: 3.4cqi; height: 3.4cqi; border-radius: 1cqi; background: var(--color-brand-800); color: var(--color-hovered); margin-bottom: 1.6cqi; }
+      .s-card .tick { display: inline-flex; align-items: center; justify-content: center; width: 3.4cqi; height: 3.4cqi; border-radius: var(--dr-control); background: var(--color-brand-800); color: var(--color-hovered); margin-bottom: 1.6cqi; }
       .s-card .tick svg { width: 1.9cqi; height: 1.9cqi; }
 
       .s-num { font-family: var(--font-sans); font-size: var(--d-stat); font-weight: var(--font-weight-bold); line-height: 1; color: var(--color-hovered); margin-bottom: 1.4cqi; letter-spacing: -0.02em; }
@@ -191,13 +218,13 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
       .s-bar { display: grid; grid-template-columns: 12cqi 1fr auto; align-items: center; gap: 2cqi; }
       .s-bar .tag { font-size: var(--d-body); font-weight: var(--font-weight-bold); color: var(--color-body-secondary-lighter); letter-spacing: 0.04em; }
       .s-bar .lane { min-width: 0; }
-      .s-bar .track { height: 4.2cqi; border-radius: 0.8cqi; }
+      .s-bar .track { height: 4.2cqi; border-radius: var(--dr-control); }
       .s-bar .val { font-family: var(--font-sans); font-weight: var(--font-weight-bold); font-size: var(--d-label); color: var(--color-body-primary); white-space: nowrap; }
       .frame--accent .s-bar .val { color: var(--color-heading); }
 
       /* competition matrix */
       .s-matrix { display: grid; gap: 1.6cqi; margin-top: 3.4cqi; }
-      .s-matrix .row { display: grid; align-items: center; gap: 1.6cqi; padding: 1.8cqi 2.4cqi; border-radius: 1.2cqi; }
+      .s-matrix .row { display: grid; align-items: center; gap: 1.6cqi; padding: 1.8cqi 2.4cqi; border-radius: var(--dr-tile); }
       .s-matrix .row.head { color: var(--color-body-secondary); font-size: var(--d-caption); letter-spacing: 0.08em; text-transform: uppercase; padding-top: 0; padding-bottom: 0; }
       .s-matrix .row.them { background: var(--color-surface-secondary); border: 1px solid var(--color-surface-quaternary); }
       .s-matrix .row.us { background: var(--color-brand-800); border: 1.5px solid var(--color-brand-800); }
@@ -227,7 +254,7 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
          words past the line and left "us." stranded on a line of its own. */
       .s-ask { display: flex; flex-direction: column; gap: 1.8cqi; margin-top: 3.6cqi; max-width: 82cqi; }
       .s-ask .item { display: flex; align-items: flex-start; gap: 1.8cqi; font-size: var(--d-md); line-height: 1.4; color: var(--color-body-primary); }
-      .s-ask .item .b { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; width: 3.4cqi; height: 3.4cqi; border-radius: 0.9cqi; background: var(--color-brand-800); color: var(--color-hovered); margin-top: 0.2cqi; }
+      .s-ask .item .b { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; width: 3.4cqi; height: 3.4cqi; border-radius: var(--dr-control); background: var(--color-brand-800); color: var(--color-hovered); margin-top: 0.2cqi; }
       .s-ask .item .b svg { width: 1.9cqi; height: 1.9cqi; }
       .s-ask .item .k { font-family: var(--font-sans); font-weight: var(--font-weight-bold); }
       /* The deck's single CTA, and the one place the glow button belongs. It
@@ -253,23 +280,23 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
       .s-cta svg { width: 2cqi; height: 2cqi; }
 
       /* product wireframe motif (div/SVG, no screenshots) */
-      .s-screen { margin-top: 3.6cqi; border-radius: 1.6cqi; border: 1px solid var(--color-surface-quaternary); background: var(--color-surface-secondary); overflow: hidden; }
+      .s-screen { margin-top: 3.6cqi; border-radius: var(--dr-tile); border: 1px solid var(--color-surface-quaternary); background: var(--color-surface-secondary); overflow: hidden; }
       .s-screen .bar { display: flex; align-items: center; gap: 1cqi; padding: 1.4cqi 1.8cqi; border-bottom: 1px solid var(--color-surface-quaternary); }
       .s-screen .bar i { width: 1.2cqi; height: 1.2cqi; border-radius: 50%; background: var(--color-surface-secondary); }
-      .s-screen .bar .url { margin-left: 1cqi; height: 2.4cqi; flex: 1; max-width: 36cqi; border-radius: 1cqi; background: var(--color-surface-primary); }
+      .s-screen .bar .url { margin-left: 1cqi; height: 2.4cqi; flex: 1; max-width: 36cqi; border-radius: var(--dr-control); background: var(--color-surface-primary); }
       .s-screen .canvas { display: grid; grid-template-columns: 16cqi 1fr; min-height: 22cqi; }
       .s-screen .nav { border-right: 1px solid var(--color-surface-quaternary); padding: 2cqi 1.6cqi; display: flex; flex-direction: column; gap: 1.4cqi; }
-      .s-screen .nav span { height: 1.5cqi; border-radius: 1cqi; background: var(--color-surface-primary); }
+      .s-screen .nav span { height: 1.5cqi; border-radius: var(--dr-control); background: var(--color-surface-primary); }
       .s-screen .nav span:first-child { background: var(--color-action); width: 70%; }
       .s-screen .main { padding: 2.4cqi; display: flex; flex-direction: column; gap: 1.6cqi; }
-      .s-screen .main .h { height: 3cqi; width: 44%; border-radius: 0.8cqi; background: var(--color-surface-secondary); }
+      .s-screen .main .h { height: 3cqi; width: 44%; border-radius: var(--dr-control); background: var(--color-surface-secondary); }
       .s-screen .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.6cqi; }
-      .s-screen .tiles i { height: 9cqi; border-radius: 1.2cqi; background: var(--color-surface-primary); border: 1px solid var(--color-surface-quaternary); }
+      .s-screen .tiles i { height: 9cqi; border-radius: var(--dr-tile); background: var(--color-surface-primary); border: 1px solid var(--color-surface-quaternary); }
       .s-screen .tiles i:first-child { background: var(--color-brand-800); border-color: var(--color-brand-800); }
 
       /* solution: oversized signature line */
       .s-pillars { display: flex; flex-wrap: wrap; gap: 1.2cqi; margin-top: 3.6cqi; }
-      .s-pill { display: inline-flex; align-items: center; gap: 1cqi; padding: 1.2cqi 2cqi; border-radius: 6cqi; border: 1px solid var(--color-surface-quaternary); font-size: var(--d-body); font-weight: var(--font-weight-bold); color: var(--color-body-secondary-lighter); }
+      .s-pill { display: inline-flex; align-items: center; gap: 1cqi; padding: 1.2cqi 2cqi; border-radius: var(--radius-pill); border: 1px solid var(--color-surface-quaternary); font-size: var(--d-body); font-weight: var(--font-weight-bold); color: var(--color-body-secondary-lighter); }
       .s-pill .dot { width: 1cqi; height: 1cqi; border-radius: 50%; background: var(--color-action); }
 
       /* pager UI */
