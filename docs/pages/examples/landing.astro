@@ -1,0 +1,47 @@
+---
+/* Wrapper page for examples/raw/landing.html.
+ *
+ * The artifact is NOT rendered by Astro and never will be. It is a standalone
+ * document -- that is what makes it something a client can be handed -- and a
+ * documentation bar welded to the top would stop it being one. So this page is
+ * the documentation and the <iframe> below is the artifact, in its own
+ * document, at its own width.
+ *
+ * That split is what lets both rules hold at once: every ROUTE on this site
+ * carries the same menu, and every ARTIFACT stays the thing it demonstrates.
+ *
+ * GENERATED once from a table and authored from here on. Edit this file.
+ */
+import DocPage from '../../layouts/DocPage.astro';
+---
+<DocPage
+  title="CODECAVE — Landing page"
+  nav="examples"
+  sub="landing"
+  stylesheets={['examples.css']}
+>
+<div class="ex">
+
+  <header class="ex-head">
+    <p class="eyebrow">Web</p>
+    <h1>Landing page</h1>
+    <p class="ex-lead">A full marketing page built from the system — hero, proof, services, testimonial and a closing CTA.</p>
+    <p class="ex-actions">
+      <a class="btn btn-primary" href="raw/landing.html" target="_blank" rel="noopener">Open standalone</a>
+      <code>examples/raw/landing.html</code>
+    </p>
+  </header>
+
+  <div class="ex-frame" data-ratio="tall">
+    <iframe src="raw/landing.html" title="Landing page" loading="lazy"></iframe>
+  </div>
+
+  <section class="ex-notes">
+    <h2>The most compliant artifact of the six</h2>
+    <p>It reads almost entirely through tokens — the type ramp, the radius scale and the semantic colour layer — rather than restating values. If you want to see what "built from the system" means concretely, read this one first.</p>
+    <h2>It draws its own nav, and that is correct</h2>
+    <p>The bar inside the frame is <em>content</em>: a landing page has a header. It is not this documentation site’s bar, which is above the frame, outside the artifact.</p>
+  </section>
+
+</div>
+</DocPage>

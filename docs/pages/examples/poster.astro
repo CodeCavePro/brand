@@ -1,0 +1,47 @@
+---
+/* Wrapper page for examples/raw/poster.html.
+ *
+ * The artifact is NOT rendered by Astro and never will be. It is a standalone
+ * document -- that is what makes it something a client can be handed -- and a
+ * documentation bar welded to the top would stop it being one. So this page is
+ * the documentation and the <iframe> below is the artifact, in its own
+ * document, at its own width.
+ *
+ * That split is what lets both rules hold at once: every ROUTE on this site
+ * carries the same menu, and every ARTIFACT stays the thing it demonstrates.
+ *
+ * GENERATED once from a table and authored from here on. Edit this file.
+ */
+import DocPage from '../../layouts/DocPage.astro';
+---
+<DocPage
+  title="CODECAVE — Poster"
+  nav="examples"
+  sub="poster"
+  stylesheets={['examples.css']}
+>
+<div class="ex">
+
+  <header class="ex-head">
+    <p class="eyebrow">Print</p>
+    <h1>Poster</h1>
+    <p class="ex-lead">A 3:4 print-proportioned sheet. The one place the system meets paper, and the reason the black-ink logo variants exist at all.</p>
+    <p class="ex-actions">
+      <a class="btn btn-primary" href="raw/poster.html" target="_blank" rel="noopener">Open standalone</a>
+      <code>examples/raw/poster.html</code>
+    </p>
+  </header>
+
+  <div class="ex-frame" data-ratio="3:4">
+    <iframe src="raw/poster.html" title="Poster" loading="lazy"></iframe>
+  </div>
+
+  <section class="ex-notes">
+    <h2>What it demonstrates</h2>
+    <p>The brand on a light ground, which every other surface refuses. Print has no dark mode and no backlight, so the black-ink wordmark is not a variant here — it is the only correct mark.</p>
+    <h2>Why it is not a web page</h2>
+    <p>The proportion is the artifact. Opened standalone it prints to a sheet; embedded above it is scaled to fit the frame, so judge the type size from the standalone view rather than this one.</p>
+  </section>
+
+</div>
+</DocPage>

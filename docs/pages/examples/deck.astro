@@ -1,0 +1,47 @@
+---
+/* Wrapper page for examples/raw/deck.html.
+ *
+ * The artifact is NOT rendered by Astro and never will be. It is a standalone
+ * document -- that is what makes it something a client can be handed -- and a
+ * documentation bar welded to the top would stop it being one. So this page is
+ * the documentation and the <iframe> below is the artifact, in its own
+ * document, at its own width.
+ *
+ * That split is what lets both rules hold at once: every ROUTE on this site
+ * carries the same menu, and every ARTIFACT stays the thing it demonstrates.
+ *
+ * GENERATED once from a table and authored from here on. Edit this file.
+ */
+import DocPage from '../../layouts/DocPage.astro';
+---
+<DocPage
+  title="CODECAVE — Pitch deck"
+  nav="examples"
+  sub="deck"
+  stylesheets={['examples.css']}
+>
+<div class="ex">
+
+  <header class="ex-head">
+    <p class="eyebrow">Sales & pitch</p>
+    <h1>Pitch deck</h1>
+    <p class="ex-lead">Nine 16:9 slides with keyboard navigation — problem, opportunity, product, model, moat, traction and the ask. The one artifact meant to be presented rather than read.</p>
+    <p class="ex-actions">
+      <a class="btn btn-primary" href="raw/deck.html" target="_blank" rel="noopener">Open standalone</a>
+      <code>examples/raw/deck.html</code>
+    </p>
+  </header>
+
+  <div class="ex-frame" data-ratio="16:9">
+    <iframe src="raw/deck.html" title="Pitch deck" loading="lazy"></iframe>
+  </div>
+
+  <section class="ex-notes">
+    <h2>What it demonstrates</h2>
+    <p>That the system survives being projected. Slide grounds are <strong>--color-surface-primary</strong>, the eyebrow rules and progress bar are the same <strong>--color-action</strong> the site uses, and nothing is scaled up to compensate for the screen.</p>
+    <h2>Where it still diverges</h2>
+    <p>Its type is set in hand numbers rather than the ramp. Colour is fully tokenised; size and radius largely are not, which is why it reads as adjacent to the system rather than of it. Tracked as part of the compliance pass.</p>
+  </section>
+
+</div>
+</DocPage>

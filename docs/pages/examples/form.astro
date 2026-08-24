@@ -1,0 +1,47 @@
+---
+/* Wrapper page for examples/raw/form.html.
+ *
+ * The artifact is NOT rendered by Astro and never will be. It is a standalone
+ * document -- that is what makes it something a client can be handed -- and a
+ * documentation bar welded to the top would stop it being one. So this page is
+ * the documentation and the <iframe> below is the artifact, in its own
+ * document, at its own width.
+ *
+ * That split is what lets both rules hold at once: every ROUTE on this site
+ * carries the same menu, and every ARTIFACT stays the thing it demonstrates.
+ *
+ * GENERATED once from a table and authored from here on. Edit this file.
+ */
+import DocPage from '../../layouts/DocPage.astro';
+---
+<DocPage
+  title="CODECAVE — Contact form"
+  nav="examples"
+  sub="form"
+  stylesheets={['examples.css']}
+>
+<div class="ex">
+
+  <header class="ex-head">
+    <p class="eyebrow">Web</p>
+    <h1>Contact form</h1>
+    <p class="ex-lead">The form surface on its own — labelled inputs, a text area, radio and checkbox groups, validation states and the submit CTA.</p>
+    <p class="ex-actions">
+      <a class="btn btn-primary" href="raw/form.html" target="_blank" rel="noopener">Open standalone</a>
+      <code>examples/raw/form.html</code>
+    </p>
+  </header>
+
+  <div class="ex-frame" data-ratio="tall">
+    <iframe src="raw/form.html" title="Contact form" loading="lazy"></iframe>
+  </div>
+
+  <section class="ex-notes">
+    <h2>What it demonstrates</h2>
+    <p>The controls composing at page scale rather than as isolated specimens. The kitchen sink shows each input once; this shows what happens when eight of them stack and the eye has to find the required ones.</p>
+    <h2>Read it against the live components</h2>
+    <p>These are the CSS-class forms of controls that also exist as Vue. Where the two disagree the Vue component is what ships, and the kitchen sink is where to check.</p>
+  </section>
+
+</div>
+</DocPage>

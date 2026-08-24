@@ -1,0 +1,47 @@
+---
+/* Wrapper page for examples/raw/email.html.
+ *
+ * The artifact is NOT rendered by Astro and never will be. It is a standalone
+ * document -- that is what makes it something a client can be handed -- and a
+ * documentation bar welded to the top would stop it being one. So this page is
+ * the documentation and the <iframe> below is the artifact, in its own
+ * document, at its own width.
+ *
+ * That split is what lets both rules hold at once: every ROUTE on this site
+ * carries the same menu, and every ARTIFACT stays the thing it demonstrates.
+ *
+ * GENERATED once from a table and authored from here on. Edit this file.
+ */
+import DocPage from '../../layouts/DocPage.astro';
+---
+<DocPage
+  title="CODECAVE — Transactional email"
+  nav="examples"
+  sub="email"
+  stylesheets={['examples.css']}
+>
+<div class="ex">
+
+  <header class="ex-head">
+    <p class="eyebrow">Email</p>
+    <h1>Transactional email</h1>
+    <p class="ex-lead">A table-based layout with every value inlined, because a mail client will not read a stylesheet or resolve a custom property.</p>
+    <p class="ex-actions">
+      <a class="btn btn-primary" href="raw/email.html" target="_blank" rel="noopener">Open standalone</a>
+      <code>examples/raw/email.html</code>
+    </p>
+  </header>
+
+  <div class="ex-frame" data-ratio="tall">
+    <iframe src="raw/email.html" title="Transactional email" loading="lazy"></iframe>
+  </div>
+
+  <section class="ex-notes">
+    <h2>Why the literals are correct here</h2>
+    <p>This is the sanctioned exception. Custom properties do not resolve in most mail clients, so <strong>every colour is written as a hex</strong> — and every one of them is a value the palette declares. Audited: zero off-palette colours.</p>
+    <h2>What is NOT excused by that</h2>
+    <p>The constraint is that <code>var()</code> cannot be used, not that the values may drift. <strong>font-size</strong> and <strong>border-radius</strong> are ordinary properties every mail client handles, so their literals still have to equal ramp values. Making that assertable is the open work here.</p>
+  </section>
+
+</div>
+</DocPage>

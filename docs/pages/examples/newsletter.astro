@@ -1,0 +1,47 @@
+---
+/* Wrapper page for examples/raw/newsletter.html.
+ *
+ * The artifact is NOT rendered by Astro and never will be. It is a standalone
+ * document -- that is what makes it something a client can be handed -- and a
+ * documentation bar welded to the top would stop it being one. So this page is
+ * the documentation and the <iframe> below is the artifact, in its own
+ * document, at its own width.
+ *
+ * That split is what lets both rules hold at once: every ROUTE on this site
+ * carries the same menu, and every ARTIFACT stays the thing it demonstrates.
+ *
+ * GENERATED once from a table and authored from here on. Edit this file.
+ */
+import DocPage from '../../layouts/DocPage.astro';
+---
+<DocPage
+  title="CODECAVE — Newsletter"
+  nav="examples"
+  sub="newsletter"
+  stylesheets={['examples.css']}
+>
+<div class="ex">
+
+  <header class="ex-head">
+    <p class="eyebrow">Email</p>
+    <h1>Newsletter</h1>
+    <p class="ex-lead">The longer-form sibling of the transactional email — a masthead, stacked story blocks and a footer, on the same table scaffolding.</p>
+    <p class="ex-actions">
+      <a class="btn btn-primary" href="raw/newsletter.html" target="_blank" rel="noopener">Open standalone</a>
+      <code>examples/raw/newsletter.html</code>
+    </p>
+  </header>
+
+  <div class="ex-frame" data-ratio="tall">
+    <iframe src="raw/newsletter.html" title="Newsletter" loading="lazy"></iframe>
+  </div>
+
+  <section class="ex-notes">
+    <h2>What it demonstrates</h2>
+    <p>That the system reads at length in a medium with no cascade. Every colour is on-palette and inlined; the rhythm comes from table cell padding rather than margins, because margin collapsing is not reliable across clients.</p>
+    <h2>Same caveat as the transactional email</h2>
+    <p>Colour literals are forced and correct. The type sizes are hand numbers that happen to look right, and nothing currently checks them against the ramp.</p>
+  </section>
+
+</div>
+</DocPage>
