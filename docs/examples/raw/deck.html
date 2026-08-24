@@ -118,7 +118,22 @@ details.kit-acc[open] .kit-acc-icon{transform:rotate(45deg)}
         container-type: size;
         background: var(--color-surface-secondary);
         border: 1px solid var(--color-surface-quaternary);
-        border-radius: var(--dr-article);
+        /* NOT --dr-article, and this is the one place on the ramp that cannot be.
+
+           A container query unit used on the CONTAINER ITSELF does not resolve
+           against that container -- that would be circular -- so it resolves
+           against the next container up, here the viewport. Measured at
+           1400x600, where the slide is height-constrained: .s-card inside the
+           frame held its intent exactly (1.198% of the frame against an
+           authored 1.2%) while the frame’s own corner drifted to 5.14% of
+           itself against an authored 3.6%. It would look like it scaled and
+           would not.
+
+           So the frame keeps the system’s own token, which is the more
+           compliant answer anyway: --radius-article is a design system value,
+           and a locally derived one is not. The ramp is for what is INSIDE the
+           container, which is everything the slide actually draws. */
+        border-radius: var(--radius-article);
         /* The inverted glow. A positive Y offset here is anti-pattern 1. */
         box-shadow: var(--shadow-section);
         overflow: hidden; display: flex; flex-direction: column;

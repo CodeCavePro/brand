@@ -7,6 +7,31 @@
 
     <link rel="stylesheet" href="../../colors_and_type.css" />
     <style>
+    :root {
+    /* ---- TYPE RAMP ------------------------------------------------------
+       The poster is container-scaled (see container-type on .poster below), and
+       that is correct: a sheet has to read the same at A2 as it does in a
+       thumbnail, which the rem ramp cannot do. What was wrong is the same thing
+       that was wrong on the deck -- the container scale had no scale. Five
+       hand-picked sizes (1.8, 1.9, 2.4, 3, 7.4), two of them 0.1cqi apart.
+  
+       These are the system’s nine steps at the system’s own ratios. The base is
+       not chosen freely: the focal word is the biggest thing on the sheet and
+       heading-lg is the ramp’s biggest step, so the focal word sets it at
+       2.1cqi and everything else follows. Every value in use lands within 5% of
+       where it was. */
+    --p-base: 2.1cqi;
+    --p-heading-lg: 7.35cqi;  /* 3.5 x — --text-heading-lg  3.5rem */
+    --p-heading-md: 5.78cqi;  /* 2.75 x — --text-heading-md  2.75rem */
+    --p-stat: 4.73cqi;  /* 2.25 x — --text-stat       2.25rem */
+    --p-heading-sm: 4.2cqi;  /* 2 x — --text-heading-sm 2rem */
+    --p-subhead: 3.15cqi;  /* 1.5 x — --text-subhead    1.5rem */
+    --p-md: 2.62cqi;  /* 1.25 x — --text-md         1.25rem */
+    --p-label: 2.36cqi;  /* 1.125 x — --text-label      1.125rem */
+    --p-body: 2.1cqi;  /* 1 x — --text-body       1rem  — the anchor */
+    --p-caption: 1.84cqi;  /* 0.875 x — --text-caption    0.875rem */
+    }
+
       * { box-sizing: border-box; }
       html, body { margin: 0; padding: 0; }
       body {
@@ -54,14 +79,31 @@
         content: "";
         position: absolute; inset: 4cqi;
         border: 1px solid var(--color-surface-quaternary);
-        border-radius: 1.6cqi;
+        /* Concentric with the sheet, which is not a step on any scale: two
+           rounded rectangles share a centre only when the inner radius is the
+           outer radius minus the distance between them. Both terms stay named
+           rather than folded into one number, so this holds if either side
+           moves — `- 1px` is the sheet’s border, `- 4cqi` is this frame’s own
+           inset, three lines up.
+
+           This is a correction rather than a restatement. The 1.6cqi that was
+           here rendered a 6.97px corner where concentric wanted 17.56px, so
+           the trim frame was visibly tighter at its corners than the sheet it
+           sits inside.
+
+           cqi is legal here where it is NOT on .poster itself: ::after is a
+           child, so the unit resolves against the container instead of
+           escaping to the viewport. The container is the CONTENT box, though —
+           measured at 435.88px inside a 610.5px sheet, because of the 9cqi
+           padding — which is why these terms cannot be collapsed by hand. */
+        border-radius: calc(var(--radius-article) - 1px - 4cqi);
         pointer-events: none;
       }
       .poster > * { position: relative; z-index: 1; }
 
       /* ── three type-size roles ────────────────────────────────────────── */
       .p-focal {
-        font-size: 7.4cqi;
+        font-size: var(--p-heading-lg);
         line-height: 1.02;
         letter-spacing: -0.025em;
         text-wrap: balance;
@@ -72,17 +114,17 @@
          rather than type. DESIGN.md §10.5. */
       .p-focal .accent { color: var(--color-hovered); }
       .p-sub {
-        font-size: 3cqi; line-height: 1.42; margin: 0;
+        font-size: var(--p-subhead); line-height: 1.42; margin: 0;
         color: var(--color-body-secondary-lighter); max-width: 56cqi;
         text-wrap: pretty;
       }
       .p-meta {
-        font-size: 1.9cqi; line-height: 1.4; letter-spacing: 0.02em;
+        font-size: var(--p-caption); line-height: 1.4; letter-spacing: 0.02em;
         color: var(--color-body-secondary);
       }
       .p-kicker {
         text-transform: uppercase; letter-spacing: 0.28em;
-        font-size: 1.8cqi; font-weight: var(--font-weight-bold);
+        font-size: var(--p-caption); font-weight: var(--font-weight-bold);
         color: var(--color-body-secondary); margin: 0;
       }
 
@@ -100,8 +142,8 @@
       /* one action, on its own ruled band — the poster's equivalent of the page's
          single CTA. No button: a printed sheet has nothing to press. */
       .p-cta { display: flex; align-items: baseline; justify-content: space-between; gap: 3cqi; padding-top: 4cqi; margin-top: 5cqi; border-top: 1px solid var(--color-surface-quaternary); }
-      .p-cta-action { font-weight: var(--font-weight-bold); font-size: 3cqi; letter-spacing: -0.01em; color: var(--color-heading); }
-      .p-cta-link { font-size: 2.4cqi; font-weight: var(--font-weight-bold); letter-spacing: 0.01em; color: var(--color-hovered); white-space: nowrap; }
+      .p-cta-action { font-weight: var(--font-weight-bold); font-size: var(--p-subhead); letter-spacing: -0.01em; color: var(--color-heading); }
+      .p-cta-link { font-size: var(--p-label); font-weight: var(--font-weight-bold); letter-spacing: 0.01em; color: var(--color-hovered); white-space: nowrap; }
 
       /* signature footer: the logo, larger than the masthead's, as the sign-off.
          The violet dot that used to stand beside the typed name was a mark this
