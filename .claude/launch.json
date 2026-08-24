@@ -48,6 +48,18 @@
         "4331"
       ],
       "port": 4331
+    },
+    {
+      "name": "ds-bundle",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8130",
+        "--directory",
+        "ds-bundle"
+      ],
+      "port": 8130
     }
   ]
 }

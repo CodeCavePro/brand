@@ -32,7 +32,7 @@ places you change it. Knowing which category a file is in is most of the job:
 |---|---|---|
 | **Origin** | `docs/colors_and_type.css`, `docs/tokens/*.ts` | **Edit these.** Both, together — the `.ts` is a hand-maintained mirror, not a compilation. |
 | **Provenance captures** | `docs/source_examples/**` | **Never edit.** Refresh *from the live site*, never by hand. |
-| **Generated** | `packages/brand/dist/`, the derived half of `ds-bundle/`, `docs/storybook/compiled/`, `docs/storybook/tw-bridge.css` | Never edit. Rebuild. |
+| **Generated** | `packages/brand/dist/`, the derived half of `ds-bundle/` (including its Components cards), `docs/storybook/compiled/`, `docs/storybook/tw-bridge.css` | Never edit. Rebuild. |
 | **Artwork** | SVGs under `docs/assets/`, `docs/build/`, `docs/imagery/`, `src/`, `favicons/` | Edit the hex literally — SVG has no cascade to inherit a token from. |
 | **Swatch captions** | `docs/index.html`, `docs/brand-kit.html`, `docs/pages/preview/colors-*.astro` | Edit the literal. Here the hex *is the content* — a `var()` would render nothing. On the ported page the literals are a data array at the top of the file; that is still a literal. |
 | **Email** | `docs/artifacts/email.html`, `newsletter.html` | Edit the literal. Email clients do not support custom properties; this is not a shortcut. |
@@ -85,7 +85,25 @@ answer is real.
 
 - **Derived and gitignored** — regenerate with `sh docs/tools/build-ds-bundle.sh`.
 - **Authored and tracked** — `README.md`, `styles.css`, `guidelines/brand.md`,
-  and the Foundations cards. These have no upstream in `docs/`. Edit them here.
+  and the **Foundations** cards. These have no upstream in `docs/`. Edit them here.
+- **Generated and gitignored** — the **Components** cards, written by
+  `node docs/tools/build-ds-components.mjs` from the `STORIES` table inside it.
+  That table is the tracked source; the cards are output, like `dist/`.
+
+The two card directories look alike and are opposite. A Foundations card is a
+drawing — a swatch grid, a type ramp — with nothing upstream to derive it from,
+so it is authored and tracked. A Components card draws nothing: it mounts the
+same compiled bundle the storybook mounts, through an import map, so what
+renders is the component codecave.pro ships rather than a picture of it. That is
+the whole reason components could join the bundle at all — hand-written HTML
+that *looked like* Button would be wrong the first time Button changed, and
+nothing would say so.
+
+Both halves run in one order, and the second fails loudly if you skip the first:
+
+```bash
+sh docs/tools/build-ds-bundle.sh && node docs/tools/build-ds-components.mjs
+```
 
 One exception worth knowing: `ds-bundle/README.md` is tracked and authored, but
 its header is a verbatim copy of `.design-sync/conventions.md`. Change the

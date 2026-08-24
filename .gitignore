@@ -16,6 +16,15 @@
 ds-bundle/colors_and_type.css
 ds-bundle/tokens/
 ds-bundle/fonts/
+# Same rule, added 2026-08-24 with the component cards: tw-bridge.css, the
+# vendored vue/gsap runtimes and the compiled component bundles are copies of
+# files under docs/. The CARDS that mount them are generated too, by
+# docs/tools/build-ds-components.mjs from its own STORIES table -- so they are
+# derived as well, and the table is the tracked source.
+ds-bundle/tw-bridge.css
+ds-bundle/vendor/
+ds-bundle/compiled/
+ds-bundle/components/Components/
 
 # AUTHORED — tracked, and deliberately not listed here: README.md, styles.css,
 # guidelines/brand.md, and components/Foundations/*/*.html. Those seven files
