@@ -758,34 +758,30 @@ error *messages* in `--color-error-100` `#FE9A9A` (**9.71:1**). The error halo
 still uses `error-200`/`error-100` exactly as `InputText.vue` defines it, so the
 field itself is unchanged. See `preview/components-inputs.html`.
 
-### 10.3 Synthesized vs. real font weights
+### 10.3 Synthesized vs. real font weights — retired divergence
 
-`codecave.pro` ships exactly one real cut — `Satoshi-Regular.ttf` at weight 400,
-declared with **no `font-weight` descriptor**, which makes that one file the match
-for every weight. 97 elements across the site ask for 300, 700 or 900 and every one
-of them is browser-synthesized.
+codecave.pro shipped one real cut — `Satoshi-Regular.ttf` at weight 400, with no
+`font-weight` descriptor, which made that one file the match for every weight and
+left 97 elements browser-synthesized. It now declares the same ten faces this
+package does — 300/400/500/700/900, upright and italic — so the fork is retired
+under the standing policy. Shipped in CCWEB2-309.
 
-This package binds the ten real Satoshi cuts — 300, 400, 500, 700 and 900, each
-upright and italic (`fonts/Satoshi-*.woff2`). The italics matter as much as the
-weights: emphasis inside a bold heading needs the 700 italic, and with only the 400
-italic declared a browser slants the real Bold instead.
+What remains true and is not a divergence: **the package ships no font binaries.**
+It declares the faces and a consumer supplies the files. That is a redistribution
+question, recorded in `packages/brand/scripts/build.mjs`, and no release changes it.
 
-The correct fix upstream is to ship the real cuts, not to remove them here, and that
-fix now exists — see
-[CCWEB2-309](https://codecave.atlassian.net/browse/CCWEB2-309), in review. This entry
-retires the way §10.1 did once it merges.
-
-**Do not "simplify" this by adopting the vendor's stylesheet.** The Fontshare
-download ships a `stylesheet.css` that declares Bold and Black *both* as
+**Do not "simplify" the declarations by adopting the vendor's stylesheet.** The
+Fontshare download ships a `stylesheet.css` that declares Bold and Black *both* as
 `font-weight: bold`, and their italics likewise, so four cuts collide into two slots
-and whichever is declared last silently wins. Binding explicit numeric weights is not
-housekeeping — it is the thing that makes a 900 render as 900.
+and whichever is declared last silently wins. Binding explicit numeric weights is
+what makes a 900 render as 900. It also uses `local()` lookups, which Fontshare's
+own packaging defeats: Light, Medium and Black are separate families there, so three
+of the italics carry no italic bit at all.
 
 **Not a divergence:** the wordmark artwork is still drawn in outlined Montserrat
 Bold rather than Satoshi. That defect is carried forward faithfully — the paths
 are outlined vector, and re-typing the wordmark in Satoshi without a new master
 would produce a mark that matches nothing in circulation.
-
 ### 10.4 The production favicon is not a CODECAVE mark
 
 As captured, `codecave.pro/public/favicon.svg` is still the Astro starter's

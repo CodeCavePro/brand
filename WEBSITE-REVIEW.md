@@ -174,10 +174,11 @@ section's own heading and flatten the document outline.
   `@tailwindcss/vite` has never had. `darkMode`, content globs and
   `theme.extend` are all inert. Delete it — wiring it up would unstyle every
   Vue component, since the glob has no `.vue`.
-- **One real font cut.** Only `Satoshi-Regular.ttf` is shipped — no woff2, no
-  `font-display`, and weights 500/700/900 are browser-synthesized (faux bold).
-  The brand repo carries the real Satoshi cuts as woff2
-  (`docs/fonts/`) ready to copy over.
+- **One real font cut — FIXED 2026-08-24.** Only `Satoshi-Regular.ttf` was
+  shipped, with no `font-weight` descriptor at all, so that one file matched
+  every weight and 97 elements were browser-synthesized. **Fix:** ten faces as
+  woff2 with woff fallback — 300/400/500/700/900, upright and italic — with
+  `font-display: swap`. CCWEB2-309.
 - **Naming nits:** `--color-text-body-primary` (gray-200) vs
   `--color-body-primary` (gray-50) is a near-collision that invites the wrong
   pick; `--color-default-transparent` points at opaque `gray-100`; the comment
