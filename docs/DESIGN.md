@@ -760,15 +760,26 @@ field itself is unchanged. See `preview/components-inputs.html`.
 
 ### 10.3 Synthesized vs. real font weights
 
-`codecave.pro` ships exactly one real cut — `Satoshi-Regular.ttf` at weight 400 —
-and lets the browser synthesize 300 and 700. Bold headings on the live site are
-therefore faux-bold.
+`codecave.pro` ships exactly one real cut — `Satoshi-Regular.ttf` at weight 400,
+declared with **no `font-weight` descriptor**, which makes that one file the match
+for every weight. 97 elements across the site ask for 300, 700 or 900 and every one
+of them is browser-synthesized.
 
-This package binds the six real Satoshi cuts captured in the brand upload
-(`fonts/Satoshi-{Light,Regular,Italic,Medium,Bold,Black}.woff2`). Type set from
-this system renders slightly tighter and cleaner at 700 than the live site does
-today. The correct fix upstream is to ship the real cuts, not to remove them
-here.
+This package binds the ten real Satoshi cuts — 300, 400, 500, 700 and 900, each
+upright and italic (`fonts/Satoshi-*.woff2`). The italics matter as much as the
+weights: emphasis inside a bold heading needs the 700 italic, and with only the 400
+italic declared a browser slants the real Bold instead.
+
+The correct fix upstream is to ship the real cuts, not to remove them here, and that
+fix now exists — see
+[CCWEB2-309](https://codecave.atlassian.net/browse/CCWEB2-309), in review. This entry
+retires the way §10.1 did once it merges.
+
+**Do not "simplify" this by adopting the vendor's stylesheet.** The Fontshare
+download ships a `stylesheet.css` that declares Bold and Black *both* as
+`font-weight: bold`, and their italics likewise, so four cuts collide into two slots
+and whichever is declared last silently wins. Binding explicit numeric weights is not
+housekeeping — it is the thing that makes a 900 render as 900.
 
 **Not a divergence:** the wordmark artwork is still drawn in outlined Montserrat
 Bold rather than Satoshi. That defect is carried forward faithfully — the paths

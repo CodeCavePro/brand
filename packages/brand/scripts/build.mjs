@@ -759,6 +759,32 @@ if (fs.existsSync(readme)) {
     asserted += 2;
   }
 
+
+  /* And for the face count, which is the one that actually went stale. The
+   * README said `six @font-face` in two places from 1.0 until the four italic
+   * cuts landed, and nothing noticed -- the two counts above were asserted and
+   * this one was not, so it was the only number on the npm page that could
+   * drift. Every mention has to agree, not just the first: the sentence appears
+   * once in the overview and once under Fonts, and fixing only one is exactly
+   * how it went wrong before. */
+  const WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven',
+    'eight', 'nine', 'ten', 'eleven', 'twelve'];
+  const faces = [...fs.readFileSync(readme, 'utf8')
+    .matchAll(/(\w+) `@font-face`/g)].map((m) => m[1]).filter((w) => WORDS.includes(w) || /^\d+$/.test(w));
+  if (faces.length) {
+    const real = (fs.readFileSync(out('colors_and_type.css'), 'utf8')
+      .match(/@font-face/g) ?? []).length;
+    const want = WORDS[real] ?? String(real);
+    const wrong = faces.filter((word) => word !== want);
+    if (wrong.length) {
+      console.error(
+        `build failed — README.md says ${[...new Set(faces)].join('/')} ` +
+          `\`@font-face\` rule(s); dist/colors_and_type.css declares ${real} (${want}).`,
+      );
+      process.exit(1);
+    }
+    asserted += faces.length;
+  }
   console.log(`@codecavepro/brand: ${asserted} README example value(s) verified.`);
 }
 

@@ -45,7 +45,7 @@ redesign turns into a find-and-replace across your codebase.
 
 ### Already have your own base styles? Import the values only
 
-`@codecavepro/brand/css` is the design system **whole**: the tokens, six `@font-face`
+`@codecavepro/brand/css` is the design system **whole**: the tokens, ten `@font-face`
 rules, base rules for `html`, `body`, `h1`–`h6` and `a`, two layout primitives and
 around sixty component classes. That is what you want for a page that should look like
 CODECAVE. It is *not* what you want in an app that already has a base layer — dropping
@@ -78,7 +78,7 @@ file at that URL are provably the same bytes.
 
 ## Fonts: this package ships none
 
-`@codecavepro/brand/css` declares six `@font-face` rules for **Satoshi**, but **no font
+`@codecavepro/brand/css` declares ten `@font-face` rules for **Satoshi**, but **no font
 binaries are included** — that is a licensing question, not an oversight. Until you
 supply the files, the faces 404 and the browser falls back down the stack
 (`-apple-system`, `Segoe UI`, Roboto, …). Tokens, colours and the type *scale* are all
@@ -93,10 +93,17 @@ dropped into a project on its own:
 | `@codecavepro/brand/fonts.css` | `./Satoshi-*.woff2` | **beside** the stylesheet itself |
 | `@codecavepro/brand/tokens.css` | *none — it declares no faces* | wherever your own `@font-face` rules point |
 
-Get the cuts from [Fontshare](https://www.fontshare.com/fonts/satoshi) — Light 300,
-Regular 400, Italic, Medium 500, Bold 700, Black 900. Bind each with a real
-`font-weight` descriptor rather than letting the browser synthesize; the design system
-documents why in [DESIGN.md §10.3](https://github.com/CodeCavePro/brand/blob/development/docs/DESIGN.md#103-synthesized-vs-real-font-weights).
+Get the cuts from [Fontshare](https://www.fontshare.com/fonts/satoshi) — 300, 400, 500,
+700 and 900, each upright and italic, which is the ten faces these stylesheets declare.
+Bind each with a real `font-weight` descriptor rather than letting the browser
+synthesize; the design system documents why in
+[DESIGN.md §10.3](https://github.com/CodeCavePro/brand/blob/development/docs/DESIGN.md#103-synthesized-vs-real-font-weights).
+
+**Do not use the `stylesheet.css` that comes in the Fontshare download.** It declares
+Bold and Black *both* as `font-weight: bold`, and their italics likewise, so four cuts
+collide into two slots and whichever is declared last silently wins — your `900` text
+renders Bold, or your `700` renders Black, with nothing to indicate which. Take the
+binaries from that download and the declarations from here.
 
 ## The typed module
 
