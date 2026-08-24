@@ -4,14 +4,37 @@
     {
       "name": "docs",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["astro", "dev", "--port", "8127"],
+      "runtimeArgs": [
+        "astro",
+        "dev",
+        "--port",
+        "8127"
+      ],
       "port": 8127
     },
     {
       "name": "docs-static",
       "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "8128", "--directory", "docs"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8128",
+        "--directory",
+        "docs"
+      ],
       "port": 8128
+    },
+    {
+      "name": "docs-dist",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8129",
+        "--directory",
+        "dist"
+      ],
+      "port": 8129
     }
   ]
 }

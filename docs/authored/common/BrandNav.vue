@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * The CODECAVE top bar. Ghost-button links split around a centred wordmark.
+ * The CODECAVE top bar. Ghost-style links split around a centred wordmark.
  *
  * AUTHORED, not captured. Every other component this package ships is a copy of
  * a file codecave.pro builds from, and docs/source_examples/ holds nothing
@@ -9,8 +9,8 @@
  * into one, so neither repo owns it any more.
  *
  * WHY IT CAN SHIP WHEN THE MENUS COULD NOT. desktop-menu.vue and mobile-menu.vue
- * are excluded from this package (CCWEB2-371) because they reach the site paths.ts
- * and menu.ts -- installing one would put codecave.pro navigation behind an npm
+ * were excluded from this package (CCWEB2-371) because they reach the site
+ * menu.ts -- installing one would put codecave.pro navigation behind an npm
  * release. This takes its items, its logo and its active state as PROPS, so it
  * reaches nothing. That is the whole difference, and it is why the same bar can
  * serve a marketing site and a documentation site without either one lending the
@@ -20,6 +20,17 @@
  * HTML and ships no JavaScript, which is what the docs bar already does and what
  * the site header does NOT -- it is `client:only`, so it renders nothing at all
  * until Vue boots. The dropdown below is CSS hover for the same reason.
+ *
+ * IT NEEDS tokens.css AND NOTHING ELSE. The links are styled here rather than
+ * borrowed, and that is deliberate: the two ghost buttons this system already
+ * has DISAGREE, so there was nothing to borrow. colors_and_type.css's
+ * `.btn-ghost` renders 48px, because it cancels `height` while `.btn` sets
+ * `min-height`; Button.vue's `ghost` variant renders 40px, because it drops the
+ * `min-h-12` off its base class. Eight pixels, one of them a dead override of
+ * the kind CCWEB2-331 records elsewhere. Neither is portable either -- a docs
+ * page has the stylesheet and no Tailwind, a consumer site has Tailwind and not
+ * the stylesheet. Standing on tokens instead means this bar renders the same in
+ * both, and a consumer needs no global class layer to install it.
  */
 export interface NavItem {
   /** Link text, and the value `current` is matched against. */
@@ -39,7 +50,14 @@ withDefaults(defineProps<{
    *  its own asset pipeline, and this package ships no brand marks. */
   logo: string;
   logoHref?: string;
+  /** Alt text of the wordmark image. */
   logoAlt?: string;
+  /** Accessible name of the wordmark LINK, when it should differ from the alt
+   *  text -- "CODECAVE design system, documentation home" reads better on a
+   *  home link than the wordmark does. Left off, the link is named by the image
+   *  alt, which is the right default and the reason this is not simply
+   *  `logoAlt` twice. */
+  logoLabel?: string;
   /** `name` of the item to mark aria-current="page". */
   current?: string;
 }>(), {
@@ -57,18 +75,18 @@ withDefaults(defineProps<{
         <li v-for="item in left" :key="item.name" :class="{ dropdown: item.slot }">
           <a
             v-if="item.href"
-            class="btn btn-ghost"
+            class="brand-nav-link"
             :href="item.href"
-            :aria-current="item.name === current ? &apos;page&apos; : undefined"
+            :aria-current="item.name === current ? 'page' : undefined"
           >{{ item.name }}</a>
-          <span v-else class="btn btn-ghost dropbtn">{{ item.name }}<slot name="chevron" /></span>
+          <span v-else class="brand-nav-link dropbtn">{{ item.name }}<slot name="chevron" /></span>
           <div v-if="item.slot" class="dropdown-content">
             <slot :name="item.slot" />
           </div>
         </li>
       </ul>
 
-      <a class="brand-nav-logo" :href="logoHref" :aria-label="logoAlt">
+      <a class="brand-nav-logo" :href="logoHref" :aria-label="logoLabel">
         <img :src="logo" :alt="logoAlt" />
       </a>
 
@@ -76,11 +94,11 @@ withDefaults(defineProps<{
         <li v-for="item in right" :key="item.name" :class="{ dropdown: item.slot }">
           <a
             v-if="item.href"
-            class="btn btn-ghost"
+            class="brand-nav-link"
             :href="item.href"
-            :aria-current="item.name === current ? &apos;page&apos; : undefined"
+            :aria-current="item.name === current ? 'page' : undefined"
           >{{ item.name }}</a>
-          <span v-else class="btn btn-ghost dropbtn">{{ item.name }}<slot name="chevron" /></span>
+          <span v-else class="brand-nav-link dropbtn">{{ item.name }}<slot name="chevron" /></span>
           <div v-if="item.slot" class="dropdown-content">
             <slot :name="item.slot" />
           </div>
@@ -91,16 +109,11 @@ withDefaults(defineProps<{
 </template>
 
 <style scoped>
-/* Layout only. Every colour comes from colors_and_type.css, which ships beside
- * this file -- .btn-ghost included, so the links are the same ghost buttons the
- * rest of the system uses and a palette change moves the bar with it.
- *
- * The three values that used to differ between the site bar and the docs bar are
- * settled here on the docs side: 16px links on the 48px --control-height grid,
- * a 28px wordmark, and the 1px rule underneath. The site had shrunk all three
- * with a text-sm wrapper, which quietly took its ghost buttons off the control
- * grid every other control sits on. */
+/* Every colour and nearly every length below is a token from tokens.css. The
+ * literals that remain are the link padding and the blur radius, neither of
+ * which the token set names. */
 .brand-nav {
+  --brand-nav-pad: 0.75rem;      /* the site header's py-3 */
   position: sticky;
   top: 0;
   z-index: 100;
@@ -111,14 +124,28 @@ withDefaults(defineProps<{
 }
 
 .brand-nav-inner {
-  box-sizing: border-box;
+  box-sizing: border-box;   /* the site resets this globally; a docs page does not */
   position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   max-width: var(--max-width-desktop);
   margin: 0 auto;
-  padding: 0.75rem 1.25rem;
+  /* Pins the row, so the bar's height follows --control-height rather than
+     whatever the links happen to measure. */
+  min-height: calc(var(--control-height) + 2 * var(--brand-nav-pad));
+  padding: var(--brand-nav-pad) var(--gutter-base);
+}
+
+/* The page gutter, stepped at the same two breakpoints .page-container steps at.
+   It is repeated here rather than read off --gutter-base because that token does
+   not change with the viewport -- the class switches to a different token
+   instead. A bar that skipped this sat 20px inboard of every heading it topped. */
+@media (min-width: 768px) {
+  .brand-nav-inner { padding-left: var(--gutter-md); padding-right: var(--gutter-md); }
+}
+@media (min-width: 1280px) {
+  .brand-nav-inner { padding-left: var(--gutter-xl); padding-right: var(--gutter-xl); }
 }
 
 .brand-nav ul {
@@ -128,6 +155,31 @@ withDefaults(defineProps<{
   padding: 0;
   list-style: none;
 }
+.brand-nav li { margin: 0; }
+
+/* The ghost button, declared rather than inherited. See the note in the script
+   block: the two that exist disagree by 8px, and neither is available in both of
+   the places this bar has to render. */
+.brand-nav-link {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--control-height);
+  padding: 0.5rem 1.5rem;
+  border-radius: var(--radius-pill);
+  color: var(--color-body-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--leading-body);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--transition-colors);
+}
+.brand-nav-link:hover,
+.brand-nav-link:active { color: var(--color-hovered); }
 
 .brand-nav-logo {
   position: absolute;

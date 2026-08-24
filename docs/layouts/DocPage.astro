@@ -80,7 +80,7 @@ const up = '../'.repeat(isIndex ? segments.length : Math.max(0, segments.length 
  * rather than two stuck elements racing for the same top edge. Content in the
  * `navstack` slot is that second bar, and it is what turns the wrapper on: the
  * div cannot be the page's own, because DsNav has to be inside it. The class it
- * carries is styled by whichever page fills the slot, not by ds-nav.css. */
+ * carries is styled by whichever page fills the slot. */
 const stacked = Astro.slots.has('navstack');
 
 /* The import map is the one piece of head that cannot be written as ordinary
@@ -113,7 +113,6 @@ const importmapJson = `
 <title>{title}</title>
 <link rel="icon" href={`${up}build/favicon.svg`}>
 <link rel="stylesheet" href={`${up}colors_and_type.css`}>
-<link rel="stylesheet" href={`${up}ds-nav.css`}>
 {stylesheets.map((href) => <link rel="stylesheet" href={href} />)}
 <slot name="head" />
 {importmap && <script type="importmap" is:inline set:html={importmapJson} />}

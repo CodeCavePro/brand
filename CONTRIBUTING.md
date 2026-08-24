@@ -312,10 +312,19 @@ The fourth applies only to `storybook/`, and it is the one worth stating twice:
   identical on all thirteen mounting pages. `docs/pages/storybook/button.astro`
   says all of this at the point where undoing it would be easy.
 
-`artifacts/` is **never** rendered. Those six files are the deliverable being
-shown, not pages about it, and an HTML email with a documentation bar welded to
-the top is not a valid email. They pass through untouched; only
-`artifacts/index.html`, the gallery, will ever become a page.
+The six specimens under `artifacts/` are **never** rendered. They are the
+deliverable being shown, not pages about it, and an HTML email with a
+documentation bar welded to the top is not a valid email. They pass through
+untouched.
+
+The gallery that links them is the exception this paragraph always reserved,
+and it took it: `docs/pages/artifacts/index.astro`. It is chrome rather than a
+specimen — it always carried the documentation bar — and while it was payload
+it carried its own hand-written copy of that bar's markup. Once the bar became
+a component, that copy would have been the only markup left in the repository
+claiming to be the nav while not being it. Its route did not move:
+`build.format: 'preserve'` emits it to `artifacts/index.html`, the href every
+nav already carries. Nothing else under `artifacts/` will follow it.
 
 ## Where open work is tracked
 

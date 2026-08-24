@@ -1,13 +1,16 @@
 ---
-/* The global documentation bar. One copy, replacing the fourteen identical
- * lines that sit in 30 HTML files today, varying only by `../` depth and which
- * link carries aria-current.
+/* The global documentation bar. One copy, on every rendered page.
  *
- * The markup below is the markup those files already ship, character for
- * character. That is deliberate: while the migration is half-done, a ported
- * page and an unported page render side by side under the same ds-nav.css, and
- * any difference here would show up as the two halves of the site disagreeing
- * about their own chrome.
+ * It renders BrandNav, the package's own bar, rather than markup of its own.
+ * That is the point of the component: this file used to be a hand-kept copy of
+ * the site header, and ds-nav.css a hand-kept copy of its styles, so the docs
+ * site demonstrated a bar that nothing shipped. Now the docs run the same
+ * component a consumer installs, which is the only arrangement in which a
+ * change to the bar can be seen here before it reaches anyone.
+ *
+ * It is also the first thing to exercise @astrojs/vue, which astro.config.mjs
+ * has carried unused since the migration. No `client:*` directive: BrandNav
+ * emits static HTML and ships no JavaScript, exactly as the old markup did.
  *
  * `up` comes from the layout rather than being computed here, because the
  * layout needs the same prefix for its stylesheet hrefs and computing it twice
@@ -15,10 +18,11 @@
  * still opens from disk — which is how these cards are reviewed.
  *
  * The six artifact specimens deliberately have no nav at all: an HTML email
- * with a documentation bar welded to the top is no longer a valid email.
- * ds-nav.css says so in its own header, and artifacts/ is never rendered by
- * Astro anyway. Only artifacts/index.html, the gallery, carries this.
+ * with a documentation bar welded to the top is no longer a valid email. Only
+ * artifacts/index.html, the gallery, carries this.
  */
+import BrandNav from '../authored/common/BrandNav.vue';
+
 interface Props {
   /** Which section is being viewed, or nothing on a page in none of them. */
   current?: 'brand-kit' | 'foundations' | 'storybook' | 'artifacts';
@@ -27,19 +31,24 @@ interface Props {
 }
 
 const { current, up } = Astro.props;
-const here = (section: Props['current']) => (section === current ? 'page' : undefined);
+
+/* The section each item stands for is not its label, so `current` is matched
+   against these names and the labels are free to change. */
+const left = [
+  { name: 'brand-kit', label: 'Brand kit', href: `${up}brand-kit.html` },
+  { name: 'foundations', label: 'Foundations', href: `${up}preview/index.html` },
+];
+const right = [
+  { name: 'storybook', label: 'Live components', href: `${up}storybook/index.html` },
+  { name: 'artifacts', label: 'Templates', href: `${up}artifacts/index.html` },
+];
 ---
-<nav class="ds-nav" aria-label="Design system">
-  <div class="page-container ds-nav-inner">
-    <ul>
-      <li><a class="btn btn-ghost" href={`${up}brand-kit.html`} aria-current={here('brand-kit')}>Brand kit</a></li>
-      <li><a class="btn btn-ghost" href={`${up}preview/index.html`} aria-current={here('foundations')}>Foundations</a></li>
-    </ul>
-    <a class="ds-nav-logo" href={`${up}index.html`} aria-label="CODECAVE design system — documentation home">
-      <img src={`${up}assets/codecave-wide.svg`} alt="CODECAVE"></a>
-    <ul>
-      <li><a class="btn btn-ghost" href={`${up}storybook/index.html`} aria-current={here('storybook')}>Live components</a></li>
-      <li><a class="btn btn-ghost" href={`${up}artifacts/index.html`} aria-current={here('artifacts')}>Templates</a></li>
-    </ul>
-  </div>
-</nav>
+<BrandNav
+  left={left.map((i) => ({ name: i.label, href: i.href }))}
+  right={right.map((i) => ({ name: i.label, href: i.href }))}
+  current={[...left, ...right].find((i) => i.name === current)?.label}
+  logo={`${up}assets/codecave-wide.svg`}
+  logoHref={`${up}index.html`}
+  logoAlt="CODECAVE"
+  logoLabel="CODECAVE design system — documentation home"
+/>

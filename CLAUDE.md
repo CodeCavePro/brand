@@ -49,8 +49,9 @@ moment it is fixed; Jira keeps the history, so nothing here is a record:
 Finished under [CCWEB2-317](https://codecave.atlassian.net/browse/CCWEB2-317) on
 2026-08-21, so it is architecture now rather than open work. **Sources stay in
 `docs/`, output goes to gitignored `dist/`, and Pages deploys `dist/`.** Every
-page is an `.astro` under `docs/pages/`; `artifacts/` is never rendered and never
-will be. Everything else in `docs/` is payload and passes through, which
+page is an `.astro` under `docs/pages/`; the six specimens under `artifacts/` are
+never rendered and never will be — their gallery, `artifacts/index.html`, is the
+one exception and is now `docs/pages/artifacts/index.astro`. Everything else in `docs/` is payload and passes through, which
 `docs/tools/astro-passthrough.mjs` asserts every build — both halves are silent
 when they fail.
 
@@ -62,8 +63,10 @@ passthrough check fails the build instead. The one that bites when improving a
 page: **the storybook specimens are not Astro islands and must not become them.**
 They mount `compiled/*.js` in the browser through an import map, which is what
 makes them a record of what codecave.pro ships rather than a rebuild of it, and
-`is:inline` on both tags is what keeps that true. `@astrojs/vue` is consequently
-exercised by nothing; it stays only as a bet on CCWEB2-318 phase 4.
+`is:inline` on both tags is what keeps that true — so a *specimen* is still not
+an island. `@astrojs/vue` is no longer unused, though: `DsNav.astro` renders
+`BrandNav.vue` with no client directive, which is the chrome rather than a
+specimen and emits static HTML with no JavaScript at all.
 
 **That import map is checked against the bundles, both ways.** It is the only
 thing resolving the specifiers esbuild deliberately left external, and an
