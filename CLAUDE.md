@@ -20,7 +20,7 @@ label ([live query](https://codecave.atlassian.net/issues?jql=project%20%3D%20CC
 
     Seven stay site-owned on purpose: ArticlePreview, link-group, desktop-menu, mobile-menu, services-list, technologies and technology-card all reach the site's `paths.ts`, `links.ts` or `menu.ts`. Installing them would put codecave.pro's navigation behind an npm release — changing a menu item would mean publishing. That is a coupling decision, not a mechanical swap.
 
-    **What is genuinely still open is the font half.** The site has one Satoshi cut and faux-bolds every heading; swapping in six real ones is a visible change that belongs in its own PR.
+    **The font half is done on the package side and open on the site's.** The package ships ten `@font-face` rules as of 1.6.0 — 300/400/500/700/900, upright and italic, which is every weight Satoshi has. codecave.pro still declares one `Satoshi-Regular.ttf` with no `font-weight` descriptor, so that file matches every weight and 97 elements are synthesized; the replacement is [CCWEB2-309](https://codecave.atlassian.net/browse/CCWEB2-309). **The binaries are still not in the tarball** — that is a redistribution question, recorded in `build.mjs`, and no release changes it.
 
     **A consumer that installs the components has to put the package back in Tailwind's scan.** Automatic content detection skips `node_modules` and this package ships Vue source, so a utility used only inside an installed component is never emitted — with no error anywhere: the build succeeds, the typecheck passes, and the elements render unstyled. One `@source` line fixes it, the package `README.md` says so, and codecave.pro's `check:classes` fails the build when it is missing (CCWEB2-360).
 
