@@ -38,6 +38,7 @@ const walk = (dir, out = []) => {
 
 const routes = new Set();
 const anchors = new Map(); // route -> Set of ids it declares
+const unlayouted = [];
 
 /* A page under pages/ emits at its own path with build.format: 'preserve'. */
 for (const file of walk(pages)) {
@@ -47,6 +48,24 @@ for (const file of walk(pages)) {
   if (r.endsWith('index.html')) routes.add(r.slice(0, -'index.html'.length)); // the directory form
   const src = fs.readFileSync(file, 'utf8');
   anchors.set(r, new Set([...src.matchAll(/\bid="([^"]+)"/g)].map((m) => m[1])));
+
+  /* The main menu is the same on every page because DocPage renders it with no
+     prop to override — there is no way for a page to get a DIFFERENT menu. The
+     only way to get NO menu is to not use the layout, which is a normal-looking
+     .astro file that builds fine and quietly drops off the navigation. */
+  if (!/from\s+'[^']*layouts\/DocPage\.astro'/.test(src)) unlayouted.push(r);
+}
+
+if (unlayouted.length) {
+  console.error(
+    `${unlayouted.length} page(s) do not go through DocPage.astro:\n` +
+      unlayouted.map((r) => `  ${r}`).join('\n') +
+      '\n\nEvery route carries the same main menu, and that holds because the\n' +
+      'layout renders it and takes no prop to change it. A page that skips the\n' +
+      'layout is the one way to break it: it builds, it renders, and it is simply\n' +
+      'missing from the navigation with nothing to say so.',
+  );
+  process.exit(1);
 }
 
 /* Everything under docs/ that is not a page is payload and is copied verbatim. */
