@@ -74,13 +74,6 @@ import DocPage from '../../layouts/DocPage.astro';
       ones already split — and the later mount animates characters belonging to
       the earlier one. The fix is a template ref scoped to this component.</p>
 
-    <p class="sb-note is-warn"><strong>No reduced-motion guard.</strong>
-      The stagger runs unconditionally from <code>onMounted</code> and again on
-      every prop change. It is GSAP rather than CSS, and the current site ships
-      no <code>prefers-reduced-motion</code> handling at all — this is the
-      site's largest piece of moving text, so it is the animation most worth
-      guarding.</p>
-
     <p class="sb-note is-warn"><strong><code>gsap.registerPlugin</code> runs on every call.</strong>
       It sits inside <code>splitAnimation</code>, so it re-registers on mount and
       on each <code>watch</code> firing rather than once at module scope. Harmless

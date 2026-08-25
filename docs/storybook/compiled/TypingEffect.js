@@ -18,6 +18,7 @@ var __sfc__ = /* @__PURE__ */ _defineComponent({
   setup(__props) {
     const props = __props;
     const splitAnimation = () => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
       gsap.registerPlugin(SplitText);
       const split = SplitText.create(".split-text span", {
         type: "words, chars"

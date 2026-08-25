@@ -91,23 +91,6 @@ import DocPage from '../../layouts/DocPage.astro';
   <section class="sb-section">
     <h2>Findings</h2>
 
-    <p class="sb-note is-warn"><strong><code>class</code> is applied twice.</strong>
-      The prop lands on the wrapper <code>&lt;div&gt;</code> and again on the inner
-      <code>&lt;a&gt;</code>. Layout utilities that make sense on one usually do
-      not on the other — <code>Cookies.vue</code> passes
-      <code>w-full max-w-[12.5rem]!</code>, which constrains the wrapper and then
-      re-applies the same cap to the anchor inside it. Anything positional
-      (<code>absolute</code>, <code>mx-auto</code>) will double-apply.</p>
-
-    <p class="sb-note is-warn"><strong>Nothing guards reduced motion.</strong>
-      The pointer tween is GSAP, driven from JS on <code>mousemove</code> — and
-      the current site ships no <code>prefers-reduced-motion</code> handling at
-      all (an earlier revision of <code>global.css</code> neutralized CSS
-      animation, and even that never covered JS tweens). A user who has asked for
-      reduced motion gets the full tracking glow. Guarding it needs a
-      <code>window.matchMedia('(prefers-reduced-motion: reduce)')</code> check
-      alongside the existing <code>pointer: coarse</code> one.</p>
-
     <p class="sb-note"><strong>Touch is handled, and handled early.</strong>
       <code>isTouchDevice</code> is resolved in <code>onMounted</code> from three
       signals — <code>pointer: coarse</code>, <code>ontouchstart</code>,

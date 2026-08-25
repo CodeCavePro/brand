@@ -9,6 +9,18 @@ const props = defineProps<{
 }>()
 
 const splitAnimation = () => {
+  /* Reduced motion means no split at all, not a gentler stagger.
+   *
+   * Checked here rather than in onMounted because this also runs from the watch
+   * on the two texts, so the guard picks up a setting changed after mount. And
+   * checked in JS at all because the movement is GSAP: a
+   * `prefers-reduced-motion` block in a stylesheet cannot reach it.
+   *
+   * Skipping the whole function rather than just the tween is deliberate.
+   * SplitText shatters the sentence into per-character elements, and that is
+   * the markup a screen reader is left reading back -- so an unsplit heading is
+   * both the correct reduced-motion rendering and the better one. WCAG 2.3.3. */
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
   gsap.registerPlugin(SplitText)
   const split = SplitText.create('.split-text span', {
     type: "words, chars"

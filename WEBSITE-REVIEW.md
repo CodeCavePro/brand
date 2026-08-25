@@ -29,14 +29,15 @@ done and when. Every remark below was re-verified against
 
 ## 2 · P0 — Accessibility
 
-### 2.1 No reduced-motion handling anywhere
-`grep -r "prefers-reduced-motion" src/` returns nothing. The two biggest
-animations are GSAP-driven — the TypingEffect character stagger
-(`common/effects/TypingEffect.vue`) and the GlowButton pointer-tracking highlight
-(`common/GlowButton.vue`) — so even a CSS kill-switch would not cover them.
-**Fix:** a `window.matchMedia('(prefers-reduced-motion: reduce)')` guard in
-both components (GlowButton already has the identical pattern for
-`pointer: coarse`), plus a global CSS collapse for the rest. WCAG 2.3.3 / 2.2.2.
+### 2.1 No reduced-motion handling in the site's own CSS
+`grep -r "prefers-reduced-motion" src/` returns nothing outside the components
+this package ships. Those two — the TypingEffect character stagger and the
+GlowButton pointer highlight — are GSAP and guard themselves, because no
+stylesheet could have reached them. Everything else the site animates is CSS and
+has no kill-switch: a `@media (prefers-reduced-motion: reduce)` block in
+`global.css` collapsing transitions and animations covers it in one place.
+**This one is the site's**, since `global.css` is the file the package
+deliberately does not ship. WCAG 2.3.3 / 2.2.2.
 
 ### 2.2 The disabled treatment is unreadable (`common/Button.vue`)
 At `opacity-20` the label-to-fill contrast composites to **1.55:1** and the whole

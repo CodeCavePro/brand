@@ -8,13 +8,20 @@ const props = defineProps<{
   href?: string
 }>()
 const isTouchDevice = ref(false)
+/* Reduced motion is resolved in the same place and means the same thing here as
+ * touch: the tracking tween does not run. It has to be checked in JS -- the
+ * movement is GSAP driven from mousemove, so a `prefers-reduced-motion` block in
+ * a stylesheet cannot reach it, and the static bloom is what remains either way.
+ * WCAG 2.3.3. */
+const prefersReducedMotion = ref(false)
+const noTracking = () => isTouchDevice.value || prefersReducedMotion.value
 const link = ref(null)
 const glow = ref(null)
 const edgeLeft = ref(null)
 const edgeRight = ref(null)
 let leaveTween = null
 const handleMouseMove = (e: MouseEvent) => {
-  if (isTouchDevice.value) return
+  if (noTracking()) return
 
   const rect = link.value.getBoundingClientRect()
   const x = e.clientX - rect.left
@@ -38,13 +45,14 @@ const handleMouseMove = (e: MouseEvent) => {
   edgeRight.value.style.opacity = rightOpacity
 }
 const handleMouseEnter = () => {
-  if (isTouchDevice.value) return
+  if (noTracking()) return
   if (leaveTween) {
     leaveTween.kill()
     leaveTween = null
   }
 }
 const handleMouseLeave = () => {
+  if (noTracking()) return
   edgeLeft.value.style.opacity = 1
   edgeRight.value.style.opacity = 0
   if (leaveTween) leaveTween.kill()
@@ -60,13 +68,19 @@ onMounted(() => {
   isTouchDevice.value = window.matchMedia("(pointer: coarse)").matches
     || "ontouchstart" in window
     || navigator.maxTouchPoints > 0
+  prefersReducedMotion.value = window.matchMedia("(prefers-reduced-motion: reduce)").matches
 })
 </script>
 
 <template>
   <div :class="`relative inline-block ${props.class ?? ''}`">
     <div ref="edgeLeft" class="edge-glow -left-2"></div>
-    <a ref="link" :href="href" @mousemove="handleMouseMove" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave" :class="`cursor-pointer flex items-center justify-center relative z-[1] overflow-hidden w-full h-12 px-6 py-1 rounded-full bg-glow-25 ${props.class ?? ''}`">
+    <!-- `class` belongs to the WRAPPER only. It used to be interpolated here as
+         well, so anything positional double-applied: mx-auto centred twice, a
+         margin was paid twice, and a width cap constrained the wrapper and then
+         re-capped the anchor inside it. The anchor is w-full, so a cap on the
+         wrapper already reaches it. -->
+    <a ref="link" :href="href" @mousemove="handleMouseMove" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave" class="cursor-pointer flex items-center justify-center relative z-[1] overflow-hidden w-full h-12 px-6 py-1 rounded-full bg-glow-25">
       <span class="relative z-[2] text-primary-800 font-bold select-none">
         {{ title }}
       </span>
