@@ -1,0 +1,30 @@
+---
+/* SPIKE — CCWEB2-374. Starlight's Header, replaced with the site's own bar.
+ *
+ * The point of the test: BrandNav is a Vue component rendered with NO client
+ * directive, so it emits static HTML and ships no JavaScript — exactly as
+ * DsNav does on the 34 hand-built pages. If that survives inside Starlight's
+ * shell, the two navigations are one component rather than two that have to be
+ * kept in agreement.
+ *
+ * `up` is hard-coded to '../' because every page in this spike lives one level
+ * down, at /guides/*. A real adoption would have to derive it, and cannot do so
+ * from Astro.url.pathname for the reason DocPage records — under
+ * build.format: 'preserve' a directory index is requested at one depth in dev
+ * and emitted at another by the build.
+ */
+import BrandNav from '../authored/common/BrandNav.vue';
+import { MAIN } from '../components/menu.ts';
+
+const up = '../';
+const half = Math.ceil(MAIN.length / 2);
+const toNav = (i: (typeof MAIN)[number]) => ({ name: i.label, href: `${up}${i.href}` });
+---
+<BrandNav
+  left={MAIN.slice(0, half).map(toNav)}
+  right={MAIN.slice(half).map(toNav)}
+  logo={`${up}assets/codecave-wide.svg`}
+  logoHref={`${up}index.html`}
+  logoAlt="CODECAVE"
+  logoLabel="CODECAVE design system — documentation home"
+/>

@@ -12,7 +12,15 @@
     "strict": true,
     "noEmit": true,
     "noUnusedLocals": true,
-    "skipLibCheck": false
+    "skipLibCheck": false,
+
+    // SPIKE (CCWEB2-374): Starlight pulls in @types/mdx transitively, whose
+    // types.d.ts references a JSX namespace nothing here provides — four errors
+    // in a file no adapter imports. skipLibCheck: true would silence it and is
+    // exactly what the comment above says must not happen, so restrict which
+    // @types packages are auto-included instead. The adapters still get full
+    // lib checking on everything they actually import.
+    "types": []
   },
   "include": ["*.ts"]
 }

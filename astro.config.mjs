@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import vue from '@astrojs/vue';
+import starlight from '@astrojs/starlight'; // SPIKE CCWEB2-374
 import docsPassthrough from './docs/tools/astro-passthrough.mjs';
 
 /* The docs site — CCWEB2-317, and phase 2 of CCWEB2-318.
@@ -53,6 +54,7 @@ export default defineConfig({
   outDir: './dist',
 
   build: { format: 'preserve' },
+  trailingSlash: 'never',
 
   /* Astro's default is `true`, and it corrupts this repository's prose.
    *
@@ -87,7 +89,28 @@ export default defineConfig({
    * while phase 4 is still unstarted. Then this line and the @astrojs/vue
    * devDependency both go; re-adding them is one `npm i -D` and two lines, so
    * there is nothing to preserve by hesitating. */
-  integrations: [vue(), docsPassthrough()],
+  integrations: [
+    vue(),
+    /* SPIKE — CCWEB2-374. Starlight injects a ROOT catch-all `[...slug]`, so the
+       question is whether it steals routes from the 34 hand-built pages and the
+       197 payload files. It only generates paths its collection supplies, and
+       the collection is scoped to guides/ — but that is a claim to test, not to
+       assume. `disable404Route` because this site ships no 404 today and a spike
+       should not quietly add one. */
+    starlight({
+      title: 'CODECAVE',
+      disable404Route: true,
+      /* The thing CCWEB2-374 was actually asking about. */
+      components: { Header: './docs/starlight-overrides/Header.astro' },
+      /* BrandNav says it needs tokens and nothing else; Starlight links neither.
+         Does handing it the real stylesheet style the bar, or does the global
+         class layer fight Starlight’s own? */
+      customCss: ['./docs/colors_and_type.css'],
+      /* Keep it out of the way of the real nav while testing. */
+      sidebar: [{ label: 'Guides', items: [{ autogenerate: { directory: 'guides' } }] }],
+    }),
+    docsPassthrough(),
+  ],
 
   vite: {
     optimizeDeps: {

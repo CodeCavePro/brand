@@ -35,8 +35,22 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-/** Directories at the top of docs/ that belong to Astro, not to the payload. */
-const OWNED = ['pages', 'layouts', 'components'];
+/** Paths at the top of docs/ that belong to Astro, not to the payload.
+ *
+ * SPIKE (CCWEB2-374): `content.config.ts` and `starlight-overrides` are
+ * Starlight's. Without them here, publicDir copies this site's own SOURCE into
+ * dist/ and serves it — the collection config and the header override. Entries
+ * may be files as well as directories; rmSync removes either, and the payload
+ * filter splits on '/' so a top-level filename matches itself.
+ *
+ * There is deliberately no `content` entry. A collection normally lives in
+ * srcDir/content/, and this one does not: the loader reads DESIGN.md, README.md,
+ * SKILL.md and guide.md where they already sit, because those four are payload
+ * that other things cite by path. So docs/content/ does not exist, and listing
+ * it would be an exclusion for nothing — the same dead-entry problem GONE and
+ * EXCEPTIONS are checked for elsewhere.
+ */
+const OWNED = ['pages', 'layouts', 'components', 'content.config.ts', 'starlight-overrides'];
 
 function walk(dir) {
   if (!fs.existsSync(dir)) return [];
