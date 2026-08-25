@@ -105,7 +105,12 @@ if (!configSrc.includes(OVERRIDE)) {
 }
 
 const overrideSrc = fs.readFileSync(path.join(root, OVERRIDE), 'utf8');
-const missingTiers = ['DsNav', 'SubNav'].filter((c) => !overrideSrc.includes(`<${c}`));
+/* A tag, not a substring. `overrideSrc.includes('<SubNav')` is satisfied by
+   `<SubNavX`, so renaming the component past this check was invisible -- which
+   is the same mistake usesAlias() was fixed for, in the other direction. */
+const missingTiers = ['DsNav', 'SubNav'].filter(
+  (c) => !new RegExp(`<${c}(?![A-Za-z0-9_-])`).test(overrideSrc),
+);
 if (missingTiers.length) {
   console.error(
     `${OVERRIDE} does not render: ${missingTiers.join(', ')}.\n` +
