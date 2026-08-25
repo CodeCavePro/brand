@@ -97,6 +97,20 @@ documentation route the prose cites still resolves, anchors included: collapsing
 the surfaces moved most of this site's URLs and broke 49 citations across nine
 files, which nothing else here would ever have noticed.
 
+**It also asks the plainest question about a page, which nothing used to ask:
+when this runs, does the file it reaches for exist?** Every relative `src`,
+`href`, `url()` and module specifier below the frontmatter fence, resolved
+against the page's OUTPUT location and matched against the union of what the
+build renders and what it copies -- 151 of them. Frontmatter is excluded
+deliberately: imports above the fence are Astro's, resolved at build time against
+the *source* tree, so judging both by one rule reports every layout import as a
+dead file. Separately, a page importing a bare specifier must pass `importmap` to
+`DocPage`, and a page passing it must import one -- the layout emits the map only
+on request, so a specimen without it fails on `import ... from 'vue'` in the
+browser and nowhere else. **This is the check that matters when a page MOVES**: a
+relative path that was right at the old depth is wrong at the new one and still
+looks perfectly reasonable.
+
 Two rules survive the migration and are in [CONTRIBUTING.md](/CONTRIBUTING.md)
 with their reasons. The one that bites when adding a page: a `.html` at the same
 path wins over the `.astro`, so writing one page in both forms leaves the
