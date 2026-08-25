@@ -66,7 +66,7 @@ onMounted(() => {
 <template>
   <div :class="`relative inline-block ${props.class ?? ''}`">
     <div ref="edgeLeft" class="edge-glow -left-2"></div>
-    <a ref="link" :href="href" @mousemove="handleMouseMove" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave" :class="`cursor-pointer flex items-center justify-center relative z-[1] overflow-hidden w-full h-11 px-6 py-1 rounded-full bg-glow-25 ${props.class ?? ''}`">
+    <a ref="link" :href="href" @mousemove="handleMouseMove" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave" :class="`cursor-pointer flex items-center justify-center relative z-[1] overflow-hidden w-full h-12 px-6 py-1 rounded-full bg-glow-25 ${props.class ?? ''}`">
       <span class="relative z-[2] text-primary-800 font-bold select-none">
         {{ title }}
       </span>
