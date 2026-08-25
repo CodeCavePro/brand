@@ -10,7 +10,21 @@
     "sourceMap": false,
     "removeComments": false,
     "rootDir": ".tmp",
-    "outDir": "dist"
+    "outDir": "dist",
+
+    // Without this, TypeScript auto-includes every `@types/*` package it finds
+    // walking up from here — which reaches the repo root, where Starlight's
+    // dependency tree put `@types/mdx`. Its `types.d.ts` references a JSX
+    // namespace nothing in this package provides, so the tarball build failed
+    // on a file no token module imports. `prepack` runs this build, so it was
+    // also a publish blocker, and it appeared the moment the docs site gained a
+    // dependency — nothing under `packages/` changed.
+    //
+    // `skipLibCheck: true` would silence it by not checking libs at all; this
+    // says which libs instead. The three token modules are plain data with no
+    // ambient dependency, so the correct set is empty, and anything they import
+    // is still checked in full.
+    "types": []
   },
   "include": [".tmp/**/*.ts"]
 }

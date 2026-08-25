@@ -135,7 +135,8 @@ feature decision, not a side effect.
 Two more, fixed earlier in the branch: `publicDir` was serving this site's own
 source (`OWNED` in `astro-passthrough.mjs`), and `@types/mdx` broke `check:ports`
 in a way `skipLibCheck: true` would have "fixed" by deleting the reason ports are
-ports (`types: []` instead).
+ports (`types: []` instead). That second one was fixed where it was *seen*, not
+where it *was* — see below.
 
 ## What the checks learned
 
@@ -170,6 +171,10 @@ was fixed for, from the other side.
 - **A shell this repo does not own.** All four faults above were Starlight's
   layout assumptions meeting this site's, and all four were silent. That class of
   problem does not end here; it is the standing cost of the integration.
+- **A dependency tree this repo does not own, in a shared workspace.** Its
+  transitive `@types/mdx` broke the *package* build, which has nothing to do with
+  the docs site. Loud rather than silent, and the second half of it was still
+  missed — see below.
 
 ## What I would still not do
 
@@ -177,7 +182,7 @@ was fixed for, from the other side.
 would be an improvement, and `format: 'preserve'` exists precisely because those
 URLs are cited 35 times, once from inside the shipped `colors_and_type.css`.
 
-## Two things that were fixed after it shipped
+## Three things that were fixed after it shipped
 
 **Pagination is off.** Starlight's prev/next footer formats links through
 `createPathFormatter`, which under `preserve` drops the extension —
@@ -193,9 +198,23 @@ serve. Dead in the rendered guide and on GitHub too; it only ever resolved in an
 editor. The same file names it three other times as plain text and now does so a
 fourth. `check:links` did not catch it because it is not a `.html`.
 
-Both were found by fetching every reference on all 39 pages — 727 of them — not
-by looking at pages. That sweep now reports zero broken references and 72 images
-that decode.
+Both of those were found by fetching every reference on all 39 pages — 727 of
+them — not by looking at pages. That sweep now reports zero broken references and
+72 images that decode.
+
+**`@types/mdx` was breaking the tarball build too, and blocking the publish.**
+The branch fixed `check:ports`, which is where the four `Cannot find namespace
+'JSX'` errors were seen. They were not confined to it: TypeScript auto-includes
+every `@types/*` package it finds walking up from a tsconfig, and both tsconfigs
+in this repo walk up to the same root, so `packages/brand/tsconfig.json` swallowed
+it as well. `npm run build` failed on a file no token module imports — and since
+`prepack` runs that build, so would `npm run release`. It carries the same
+`types: []` now, and each config's comment names the other.
+
+**This is the shape to expect from the dependency, not a one-off.** Nothing under
+`packages/` changed; a docs-site integration reached across the workspace and
+broke the package's build. That is the third bullet under *What it costs*, and
+this is what it looks like when it is not a layout problem.
 
 ## Reproducing
 
