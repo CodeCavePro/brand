@@ -50,7 +50,7 @@ w-fit max-w-full min-w-12 min-h-12 rounded-full text-body-primary font-bold tran
         _Fragment,
         null,
         [
-          _createCommentVNode(" A disabled anchor is a different mechanism from a disabled button: there\r\n       is no `disabled` attribute for <a>, and adding one styles nothing and\r\n       prevents nothing. Dropping href is what actually takes it out of the tab\r\n       order and stops activation; aria-disabled is what says so out loud. "),
+          _createCommentVNode(" A disabled anchor is a different mechanism from a disabled button: there\n       is no `disabled` attribute for <a>, and adding one styles nothing and\n       prevents nothing. Dropping href is what actually takes it out of the tab\n       order and stops activation; aria-disabled is what says so out loud. "),
           props.as === "link" ? (_openBlock(), _createElementBlock("a", {
             key: 0,
             href: props.isDisabled ? void 0 : props.href,

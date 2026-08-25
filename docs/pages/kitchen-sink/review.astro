@@ -62,7 +62,7 @@ import DocPage from '../../layouts/DocPage.astro';
     <table class="sb-props">
       <thead><tr><th>Prop</th><th>Type</th><th>Notes</th></tr></thead>
       <tbody>
-        <tr><td>item <span class="sb-req">*</span></td><td><code>TestimonialCard</code></td><td>The six fields the component reads, declared in the component itself: <code>photo.url</code>, <code>photo.name</code>, <code>name</code>, <code>position</code>, <code>review</code>, <code>linkedinurl</code>, <code>verification</code>. A generated CMS entity satisfies it unchanged; the component carries no CMS schema.</td></tr>
+        <tr><td>item <span class="sb-req">*</span></td><td><code>TestimonialCard</code></td><td>The seven fields the component reads, declared in the component itself: <code>photo.url</code>, <code>photo.name</code>, <code>photo.alternativeText</code>, <code>name</code>, <code>position</code>, <code>review</code>, <code>linkedinurl</code>, <code>verification</code>. A generated CMS entity satisfies it unchanged; the component carries no CMS schema.</td></tr>
         <tr><td>resolveImage</td><td><code>(url: string) =&gt; string</code></td><td>Supplied by the caller for relative media URLs; omit it when they are already absolute.</td></tr>
         <tr><td>className</td><td><code>string</code></td><td>Interpolated with no fallback — see findings.</td></tr>
       </tbody>

@@ -11,7 +11,9 @@ type TestimonialCard = {
   review: string
   verification: string | null
   linkedinurl: string
-  photo: { url: string; name: string }
+  /* See ArticlePreview: `name` is the upload's filename and describes nothing.
+   * `no-image.svg` stays the CMS's empty-photo sentinel, read from `name`. */
+  photo: { url: string; name: string; alternativeText?: string | null }
 }
 
 const props = defineProps<{
@@ -29,7 +31,7 @@ const imageUrl = (url: string) => props.resolveImage?.(url) ?? url
     <div class="flex flex-col lg:flex-row gap-5 lg:items-center">
       <LazyImage v-if="item.photo.name !== 'no-image.svg'" 
             class="w-12 lg:w-16 h-12 lg:h-16" :src="imageUrl(item.photo.url)"
-           :alt=item.photo.name />
+           :alt="item.photo.alternativeText ?? ''" />
       <div>
         <div class="flex items-center gap-2">
           <p class="text-heading text-lg lg:text-xl">{{ item.name }}</p>

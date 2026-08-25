@@ -176,7 +176,7 @@ var __sfc__4 = /* @__PURE__ */ _defineComponent2({
               key: 0,
               class: "w-12 lg:w-16 h-12 lg:h-16",
               src: imageUrl(__props.item.photo.url),
-              alt: __props.item.photo.name
+              alt: __props.item.photo.alternativeText ?? ""
             }, null, 8, ["src", "alt"])) : _createCommentVNode("v-if", true),
             _createElementVNode3("div", null, [
               _createElementVNode3("div", _hoisted_2, [

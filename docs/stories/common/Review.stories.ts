@@ -10,7 +10,7 @@ const ITEM = {
     'without them. The handover was the product.',
   verification: 'Verified client',
   linkedinurl: 'https://www.linkedin.com/company/codecavepro',
-  photo: { url: '/uploads/marta.jpg', name: 'marta.jpg' },
+  photo: { url: '/uploads/marta.jpg', name: 'marta.jpg', alternativeText: 'Marta Oliveira' },
 };
 
 const meta = {
@@ -31,7 +31,7 @@ export const NoLinkedin: Story = { args: { item: { ...ITEM, linkedinurl: '' } } 
 export const NoPhoto: Story = {
   args: { item: { ...ITEM, photo: { url: '', name: 'no-image.svg' } } },
   play: async ({ canvasElement }) => {
-    await expect(within(canvasElement).queryByRole('img')).toBeNull();
+    await expect(canvasElement.querySelector('img')).toBeNull();
   },
 };
 
@@ -50,7 +50,7 @@ export const ResolvesImageUrls: Story = {
   play: async ({ canvasElement, args }) => {
     await expect(args.resolveImage).toHaveBeenCalledWith('/uploads/marta.jpg');
     // LazyImage holds the resolved URL in data-src until it scrolls into view.
-    const img = within(canvasElement).getByRole('img');
+    const img = canvasElement.querySelector('img')!;
     await expect(
       img.getAttribute('src') ?? img.getAttribute('data-src'),
     ).toBe('https://cdn.example.test/uploads/marta.jpg');
@@ -59,9 +59,11 @@ export const ResolvesImageUrls: Story = {
 
 /** Omitted resolver: the URL is used exactly as given. */
 export const AbsoluteUrlsNeedNoResolver: Story = {
-  args: { item: { ...ITEM, photo: { url: 'https://cdn.example.test/m.jpg', name: 'm.jpg' } } },
+  args: {
+    item: { ...ITEM, photo: { url: 'https://cdn.example.test/m.jpg', name: 'm.jpg' } },
+  },
   play: async ({ canvasElement }) => {
-    const img = within(canvasElement).getByRole('img');
+    const img = canvasElement.querySelector('img')!;
     await expect(
       img.getAttribute('src') ?? img.getAttribute('data-src'),
     ).toBe('https://cdn.example.test/m.jpg');

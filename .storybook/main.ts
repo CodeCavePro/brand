@@ -12,7 +12,7 @@ import vue from '@vitejs/plugin-vue';
 // The alias table is READ, never restated. import-aliases.mjs says in its own
 // header that a second copy of the arithmetic is the trap the aliases sprang;
 // it already has two readers with no other code in common, and this is a third.
-import { SITE_ALIAS_PATTERN, sitePath } from '../docs/tools/import-aliases.mjs';
+import { SELF_NAME, SITE_ALIAS_PATTERN, aliasTarget, sitePath } from '../docs/tools/import-aliases.mjs';
 
 const repo = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -26,6 +26,15 @@ const ROOTS = ['docs/authored', 'docs/source_examples'].map((d) => path.join(rep
 const inRoots = (rel: string) =>
   ROOTS.map((r) => path.join(r, rel)).find((p) => fs.existsSync(p)) ?? null;
 
+/* The roots mirror codecave.pro's src/ with one level removed: src/assets/ is
+ * assets/, src/helpers/ is helpers/, and src/components/common/ is just
+ * common/ -- the captures dropped `components/` because everything under it was
+ * one. So a path in the SHIPPED layout becomes a root-relative one by stripping
+ * a leading src/ and then a leading components/. Both resolvers below end here,
+ * which is the point: one place decides what a root-relative path is. */
+const intoRoots = (shipped: string) =>
+  inRoots(shipped.replace(/^src\//, '').replace(/^components\//, ''));
+
 /* codecave.pro's path aliases (@assets/, @helpers/, ...), resolved exactly as
  * the esbuild half does it in build-storybook.mjs: inRoots(sitePath(spec)).
  * Returning null for an alias that lands nowhere is deliberate -- @layouts and
@@ -36,9 +45,23 @@ const siteAliases = () => ({
   name: 'codecave:site-aliases',
   enforce: 'pre' as const,
   resolveId(source: string) {
-    if (!new RegExp(`^(?:${SITE_ALIAS_PATTERN})`).test(source)) return null;
-    const rel = sitePath(source);
-    return rel ? inRoots(rel) : null;
+    if (new RegExp(`^(?:${SITE_ALIAS_PATTERN})`).test(source)) {
+      const rel = sitePath(source);
+      return rel ? intoRoots(rel) : null;
+    }
+    /* The package's own name, which several components use to import a Button.
+     * Left alone, Vite resolves it through the workspace symlink to the BUILT
+     * copy in packages/brand/dist -- so the story would render whatever the last
+     * `npm run build` produced, and an edit to Button.vue would not show until
+     * someone rebuilt. Silent, and wrong in the direction that matters: docs/ is
+     * the origin. aliasTarget() returns null for anything not under src/
+     * (tokens.css, theme.css, the root entry), which correctly falls through to
+     * real package resolution. */
+    if (source.startsWith(SELF_NAME)) {
+      const target = aliasTarget(source);
+      return target ? intoRoots(target) : null;
+    }
+    return null;
   },
 });
 

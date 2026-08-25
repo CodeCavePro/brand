@@ -107,15 +107,6 @@ import DocPage from '../../layouts/DocPage.astro';
   <section class="sb-section">
     <h2>Findings</h2>
 
-    <p class="sb-note is-warn"><strong><code>index</code> is optional but indexed unguarded.</strong>
-      The type is <code>index?: number</code>, yet the template evaluates
-      <code>rotate[index]</code> and <code>translate[index]</code> directly.
-      Omitting the prop yields <code>rotate[undefined]</code> →
-      <code>undefined</code>, which is interpolated into the class string as the
-      literal text. Passing an index above 5 does the same. Neither table has a
-      fallback — and the mobile carousel call site really does omit it
-      (<code>technologies.vue</code> passes <code>:index</code> only on desktop).</p>
-
     <p class="sb-note is-warn"><strong>Routing is a string match on display copy.</strong>
       <code>getTechnologyUrl</code> switches on the same <code>name</code> that is
       rendered to the user, returning <code>''</code> for anything unmatched. So

@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import Button from "@codecavepro/brand/components/common/Button.vue";
 
-defineProps<{
+const props = defineProps<{
   active: boolean
   name: string
   /* Where "Explore service" goes. The card used to switch on `name` over this
@@ -22,6 +23,13 @@ const rotate = [
   'rotate-2 left-2/3 top-3/5',
 ]
 
+/* `index` is optional and indexes both arrays below, so omitting it -- which
+ * the type allows -- interpolated the literal text `undefined` into the class
+ * attribute. Not a crash and not a visible error: the card just lost its
+ * rotation and its offset and stacked at the origin under whichever sibling
+ * drew last. Wrapping keeps a seventh card on the fan rather than off it. */
+const seat = computed(() => (props.index ?? 0) % 6)
+
 const translate = [
   'xl:-translate-y-1/3',
   'xl:-translate-y-1/3',
@@ -34,7 +42,7 @@ const translate = [
 
 <template>
   <div :class="`rounded-3xl card-wrapper cursor-pointer select-none absolute transform transition-transform duration-500
-  ${rotate[index]} ${active ? `${translate[index]}` : ''} ${className || ''}`">
+  ${rotate[seat]} ${active ? `${translate[seat]}` : ''} ${className || ''}`">
     <div class="card flex flex-col items-center justify-around">
       <h3 class="max-w-[8rem] text-center text-xl font-bold text-heading text-balance">
         {{ name }}

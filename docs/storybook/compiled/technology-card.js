@@ -3,6 +3,7 @@
 // ../packages/brand/dist/src/components/homepage/technology-card.vue
 import { defineComponent as _defineComponent2 } from "vue";
 import { toDisplayString as _toDisplayString2, createElementVNode as _createElementVNode2, normalizeClass as _normalizeClass2, createVNode as _createVNode, openBlock as _openBlock2, createElementBlock as _createElementBlock2 } from "vue";
+import { computed as computed2 } from "vue";
 
 // ../packages/brand/dist/src/components/common/Button.vue
 import { defineComponent as _defineComponent } from "vue";
@@ -50,7 +51,7 @@ w-fit max-w-full min-w-12 min-h-12 rounded-full text-body-primary font-bold tran
         _Fragment,
         null,
         [
-          _createCommentVNode(" A disabled anchor is a different mechanism from a disabled button: there\r\n       is no `disabled` attribute for <a>, and adding one styles nothing and\r\n       prevents nothing. Dropping href is what actually takes it out of the tab\r\n       order and stops activation; aria-disabled is what says so out loud. "),
+          _createCommentVNode(" A disabled anchor is a different mechanism from a disabled button: there\n       is no `disabled` attribute for <a>, and adding one styles nothing and\n       prevents nothing. Dropping href is what actually takes it out of the tab\n       order and stops activation; aria-disabled is what says so out loud. "),
           props.as === "link" ? (_openBlock(), _createElementBlock("a", {
             key: 0,
             href: props.isDisabled ? void 0 : props.href,
@@ -100,6 +101,7 @@ var __sfc__2 = /* @__PURE__ */ _defineComponent2({
     index: { type: Number, required: false }
   },
   setup(__props) {
+    const props = __props;
     const rotate = [
       "-rotate-4 left-2 top-10",
       "-rotate-1 left-1/4 top-20",
@@ -108,6 +110,7 @@ var __sfc__2 = /* @__PURE__ */ _defineComponent2({
       "-rotate-2 right-2/3 top-3/5",
       "rotate-2 left-2/3 top-3/5"
     ];
+    const seat = computed2(() => (props.index ?? 0) % 6);
     const translate = [
       "xl:-translate-y-1/3",
       "xl:-translate-y-1/3",
@@ -121,7 +124,7 @@ var __sfc__2 = /* @__PURE__ */ _defineComponent2({
         "div",
         {
           class: _normalizeClass2(`rounded-3xl card-wrapper cursor-pointer select-none absolute transform transition-transform duration-500
-  ${rotate[__props.index]} ${__props.active ? `${translate[__props.index]}` : ""} ${__props.className || ""}`)
+  ${rotate[seat.value]} ${__props.active ? `${translate[seat.value]}` : ""} ${__props.className || ""}`)
         },
         [
           _createElementVNode2("div", _hoisted_12, [

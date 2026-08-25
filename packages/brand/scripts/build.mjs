@@ -802,9 +802,21 @@ if (checkOnly) {
     const rewritten = rel && isAliased(rel)
       ? unalias(fs.readFileSync(src, 'utf8'), rel)
       : null;
+    /* Normalise BOTH sides, not one.
+     *
+     * This normalised the target and compared it against a `rewritten` built
+     * from the source as read, so a working tree carrying CRLF failed here as
+     * "drifted: X differs from Y" -- which sends the reader looking for a
+     * content difference that is not there. Line endings are checked, and
+     * checked properly, by check-tw-bridge.mjs's digest over both roots. This
+     * comparison asks whether dist/ IS the rewritten source, and it should give
+     * the same answer on either kind of checkout.
+     * (Found by making it fail: two components were edited by a tool that wrote
+     * CRLF, and this is what the build said about it.) */
+    const eol = (text) => text.replace(/\r\n/g, '\n');
     const matches = rewritten === null
       ? fs.readFileSync(src).equals(fs.readFileSync(target))
-      : fs.readFileSync(target, 'utf8').replace(/\r\n/g, '\n') === rewritten;
+      : eol(fs.readFileSync(target, 'utf8')) === eol(rewritten);
     if (!matches) {
       console.error(`  drifted: ${label} differs from ${path.relative(repo, src)}`);
       drifted++;

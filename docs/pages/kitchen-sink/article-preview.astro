@@ -36,7 +36,7 @@ import DocPage from '../../layouts/DocPage.astro';
     <table class="sb-props">
       <thead><tr><th>Prop</th><th>Type</th><th>Notes</th></tr></thead>
       <tbody>
-        <tr><td>article <span class="sb-req">*</span></td><td><code>ArticleSummary</code></td><td>The seven fields the component reads, declared in the component itself: <code>slug</code>, <code>cover.url</code>, <code>cover.name</code>, <code>date</code>, <code>locale</code>, <code>title</code>, <code>excerpt</code>, <code>readingtime</code>. TypeScript is structural, so a generated CMS entity satisfies it unchanged — but the component carries no CMS schema.</td></tr>
+        <tr><td>article <span class="sb-req">*</span></td><td><code>ArticleSummary</code></td><td>The eight fields the component reads, declared in the component itself: <code>slug</code>, <code>cover.url</code>, <code>cover.alternativeText</code>, <code>date</code>, <code>locale</code>, <code>title</code>, <code>excerpt</code>, <code>readingtime</code>. TypeScript is structural, so a generated CMS entity satisfies it unchanged — but the component carries no CMS schema.</td></tr>
         <tr><td>resolveImage</td><td><code>(url: string) =&gt; string</code></td><td>CMS media URLs arrive relative (<code>uploads/x.png</code>). The caller supplies the resolver; pass nothing when the URLs are already absolute, and the component uses them as they are.</td></tr>
         <tr><td>basePath</td><td><code>string</code></td><td>Prefix the slug is appended to. The caller owns where its articles live.</td></tr>
         <tr><td>className</td><td><code>string</code></td><td>Appended to the anchor. Note the prop is <code>className</code>, not <code>class</code> — unlike Button.</td></tr>
@@ -93,13 +93,6 @@ import DocPage from '../../layouts/DocPage.astro';
       and <code>cursor-pointer</code> promise an affordance that never comes.
       An earlier revision lifted to a lighter surface on hover; either restore
       that (<code>hover:bg-surface-tertiary</code>) or drop the transition.</p>
-
-    <p class="sb-note is-warn"><strong><code>cover.name</code> is used as alt text.</strong>
-      <code>:alt="article.cover.name"</code> puts the CMS filename into the
-      accessible name — typically something like
-      <code>bim-export-hero.png</code>. Since the image is decorative next to a
-      title that already carries the meaning, <code>alt=""</code> would be more
-      correct than a filename read aloud.</p>
 
     <p class="sb-note"><strong>The date can render empty.</strong>
       <code>formattedDate</code> now guards its inputs — it returns <code>''</code>

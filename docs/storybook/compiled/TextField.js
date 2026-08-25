@@ -74,7 +74,7 @@ var __sfc__ = /* @__PURE__ */ _defineComponent({
 });
 __sfc__.__scopeId = "data-v-1c11b6d6";
 __sfc__.__file = "authored/common/TextField.vue";
-var __css__ = "\n.focus-area[data-v-1c11b6d6]:focus-within {\r\n  box-shadow: 0 0 16px 0 hsl(from var(--color-brand-500) h s l / 0.5),\r\n    0 0 4px 0 hsl(from var(--color-brand-500) h s l / 0.8);\n}\n.input-error[data-v-1c11b6d6] {\r\n  box-shadow: 0 0 16px 0 hsl(from var(--color-error-200) h s l / 0.5),\r\n    0 0 4px 0 hsl(from var(--color-error-100) h s l / 0.6);\n}\r\n";
+var __css__ = "\n.focus-area[data-v-1c11b6d6]:focus-within {\n  box-shadow: 0 0 16px 0 hsl(from var(--color-brand-500) h s l / 0.5),\n    0 0 4px 0 hsl(from var(--color-brand-500) h s l / 0.8);\n}\n.input-error[data-v-1c11b6d6] {\n  box-shadow: 0 0 16px 0 hsl(from var(--color-error-200) h s l / 0.5),\n    0 0 4px 0 hsl(from var(--color-error-100) h s l / 0.6);\n}\n";
 if (typeof document !== "undefined" && !document.getElementById("sfc-style-1c11b6d6")) {
   const el = document.createElement("style");
   el.id = "sfc-style-1c11b6d6";

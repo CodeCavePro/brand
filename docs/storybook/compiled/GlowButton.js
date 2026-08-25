@@ -89,7 +89,7 @@ var __sfc__ = /* @__PURE__ */ _defineComponent({
             512
             /* NEED_PATCH */
           ),
-          _createCommentVNode(" `class` belongs to the WRAPPER only. It used to be interpolated here as\r\n         well, so anything positional double-applied: mx-auto centred twice, a\r\n         margin was paid twice, and a width cap constrained the wrapper and then\r\n         re-capped the anchor inside it. The anchor is w-full, so a cap on the\r\n         wrapper already reaches it. "),
+          _createCommentVNode(" `class` belongs to the WRAPPER only. It used to be interpolated here as\n         well, so anything positional double-applied: mx-auto centred twice, a\n         margin was paid twice, and a width cap constrained the wrapper and then\n         re-capped the anchor inside it. The anchor is w-full, so a cap on the\n         wrapper already reaches it. "),
           _createElementVNode("a", {
             ref_key: "link",
             ref: link,
@@ -138,7 +138,7 @@ var __sfc__ = /* @__PURE__ */ _defineComponent({
 });
 __sfc__.__scopeId = "data-v-a48452dd";
 __sfc__.__file = "authored/common/GlowButton.vue";
-var __css__ = "\na[data-v-a48452dd] {\r\n  box-shadow: 0 0 64px 0 #7A58FFA8,\r\n    0 0 16px 0 #4F22FFA6,\r\n    0 0 4px 2px #5B34FA;\r\n  transition: transform 0.5s ease;\n}\na[data-v-a48452dd]:active {\r\n  transform: scale(0.98);\n}\n.edge-glow[data-v-a48452dd] {\r\n  position: absolute;\r\n  z-index: 0;\r\n  pointer-events: none;\r\n  top: 50%;\r\n  width: 100%;\r\n  height: 80%;\r\n  transform: translateY(-50%);\r\n  transition: opacity 0.2s ease;\r\n  background: radial-gradient(55.23% 55.23% at 50% 50%,\r\n      #FFFFFF 27.88%,\r\n      rgba(223, 212, 249, 0.762963) 51.92%,\r\n      rgba(153, 128, 255, 0) 100%);\r\n  filter: blur(12px);\n}\n.glow[data-v-a48452dd] {\r\n  position: absolute;\r\n  z-index: 1;\r\n  pointer-events: none;\r\n  top: 50%;\r\n  left: 20%;\r\n  transform: translateY(-50%) translateX(-50%);\r\n  width: 50%;\r\n  height: 200%;\r\n  background: radial-gradient(ellipse at left center,\r\n      #FFFFFF 27.88%,\r\n      rgba(223, 212, 249, 0.76) 51.92%,\r\n      rgba(153, 128, 255, 0) 100%);\r\n  filter: blur(12px);\n}\r\n";
+var __css__ = "\na[data-v-a48452dd] {\n  box-shadow: 0 0 64px 0 #7A58FFA8,\n    0 0 16px 0 #4F22FFA6,\n    0 0 4px 2px #5B34FA;\n  transition: transform 0.5s ease;\n}\na[data-v-a48452dd]:active {\n  transform: scale(0.98);\n}\n.edge-glow[data-v-a48452dd] {\n  position: absolute;\n  z-index: 0;\n  pointer-events: none;\n  top: 50%;\n  width: 100%;\n  height: 80%;\n  transform: translateY(-50%);\n  transition: opacity 0.2s ease;\n  background: radial-gradient(55.23% 55.23% at 50% 50%,\n      #FFFFFF 27.88%,\n      rgba(223, 212, 249, 0.762963) 51.92%,\n      rgba(153, 128, 255, 0) 100%);\n  filter: blur(12px);\n}\n.glow[data-v-a48452dd] {\n  position: absolute;\n  z-index: 1;\n  pointer-events: none;\n  top: 50%;\n  left: 20%;\n  transform: translateY(-50%) translateX(-50%);\n  width: 50%;\n  height: 200%;\n  background: radial-gradient(ellipse at left center,\n      #FFFFFF 27.88%,\n      rgba(223, 212, 249, 0.76) 51.92%,\n      rgba(153, 128, 255, 0) 100%);\n  filter: blur(12px);\n}\n";
 if (typeof document !== "undefined" && !document.getElementById("sfc-style-a48452dd")) {
   const el = document.createElement("style");
   el.id = "sfc-style-a48452dd";

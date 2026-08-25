@@ -12,7 +12,11 @@ type ArticleSummary = {
   date: Date | null
   locale: string | null
   readingtime: unknown
-  cover: { url: string; name: string }
+  /* `alternativeText` is what a CMS calls the field an editor writes for screen
+   * readers; `name` is the upload's filename. Optional because it is routinely
+   * empty, and where it is, an empty alt is the honest render -- a filename
+   * read out in full describes nothing and cannot be skipped. WCAG 1.1.1. */
+  cover: { url: string; name: string; alternativeText?: string | null }
 }
 
 const props = defineProps<{
@@ -31,13 +35,17 @@ const imageUrl = (url: string) => props.resolveImage?.(url) ?? url
 </script>
 
 <template>
-  <a :href="`${basePath ?? ''}${article.slug}/`" :class="`mx-1 lg:mx-2 w-full h-full self-start sm:self-auto p-6 flex flex-col gap-5 sm:gap-8
+  <!-- A draft with no slug has nowhere to go, and `slug` is typed `string |
+       null` precisely because a CMS leaves it null until publish. Interpolated
+       unguarded this built `/insights/null/` -- a card that looked entirely
+       normal and linked to a 404. Without a destination it is not a link. -->
+  <component :is="article.slug ? 'a' : 'div'" :href="article.slug ? `${basePath ?? ''}${article.slug}/` : undefined" :class="`mx-1 lg:mx-2 w-full h-full self-start sm:self-auto p-6 flex flex-col gap-5 sm:gap-8
       rounded-[2.25rem] bg-surface-secondary hover:bg-surface-secondary transition-colors cursor-pointer border-surface-tertiary border
       ${className ?? ''}`">
     <div class="flex flex-col sm:flex-row gap-5 sm:gap-8 h-fit">
       <img loading="lazy" class="sm:w-[132px] sm:h-[132px] rounded-xl object-cover" 
         :src="imageUrl(article.cover.url)" 
-        :alt="article.cover.name" 
+        :alt="article.cover.alternativeText ?? ''" 
         :width="100" 
         :height="100"/>
       <div class="space-y-2 sm:space-y-3">
@@ -57,5 +65,5 @@ const imageUrl = (url: string) => props.resolveImage?.(url) ?? url
         Reading time: {{ article.readingtime }} m.
       </p>
     </div>
-  </a>
+  </component>
 </template>
