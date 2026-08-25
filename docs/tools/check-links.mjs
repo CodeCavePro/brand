@@ -149,6 +149,7 @@ if (badTargets.length) {
  * rule is how a layout import gets reported as a dead file.
  */
 const runtimeMissing = [];
+const mapMismatch = [];
 let runtimeOk = 0;
 
 for (const file of walk(pages)) {
@@ -163,6 +164,33 @@ for (const file of walk(pages)) {
      against. 'preserve' emits pages/x/y.astro at x/y.html, so the directory is
      the page's own directory. */
   const outDir = path.relative(pages, path.dirname(file)).split(path.sep).join('/');
+
+  /* A page that imports a BARE specifier needs the import map, and the layout
+     only emits one when the page asks. The kitchen sink hub mounted twelve
+     components and never asked: `import { createApp } from 'vue'` then fails
+     with "Failed to resolve module specifier", fifteen times, and the page
+     renders every specimen as an empty box. Nothing else notices — the file it
+     imports exists, so even the check above is satisfied.
+
+     Checked in both directions. A map nothing imports is a claim that has
+     stopped being true, which is the same rule check:importmap applies to the
+     map's own keys. */
+  const bareImports = [
+    ...body.matchAll(/import\s[^'"]*from\s*['"]([^.\/'"][^'"]*)['"]/g),
+  ].map((m) => m[1]);
+  const docPageTag = /<DocPage\b([^>]*)>/.exec(body);
+  const wantsMap = !!docPageTag && /\bimportmap\b/.test(docPageTag[1]);
+  const relPage = path.relative(root, file).split(path.sep).join('/');
+
+  if (bareImports.length && !wantsMap) {
+    mapMismatch.push(
+      `  ${relPage}\n      imports ${[...new Set(bareImports)].join(', ')} but does not pass \`importmap\` to DocPage`,
+    );
+  } else if (wantsMap && !bareImports.length) {
+    mapMismatch.push(
+      `  ${relPage}\n      passes \`importmap\` to DocPage but imports no bare specifier`,
+    );
+  }
 
   const refs = [
     ...[...body.matchAll(/import\s[^'"]*from\s*['"](\.[^'"]+)['"]/g)].map((m) => m[1]),
@@ -198,6 +226,18 @@ for (const file of walk(pages)) {
       runtimeMissing.push(`  ${rel}\n      ${ref}   →   ${target}`);
     }
   }
+}
+
+if (mapMismatch.length) {
+  console.error(
+    `${mapMismatch.length} page(s) disagree with themselves about the import map:\n` +
+      mapMismatch.join('\n') +
+      '\n\nThe import map is what resolves `vue` and `gsap` for a compiled specimen,\n' +
+      'and DocPage emits it only for a page that asks. A page that imports a bare\n' +
+      'specifier without it fails in the browser and nowhere else; a page that asks\n' +
+      'for it without importing one is claiming something that is not true.',
+  );
+  process.exit(1);
 }
 
 if (runtimeMissing.length) {
