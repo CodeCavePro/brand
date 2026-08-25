@@ -304,7 +304,14 @@ for (const file of walk(pages)) {
 
   const refs = [
     ...[...body.matchAll(/import\s[^'"]*from\s*['"](\.[^'"]+)['"]/g)].map((m) => m[1]),
-    ...[...body.matchAll(/\s(?:src|href)="(\.\.?\/[^"]+)"/g)].map((m) => m[1]),
+    /* Any quoted src/href that is a relative URL -- NOT only the ones spelled
+       with a leading ./ or ../. The examples gallery links its six cards as a
+       bare `href="deck.html"`, which is every bit as relative and every bit as
+       breakable by moving the page. Astro expressions are href={...} and are
+       unquoted, so they are skipped here and covered by the menu checks. */
+    ...[...body.matchAll(/\s(?:src|href)="([^"]+)"/g)]
+      .map((m) => m[1])
+      .filter((v) => !/^(?:[a-z][a-z0-9+.-]*:|\/\/|\/|#)/i.test(v)),
     ...[...body.matchAll(/url\(\s*['"]?(\.\.?\/[^)'"]+)['"]?\s*\)/g)].map((m) => m[1]),
   ];
 
