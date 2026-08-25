@@ -81,7 +81,16 @@ const handleCloseMenu = () => {
           <a :href="homeHref" class="px-1.5 hover:opacity-80 transition-opacity">
             <img :src="logo" alt="CODECAVE" />
           </a>
-          <button @click="isMenuOpen = !isMenuOpen" :class="`burger-menu ${isMenuOpen ? 'text-action' : 'text-heading'} transition-colors`">
+          <!-- The bars are drawn in CSS, so this button's only content is an
+               empty span: with no aria-label a screen reader reached it and said
+               "button", and on a phone this is the ONLY way into the navigation.
+               WCAG 4.1.2 and 2.4.4. aria-expanded costs nothing here, the
+               component already holding the state it reports. -->
+          <button
+            @click="isMenuOpen = !isMenuOpen"
+            :aria-expanded="isMenuOpen ? 'true' : 'false'"
+            :aria-label="isMenuOpen ? 'Close menu' : 'Open menu'"
+            :class="`burger-menu ${isMenuOpen ? 'text-action' : 'text-heading'} transition-colors`">
             <span></span>
           </button>
         </div>

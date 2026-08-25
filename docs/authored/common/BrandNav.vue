@@ -19,7 +19,8 @@
  * NO CLIENT DIRECTIVE. Rendered from Astro without `client:*` this emits static
  * HTML and ships no JavaScript, which is what the docs bar already does and what
  * the site header does NOT -- it is `client:only`, so it renders nothing at all
- * until Vue boots. The dropdown below is CSS hover for the same reason.
+ * until Vue boots. The dropdown below is CSS hover AND focus for the same
+ * reason -- see the note on button.dropbtn for why focus is not optional.
  *
  * IT NEEDS tokens.css AND NOTHING ELSE. The links are styled here rather than
  * borrowed, and that is deliberate: the two ghost buttons this system already
@@ -84,7 +85,7 @@ withDefaults(defineProps<{
             :href="item.href"
             :aria-current="item.name === current ? 'page' : undefined"
           >{{ item.name }}</a>
-          <span v-else class="brand-nav-link dropbtn">{{ item.name }}<slot name="chevron" /></span>
+          <button v-else type="button" class="brand-nav-link dropbtn" aria-haspopup="true">{{ item.name }}<slot name="chevron" /></button>
           <div v-if="item.slot" class="dropdown-content">
             <slot :name="item.slot" />
           </div>
@@ -103,7 +104,7 @@ withDefaults(defineProps<{
             :href="item.href"
             :aria-current="item.name === current ? 'page' : undefined"
           >{{ item.name }}</a>
-          <span v-else class="brand-nav-link dropbtn">{{ item.name }}<slot name="chevron" /></span>
+          <button v-else type="button" class="brand-nav-link dropbtn" aria-haspopup="true">{{ item.name }}<slot name="chevron" /></button>
           <div v-if="item.slot" class="dropdown-content">
             <slot :name="item.slot" />
           </div>
@@ -243,8 +244,26 @@ withDefaults(defineProps<{
   width: 100px;
   height: 20px;
 }
-.dropdown:hover .dropdown-content { opacity: 1; visibility: visible; }
-.dropdown:hover .dropbtn { color: var(--color-hovered); }
+/* The trigger is a <button>, and that is the difference between a dropdown a
+   keyboard can open and one it cannot. It was a <span>: not focusable, no role,
+   so a keyboard user tabbed straight past "Services" and could never reach
+   anything inside it, and a screen reader was told nothing was there. WCAG 2.1.1.
+
+   Still no JavaScript. :focus-within fires when the button itself takes focus,
+   which reveals the panel, which puts its links in the tab order -- so the next
+   Tab walks into it. That order is the whole trick: visibility:hidden keeps the
+   panel's links untabbable until something else has made it visible, so a rule
+   keyed on focus INSIDE the panel could never have opened it. */
+button.dropbtn {
+  appearance: none;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.dropdown:hover .dropdown-content,
+.dropdown:focus-within .dropdown-content { opacity: 1; visibility: visible; }
+.dropdown:hover .dropbtn,
+.dropdown:focus-within .dropbtn { color: var(--color-hovered); }
 
 /* Under 768 the centred wordmark would sit on top of the links, so it takes its
    own row. Same breakpoint and same wrap the docs bar already used. */

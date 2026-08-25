@@ -4,6 +4,18 @@ import InputText from '../InputText.vue'
 import Button from '../Button.vue'
 import { isCorrectEmailFormat } from "@helpers/form-validator.ts";
 
+/* The form used to validate the address and then return -- no emit, no client,
+ * no request -- so someone who typed a correct address was left believing the
+ * research was on its way. Nothing on screen said otherwise, and both error
+ * paths worked perfectly, which is what kept it invisible.
+ *
+ * Handing the value to the caller is the minimum. ContactUsForm shows the fuller
+ * shape: it emits the values AND takes an injected ICrmFormClient for delivery,
+ * so the component still names no CRM. */
+const emit = defineEmits<{
+  (e: 'submit', email: string): void
+}>()
+
 const email = ref('')
 
 const hasError = ref(false)
@@ -24,6 +36,8 @@ const submitForm = () => {
         emailErrorMessage.value = 'Please enter valid email'
         return
     }
+
+    emit('submit', email.value.trim())
 }
 </script>
 
