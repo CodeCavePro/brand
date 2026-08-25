@@ -140,7 +140,61 @@ on you.
 machine-readable half — an anti-pattern that a specimen demonstrates, a
 divergence in §10 — move both, and say in the commit which specimen proves it.
 
-### Adding to the storybook
+### Developing a component
+
+`npm run storybook` opens Storybook on port 6006; `npm test` drives every story
+through headless Chromium and exits non-zero. That is where a component is
+written now. The specimens on the docs site prove what a component *looks* like,
+and until this existed nothing in the repo had ever clicked one.
+
+**Two different things here are called "storybook".** Storybook the tool is
+`.storybook/`, with its stories in `docs/stories/`. `docs/storybook/` is the
+compiled bundles, ports and placeholders that the kitchen-sink pages mount, and
+it keeps that name because every specimen identity derives from it. Nothing
+under `docs/storybook/` belongs to Storybook.
+
+- **Stories go in `docs/stories/`, never in a source root.** `authored/` means
+  "this ships" and `source_examples/` means "this is evidence"; a story is
+  neither. Dropping one into either root also moves the `sourceDigest` that
+  `check:tw-bridge` reads, so every new story would report the compiled bundles
+  as stale for no reason.
+- **`.storybook/preview.css` is deliberately a consumer's stylesheet.** Its
+  three imports are the three lines `packages/brand/README.md` hands an
+  installing project, with the package subpaths spelled as the `docs/` files
+  they are built from — the same bytes, because `check` asserts the copy. Import
+  order is load-bearing and the file says why.
+- **Neither resolver in `.storybook/main.ts` is new logic.** The site's path
+  aliases go through `docs/tools/import-aliases.mjs`, whose header says a second
+  copy of that arithmetic is the trap the aliases sprang. The relative-path
+  re-rooting is `build-storybook.mjs`'s rule transcribed: captures spell `../../`
+  for the *shipped* layout, which is one level deeper than the roots, so the
+  literal path is tried first and only a miss is re-rooted. Literal-first is the
+  half that matters — it leaves a genuinely broken import broken.
+- **`@vitejs/plugin-vue` is a direct devDependency and must stay one.**
+  `@storybook/vue3-vite` does not depend on it and never mentions it; a Vue
+  project is assumed to bring its own `vite.config`, and this repo has none
+  because Astro compiles Vue through `@astrojs/vue`. Without it every `.vue`
+  reaches rolldown as JavaScript and the build fails with `Unexpected JSX
+  expression` pointing at `<script setup lang="ts">`.
+- **The tests run in real Chromium, not jsdom, and that is not incidental.**
+  Half of what this design system asserts is CSS. A contrast ratio, a 48px
+  control height or a transform on a `::before` only exists once something has
+  laid the page out.
+- **A play function is worth more than another variant.** The two Button defects
+  the first suite caught — a prop that styled without disabling, and the same
+  prop sampled once at setup so it was inert to every later change — were
+  invisible to every check here, because the component rendered, typechecked and
+  photographed perfectly.
+- **Watch the assertion, not just the result.** The first version of one test
+  used `toHaveClass(/opacity-20/)`, which reads as a regex and is not one:
+  jest-dom takes class *names* and stringifies a RegExp, so the `not.` half
+  passed vacuously and would have kept passing after the fix. Watch a new test
+  fail for the reason you intend before you make it pass.
+
+### Adding a kitchen-sink specimen
+
+This is the *other* storybook -- `docs/storybook/`, the compiled bundles the
+Astro pages mount, not the tool in `.storybook/` covered above.
 
 Read [docs/README.md § Ports](/docs/README.md#ports--what-a-component-depends-on-outside-itself)
 first. The short version: a captured component that depends on something the

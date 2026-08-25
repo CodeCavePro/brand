@@ -115,6 +115,18 @@ jobs:
       - name: Install the brand toolchain
         run: npm ci
 
+      # `check` reads files. It walks dist/, hashes captures, counts findings and
+      # resolves links -- and never once renders a component or clicks anything.
+      # These are the behavioural half, and they run in real headless Chromium
+      # rather than jsdom because half of what a design system asserts is CSS: a
+      # contrast ratio, a 48px control height or a transform on a ::before only
+      # exist after something has laid the page out.
+      - name: Install the test browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Test the components
+        run: npm test
+
       - name: Typecheck the storybook ports
         run: npm run check:ports
 
