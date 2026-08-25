@@ -16,6 +16,8 @@ Open items for the brand package, all in
 [CCWEB2](https://codecave.atlassian.net/browse/CCWEB2) under the **`brand-kit`**
 label ([live query](https://codecave.atlassian.net/issues?jql=project%20%3D%20CCWEB2%20AND%20labels%20%3D%20%22brand-kit%22%20ORDER%20BY%20key%20ASC)):
 
+-   [CCWEB2-384](https://codecave.atlassian.net/browse/CCWEB2-384) — `LazyImage` renders **no `src` at all** without JavaScript, so wherever the observer does not run the image is permanently broken rather than slow. Native `loading="lazy"` fixes it and costs the `threshold` prop its meaning, which codecave.pro tunes deliberately (1200px on one services section, 200px on another) — a product call, so it is characterised by a test rather than changed.
+-   [CCWEB2-385](https://codecave.atlassian.net/browse/CCWEB2-385) — `technologies.vue` hardcodes **"15+ years of experience" and "4.8 average rating"** into a shipped component. Same test as the footer-with-an-EIN below: it reaches for one company's data. Every other reach in that file is already a prop; these were missed, and they matter more now the package is meant for landing pages and a HubSpot theme too.
 -   [CCWEB2-340](https://codecave.atlassian.net/browse/CCWEB2-340) — build tooling sits in `dependencies`, so every advisory against it reads as production. **This repo is already clean** — everything is a devDependency and `packages/brand` declares no dependencies at all — so it is live only against codecave.pro, where `astro`, the `@astrojs/*` integrations, `@tailwindcss/vite` and `sharp` are all runtime deps. Labelled `brand-kit` but now purely site-side.
 
 CCWEB2-318, the epic that inverted the direction of truth, closed on 2026-08-25
@@ -254,13 +256,20 @@ first version of one used `toHaveClass(/opacity-20/)`, which is not a regex
 match — jest-dom takes class *names* and stringifies a RegExp — so its `not.`
 half passed vacuously and would have kept passing after the fix.
 
-**The suite has already earned this.** Its first two runs found six defects that
-every check here was blind to, because each component rendered, typechecked and
-photographed perfectly: `Button` styled a disabled state without disabling it and
-sampled `isDisabled` once at setup; `Radio` declared `modelValue` and ignored it;
+**The suite has already earned this.** Covering all nineteen components found
+**fifteen defects and fixed thirteen**, every one of them invisible to every
+other check here because each component rendered, typechecked and photographed
+perfectly. `Button` styled a disabled state without disabling it and sampled
+`isDisabled` once at setup; `Radio` declared `modelValue` and ignored it;
 `TextField` emitted on blur while `InputText` beside it emitted per keystroke;
-and neither input wired its error message to its field. A component change since
-means the site gets them at its next bump.
+neither input wired its error message to its field; both GSAP animations ignored
+`prefers-reduced-motion` (WEBSITE-REVIEW 2.1, a P0 that had sat as prose because
+nobody could see it fail); `ArticlePreview` built the href `/insights/null/` from
+a null slug and used a filename as alt text, as did `Review`; `technology-card`
+put the literal text `undefined` in a class attribute; `ResearchForm` validated
+an email and discarded it; the mobile burger was announced as "button"; and
+`BrandNav`'s dropdown could not be opened from a keyboard. The two NOT fixed are
+CCWEB2-384 and CCWEB2-385, both because the fix is a product decision.
 
 ### The package, in one paragraph
 
