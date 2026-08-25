@@ -22,14 +22,16 @@ defineEmits(['update:modelValue'])
       <span>{{ label }}</span>
       <AsteriskIcon v-if="isRequired" />
     </label>
-    <input :id="id" :type="type" :autocomplete="autocomplete" :placeholder="placeholder" :required="isRequired" :value="modelValue" @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)" 
+    <input :id="id" :type="type" :autocomplete="autocomplete" :placeholder="placeholder" :required="isRequired" :value="modelValue"
+    :aria-invalid="isError ? 'true' : undefined"
+    :aria-describedby="isError ? `${id}-error` : undefined" @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)" 
     :class="`
         w-full p-3 pt-7 bg-surface-secondary rounded-lg placeholder:text-xs placeholder:text-body-secondary
         focus:outline-none transition-colors
         hover:bg-surface-tertiary
         ${isError ? 'text-error input-error focus:text-error' : 'text-hovered focus:text-hovered'}
        `" />
-    <span v-if="isError" class="text-error text-xs">
+    <span v-if="isError" :id="`${id}-error`" role="alert" class="text-error text-xs">
       {{ errorMessage }}
     </span>
   </div>

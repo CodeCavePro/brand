@@ -47,11 +47,8 @@ var asterisk_icon_default = __sfc__;
 // ../packages/brand/dist/src/components/common/InputText.vue
 var _hoisted_12 = { class: "w-full relative" };
 var _hoisted_2 = ["for"];
-var _hoisted_3 = ["id", "type", "autocomplete", "placeholder", "required", "value"];
-var _hoisted_4 = {
-  key: 0,
-  class: "text-error text-xs"
-};
+var _hoisted_3 = ["id", "type", "autocomplete", "placeholder", "required", "value", "aria-invalid", "aria-describedby"];
+var _hoisted_4 = ["id"];
 var __sfc__2 = /* @__PURE__ */ _defineComponent({
   __name: "InputText",
   props: {
@@ -89,6 +86,8 @@ var __sfc__2 = /* @__PURE__ */ _defineComponent({
           placeholder: __props.placeholder,
           required: __props.isRequired,
           value: __props.modelValue,
+          "aria-invalid": __props.isError ? "true" : void 0,
+          "aria-describedby": __props.isError ? `${__props.id}-error` : void 0,
           onInput: _cache[0] || (_cache[0] = ($event) => _ctx.$emit("update:modelValue", $event.target.value)),
           class: _normalizeClass(`
         w-full p-3 pt-7 bg-surface-secondary rounded-lg placeholder:text-xs placeholder:text-body-secondary
@@ -97,20 +96,19 @@ var __sfc__2 = /* @__PURE__ */ _defineComponent({
         ${__props.isError ? "text-error input-error focus:text-error" : "text-hovered focus:text-hovered"}
        `)
         }, null, 42, _hoisted_3),
-        __props.isError ? (_openBlock2(), _createElementBlock2(
-          "span",
-          _hoisted_4,
-          _toDisplayString(__props.errorMessage),
-          1
-          /* TEXT */
-        )) : _createCommentVNode("v-if", true)
+        __props.isError ? (_openBlock2(), _createElementBlock2("span", {
+          key: 0,
+          id: `${__props.id}-error`,
+          role: "alert",
+          class: "text-error text-xs"
+        }, _toDisplayString(__props.errorMessage), 9, _hoisted_4)) : _createCommentVNode("v-if", true)
       ]);
     };
   }
 });
 __sfc__2.__scopeId = "data-v-01d686cd";
 __sfc__2.__file = "authored/common/InputText.vue";
-var __css__ = "\ninput[data-v-01d686cd]:-webkit-autofill,\ninput[data-v-01d686cd]:-webkit-autofill:hover,\ninput[data-v-01d686cd]:-webkit-autofill:focus,\ninput[data-v-01d686cd]:-webkit-autofill:active {\n  -webkit-box-shadow: 0 0 0 1000px var(--color-surface-tertiary) inset !important;\n  -webkit-text-fill-color: var(--color-heading) !important;\n  -webkit-background-clip: text !important;\n}\ninput[data-v-01d686cd]:focus {\n  box-shadow: 0 0 16px 0 hsl(from var(--color-brand-500) h s l / 0.5),\n    0 0 4px 0 hsl(from var(--color-brand-500) h s l / 0.6);\n}\ninput.input-error[data-v-01d686cd]:focus,\n.input-error[data-v-01d686cd] {\n  box-shadow: 0 0 16px 0 hsl(from var(--color-error-200) h s l / 0.5),\n    0 0 4px 0 hsl(from var(--color-error-100) h s l / 0.6);\n}\n";
+var __css__ = "\ninput[data-v-01d686cd]:-webkit-autofill,\r\ninput[data-v-01d686cd]:-webkit-autofill:hover,\r\ninput[data-v-01d686cd]:-webkit-autofill:focus,\r\ninput[data-v-01d686cd]:-webkit-autofill:active {\r\n  -webkit-box-shadow: 0 0 0 1000px var(--color-surface-tertiary) inset !important;\r\n  -webkit-text-fill-color: var(--color-heading) !important;\r\n  -webkit-background-clip: text !important;\n}\ninput[data-v-01d686cd]:focus {\r\n  box-shadow: 0 0 16px 0 hsl(from var(--color-brand-500) h s l / 0.5),\r\n    0 0 4px 0 hsl(from var(--color-brand-500) h s l / 0.6);\n}\ninput.input-error[data-v-01d686cd]:focus,\r\n.input-error[data-v-01d686cd] {\r\n  box-shadow: 0 0 16px 0 hsl(from var(--color-error-200) h s l / 0.5),\r\n    0 0 4px 0 hsl(from var(--color-error-100) h s l / 0.6);\n}\r\n";
 if (typeof document !== "undefined" && !document.getElementById("sfc-style-01d686cd")) {
   const el = document.createElement("style");
   el.id = "sfc-style-01d686cd";

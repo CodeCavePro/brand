@@ -91,13 +91,6 @@ import DocPage from '../../layouts/DocPage.astro';
       only because Tailwind's default theme supplies it. Inside the site build
       (and here) the dot eases; outside one, it snaps.</p>
 
-    <p class="sb-note is-warn"><strong><code>modelValue</code> is declared but never read.</strong>
-      The component emits <code>update:modelValue</code> with its own
-      <code>id</code> on change, and drives its visual state from the separate
-      <code>isChecked</code> prop. So <code>v-model</code> alone will not check the
-      button — the parent has to pass <code>isChecked</code> as well. Two props
-      express one piece of state, and they can disagree.</p>
-
     <p class="sb-note"><strong>Variant naming is inverted against Checkbox.</strong>
       Checkbox's <code>secondary</code> is the boxed-pill treatment and
       <code>primary</code> is bare. Radio's <code>primary</code> is the boxed pill

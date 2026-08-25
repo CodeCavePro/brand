@@ -11,6 +11,8 @@ defineProps<{
   modelValue?: string
 }>()
 
+const emit = defineEmits(['update:modelValue'])
+
 const textareaRef = ref(null)
 const autoResize = () => {
   if (textareaRef.value) {
@@ -19,7 +21,17 @@ const autoResize = () => {
   }
 }
 
-defineEmits(['update:modelValue'])
+/* One handler, because a template cannot bind @input twice.
+ *
+ * This emitted on @change, which for a textarea means blur -- so the parent's
+ * v-model lagged the visible text for as long as the caret stayed in the field,
+ * while InputText beside it in the same form updated per keystroke. autoResize
+ * was already on @input, so the component had the right event all along and
+ * only the emit was on the wrong one. */
+const onInput = (event: Event) => {
+  autoResize()
+  emit('update:modelValue', (event.target as HTMLTextAreaElement).value)
+}
 </script>
 
 <template>
@@ -30,13 +42,15 @@ defineEmits(['update:modelValue'])
         {{ label }}
       </label>
       <textarea 
-        @input="autoResize" 
+        @input="onInput" 
         ref="textareaRef" 
-        :id="id" :placeholder="placeholder" :value="modelValue" @change="$emit('update:modelValue', ($event.target as HTMLTextAreaElement).value)" 
+        :id="id" :placeholder="placeholder" :value="modelValue"
+        :aria-invalid="isError ? 'true' : undefined"
+        :aria-describedby="isError ? `${id}-error` : undefined" 
         :class="`w-full flex-grow resize-none overflow-hidden placeholder:pt-1.5 placeholder:text-xs placeholder:text-body-secondary outline-none 
         ${isError ? 'text-error focus:text-error' : 'text-hovered focus:text-hovered'}`" />
     </div>
-    <span v-if="isError" class="text-error text-xs">
+    <span v-if="isError" :id="`${id}-error`" role="alert" class="text-error text-xs">
       {{ errorMessage }}
     </span>
   </div>

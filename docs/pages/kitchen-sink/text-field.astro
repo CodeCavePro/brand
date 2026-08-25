@@ -81,15 +81,6 @@ import DocPage from '../../layouts/DocPage.astro';
   <section class="sb-section">
     <h2>Findings</h2>
 
-    <p class="sb-note is-warn"><strong>The model updates on <code>change</code>, not <code>input</code>.</strong>
-      The template binds <code>@change="$emit('update:modelValue', …)"</code> while
-      the auto-resize runs on <code>@input</code>. So the parent's
-      <code>v-model</code> only syncs when the textarea loses focus. A form that
-      validates or enables its submit button as the user types will look frozen,
-      and a submit triggered without blurring first can read a stale value.
-      InputText emits on <code>input</code>, so the two fields behave differently
-      in the same form.</p>
-
     <p class="sb-note is-warn"><strong>The auto-resize does not run on programmatic value changes.</strong>
       Height is only recalculated in the <code>@input</code> handler. Setting
       <code>modelValue</code> from the parent — restoring a draft, prefilling — leaves

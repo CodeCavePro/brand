@@ -47,14 +47,14 @@ be read.
 **Fix:** a less drastic disabled treatment than 20% opacity. That is a colour
 decision, so it belongs with Maria Shaban rather than being picked here.
 
-### 2.3 Form errors are invisible twice over (`common/InputText.vue`)
-- The error message renders in a plain `<span>`: no `role="alert"`, no
-  `aria-live`, no `aria-describedby` tying it to the input, and the input never
-  gets `aria-invalid`. Screen readers get no signal at all.
-- The error color is `--color-error` = error-300 `#B42318`: **3.01:1** on the
-  page ground at 12px — far below the 4.5:1 floor, on exactly the text a user
-  most needs to read. In-palette fixes: error-100 `#FE9A9A` (9.71:1) or
-  error-200 `#FE2020` (5.13:1).
+### 2.3 Form error text is below the contrast floor (`common/InputText.vue`)
+The error color is `--color-error` = error-300 `#B42318`: **3.01:1** on the page
+ground at 12px — far below the 4.5:1 floor, on exactly the text a user most
+needs to read. In-palette fixes: error-100 `#FE9A9A` (9.71:1) or error-200
+`#FE2020` (5.13:1). Which one is a colour decision, so like [CCWEB2-320] it
+belongs with Maria Shaban.
+
+[CCWEB2-320]: https://codecave.atlassian.net/browse/CCWEB2-320
 
 ### 2.4 Action violet used as small text (`common/Review.vue` and eyebrows)
 `#5F20FE` measures **2.94:1** on `#0A0A0B` (2.84:1 on cards) — that is under

@@ -250,7 +250,7 @@ written on the story page rather than silently papered over.
 | Compositions | `LinkGroup` |
 
 Each story page carries the real `defineProps` signature, a variant/state
-matrix rendered live, and a findings section. **55 findings are recorded — 29
+matrix rendered live, and a findings section. **52 findings are recorded — 26
 flagged as defects, 26 as design observations.** The ones that change runtime
 behavior:
 
@@ -260,14 +260,20 @@ behavior:
   Tailwind's default theme, emitted because `transition-colors` is in use.
   Inside a Tailwind build the indicators ease; lift either component out and
   the shorthand collapses and they snap.
-- **`Button`'s `isDisabled` does not disable.** It sets opacity and cursor only;
-  the `disabled` attribute is never bound.
-- **`TextField` syncs its model on `change`, not `input`** — so `v-model`
-  updates on blur while `InputText` in the same form updates per keystroke.
+- **`TextField`'s auto-resize never runs on a programmatic value change.** Only
+  the input handler recalculates height, so a restored draft opens clipped at
+  the minimum.
 
-The storybook is static HTML and needs no build. It is **not** a Storybook
-(`@storybook/*`) install: `codecave.pro` is linked read-only, so nothing was
-written into that repo.
+These pages are static HTML and need no build, which is what lets them mount the
+exact bundles the site ships.
+
+**They are not Storybook, and the two are not the same tool.** Storybook proper
+lives in `.storybook/` with its stories in `docs/stories/`; that is where a
+component is now written and where `npm test` drives every story through
+headless Chromium. These pages are the record of what the package *ships* —
+compiled bundles under `docs/storybook/`, mounted through an import map — and
+they keep that directory name because every specimen identity derives from it.
+See [CONTRIBUTING.md § Developing a component](/CONTRIBUTING.md).
 
 ---
 

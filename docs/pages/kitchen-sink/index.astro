@@ -470,9 +470,9 @@ import DocPage from '../../layouts/DocPage.astro';
 
   <section class="sb-group">
     <h2 class="ds-anchor" id="findings">What this storybook found</h2>
-    <p>55 findings across the thirteen components — 29 flagged as defects, 26
-       as design observations — each recorded on its own story page. The four
-       that would change behavior in production:</p>
+    <p>52 findings across the thirteen components — 26 flagged as defects, 26
+       as design observations — each recorded on its own story page. The three
+       worth reading first:</p>
 
     <p class="sb-note is-warn"><strong>Two components animate against a variable they never define.</strong>
       <code>Checkbox.vue</code>:75 and <code>Radio.vue</code>:61 both declare
@@ -487,10 +487,6 @@ import DocPage from '../../layouts/DocPage.astro';
       <code>isDisabled</code> makes the control inert, then composites it to 20%
       opacity — <strong>1.72:1</strong> against the page, below every contrast
       floor there is. What replaces 20% is a design call.</p>
-
-    <p class="sb-note is-warn"><strong><code>TextField</code> syncs its model on <code>change</code>, not <code>input</code>.</strong>
-      The parent's <code>v-model</code> only updates on blur, while
-      <code>InputText</code> in the same form updates per keystroke.</p>
 
     <p class="sb-note"><strong>Two dead styles.</strong>
       <code>Radio</code>'s secondary hover needs a <code>group</code> ancestor that

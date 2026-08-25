@@ -33,7 +33,7 @@ defineEmits(['update:modelValue'])
         :name="name"
         :value="id"
         class="bg-transparent border-[2px] border-surface-quaternary checked:border-action rounded-full hover:border-action"
-        :checked="isChecked"
+        :checked="modelValue !== undefined ? modelValue === id : isChecked"
         @change="$emit('update:modelValue', id)"
     />
     <span class="text-xs whitespace-nowrap">

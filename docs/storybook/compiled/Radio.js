@@ -40,7 +40,7 @@ var __sfc__ = /* @__PURE__ */ _defineComponent({
           name: __props.name,
           value: __props.id,
           class: "bg-transparent border-[2px] border-surface-quaternary checked:border-action rounded-full hover:border-action",
-          checked: __props.isChecked,
+          checked: __props.modelValue !== void 0 ? __props.modelValue === __props.id : __props.isChecked,
           onChange: _cache[0] || (_cache[0] = ($event) => _ctx.$emit("update:modelValue", __props.id))
         }, null, 40, _hoisted_2),
         _createElementVNode(
@@ -56,7 +56,7 @@ var __sfc__ = /* @__PURE__ */ _defineComponent({
 });
 __sfc__.__scopeId = "data-v-3e960a13";
 __sfc__.__file = "authored/common/Radio.vue";
-var __css__ = "\ninput[data-v-3e960a13] {\n  width: 17px;\n  height: 17px;\n  appearance: none;\n  -webkit-appearance: none;\n  display: grid;\n  place-content: center;\n}\ninput[data-v-3e960a13]::before {\n  content: '';\n  width: 7px;\n  height: 7px;\n  border-radius: 50%;\n  transform: scale(0);\n  transition: var(--duration-control) transform ease-in-out;\n  background: var(--color-action);\n}\ninput[data-v-3e960a13]:checked::before {\n  transform: scale(1);\n}\n";
+var __css__ = "\ninput[data-v-3e960a13] {\r\n  width: 17px;\r\n  height: 17px;\r\n  appearance: none;\r\n  -webkit-appearance: none;\r\n  display: grid;\r\n  place-content: center;\n}\ninput[data-v-3e960a13]::before {\r\n  content: '';\r\n  width: 7px;\r\n  height: 7px;\r\n  border-radius: 50%;\r\n  transform: scale(0);\r\n  transition: var(--duration-control) transform ease-in-out;\r\n  background: var(--color-action);\n}\ninput[data-v-3e960a13]:checked::before {\r\n  transform: scale(1);\n}\r\n";
 if (typeof document !== "undefined" && !document.getElementById("sfc-style-3e960a13")) {
   const el = document.createElement("style");
   el.id = "sfc-style-3e960a13";
