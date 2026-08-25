@@ -458,7 +458,7 @@ Note the chip variant is currently **unreachable on the live site**:
 `Checkbox.vue` types `variant?: 'primary'` and its `case 'secondary'` branch is
 dead code that no caller passes, so the only checkboxes that render anywhere
 are the contact form's two 24px ones. The specimen is kept because the branch
-is still in source; see [WEBSITE-REVIEW.md](/WEBSITE-REVIEW.md) §4.
+is still in source; see WEBSITE-REVIEW.md §4.
 
 ### Cards
 
