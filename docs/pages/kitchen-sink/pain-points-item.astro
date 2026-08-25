@@ -145,8 +145,8 @@ import DocPage from '../../layouts/DocPage.astro';
 
 <script is:inline type="module">
   import { createApp } from 'vue';
-  import PainPointsItem from './compiled/pain-points-item.js';
-  import { usePlaceholders } from './placeholders.js';
+  import PainPointsItem from '../storybook/compiled/pain-points-item.js';
+  import { usePlaceholders } from '../storybook/placeholders.js';
 
   createApp(PainPointsItem, {
     item: {

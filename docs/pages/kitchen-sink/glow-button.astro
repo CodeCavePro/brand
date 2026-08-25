@@ -124,7 +124,7 @@ import DocPage from '../../layouts/DocPage.astro';
 
 <script is:inline type="module">
   import { createApp } from 'vue';
-  import GlowButton from './compiled/GlowButton.js';
+  import GlowButton from '../storybook/compiled/GlowButton.js';
 
   createApp(GlowButton, { title: 'Book a free consultation' }).mount('#story-glow1');
   createApp(GlowButton, { title: 'Accept', class: 'w-full' }).mount('#story-glow2');
