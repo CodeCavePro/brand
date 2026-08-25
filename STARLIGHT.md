@@ -1,14 +1,19 @@
 # Starlight — CCWEB2-374
 
-This started as a spike and is now a working adoption on
-`spike/starlight-ccweb2-374`. The branch name is kept because CLAUDE.md and the
-Jira ticket cite it.
+**Shipped.** This began as a spike to test a recommendation, became a working
+adoption, and is on `development`. It was measured at `@astrojs/starlight`
+**0.41.8** against `astro` **7.2.4**, and this file is the record of what was
+measured rather than an argument for doing it.
 
-**It is still not merged, and merging it is still a decision.** What changed is
-what the decision is about: no longer "would this work" — it does — but whether a
-third surface and a Starlight dependency are wanted. Everything below was
-measured on the branch, at `@astrojs/starlight` **0.41.8** against `astro`
-**7.2.4**.
+It is worth reading before touching `docs/starlight.css`, `docs/content.config.ts`
+or the overrides, because **every fault this integration hit was silent** — none
+appeared in a build log, and four of them required measuring the rendered page.
+That is the standing cost of running someone else's shell, not a set of bugs now
+safely behind us.
+
+*(It arrived on `development` by accident before it arrived by decision: a `git
+pull` with `pull.rebase = true` rebased the branch onto it. The decision to keep
+it was taken afterwards, deliberately.)*
 
 ## Why it was worth doing at all
 
@@ -172,10 +177,30 @@ was fixed for, from the other side.
 would be an improvement, and `format: 'preserve'` exists precisely because those
 URLs are cited 35 times, once from inside the shipped `colors_and_type.css`.
 
+## Two things that were fixed after it shipped
+
+**Pagination is off.** Starlight's prev/next footer formats links through
+`createPathFormatter`, which under `preserve` drops the extension —
+`/guides/design-rules`, not `/guides/design-rules.html`. The live host resolves
+that and I verified it does, but nothing else here does: every other link on this
+site carries `.html` precisely so a page still opens from disk, which is how the
+deliverable wrappers get reviewed. It was also a third navigation for four pages
+the sub-nav already lists in the same order.
+
+**`DESIGN.md` had a dead link.** It cited `WEBSITE-REVIEW.md` as
+`/WEBSITE-REVIEW.md` — root-absolute to a repo-root file the site does not
+serve. Dead in the rendered guide and on GitHub too; it only ever resolved in an
+editor. The same file names it three other times as plain text and now does so a
+fourth. `check:links` did not catch it because it is not a `.html`.
+
+Both were found by fetching every reference on all 39 pages — 727 of them — not
+by looking at pages. That sweep now reports zero broken references and 72 images
+that decode.
+
 ## Reproducing
 
 ```bash
-git checkout spike/starlight-ccweb2-374 && npm install && npm run docs:build && npm run check
+npm run docs:build && npm run check
 ```
 
 Then look at `/guides/`, `/guides/design-rules`, and `docs/starlight.css`, where
