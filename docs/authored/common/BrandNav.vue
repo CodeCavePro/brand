@@ -2,11 +2,11 @@
 /**
  * The CODECAVE top bar. Ghost-style links split around a centred wordmark.
  *
- * AUTHORED, not captured. Every other component this package ships is a copy of
- * a file codecave.pro builds from, and docs/source_examples/ holds nothing
- * anyone wrote here. This one is the exception and lives in docs/authored/
- * because it has no upstream: it is the site bar and the docs bar reconciled
- * into one, so neither repo owns it any more.
+ * AUTHORED, not captured, and it was the first file to be. It is the site bar
+ * and the docs bar reconciled into one, so it has no upstream in either repo --
+ * which is why docs/authored/ exists at all. Every other component has since
+ * joined it there, source_examples/ having stopped being a true description of
+ * anything but the handful of files still captured from elsewhere.
  *
  * WHY IT CAN SHIP WHEN THE MENUS COULD NOT. desktop-menu.vue and mobile-menu.vue
  * were excluded from this package (CCWEB2-371) because they reach the site

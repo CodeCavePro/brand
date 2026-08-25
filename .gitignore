@@ -41,14 +41,12 @@ ds-bundle/components/assets/
 # the system of record for open work. TODO.md was the staging area in front of
 # it and is now gone — its six items were filed as CCWEB2-314..317 (label
 # `brand-kit`) or closed out, and CLAUDE.md carries the index so an empty repo
-# is never mistaken for an empty backlog. ASTRO-MIGRATION.md survives only as a
-# local working copy; its substance is CCWEB2-317.
+# is never mistaken for an empty backlog.
 #
 # WEBSITE-REVIEW.md is NOT here on purpose: twelve places cite it, three of them
 # comments inside the shipped colors_and_type.css, and README.md opens with a
 # promise about it. It goes only when those citations point at Jira instead.
 /TODO.md
-/ASTRO-MIGRATION.md
 
 # The npm package (CCWEB2-318). packages/brand/ is a PURE DERIVATIVE of docs/:
 # every byte it publishes is copied or compiled from there, so none of its

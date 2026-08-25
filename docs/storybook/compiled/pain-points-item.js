@@ -1305,7 +1305,7 @@ var __sfc__ = /* @__PURE__ */ _defineComponent({
     };
   }
 });
-__sfc__.__file = "source_examples/common/images/LazyImage.vue";
+__sfc__.__file = "authored/common/images/LazyImage.vue";
 var LazyImage_default = __sfc__;
 
 // ../node_modules/dompurify/dist/purify.es.mjs
@@ -2942,7 +2942,7 @@ var __sfc__2 = /* @__PURE__ */ _defineComponent2({
     };
   }
 });
-__sfc__2.__file = "source_examples/project/pain-points-item.vue";
+__sfc__2.__file = "authored/project/pain-points-item.vue";
 var pain_points_item_default = __sfc__2;
 export {
   pain_points_item_default as default

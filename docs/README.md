@@ -24,8 +24,7 @@ lead-generation site: a dark, high-contrast presentation whose entire job is to
 turn a visitor into one booked consultation.
 
 **Six services**, and the site titles every one of them by the *outcome* it
-produces rather than the technology it uses — read straight from
-`source_examples/header/menu.ts`:
+produces rather than the technology it uses:
 
 | Service | Outcome line, verbatim |
 |---|---|
@@ -82,10 +81,12 @@ upfront."* / *"We are ready to sign an NDA — your idea stays yours."*
 capture workspace's raw evidence — full snapshots of the `codecave.pro` and
 brand-repo working trees — and the table above cites it so each claim stays
 traceable to where it was read, not because the folder ships here. The
-high-signal originals are preserved in `source_examples/` instead, so the
-evidence behind the rules can be read without re-running intake: 21 files — the
-brand repository's token CSS in `source_examples/brand-repo-tokens/`, the
-production `global.css`, and every Vue/Astro component this system documents.
+component sources are preserved in `authored/` instead, so the code behind the
+rules can be read without re-running intake: 38 files — every Vue component this
+system documents, with the helpers and icons they reach for. What is genuinely
+captured from elsewhere stays in `source_examples/`: the production
+`global.css`, the wordmark, and this repository's own earlier token CSS in
+`source_examples/brand-repo-tokens/`.
 
 `tokens/` is the one derived artefact rather than a copy: `colors.ts`,
 `layout.ts` and `typography.ts` mirror `colors_and_type.css` as typed modules
@@ -111,8 +112,8 @@ PDF and email builders, native apps. The CSS remains the source of truth.
 ├── fonts/                     6 Satoshi cuts (woff2 + woff) + fonts.css
 ├── imagery/                   decorative line-and-glow art, on its #050505 ground
 │   └── source/                the same 8 SVGs untouched, byte-for-byte
-├── source_examples/           high-signal source files, the evidence behind the rules
-├── authored/                  the second root — the only one anyone writes into
+├── authored/                  every component, helper and icon — edit here
+├── source_examples/           the eight files captured from elsewhere — never edit
 ├── pages/                     every route on the site, as .astro
 │   ├── kitchen-sink/          25 specimens + the index that gathers them
 │   └── examples/              6 wrapper pages + the gallery
@@ -392,7 +393,7 @@ One check, and it needs nothing but node. Run it from the repository root:
 node docs/tools/check-tw-bridge.mjs
 ```
 
-It proves `storybook/tw-bridge.css` is still in step with `source_examples/`,
+It proves `storybook/tw-bridge.css` is still in step with both component roots,
 comparing a SHA-256 recorded in the generated header against the sources on
 disk. A stale bridge does not announce itself: it compiles, it loads, and the
 storybook goes on documenting an older site than the sources sitting beside it.

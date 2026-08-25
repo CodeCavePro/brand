@@ -1,7 +1,7 @@
 # Deploy docs/ to GitHub Pages, rebuilding the storybook first when it can.
 #
 # The storybook's compiled/*.js and tw-bridge.css are generated from
-# docs/source_examples/, but the generator needs the codecave.pro repo's
+# docs/authored/ and docs/source_examples/, but the generator needs the codecave.pro repo's
 # toolchain (vue/compiler-sfc, esbuild, tailwindcss) — the SAME versions the
 # website builds with, which is the whole point. That means the rebuild can
 # only run where this workflow can reach that repo.
@@ -65,8 +65,8 @@ jobs:
           node-version: '24'
 
       # Runs unconditionally and depends on nothing. If this fails, the
-      # committed storybook does not match docs/source_examples/ and whatever
-      # we publish would be documenting the wrong site.
+      # committed storybook does not match the component sources, so whatever
+      # we publish would be documenting an earlier state of them.
       - name: Verify the storybook matches its sources
         run: node docs/tools/check-tw-bridge.mjs
 
@@ -118,7 +118,7 @@ jobs:
       - name: Typecheck the storybook ports
         run: npm run check:ports
 
-      # Both inputs are in this checkout — source_examples/ is committed, and
+      # Both inputs are in this checkout — the component sources are committed, and
       # Tailwind's default theme comes from a devDependency pinned to the
       # version the site resolves — so this needs no site checkout and belongs
       # in CI. It catches a token that would silently redefine a Tailwind
@@ -223,7 +223,7 @@ jobs:
             echo "### Storybook rebuild skipped"
             echo ""
             echo "\`CodeCavePro/codecave.pro\` could not be checked out, so the storybook was not"
-            echo "rebuilt. The committed output was verified against \`docs/source_examples/\` and"
+            echo "rebuilt. The committed output was verified against the component sources and"
             echo "published as-is. **This is a downgrade, not a failure** — the deploy is unaffected."
             echo ""
             if [ "$CONFIGURED" = "true" ]; then

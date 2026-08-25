@@ -24,9 +24,9 @@ label ([live query](https://codecave.atlassian.net/issues?jql=project%20%3D%20CC
 
     **codecave.pro consumes all of it as of 2.1.1, and keeps no copies.** `src/components/header/` is `header.astro` and `menu.ts`; the six arrive from the package and `desktop-menu.vue` is deleted rather than imported. The header is Astro now, not Vue: it used to hold a `ref(window.innerWidth)` to pick between the two bars, which forced the whole thing to `client:only`, so **every page was served with no header at all** and grew one when Vue booted. A media query does that job, and BrandNav needs no JavaScript by construction — so the desktop bar is now static HTML and only the drawer hydrates, below `xl`.
 
-    **desktop-menu.vue is gone rather than excluded.** BrandNav replaced it outright, codecave.pro deleted the file on 2026-08-24, and the capture went with it — `source_examples/` records what the site ships, so a capture of a file the site does not have is not evidence of anything. It has no `NOT_SHIPPED` entry, because that list is for captures that exist and must not ship, not for captures that should not exist.
+    **desktop-menu.vue is gone rather than excluded.** BrandNav replaced it outright, codecave.pro deleted the file on 2026-08-24, and the capture went with it — a capture of a file the site does not have is not evidence of anything. It has no `NOT_SHIPPED` entry, because that list is for captures that exist and must not ship, not for captures that should not exist.
 
-    **The site keeps no copy of anything the package ships, as of 2026-08-24.** Audited by basename and normalised content, which found 19 exact duplicates — nine of them already dead. codecave.pro's `global.css` now declares **zero** custom properties of its own, and `.page-container` / `.section-container` are restated there only because importing `colors_and_type.css` would add ten `@font-face` rules whose `src` paths resolve inside the package; every *value* in them is a token. **37 captures now have no origin left** and are frozen by definition, which is worth watching: `source_examples/` is documented as evidence and nothing authored, and a majority of it can no longer be checked against anything.
+    **The site keeps no copy of anything the package ships, as of 2026-08-24.** Audited by basename and normalised content, which found 19 exact duplicates — nine of them already dead. codecave.pro's `global.css` now declares **zero** custom properties of its own, and `.page-container` / `.section-container` are restated there only because importing `colors_and_type.css` would add ten `@font-face` rules whose `src` paths resolve inside the package; every *value* in them is a token. **37 captures were left with no origin at all**, which is what moved them to `docs/authored/` a day later.
 
     **The fonts are settled.** The package declares ten `@font-face` rules — 300/400/500/700/900, upright and italic, every weight Satoshi has — and codecave.pro declares the same ten. **The binaries are still not in the tarball**: that is a redistribution question, recorded in `build.mjs`, and no release changes it. The vendor's own `stylesheet.css` is unusable and both stylesheets say why next to the declarations.
 
@@ -45,15 +45,24 @@ label ([live query](https://codecave.atlassian.net/issues?jql=project%20%3D%20CC
     `source_examples/` had no upstream left, and it reported them as "frozen by
     definition".
 
-    **`docs/source_examples/` is now mostly ORIGIN rather than evidence**, and the
-    part that was unverifiable evidence was cut on the same day rather than left
-    to rot. 45 files: **37 are the origin** of the shipped components — editing one
-    is the ordinary way to change a component, whatever the directory name says —
-    **6 are captures of this repo's own earlier token files**, and **2 are live
-    inputs the build reads**: `styles/global.css`, which `build-storybook.mjs`
-    parses for the `:root` and `@theme` blocks it scopes into the demo canvases
-    (it throws if the `:root` is missing), and `assets/images/logo.svg`, which a
-    kitchen-sink page renders.
+    **THE LAYOUT NOW STATES WHICH IS WHICH, rather than a rule having to.** Those
+    37 moved to `docs/authored/` on 2026-08-25, joining `BrandNav.vue`, which had
+    been alone there. `docs/authored/` is where a component is edited and where
+    the package is built from; `docs/source_examples/` holds the eight files this
+    repository genuinely copies from elsewhere and owns none of —
+    `styles/global.css`, which `build-storybook.mjs` parses for the `:root` and
+    `@theme` blocks it scopes into the demo canvases (it throws if the `:root` is
+    missing); `assets/images/logo.svg`, which a kitchen-sink page renders; and six
+    snapshots of this repo's own earlier token CSS, which `build.mjs` skips by
+    name. Nothing under `source_examples/` is a component any more, so "never edit
+    this directory" costs nobody anything.
+
+    **The move is checked in both directions.** `build.mjs` fails outright if a
+    path exists under both roots — one shipped file cannot have two origins — and
+    the tw-bridge digest covers both roots keyed by root name, so a file moving
+    between them moves the digest even though its bytes do not change. That was
+    the one silent failure the move could have introduced: a single-root digest
+    would go blind to exactly the change that relocates a component.
 
     **A component that reaches for one company's data does not belong here, and
     that is a different test from what it is written in.** The six site-owned
@@ -228,14 +237,15 @@ what `StrapiPort` became once the CMS-shaped components took an injected
 `resolveImage()`. So `build-storybook.mjs` names the specimens each port stood
 in for, and names any port nothing reached for at all.
 
-Related rule: **nothing under `docs/source_examples/` is authored.** A
-hand-written stub used to live there as `lib/strapi.ts`; it is gone.
+Related rule: **nothing under `docs/source_examples/` is authored** — which,
+since the components moved to `docs/authored/`, is a claim about eight files
+rather than a rule spanning the whole component tree.
 
 ### The package, in one paragraph
 
 `packages/brand/` is a **pure derivative of `docs/`** — it copies
 `colors_and_type.css` and `fonts.css` byte-for-byte, copies the root `LICENSE`,
-copies the components out of `docs/source_examples/`, extracts `tokens.css` from
+copies the components out of `docs/authored/`, extracts `tokens.css` from
 `colors_and_type.css` and `theme.css` from `docs/theme.css`, and compiles
 `docs/tokens/*.ts`. No *design content* under `packages/` is authored; the only
 tracked files are its manifest, build script and `README.md`, and `npm run
@@ -251,11 +261,14 @@ the font binaries, which stay out for a different reason (redistributing
 third-party type), and the two answers agree about what "the brand kit ships":
 the system, not the assets.
 
-**`docs/authored/` is the second root, and the only one anyone writes into.**
-`source_examples/` is evidence and nothing there is authored; `authored/` is the
-opposite, and exists because `BrandNav.vue` has no upstream to be captured from —
-it is the site bar and the docs bar reconciled, so neither repo owns it. Two
-directories rather than a flag, because the rule that nothing under
+**`docs/authored/` is the root anyone writes into, and as of 2026-08-25 it holds
+every component.** It began as a home for `BrandNav.vue` alone, which has no
+upstream to be captured from — it is the site bar and the docs bar reconciled, so
+neither repo owns it. Everything else joined it once the same became true of them:
+37 files with no upstream left, sitting in a directory whose name said they were
+copies of something. `source_examples/` keeps the eight that really are.
+
+Two directories rather than a flag, because the rule that nothing under
 `source_examples/` is authored stops being checkable the moment the two sit side
 by side. **The directory name is the claim**, and a path present in both roots
 fails the build rather than letting whichever walked last win.
@@ -341,7 +354,7 @@ one excused difference, and the exception carries its reason in `build.mjs`.
 457px)` at build time, where a `var()` would be invalid CSS.
 
 **The component list is computed, never written down.** `build.mjs` takes every
-non-excluded `.vue` under `source_examples/` as a root and follows everything it
+non-excluded `.vue` under either root as a root and follows everything it
 *reaches* transitively — *in the layout the package ships*, which is why
 `dist/src/` restores the site's `src/components/…` depth rather than keeping the
 captures' flattened one. A reference that lands outside the package fails the

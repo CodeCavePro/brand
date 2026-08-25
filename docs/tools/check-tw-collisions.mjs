@@ -38,7 +38,7 @@
  * That is what makes direction B worth checking at all. If it were ordinary
  * last-one-wins, a consumer could fix it by moving an import.
  *
- * WHY THIS RUNS IN CI. Both of its inputs are in this repo: source_examples/ is
+ * WHY THIS RUNS IN CI. Both of its inputs are in this repo: the sources are
  * committed, and Tailwind's default theme comes from a devDependency pinned to
  * the version the site resolves — the same trick build-storybook.mjs uses for
  * dompurify, for the same reason. Neither direction needs the private site
@@ -60,6 +60,11 @@ import { fileURLToPath } from 'node:url';
 const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const repo = path.resolve(docs, '..');
 const captures = path.join(docs, 'source_examples');
+const authored = path.join(docs, 'authored');
+/* Both roots. global.css stays under captures/ and is read by name below;
+ * every .vue this scans now lives under authored/, and the scan takes both
+ * so that a file moving between them cannot fall out of the sweep. */
+const sourceRoots = [authored, captures].filter((d) => fs.existsSync(d));
 
 /* Tailwind's COMPLETE default theme, straight from the package.
  *
@@ -186,14 +191,14 @@ if (IMPORTS_THEME.test(globalCss)) {
 /* The captures always, and the full site tree as well when one is beside us.
  *
  * CCWEB2-314 asks for both: "run it against the website checkout, not just the
- * captures". The captures are 30 files and CI can see them; the site is every
- * file and CI cannot. Doing the wider sweep only when it is possible beats
- * picking one -- the narrow half never stops running, and the wide half runs
- * on every machine that has the checkout, which is every machine that could
- * act on the result anyway. */
+ * captures". The two roots are a few dozen files and CI can see them; the site
+ * is every file and CI cannot. Doing the wider sweep only when it is possible
+ * beats picking one -- the narrow half never stops running, and the wide half
+ * runs on every machine that has the checkout, which is every machine that
+ * could act on the result anyway. */
 const siteVue = path.join(path.resolve(repo, '..', 'codecave.pro'), 'src');
 const scanned = [
-  ...walk(captures).filter((f) => f.endsWith('.vue')).map((f) => [captures, f]),
+  ...sourceRoots.flatMap((r) => walk(r).filter((f) => f.endsWith('.vue')).map((f) => [r, f])),
   ...(fs.existsSync(siteVue)
     ? walk(siteVue).filter((f) => f.endsWith('.vue')).map((f) => [siteVue, f])
     : []),
@@ -208,7 +213,7 @@ for (const [base, file] of scanned.sort((a, b) => a[1].localeCompare(b[1]))) {
    * before the result meant anything. A component-local custom property is not
    * an undeclared dependency on the build. */
   const own = new Set(declarations(src).keys());
-  const rel = (base === captures ? '' : 'codecave.pro/src/') +
+  const rel = (sourceRoots.includes(base) ? '' : 'codecave.pro/src/') +
     path.relative(base, file).split(path.sep).join('/');
 
   for (const name of [...references(src)].sort()) {
@@ -289,5 +294,5 @@ console.log(
 );
 console.log(
   `${scanned.length} SFC(s) scanned for undeclared properties` +
-  (fs.existsSync(siteVue) ? ', captures and site checkout.' : ' — captures only, no site checkout.'),
+  (fs.existsSync(siteVue) ? ', sources and site checkout.' : ' — sources only, no site checkout.'),
 );

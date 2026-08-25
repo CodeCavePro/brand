@@ -1,7 +1,8 @@
 # Line endings are CONTENT here, because two generated things are digests of it.
 #
-# docs/storybook/tw-bridge.css records a sha256 of everything under
-# docs/source_examples/, and docs/tools/check-tw-bridge.mjs re-computes that
+# docs/storybook/tw-bridge.css records a sha256 of everything under the two
+# component roots — docs/authored/ and docs/source_examples/ — and
+# docs/tools/check-tw-bridge.mjs re-computes that
 # digest from the WORKING TREE and refuses to deploy when the two disagree.
 # With no attributes file, a Windows clone under the common `core.autocrlf=true`
 # checks those sources out with CRLF while Linux CI checks them out with LF —
@@ -24,7 +25,7 @@
 # docs/colors_and_type.css and docs/fonts/fonts.css byte-for-byte and asserts
 # the identity, and `npm pack` runs that build — so without this, a tarball
 # published from Windows and one published from CI are different bytes for the
-# same version. And build-storybook.mjs compiles the .vue captures with
+# same version. And build-storybook.mjs compiles the .vue sources with
 # esbuild, which is only reproducible if its inputs are.
 * text=auto eol=lf
 

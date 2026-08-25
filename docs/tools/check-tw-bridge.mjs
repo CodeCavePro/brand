@@ -1,4 +1,4 @@
-/* Prove docs/storybook/tw-bridge.css is in step with docs/source_examples/.
+/* Prove docs/storybook/tw-bridge.css is in step with the component sources.
  *
  *   node docs/tools/check-tw-bridge.mjs
  *
@@ -12,11 +12,11 @@
  * specimens go on rendering an earlier version of the sources beside them.
  *
  * WHAT THIS DOES NOT ASK. Both inputs are in this repository: a digest written
- * into tw-bridge.css, and the bytes under source_examples/. codecave.pro is not
+ * into tw-bridge.css, and the bytes under the two roots. codecave.pro is not
  * one of them, and nothing here compares the two repositories any more —
  * check-captures.mjs was deleted on 2026-08-25. The message used to say a stale
  * bridge meant "an older SITE", which was fair while every file under
- * source_examples/ was a capture of one, and stopped being fair when the
+ * every component here was a capture of one, and stopped being fair when the
  * direction of truth flipped: components are developed here now and the site
  * installs them, pinned, so it is SUPPOSED to be behind between releases.
  *
@@ -32,7 +32,11 @@ import { sourceDigest, recordedDigest } from './source-digest.mjs';
 
 const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const bridge = path.join(docs, 'storybook', 'tw-bridge.css');
-const src = path.join(docs, 'source_examples');
+/* Both roots, in the same order build-storybook.mjs writes the digest in.
+ * A component moving between them changes no bytes, so a digest over one
+ * root alone would not notice the move at all. */
+const roots = [path.join(docs, 'authored'), path.join(docs, 'source_examples')];
+const SRC_LABEL = 'authored/ and source_examples/';
 
 if (!fs.existsSync(bridge)) {
   console.error(`missing ${path.relative(process.cwd(), bridge)}`);
@@ -61,31 +65,34 @@ const REGENERATE =
  * node so that it runs in CI, in a hook and by hand, and that property is worth
  * more than the file list. Anything git cannot answer degrades to a sentence.
  */
-function changedSince(bridgePath, srcDir) {
+const LOG_HINT =
+  'Run `git log -- docs/authored/ docs/source_examples/` to see what moved.';
+
+function changedSince(bridgePath, srcDirs) {
   try {
     const at = (args) =>
       execFileSync('git', args, { cwd: docs, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
     const commit = at(['log', '-1', '--format=%H', '--', bridgePath]);
-    if (!commit) return 'Run `git log -- docs/source_examples/` to see what moved.';
+    if (!commit) return LOG_HINT;
     /* To the WORKING TREE, not to HEAD: an uncommitted capture edit is the
        common case when someone is mid-change, and is exactly what they need
        named. */
-    const files = at(['diff', '--name-only', commit, '--', srcDir]).split('\n').filter(Boolean);
+    const files = at(['diff', '--name-only', commit, '--', ...srcDirs]).split('\n').filter(Boolean);
     const subject = at(['log', '-1', '--format=%h %s', commit]);
     if (!files.length) {
       return `tw-bridge.css was last written in ${subject}, and git reports no\n` +
-             'change under source_examples/ since. If that is a surprise, the digest is\n' +
+             `change under ${SRC_LABEL} since. If that is a surprise, the digest is\n` +
              'over BYTES ON DISK — an untracked or ignored file in there counts too.';
     }
     return `Changed since tw-bridge.css was last written (${subject}):\n` +
            files.map((f) => `  ${f}`).join('\n');
   } catch {
-    return 'Run `git log -- docs/source_examples/` to see what moved.';
+    return LOG_HINT;
   }
 }
 
 const recorded = recordedDigest(bridge);
-const actual = sourceDigest(src);
+const actual = sourceDigest(roots);
 
 if (recorded === null) {
   console.error('tw-bridge.css records no source-digest — it predates the check.');
@@ -95,17 +102,18 @@ if (recorded === null) {
 
 if (recorded !== actual) {
   console.error(
-    'tw-bridge.css is STALE — source_examples/ has changed since it was generated.\n' +
+    `tw-bridge.css is STALE — ${SRC_LABEL} changed since it was generated.\n` +
     `  recorded: ${recorded}\n` +
     `  actual:   ${actual}\n` +
-    'The compiled storybook is behind docs/source_examples/: the bundles and the\n' +
+    'The compiled storybook is behind the sources: the bundles and the\n' +
     'bridge were built from an earlier state of those files.\n' +
     '\n' +
     'This says NOTHING about codecave.pro, and nothing here does: components are\n' +
     'developed in this repository and the site installs them at a pinned version,\n' +
     'so it is meant to be behind between releases.');
 
-  console.error(`\n${changedSince(bridge, src)}`);
+  console.error(`
+${changedSince(bridge, roots)}`);
 
   /* Before sending anyone to the generator, rule out the one failure the
    * generator cannot fix. A digest is over bytes on disk, so a CRLF checkout
@@ -114,8 +122,8 @@ if (recorded !== actual) {
    * one. That loop cost 36 consecutive Pages deploys on 2026-08-20/21, every
    * one of them green locally. Say so here rather than in a comment nobody
    * reads while a run is red. */
-  const asLf = sourceDigest(src, { eol: 'lf' });
-  const asCrlf = sourceDigest(src, { eol: 'crlf' });
+  const asLf = sourceDigest(roots, { eol: 'lf' });
+  const asCrlf = sourceDigest(roots, { eol: 'crlf' });
   if (recorded === asLf || recorded === asCrlf) {
     const theirs = recorded === asCrlf ? 'CRLF' : 'LF';
     const ours = actual === asCrlf ? 'CRLF' : 'LF';
@@ -134,4 +142,4 @@ if (recorded !== actual) {
   process.exit(1);
 }
 
-console.log(`tw-bridge.css matches source_examples/ (sha256:${actual.slice(0, 12)}…)`);
+console.log(`tw-bridge.css matches ${SRC_LABEL} (sha256:${actual.slice(0, 12)}…)`);

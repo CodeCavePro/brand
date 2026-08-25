@@ -7,8 +7,8 @@
  *   1. PRUNE. publicDir and srcDir are the same directory (see the config for
  *      why), so Astro copies pages/, layouts/ and components/ into dist/ as raw
  *      .astro source alongside the HTML it rendered from them. Delete those
- *      three. Nothing else in docs/ is Astro's — source_examples/*.astro are
- *      provenance captures and they ship today, so they keep shipping.
+ *      three. Nothing else in docs/ is Astro's: the component roots hold .vue,
+ *      .ts and .css, none of which Astro claims.
  *
  *   2. ASSERT. This is a migration that runs for five phases with two kinds of
  *      page live at once: 29 hand-written .html files that reach dist/ only by

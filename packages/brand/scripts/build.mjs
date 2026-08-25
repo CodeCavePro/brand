@@ -76,7 +76,7 @@ const ROOT_VERBATIM = [[path.join(repo, 'LICENSE'), 'LICENSE']];
 /* ==========================================================================
  * The component tree — CCWEB2-318 phase 4.
  *
- * Same rule as the CSS: copied byte-for-byte from docs/source_examples/, which
+ * Same rule as the CSS: copied byte-for-byte from docs/authored/, which
  * is itself a capture of what codecave.pro ships. Nothing here is authored, so
  * a specimen in the storybook and a component in a consumer's node_modules are
  * provably the same bytes as the site's.
@@ -85,10 +85,10 @@ const ROOT_VERBATIM = [[path.join(repo, 'LICENSE'), 'LICENSE']];
  * `src/components/` away — `common/Checkbox.vue` on disk is
  * `src/components/common/Checkbox.vue` on the site. Its imports did not
  * flatten with it: it still climbs `../../assets/icons/asterisk-icon.vue`,
- * which from the capture tree lands OUTSIDE source_examples/ entirely. Every capture with
+ * which from the source tree lands OUTSIDE the root entirely. Every file with
  * a two-level climb is in that position, and it has never been noticed because
  * build-storybook.mjs carries a resolver that re-roots an overshooting climb
- * back at source_examples/. A bundler plugin can do that; `import` in a
+ * back at the root. A bundler plugin can do that; `import` in a
  * consumer's app cannot.
  *
  * So the package restores the depth the capture removed. dist/src/ IS the
@@ -118,11 +118,11 @@ const EXCLUDED = new Set(NOT_SHIPPED.map(([rel]) => rel));
  * imports, and check:importmap failing on a mapped specifier nothing imports. */
 function assertExclusionsExist() {
   const missing = NOT_SHIPPED.map(([rel]) => rel).filter(
-    (rel) => !fs.existsSync(docs('source_examples', rel)),
+    (rel) => !ROOTS.some((root) => fs.existsSync(docs(root, rel))),
   );
   if (!missing.length) return;
-  console.error('build failed — NOT_SHIPPED excludes captures that do not exist:');
-  for (const rel of missing) console.error(`  source_examples/${rel}`);
+  console.error('build failed — NOT_SHIPPED excludes files that no root has:');
+  for (const rel of missing) console.error(`  ${rel}`);
   console.error('');
   console.error('An exclusion is for a capture that EXISTS and must not ship. If the');
   console.error('capture is gone, delete its entry rather than leaving a reason for a');
@@ -154,33 +154,33 @@ function shippedAs(rel) {
  * copy, and asserted afterwards against the built output.
  */
 /**
- * The two roots a shipped file can come from.
+ * The two roots a shipped file can come from, in resolution order.
  *
- * source_examples/ began as EVIDENCE — captured from codecave.pro, authored by
- * nobody here, with check:captures proving it still matched. authored/ is the
- * opposite and exists for exactly one reason: BrandNav.vue is the site bar and
- * the docs bar reconciled into one component, so it has no upstream to be
- * captured from. Neither repo owns it any more.
+ * authored/ is where components live and where one is edited. source_examples/
+ * is what this repository copies from elsewhere and owns none of: codecave.pro's
+ * global.css, the wordmark, and six snapshots of this repo's own earlier token
+ * CSS, which the walk below skips by name.
  *
- * Kept as two directories rather than a flag or a list, because the directory
- * name IS the claim.
+ * Kept as two directories rather than a flag or a list, because THE DIRECTORY
+ * NAME IS THE CLAIM — and a claim only stays true if something can check it. A
+ * path present in both roots fails the build; nothing shipped comes from
+ * source_examples/ at all.
  *
- * THAT CLAIM IS NOW MOSTLY THE OTHER WAY ROUND, AND KNOWINGLY SO.
- * check:captures was deleted on 2026-08-25: the site installs this package and
- * pins it, so demanding the two be equal was red for exactly the changes it was
- * meant to protect. Of the 45 files under source_examples/, 37 have no upstream
- * at all — they are the ORIGIN now, and editing one is the normal way to change
- * a component — 6 are captures of this repo's own earlier token files, and 2 are
- * live inputs the build reads (global.css, logo.svg). Nothing under either root
- * is evidence of a repository this one cannot see.
+ * It was the other way round until 2026-08-25, and the correction is worth
+ * knowing because it is the same mistake in a different place: 37 files sat
+ * under a name asserting they were copies of something, long after the thing
+ * they copied had been deleted. check:captures was what had made the name true,
+ * and it went first — the site installs this package and pins it, so demanding
+ * the two be equal was red for exactly the changes it was meant to protect. A
+ * rule nothing enforces is a comment; a directory layout is not.
  */
-const ROOTS = ['source_examples', 'authored'];
+const ROOTS = ['authored', 'source_examples'];
 
 /** Which root holds a given capture-relative path. Filled by shippable(). */
 const rootOfRel = new Map();
 
 /** The file a shipped path was copied from, in whichever root holds it. */
-const originOf = (rel) => docs(rootOfRel.get(rel) ?? 'source_examples', rel);
+const originOf = (rel) => docs(rootOfRel.get(rel) ?? 'authored', rel);
 
 /** A shipped file whose bytes are not its capture's is one of these. */
 const isAliased = (rel) => usesAlias(fs.readFileSync(originOf(captureOf(rel)), 'utf8'));
@@ -475,7 +475,7 @@ function shippable() {
 
   /* Resolved in the SHIPPED layout, not the capture layout — that is the whole
    * assertion. `header/mobile-menu.vue` reaching `../../assets/images/logo.svg`
-   * escapes source_examples/ and lands inside dist/src/, and following the
+   * escapes the source root and lands inside dist/src/, and following the
    * imports where the consumer will follow them is what proves it. */
   const byShipped = new Map(all.map((rel) => [shippedAs(rel), rel]));
   const roots = all.filter((rel) => rel.endsWith('.vue') && !EXCLUDED.has(rel))
@@ -731,7 +731,8 @@ function assertThemeAgreesWithTokens(themeCss, tokensCss) {
         'tokens.css wins the cascade, so the theme.css value is already dead\n' +
         'wherever both are imported. Fix it in docs/theme.css — make the entry\n' +
         '`var(--name)`, as the others are. That file is the origin now; do not\n' +
-        'chase this into docs/source_examples/, which is evidence, not source.',
+        'chase this into the component sources, which read tokens rather than' +
+        ' declaring them.',
     );
     process.exit(1);
   }

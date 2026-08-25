@@ -18,8 +18,8 @@
 # all run before anything reaches the registry — so a bad tag costs a red run,
 # not a burned version number.
 #
-# What this job does NOT check, deliberately: whether docs/source_examples/
-# still matches codecave.pro. The site installs this package and pins it, so it
+# What this job does NOT check, deliberately: whether the component sources
+# still match codecave.pro. The site installs this package and pins it, so it
 # is *supposed* to be behind between releases — see the note where that step
 # used to be.
 name: Publish @codecavepro/brand to npm
@@ -161,7 +161,7 @@ jobs:
       - name: Check
         run: npm run check
 
-      # There is deliberately NO step here comparing docs/source_examples/ to
+      # There is deliberately NO step here comparing the component sources to
       # codecave.pro. This job briefly had one, and it was a rule from the
       # arrangement that CCWEB2-318 replaced.
       #

@@ -21,10 +21,9 @@ reissued. Everything else in this runbook is reversible; that is not.
 specimens, docs pages, `DESIGN.md` and `WEBSITE-REVIEW.md` are none of them.
 Those deploy with GitHub Pages on push and need no release.
 
-**A change under `docs/source_examples/` *is* a change that reaches the
-tarball, now that components ship.** That directory is where the nineteen
-shipped components live, so editing one moves published bytes and needs a
-release.
+**A change under `docs/authored/` *is* a change that reaches the tarball.**
+That directory is where the nineteen shipped components live, so editing one
+moves published bytes and needs a release.
 
 There is no longer a check comparing it to codecave.pro, and there should not
 be: the site installs this package and pins it, so a release is precisely the
@@ -129,8 +128,8 @@ npm run build && npm run check
 origin (`docs/colors_and_type.css`, `docs/fonts/fonts.css`, the root `LICENSE`),
 `dist/tokens.css` still re-extracting from `docs/colors_and_type.css` and
 `dist/theme.css` from `docs/theme.css` to exactly what shipped, every component
-matching the capture it was copied from, the ports typechecking, and the
-storybook matching `docs/source_examples/`. If the
+matching the source it was copied from, the ports typechecking, and the
+storybook matching both component roots. If the
 byte-identity assertion fails, **do not fix it in `packages/`** — the fix
 belongs in `docs/`, which is the origin. See [CLAUDE.md](/CLAUDE.md).
 
@@ -248,9 +247,9 @@ before the publish step has cost nothing.
 
 Two things in the summary are worth reading rather than skimming:
 
-- **"Captures were not verified"**, if it appears. `docs/source_examples/` is
-  evidence, nineteen components are built from it, and CI cannot reach the site
-  today. This is the one precondition the pipeline cannot enforce for you.
+- **Which root each component came from**, in the storybook rebuild summary. A
+  specimen quietly falling back to the captures is the drift this arrangement
+  exists to prevent, and the log is the only place it shows.
 - **Provenance.** A trusted-publisher release attaches an attestation; the npm
   page shows the commit and the workflow run that built it. If the badge is
   absent, the publish did not go out as a trusted publisher and something in
@@ -399,14 +398,9 @@ which puts you back in the 72-hour window above, with an escalation attached.
 ## First publish only
 
 The routine release assumes the package already exists on the registry. The
-first one has three preconditions the rest do not, in this order:
+first one has two preconditions the rest do not, in this order:
 
-1. **`docs/source_examples/` has been re-measured.** This step is historical:
-   it meant `npm run check:captures`, which was removed on 2026-08-25 once the
-   site became a pinned consumer of this package rather than its upstream.
-   Nothing replaces it, and nothing needs to — a first publish today has the
-   same preconditions as any other.
-2. **Every name is settled.** **A token name is only cheap to change while
+1. **Every name is settled.** **A token name is only cheap to change while
    nobody has installed it** — before the first publish a rename is free, after
    it a rename is a `2.0.0`. Two were caught this way and both were free:
    `spacing.controlHeight` shipping 44px against production's 48px, and
@@ -418,7 +412,7 @@ first one has three preconditions the rest do not, in this order:
    Note what the first one implies: documenting a divergence honestly is right
    for a token already published, and the wrong thing to do for one you are
    about to publish for the first time and could simply get right.
-3. **Version `1.0.0`.** The manifest already says so, and `1.0.0` is tagged. Publishing straight at 1.0 is a deliberate call, not an oversight:
+2. **Version `1.0.0`.** The manifest already says so, and `1.0.0` is tagged. Publishing straight at 1.0 is a deliberate call, not an oversight:
    the token values are the thing consumers depend on and they already mirror
    production, so a `0.x` would be understating the stability of the only part
    that matters to them. The cost is that the layout is now a promise — an
