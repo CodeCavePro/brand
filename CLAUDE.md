@@ -79,7 +79,6 @@ package's** — do not "correct" them in `docs/`. A bug leaves this list the
 moment it is fixed; Jira keeps the history, so nothing here is a record:
 
 -   [CCWEB2-320](https://codecave.atlassian.net/browse/CCWEB2-320) — `TextField.vue`'s error message renders at 2.91:1. Accessibility, and a colour decision, so it is **assigned to Maria Shaban**.
--   [CCWEB2-331](https://codecave.atlassian.net/browse/CCWEB2-331) — GlowButton renders 44px against the 48px `--control-height` every other button uses, because its `h-11` has no `min-h-12` under it to cancel it — unlike `Button.vue`, where the same class was dead. Fixing it moves pixels on all eleven call sites, so it is a design call and is **assigned to Maria Shaban**: either GlowButton joins the 48px grid, or the exception gets written down next to the token.
 
 ### The docs site is Astro
 
@@ -395,7 +394,7 @@ tarball shipped no licence text at all while `package.json` claimed
 `"Unlicense"`. Copying it beats authoring a second one for the same reason as
 the palette. Publishing the result is [RELEASING.md](/RELEASING.md).
 
-**Publishing is a pushed tag, and nothing else.** `git push origin 2.1.5` runs
+**Publishing is a pushed tag, and nothing else.** `git push origin 2.2.0` runs
 [`.github/workflows/release.yml`](/.github/workflows/release.yml), which verifies
 and then publishes as an npm **trusted publisher** — OIDC, so there is no token
 in this repository, no `NPM_TOKEN` secret and no OTP. Two consequences worth

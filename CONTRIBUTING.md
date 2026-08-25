@@ -409,7 +409,7 @@ not filed anywhere. It is Maria Shaban's decision and gets its own project.
 ## Publishing
 
 Changing `docs/` does not publish anything to npm. **Pushing a bare version tag
-does** — `git push origin 2.1.5` starts
+does** — `git push origin 2.2.0` starts
 [`.github/workflows/release.yml`](/.github/workflows/release.yml), which verifies
 and then publishes as a trusted publisher. There is no npm token in this
 repository and no OTP to type; the tag is the deliberate act, so treat it as one.
