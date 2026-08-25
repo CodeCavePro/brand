@@ -320,6 +320,28 @@ for (const file of walk(pages)) {
   const wantsMap = !!docPageTag && /\bimportmap\b/.test(docPageTag[1]);
   const relPage = path.relative(root, file).split(path.sep).join('/');
 
+  /* And a page that mounts a compiled component needs tw-bridge.css, which is
+     the site's Tailwind theme compiled against the utilities those components
+     actually use. Without it they mount perfectly and render as raw HTML — a
+     browser-default button, a bare input — because every class on them resolves
+     to nothing. The hub did exactly that: it DESCRIBES tw-bridge.css in its own
+     prose, two hundred lines below a stylesheet list that did not include it.
+
+     Matched inside the <DocPage> tag rather than anywhere in the body, or that
+     prose would satisfy the check that the prose is wrong about. */
+  const mountsCompiled = /from\s*['"][^'"]*storybook\/compiled\//.test(body);
+  const linksBridge = !!docPageTag && /tw-bridge\.css/.test(docPageTag[1]);
+
+  if (mountsCompiled && !linksBridge) {
+    mapMismatch.push(
+      `  ${relPage}\n      mounts a compiled component but does not link tw-bridge.css — it will render unstyled`,
+    );
+  } else if (linksBridge && !mountsCompiled) {
+    mapMismatch.push(
+      `  ${relPage}\n      links tw-bridge.css but mounts no compiled component`,
+    );
+  }
+
   if (bareImports.length && !wantsMap) {
     mapMismatch.push(
       `  ${relPage}\n      imports ${[...new Set(bareImports)].join(', ')} but does not pass \`importmap\` to DocPage`,
@@ -368,12 +390,17 @@ for (const file of walk(pages)) {
 
 if (mapMismatch.length) {
   console.error(
-    `${mapMismatch.length} page(s) disagree with themselves about the import map:\n` +
+    `${mapMismatch.length} page(s) mount a component without what it needs to run:\n` +
       mapMismatch.join('\n') +
-      '\n\nThe import map is what resolves `vue` and `gsap` for a compiled specimen,\n' +
-      'and DocPage emits it only for a page that asks. A page that imports a bare\n' +
-      'specifier without it fails in the browser and nowhere else; a page that asks\n' +
-      'for it without importing one is claiming something that is not true.',
+      '\n\nMounting a captured component takes two things the page has to ask for, and\n' +
+      'DocPage supplies neither by default. The IMPORT MAP resolves `vue` and\n' +
+      '`gsap`; without it the script dies on its first import. TW-BRIDGE.CSS is the\n' +
+      "site's Tailwind theme compiled against the utilities those components use;\n" +
+      'without it they mount and render as raw HTML, every class resolving to\n' +
+      'nothing. Both fail in the browser and nowhere else, and the second does not\n' +
+      'even look like a failure -- it looks like a component with no styling of its\n' +
+      'own. Asked in both directions, because either one requested and unused is a\n' +
+      'claim that has stopped being true.',
   );
   process.exit(1);
 }
