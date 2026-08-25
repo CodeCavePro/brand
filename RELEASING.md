@@ -27,26 +27,49 @@ and `npm run check:captures` is a precondition of every publish rather than only
 the first — with the checkout on `development`, because it reads whatever branch
 it finds. See [CONTRIBUTING.md](/CONTRIBUTING.md).
 
+## Who publishes
+
+**GitHub Actions does, and pushing a version tag is what asks it to.**
+[`.github/workflows/release.yml`](/.github/workflows/release.yml) runs the whole
+verification below and then publishes; nothing in the routine release happens on
+your machine except deciding the version and pushing the tag.
+
+It authenticates as a **trusted publisher** — OIDC. There is no npm token in
+this repository, no `NPM_TOKEN` secret and no OTP to type: npm mints a
+short-lived credential after matching the workflow's identity against what is
+registered on the package, and attaches a provenance attestation on the way out.
+See [The trusted publisher](#the-trusted-publisher) for the one-time setup, and
+for what silently revokes it.
+
+This reverses what this file used to say. The old reasoning was that a manual
+publish leaves no automation-shaped path to publishing something unreviewed —
+true of the credential, and false of everything else. Doing it by hand was also
+the only thing standing between the registry and a skipped step, and step 3's
+tarball rehearsal was five shell one-liners that were easy to skip and had
+already drifted from the build once (CCWEB2-370). Trusted publishing removes the
+stored credential that was the objection, and CI runs the rehearsal every time
+instead of when someone remembers. **The review did not go away — it is the
+tag.** Nothing publishes that a person did not name.
+
 ## Prerequisites
 
 | | Needed | Check it |
 |---|---|---|
-| Node | ≥ 20 (`engines`); CI builds on 22 | `node --version` |
+| Node | ≥ 22 (`engines`); both workflows run 24 | `node --version` |
 | Working tree | clean, on `development`, pushed | `git status` |
-| npm login | a member of the `codecavepro` npm org | `npm whoami` |
-| Registry | `https://registry.npmjs.org/` | `npm config get registry` |
+| Trusted publisher | registered on the package, workflow `release.yml` | [the package's access settings](https://www.npmjs.com/package/@codecavepro/brand/access) |
+| Push access | enough to create and push a tag | `git push --dry-run` |
+
+**`npm whoami`, an npm login and org membership are no longer prerequisites**
+for a routine release. They matter for the by-hand fallback under
+[If CI cannot publish](#if-ci-cannot-publish), and for the rollback commands,
+which stay manual because npm offers no automated path for them.
 
 **The org exists and `salaros` owns it.** `npm org ls codecavepro` returns
 `{"salaros": "owner"}`, checked 2026-08-21 — and checked to be a real answer
 rather than a swallowed error, by running the same command against
 `codecavepro-definitely-not-real` and watching it return `E404 Scope not found`.
 A command that reports success by printing nothing is worth provoking once.
-
-The scope holds nothing public yet: `npm view @codecavepro/brand` is still a
-404, which is what leaves `1.0.0` available to claim.
-
-Publishing is a manual, local step by design. No CI workflow holds an npm token,
-so there is no automation-shaped path to publishing something unreviewed.
 
 ## The routine release
 
@@ -79,7 +102,8 @@ npm version --workspace @codecavepro/brand minor --no-git-tag-version
 
 `--no-git-tag-version` is deliberate: npm tags as `v1.0.1`, and this repo tags
 as `1.0.1`. Letting npm do it also commits on your behalf. Tag by hand in
-step 5.
+step 4 — and note that the tag is now the thing that publishes, so it is not a
+step to run early.
 
 Use the command rather than editing `package.json`, because it also writes the
 new version into `package-lock.json`. Editing by hand leaves the two
@@ -88,6 +112,11 @@ workspace in that state. If you did edit by hand, `npm install
 --package-lock-only` fixes it.
 
 ### 2. Build from a clean tree and verify the derivation
+
+**CI runs this too, before it publishes** — every step from here to the end of
+step 3 is in `release.yml`. Running it locally first is not ceremony: once the
+tag is pushed there is no rehearsal left, so this is where a mistake is still
+free.
 
 ```bash
 npm run build && npm run check
@@ -102,9 +131,9 @@ storybook matching `docs/source_examples/`. If the
 byte-identity assertion fails, **do not fix it in `packages/`** — the fix
 belongs in `docs/`, which is the origin. See [CLAUDE.md](/CLAUDE.md).
 
-`npm run check` needs `dist/` to exist, so it is a local and `prepack` guard,
-not a CI one — CI checks out a tree with no `dist/` at all. That is why step 3
-matters more here than it would in a repo where CI could do it for you.
+`npm run check` needs `dist/` to exist, which is why `release.yml` runs
+`npm run build` immediately before it — a fresh checkout has no `dist/` at all,
+and a `check` run against one would be asserting things about nothing.
 
 ### 3. Validate the tarball — the actual artifact
 
@@ -115,62 +144,49 @@ npm pack --workspace @codecavepro/brand
 This runs `prepack`, so the full build (including the README value assertions)
 runs again and cannot be skipped. It writes
 `codecavepro-brand-<version>.tgz` — **the exact bytes npm would publish.**
-Install it somewhere real and use it:
+Install it somewhere real, then ask it the questions a consumer asks first:
 
 ```bash
-mkdir -p /tmp/brand-smoke && cd /tmp/brand-smoke && npm init -y && npm i "$OLDPWD/codecavepro-brand-1.0.1.tgz"
+mkdir -p /tmp/brand-smoke && (cd /tmp/brand-smoke && npm init -y && npm i "$OLDPWD"/codecavepro-brand-*.tgz --legacy-peer-deps)
 ```
-
-Then check the three things a consumer does first. Run these from the smoke
-directory:
 
 ```bash
-node -e "import('@codecavepro/brand').then(m => console.log(m.color.action))"
+node docs/tools/smoke-tarball.mjs /tmp/brand-smoke/node_modules/@codecavepro/brand
 ```
 
-prints a hex value — the typed module resolves, and has content rather than an
-empty barrel.
+That prints seventeen assertions and exits 0, or names what is broken and exits
+1. `--legacy-peer-deps` skips auto-installing the five peers; nothing the script
+checks imports them, and `vue` is a large download to prove nothing with.
 
-```bash
-node -e "const fs=require('fs'),p='node_modules/@codecavepro/brand/dist/colors_and_type.css';console.log(fs.readFileSync(p).equals(fs.readFileSync(process.argv[1]))?'identical':'DIFFERS')" /path/to/brand/docs/colors_and_type.css
-```
+**Why the tarball and not the tree.** `files: ["dist"]` decides what ships,
+`exports` decides what resolves, and npm picks `LICENSE` and `README.md` up from
+the package root **by name** — `files` neither includes nor excludes them. None
+of those three are visible to a check that walks `dist/` in place, so a package
+can be completely correct on disk and broken for everyone who installs it. The
+licence is a build-time copy of the repo root's; if it is missing, the build did
+not run — stop.
 
-prints `identical` — the buildless URL and the installed file are the same
-bytes, which is the package's central promise.
+**This was five shell one-liners until the release moved to CI**, one of them
+900 characters of inlined JavaScript. It is a script because `release.yml` runs
+the same command, and because that last one-liner had already drifted: it read
+only `from "..."`, reported that everything resolved over a 1.6.0 tarball whose
+`Checkbox.vue` reached a `checked-icon.svg` that was not in it, and the bug
+shipped (CCWEB2-370). A background-image is a reference like any other.
 
-```bash
-node -e "console.log(require.resolve('@codecavepro/brand/components/common/Button.vue'))"
-node -e "const fs=require('fs'),path=require('path'),root=path.dirname(require.resolve('@codecavepro/brand/package.json'))+'/dist/src';const walk=d=>fs.readdirSync(d,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(path.join(d,e.name)):[path.join(d,e.name)]);const skip=/^(?:[a-z][a-z0-9+.-]*:|\/\/|#)/i;const bad=[];for(const f of walk(root)){const s=fs.readFileSync(f,'utf8');const refs=[...s.matchAll(/from\s*['\"](\.[^'\"]*)['\"]/g)].map(m=>m[1]);for(const m of s.matchAll(/\burl\(\s*(?:\"([^\"]*)\"|'([^']*)'|([^)'\"\s]*))\s*\)/g)){const t=m[1]??m[2]??m[3];if(t&&!skip.test(t))refs.push(t);}for(const r of refs){const j=path.resolve(path.dirname(f),r);if(![j,j+'.ts',j+'.vue'].some(c=>fs.existsSync(c)))bad.push(path.relative(root,f)+' -> '+r);}}console.log(bad.length?'DANGLING: '+bad.join(', '):'every relative import and url() resolves')"
-```
+The reference walk is the assertion worth understanding. The captures flatten
+the site's `src/components/` level away while their imports still climb through
+it — `common/Checkbox.vue` reaches `../../assets/icons/asterisk-icon.vue` — so
+the package ships at the site's depth to keep those resolving. The storybook
+cannot catch a regression there, because `build-storybook.mjs` re-roots escaping
+imports with a resolver plugin and a consumer's `import` has no such plugin. A
+dangling reference means the package is broken for every consumer while looking
+fine in this repo.
 
-The first prints a path — the `./components/*` subpath export resolves. The
-second prints `every relative import and url() resolves`, walking the installed
-`dist/src/` and following every reference in it.
-
-That one is not ceremony. The captures flatten the site's `src/components/`
-level away while their imports still climb through it — `common/Checkbox.vue`
-reaches `../../assets/icons/asterisk-icon.vue` — so the package ships at the
-site's depth to keep those resolving. The storybook cannot catch a regression here,
-because `build-storybook.mjs` re-roots escaping imports with a resolver plugin
-and a consumer's `import` has no such plugin. `DANGLING` means the package is
-broken for every consumer while looking fine in this repo.
-
-**It follows `url()` because for one release it did not.** This command read
-only `from "..."`, printed `every relative import resolves` over a 1.6.0 tarball
-whose `Checkbox.vue` reached a `checked-icon.svg` that was not in it, and the
-bug shipped (CCWEB2-370). A background-image is a reference like any other; the
-build now agrees, and so does this. Keep the two in step — if `referencesOf()`
-in `build.mjs` learns a new spelling, this line has to learn it too, because
-this one runs against the tarball rather than the tree that produced it.
-
-```bash
-ls node_modules/@codecavepro/brand/
-```
-
-lists `LICENSE README.md dist package.json`. The first two are there because
-npm picks them up by name from the package root; `files: ["dist"]` does not
-mention either, and the licence is a build-time copy of the repo's root
-`LICENSE`. If `LICENSE` is missing, the build did not run — stop.
+`smoke-tarball.mjs` mirrors `referencesOf()` in `build.mjs`, deliberately and by
+copy. **Keep the two in step** — if the build learns a new spelling of "reaches",
+this has to learn it too, because this one runs against the tarball rather than
+against the tree that produced it. Each of its eleven failure modes was proven
+to fire by breaking an installed copy one way at a time.
 
 > **This replaces the git-dependency validation named in CCWEB2-318 phase 5.**
 > That plan proposed proving the loop with a `github:CodeCavePro/brand#tag`
@@ -183,30 +199,125 @@ mention either, and the licence is a build-time copy of the repo's root
 > The tarball is strictly better anyway — it is free, reversible *and* it is
 > literally what npm publishes, which the git dependency never was.
 
-Delete the smoke directory and the `.tgz` when done. Neither is tracked, but a
-stale tarball in the repo root is a thing someone will eventually publish by
-accident.
+Delete the smoke directory and the `.tgz` when done. The release itself packs
+its own tarball on the runner and never sees yours, but `npm publish <file.tgz>`
+is a real command and a stale one in the repo root is a thing someone will
+eventually reach for.
 
-### 4. Publish
+### 4. Commit, tag and push — the tag is the publish
 
 ```bash
-npm run release
+git commit -am "Release @codecavepro/brand 1.0.1" && git push
 ```
 
-If your account requires two-factor auth, pass the code through — everything
-after `--` reaches `npm publish`:
+```bash
+git tag -a 1.0.1 -m "Release 1.0.1 — <what changed>" && git push origin 1.0.1
+```
+
+**Pushing that tag publishes.** Everything above this line is reversible;
+pushing the tag starts a run that ends at the registry, and a version number,
+once used, can never be reissued. Push the commit first and the tag separately,
+so the two are distinguishable acts rather than one keystroke.
+
+**Tags are the bare version — `1.0.1`.** No `v`, no package prefix. Set by
+`1.0.0` on 2026-08-21, the repo's first tag, and now load-bearing: `release.yml`
+triggers on `[0-9]+.[0-9]+.[0-9]+` and refuses to run from a branch.
+
+Tags are annotated (`git tag -a`), not lightweight, so each carries its tagger,
+date and a message saying what was in it.
+
+**The tag must equal `packages/brand/package.json`'s version.** The workflow
+asserts it and stops if they disagree, because that is the one mistake here that
+would otherwise succeed quietly: tagging `1.0.2` while the manifest still says
+`1.0.1` republishes `1.0.1` under a tag claiming otherwise, and npm never sees
+the tag, so nothing downstream would ever notice. If you get it wrong, delete
+the tag (`git tag -d` and `git push origin :1.0.2`), fix one of the two, and tag
+again.
+
+### 5. Watch the run
+
+[Actions → Publish `@codecavepro/brand` to npm](https://github.com/CodeCavePro/brand/actions/workflows/release.yml).
+
+It runs the toolchain floor, the tag/manifest guard, an already-published guard,
+`npm ci`, the build, `npm run check`, the captures check when it can reach
+codecave.pro, and the tarball smoke test — and only then publishes. A red run
+before the publish step has cost nothing.
+
+Two things in the summary are worth reading rather than skimming:
+
+- **"Captures were not verified"**, if it appears. `docs/source_examples/` is
+  evidence, nineteen components are built from it, and CI cannot reach the site
+  today. This is the one precondition the pipeline cannot enforce for you.
+- **Provenance.** A trusted-publisher release attaches an attestation; the npm
+  page shows the commit and the workflow run that built it. If the badge is
+  absent, the publish did not go out as a trusted publisher and something in
+  [The trusted publisher](#the-trusted-publisher) has drifted.
+
+### 6. Close the loop
+
+Comment the version and tag on the CCWEB2-318 phase-5 issue. If this publish
+changed a token value, say which — the site consumes these, and a value change
+is the only kind of release with downstream work attached.
+
+codecave.pro will not move on its own: it installs with `pnpm install
+--frozen-lockfile`, so it runs whatever its lockfile pins until someone raises
+the range and regenerates it.
+
+## The trusted publisher
+
+One-time setup, on the **package** rather than the org:
+[npmjs.com/package/@codecavepro/brand/access](https://www.npmjs.com/package/@codecavepro/brand/access)
+→ Trusted publisher → GitHub Actions.
+
+| Field | Value |
+|---|---|
+| Organization or user | `CodeCavePro` |
+| Repository | `brand` |
+| Workflow filename | `release.yml` — **the bare filename**, not the path |
+| Environment name | *empty* — the job declares no environment |
+| Allowed actions | `npm publish` |
+
+**Every field is case-sensitive and matched exactly.** The workflow filename is
+the one people get wrong: `.github/workflows/release.yml` will never match.
+
+**The filename is part of the credential.** Renaming
+`.github/workflows/release.yml` revokes the ability to publish, and npm reports
+that as
+
+```
+npm error code E404
+npm error 404 Not Found - PUT https://registry.npmjs.org/@codecavepro%2fbrand
+```
+
+which reads as "no such package" and is not that — the package exists. Every
+OIDC failure arrives wearing that costume, so work down the table above before
+suspecting anything else.
+
+One thing is genuinely unproven and is written down in the workflow too: whether
+npm's OIDC exchange resolves the package correctly for `npm publish
+--workspace`, given that this package sits in a subdirectory and declares
+`repository.directory`. Trusted publishing has known rough edges with nested
+packages. If every field above is right and the PUT is still refused, the next
+thing to try is publishing from the package directory — `working-directory:
+packages/brand` with a bare `npm publish`, which reaches the same manifest by a
+plainer route.
+
+## If CI cannot publish
+
+The fallback is the old manual path, and it needs an npm login and org
+membership:
 
 ```bash
 npm run release -- --otp=123456
 ```
 
-**The `--workspace` flag is not optional, and that is the entire reason this is
-a script rather than a command you type.** Bare `npm publish` at the repository
-root targets the **root manifest** — `/package.json` — and not
-`packages/brand/package.json`, which is the one that describes this package.
-The two currently share the name `@codecavepro/brand`, so the distinction is by
-path and only by path. It is stopped by the root manifest's `private: true`,
-with
+**The `--workspace` flag inside that script is not optional, and it is the
+entire reason this is a script rather than a command you type.** Bare `npm
+publish` at the repository root targets the **root manifest** —
+`/package.json` — and not `packages/brand/package.json`, which is the one that
+describes this package. The two share the name `@codecavepro/brand`, so the
+distinction is by path and only by path. The root manifest's `private: true`
+stops it, with
 
 ```
 npm error This package has been marked as private
@@ -218,9 +329,10 @@ only thing between a mistyped command and 554 files of monorepo on the public
 registry, and the package it is refusing to publish is the wrong package
 anyway.
 
-Neither rehearsal above catches this. Verified on npm 11.7.0: `npm publish
---dry-run` on a `private` package prints `+ name@version` and exits 0. Step 3
-cannot save you here; only the real publish enforces it.
+No rehearsal catches this. Verified on npm 11.7.0: `npm publish --dry-run` on a
+`private` package prints `+ name@version` and exits 0. Only the real publish
+enforces it — which is a reason to prefer the pipeline, where the command is
+written down rather than typed.
 
 `publishConfig.access` is already `public` in the manifest, so the script's
 `--access public` is redundant — it is there so the intent shows up in shell
@@ -228,29 +340,12 @@ history. A scoped package defaults to restricted, and a restricted publish under
 a free org fails rather than silently going private, but do not rely on that as
 the safety net.
 
-Confirm the registry agrees:
+A hand publish gets **no provenance attestation**. That is not a reason to avoid
+it in an emergency; it is a reason to say so in the CCWEB2-318 comment, because
+the npm page will differ from every other release.
 
-```bash
-npm view @codecavepro/brand version
-```
-
-### 5. Tag and push
-
-```bash
-git commit -am "Release @codecavepro/brand 1.0.1" && git tag 1.0.1 && git push && git push --tags
-```
-
-**Tags are the bare version — `1.0.1`.** No `v`, no package prefix. Set by
-`1.0.0` on 2026-08-21, the repo's first tag.
-
-Tags are annotated (`git tag -a`), not lightweight, so each carries its tagger,
-date and a message saying what was in it.
-
-### 6. Close the loop
-
-Comment the version and tag on the CCWEB2-318 phase-5 issue. If this publish
-changed a token value, say which — the site consumes these, and a value change
-is the only kind of release with downstream work attached.
+Then tag as in step 4 — the workflow will refuse the already-published version,
+which is correct, and the tag still needs to exist.
 
 ## Rollback
 

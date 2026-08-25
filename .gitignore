@@ -74,3 +74,11 @@ packages/*/.tmp/
 # Copied from the root LICENSE at build time. npm only picks a licence up from
 # the package root, and the root file is the origin — see scripts/build.mjs.
 packages/*/LICENSE
+
+# `npm pack` output. RELEASING.md step 3 asks for one so the tarball can be
+# installed and smoke-tested before tagging, and it lands wherever it was run.
+# The release itself packs its own on the runner and never sees a local copy, so
+# nothing here is ever an input to anything — but `npm publish <file.tgz>` is a
+# real command, and a stale tarball committed to the tree is something someone
+# would eventually reach for.
+*.tgz

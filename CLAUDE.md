@@ -361,6 +361,30 @@ tarball shipped no licence text at all while `package.json` claimed
 `"Unlicense"`. Copying it beats authoring a second one for the same reason as
 the palette. Publishing the result is [RELEASING.md](/RELEASING.md).
 
+**Publishing is a pushed tag, and nothing else.** `git push origin 2.1.5` runs
+[`.github/workflows/release.yml`](/.github/workflows/release.yml), which verifies
+and then publishes as an npm **trusted publisher** — OIDC, so there is no token
+in this repository, no `NPM_TOKEN` secret and no OTP. Two consequences worth
+holding: **the workflow's FILENAME is part of the credential** (npmjs.com matches
+org + repo + `release.yml`, so renaming the file revokes publishing and npm
+reports it as a 404 on the PUT, which reads like a missing package), and the tag
+must equal `packages/brand/package.json`'s version — the workflow asserts it,
+because tagging one version while the manifest says another republishes the
+manifest's, and npm never sees the tag.
+
+The workflow reruns every check plus one that only makes sense against the
+artifact: `docs/tools/smoke-tarball.mjs` installs the packed tarball and asks it
+seventeen questions. That is not duplication of `npm run check` — `files`,
+`exports` and npm's by-name pickup of `LICENSE`/`README.md` are all invisible to a
+check that walks `dist/` in place, so a package can be correct on disk and broken
+for everyone who installs it. Its reference walk **mirrors `referencesOf()` in
+`build.mjs` by copy; keep the two in step.**
+
+**`check:captures` is the one precondition the pipeline cannot enforce.** It
+needs a codecave.pro checkout, and CI's is refused — `CODECAVE_PRO_TOKEN` is set
+and returns 403. The release workflow attempts it, fails the release on drift,
+and warns loudly when it could not run at all. Run it locally before tagging.
+
 The README is authored because npm renders it as the package page and there is
 nowhere else for that page to come from — it is manifest-adjacent, the same
 category as `package.json`. It explains how to install and consume, and links

@@ -194,9 +194,18 @@ the sub-nav already lists in the same order.
 
 **`DESIGN.md` had a dead link.** It cited `WEBSITE-REVIEW.md` as
 `/WEBSITE-REVIEW.md` — root-absolute to a repo-root file the site does not
-serve. Dead in the rendered guide and on GitHub too; it only ever resolved in an
-editor. The same file names it three other times as plain text and now does so a
+serve. The same file names it three other times as plain text and now does so a
 fourth. `check:links` did not catch it because it is not a `.html`.
+
+**It was dead only in the rendered guide, and that is why it survived.** GitHub
+rewrites a root-absolute markdown link against the REPOSITORY root — measured:
+`/CONTRIBUTING.md` in `CLAUDE.md` renders as
+`/CodeCavePro/brand/blob/development/CONTRIBUTING.md` — so this spelling works
+everywhere these files were read before the guides had a surface, and works in an
+editor too. It broke the moment `DESIGN.md` became a page on a site that serves
+no `/WEBSITE-REVIEW.md`. Root-absolute is the right form in the repo-root
+documents, which is why `CLAUDE.md`, `CONTRIBUTING.md` and `RELEASING.md` keep
+using it; it is the wrong form in a file Starlight renders.
 
 Both of those were found by fetching every reference on all 39 pages — 727 of
 them — not by looking at pages. That sweep now reports zero broken references and

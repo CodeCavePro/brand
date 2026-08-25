@@ -74,10 +74,15 @@ npm run check:captures
 
 It compares every capture against a `codecave.pro` checkout (expected beside
 this repo; pass a path as an argument otherwise) and names the drifted ones.
-**It is not part of `npm run check` and not in CI**, because the site repository
-is private and CI has no checkout of it — with no checkout the command fails
-loudly rather than reporting success, so it can only ever be run somewhere the
-answer is real.
+**It is not part of `npm run check`**, because the site repository is private
+and a fresh checkout has nothing to compare against — with no checkout the
+command fails loudly rather than reporting success, so it can only ever be run
+somewhere the answer is real.
+
+The release workflow attempts it — a publish is the one moment a stale capture
+becomes permanent — but the checkout is refused today, so it warns and continues
+rather than blocking releases on a repository CI cannot read. **Treat it as
+yours to run before tagging.** See [RELEASING.md](/RELEASING.md).
 
 ### The derived half of `ds-bundle/`
 
@@ -398,9 +403,14 @@ not filed anywhere. It is Maria Shaban's decision and gets its own project.
 
 ## Publishing
 
-Changing `docs/` does not publish anything to npm. See
-[RELEASING.md](/RELEASING.md), and read its rollback section before the first
-publish rather than after: npm's unpublish window is 72 hours and a version
+Changing `docs/` does not publish anything to npm. **Pushing a bare version tag
+does** — `git push origin 2.1.5` starts
+[`.github/workflows/release.yml`](/.github/workflows/release.yml), which verifies
+and then publishes as a trusted publisher. There is no npm token in this
+repository and no OTP to type; the tag is the deliberate act, so treat it as one.
+
+See [RELEASING.md](/RELEASING.md), and read its rollback section before your
+first release rather than after: npm's unpublish window is 72 hours and a version
 number, once used, can never be reissued.
 
 The docs site at <https://brand.codecave.pro/> is a different matter — it deploys

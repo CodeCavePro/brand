@@ -1,0 +1,303 @@
+# Publish @codecavepro/brand to npm, from a pushed version tag.
+#
+# THE FILENAME IS PART OF THE CREDENTIAL. This job authenticates by OIDC
+# ("trusted publishing"): no npm token is stored anywhere, and npmjs.com decides
+# whether to mint a short-lived one by matching the org, the repository and the
+# workflow FILENAME against what is registered on the package. Renaming this
+# file revokes the ability to publish, and npm reports that as a 404 on the PUT
+# rather than as an authentication failure — see "If the publish is refused"
+# below. Register it as `release.yml`, with no directory part.
+#
+# What triggers a publish: pushing an annotated tag that is a bare version —
+# `2.1.5`, no `v`, this repo's convention since 1.0.0. That is the whole
+# ceremony, and it is deliberately a human act with a name on it.
+#
+# The order this inverts: RELEASING.md used to publish first and tag afterwards,
+# because a human ran both. Now the tag is the trigger, so it comes first. What
+# used to be a rehearsal a human could skip is the eight steps below, and they
+# all run before anything reaches the registry — so a bad tag costs a red run,
+# not a burned version number.
+#
+# What this job canNOT verify, and why the runbook still has a local
+# precondition: `npm run check:captures` compares docs/source_examples/ against
+# a checkout of CodeCavePro/codecave.pro, which CI cannot read today
+# (CODECAVE_PRO_TOKEN is set and returns 403). It is attempted below and warns
+# when it is skipped. Publishing from stale captures is the one failure this
+# pipeline cannot catch for you.
+name: Publish @codecavepro/brand to npm
+
+on:
+  push:
+    tags:
+      # Bare semver. The in-job guard below is the real gate — it asserts the
+      # tag and the manifest agree — so this pattern only has to keep unrelated
+      # tags from starting a run.
+      - '[0-9]+.[0-9]+.[0-9]+'
+
+  # For re-running a publish that failed on something outside the package: a
+  # registry blip, a trusted-publisher field that was wrong the first time.
+  # Select the TAG in the "Use workflow from" box, not a branch — the job
+  # refuses a branch ref, so that every published version has a tag.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  # This is the credential. Without it npm has no OIDC token to exchange and
+  # the publish fails as though the package did not exist.
+  id-token: write
+
+# Serialised, and never cancelled: a publish that is interrupted between the
+# registry write and the confirmation below leaves nobody able to say whether
+# the version went out.
+concurrency:
+  group: npm-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      # v7 removed setup-node's dummy NODE_AUTH_TOKEN export, which is what
+      # makes registry-url safe to use with OIDC: on earlier majors the .npmrc
+      # it writes carries an auth line that resolves to an empty token and
+      # shadows the OIDC exchange. Node 24 because trusted publishing needs
+      # node >= 22.14 and npm >= 11.5.1.
+      #
+      # Caching is off on purpose. npm's own guidance is never to cache in a
+      # release build; a restored node_modules is the one input to a published
+      # tarball that no commit accounts for.
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
+
+      # Both floor versions are OIDC's, not this package's. A runner image that
+      # drifted below either would fail at the publish step with an
+      # authentication error that reads like a misconfigured trusted publisher,
+      # which is a long way to walk for a wrong npm.
+      - name: Assert the toolchain can do OIDC
+        run: |
+          set -euo pipefail
+          node - <<'EOF'
+          const { execSync } = require('node:child_process');
+          /* -1 / 0 / 1, comparing dotted numeric versions field by field. A
+             missing field counts as 0, so "24" is above "22.14". */
+          const cmp = (a, b) => {
+            const x = String(a).split('.').map(Number);
+            const y = String(b).split('.').map(Number);
+            for (let i = 0; i < Math.max(x.length, y.length); i += 1) {
+              const d = (x[i] ?? 0) - (y[i] ?? 0);
+              if (d) return d < 0 ? -1 : 1;
+            }
+            return 0;
+          };
+          const npmv = execSync('npm --version').toString().trim();
+          const bad = [];
+          if (cmp(process.versions.node, '22.14') < 0) bad.push(`node ${process.versions.node} < 22.14`);
+          if (cmp(npmv, '11.5.1') < 0) bad.push(`npm ${npmv} < 11.5.1`);
+          if (bad.length) {
+            console.error('This runner cannot use trusted publishing: ' + bad.join(', '));
+            console.error('Raise node-version above, or pin npm with `npm i -g npm@latest`.');
+            process.exit(1);
+          }
+          console.log(`node ${process.versions.node}, npm ${npmv} — both above the OIDC floor.`);
+          EOF
+
+      # A tag that does not match the manifest is the one mistake here that
+      # would otherwise succeed quietly: tagging 2.1.5 while the manifest still
+      # says 2.1.4 republishes 2.1.4 under a tag claiming otherwise, and the
+      # version number is burned either way. npm never sees the tag, so nothing
+      # downstream would ever notice.
+      - name: Assert the tag names the version being published
+        id: version
+        run: |
+          set -euo pipefail
+          VERSION="$(node -p "require('./packages/brand/package.json').version")"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+          if [ "${{ github.ref_type }}" != "tag" ]; then
+            echo "::error title=Not a tag::This job publishes from a version tag. Re-run it with the tag selected in \"Use workflow from\", so that every published version has a tag."
+            exit 1
+          fi
+
+          TAG="${{ github.ref_name }}"
+          if [ "$TAG" != "$VERSION" ]; then
+            echo "::error title=Tag does not match the manifest::Tag $TAG, packages/brand/package.json $VERSION. Delete the tag, fix one of the two, and tag again — a published version number can never be reissued."
+            exit 1
+          fi
+          echo "Tag $TAG matches packages/brand/package.json."
+
+      # Asked before the build rather than after, because npm's own refusal
+      # arrives three minutes later and the answer never changes in between.
+      # `npm view` exits non-zero for a version that does not exist, which is
+      # the case we want, so the failure is the success here.
+      - name: Assert this version is not already published
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -uo pipefail
+          if npm view "@codecavepro/brand@$VERSION" version >/dev/null 2>&1; then
+            echo "::error title=Already published::@codecavepro/brand@$VERSION is on the registry. A version number can never be reissued — bump and tag again."
+            exit 1
+          fi
+          LATEST="$(npm view @codecavepro/brand version 2>/dev/null || echo 'none')"
+          echo "Registry is at $LATEST; publishing $VERSION."
+
+      - name: Install
+        run: npm ci
+
+      # Creates dist/, which `npm run check` needs — check reads the built
+      # package, so it cannot run against a fresh checkout. The build also runs
+      # the README value assertions, so a palette change that left the package
+      # page behind stops here.
+      - name: Build the package
+        run: npm run build
+
+      # The same suite CI already runs on every push to development, plus the
+      # package's own byte-identity check against docs/.
+      - name: Check
+        run: npm run check
+
+      # ---- captures --------------------------------------------------------
+      # source_examples/ is EVIDENCE, and a capture that has fallen behind the
+      # site reads exactly like a current one. RELEASING.md makes re-measuring
+      # it a precondition of every publish, now that components ship.
+      #
+      # continue-on-error, and a warning rather than a failure, for one reason:
+      # the checkout is refused today, so a hard gate would mean this package
+      # could never be released at all. The day CODECAVE_PRO_TOKEN works, this
+      # becomes a real gate with no further edit — the run step below fails the
+      # release on drift.
+      - name: Check out the codecave.pro toolchain
+        id: toolchain
+        continue-on-error: true
+        uses: actions/checkout@v7
+        with:
+          repository: CodeCavePro/codecave.pro
+          path: _toolchain
+          token: ${{ secrets.CODECAVE_PRO_TOKEN || github.token }}
+          persist-credentials: false
+
+      - name: Verify the captures against the live site
+        if: steps.toolchain.outcome == 'success'
+        run: node docs/tools/check-captures.mjs _toolchain
+
+      - name: Warn that the captures were not verified
+        if: steps.toolchain.outcome != 'success'
+        run: |
+          echo "::warning title=Captures not verified::CodeCavePro/codecave.pro could not be checked out, so docs/source_examples/ was not compared against the site. Components are built from those captures. Run 'npm run check:captures' locally with the site on 'development' before trusting this release."
+          {
+            echo "### Captures were not verified"
+            echo ""
+            echo "\`CodeCavePro/codecave.pro\` could not be checked out, so"
+            echo "\`docs/source_examples/\` was **not** compared against the site it was captured"
+            echo "from. Nineteen components are built from those captures."
+            echo ""
+            echo "This is the one precondition in [RELEASING.md](https://github.com/CodeCavePro/brand/blob/development/RELEASING.md)"
+            echo "that this pipeline cannot enforce. Run it locally, with the site checkout on"
+            echo "\`development\` — it reads whatever branch it finds:"
+            echo ""
+            echo '```'
+            echo "npm run check:captures"
+            echo '```'
+            echo ""
+            echo "See the Pages workflow's summary for how to fix \`CODECAVE_PRO_TOKEN\`; the"
+            echo "same token is what would make this a gate instead of a warning."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # ---- rehearse on the actual artifact ---------------------------------
+      # Everything above reads the tree. This installs the tarball and asks it
+      # the questions a consumer asks first, because `files`, `exports` and
+      # npm's by-name pickup of LICENSE and README are all invisible to a check
+      # that walks dist/ in place. --legacy-peer-deps skips auto-installing the
+      # five peers: nothing here imports them, and vue is a large download to
+      # prove nothing with.
+      - name: Pack and smoke-test the tarball
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          SMOKE="$RUNNER_TEMP/smoke"
+          mkdir -p "$SMOKE"
+          npm pack --workspace @codecavepro/brand --pack-destination "$SMOKE"
+          (
+            cd "$SMOKE"
+            npm init -y >/dev/null
+            npm i "./codecavepro-brand-$VERSION.tgz" --no-audit --no-fund --legacy-peer-deps
+          )
+          node docs/tools/smoke-tarball.mjs "$SMOKE/node_modules/@codecavepro/brand"
+
+      # ---- publish ---------------------------------------------------------
+      # `npm run release`, not a bare `npm publish`: the root manifest and the
+      # package manifest share the name `@codecavepro/brand`, so the two are
+      # distinguished by PATH and only by path. The script carries the
+      # --workspace flag that picks the right one. See RELEASING.md.
+      #
+      # No NODE_AUTH_TOKEN, no --otp, no secret. If this step fails, read "If
+      # the publish is refused" at the bottom of this file before changing
+      # anything.
+      - name: Publish
+        run: npm run release
+
+      # The publish exiting 0 is npm's account of the publish. This is the
+      # registry's.
+      - name: Confirm the registry agrees
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          for i in 1 2 3 4 5; do
+            PUBLISHED="$(npm view "@codecavepro/brand@$VERSION" version 2>/dev/null || true)"
+            [ -n "$PUBLISHED" ] && break
+            echo "Not visible yet; retrying ($i/5)."
+            sleep 6
+          done
+          if [ "${PUBLISHED:-}" != "$VERSION" ]; then
+            echo "::error title=Published version not visible::npm publish exited 0 but the registry does not serve $VERSION. Check https://www.npmjs.com/package/@codecavepro/brand before republishing anything — a version number can never be reissued."
+            exit 1
+          fi
+          {
+            echo "### Published \`@codecavepro/brand@$VERSION\`"
+            echo ""
+            echo "- <https://www.npmjs.com/package/@codecavepro/brand/v/$VERSION>"
+            echo "- Provenance is attached automatically — this ran as a trusted publisher."
+            echo ""
+            echo "**Still to do by hand:** comment the version and tag on"
+            echo "[CCWEB2-318](https://codecave.atlassian.net/browse/CCWEB2-318). If this"
+            echo "release changed a token VALUE, say which — codecave.pro consumes these, and"
+            echo "a value change is the only kind of release with downstream work attached."
+            echo ""
+            echo "codecave.pro will not move on its own: it installs with"
+            echo "\`pnpm install --frozen-lockfile\`, so it runs whatever its lockfile pins"
+            echo "until someone raises the range and regenerates it."
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "Registry serves $PUBLISHED."
+
+# If the publish is refused
+# -------------------------
+# npm reports a failed OIDC exchange as `E404 Not Found - PUT
+# https://registry.npmjs.org/@codecavepro%2fbrand`, which reads as "no such
+# package" and is not that — @codecavepro/brand exists. Check, in this order:
+#
+#  1. The trusted publisher is registered on the PACKAGE, at
+#     npmjs.com/package/@codecavepro/brand/access, not on the org.
+#  2. Workflow filename is `release.yml` — the bare filename, NOT
+#     `.github/workflows/release.yml`. Every field is case-sensitive and exact.
+#  3. Organization is `CodeCavePro` and repository is `brand`.
+#  4. Allowed actions includes `npm publish`.
+#  5. Environment name is EMPTY. This job declares no environment; a value
+#     there will never match.
+#
+# One thing that is genuinely unproven: whether npm's OIDC exchange resolves the
+# package correctly for `npm publish --workspace`, given that this package sits
+# in a subdirectory and declares `repository.directory`. Trusted publishing has
+# known rough edges with nested packages. If everything above is right and the
+# PUT is still refused, the next thing to try is publishing from the package
+# directory instead — `working-directory: packages/brand` with a bare `npm
+# publish` — which reaches the same manifest by a plainer route. Do that as a
+# workflow edit, so the two paths never disagree about which manifest is meant.
