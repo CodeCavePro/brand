@@ -259,6 +259,91 @@ if (unbarred.length) {
   process.exit(1);
 }
 
+/* ---- every file a PAGE reaches for at runtime has to be there ------------
+ * The two blocks above ask about prose and about the menu. Neither asks the
+ * plainest question of all: when this page runs, does the file it imports
+ * exist?
+ *
+ * Nothing did, and the cost was the entire storybook. Collapsing the surfaces
+ * moved pages/storybook/*.astro to pages/kitchen-sink/*.astro, and `./compiled/
+ * Button.js` -- correct while the page lived at /storybook/ -- silently became
+ * /kitchen-sink/compiled/Button.js, which does not exist. 28 references across
+ * 13 pages broke at once. The build stayed green, every other check stayed
+ * green, and every specimen on the site rendered an empty box: the imports are
+ * inside `<script is:inline type="module">`, so Astro ships them verbatim and
+ * never resolves them, and a module that 404s fails in the browser and nowhere
+ * else.
+ *
+ * check:importmap did not catch it and could not: it compares the bare
+ * specifiers inside the bundles against the import map's keys, so it proves
+ * `vue` resolves. It never asks whether the PAGE can reach the bundle.
+ *
+ * Same shape as the deliverables losing their assets, one directory up -- and
+ * the same answer, which is to ask rather than to remember.
+ *
+ * Frontmatter is stripped first. Imports above the fence are Astro's, resolved
+ * at build time against the SOURCE tree; everything below it is the browser's,
+ * resolved at request time against the OUTPUT tree. Judging the two by the same
+ * rule is how a layout import gets reported as a dead file.
+ */
+const runtimeMissing = [];
+let runtimeOk = 0;
+
+for (const file of walk(pages)) {
+  if (!file.endsWith('.astro')) continue;
+  const src = fs.readFileSync(file, 'utf8');
+
+  /* Below the closing fence only. A page with no fence is all body. */
+  const fence = src.startsWith('---') ? src.indexOf('\n---', 3) : -1;
+  const body = fence === -1 ? src : src.slice(src.indexOf('\n', fence + 1) + 1);
+
+  /* Where this page's OUTPUT lands, which is what a relative URL resolves
+     against. 'preserve' emits pages/x/y.astro at x/y.html, so the directory is
+     the page's own directory. */
+  const outDir = path.relative(pages, path.dirname(file)).split(path.sep).join('/');
+
+  const refs = [
+    ...[...body.matchAll(/import\s[^'"]*from\s*['"](\.[^'"]+)['"]/g)].map((m) => m[1]),
+    ...[...body.matchAll(/\s(?:src|href)="(\.\.?\/[^"]+)"/g)].map((m) => m[1]),
+    ...[...body.matchAll(/url\(\s*['"]?(\.\.?\/[^)'"]+)['"]?\s*\)/g)].map((m) => m[1]),
+  ];
+
+  for (const ref of new Set(refs)) {
+    /* An .astro is never fetched by a browser; if one appears below the fence
+       it is a component tag's import and Astro owns it. */
+    if (ref.endsWith('.astro')) continue;
+
+    const target = path
+      .normalize(path.join(outDir, ref.split('#')[0].split('?')[0]))
+      .split(path.sep)
+      .join('/');
+
+    /* `routes` is the union of what the build RENDERS and what it COPIES, which
+       is exactly what a browser can ask for. So ../index.html resolves against
+       a page that is rendered, and ../storybook/compiled/Button.js against a
+       file that is copied, with no special case for either. */
+    if (routes.has(target) || routes.has(target + '/index.html') || routes.has(target + '/')) {
+      runtimeOk += 1;
+    } else {
+      const rel = path.relative(root, file).split(path.sep).join('/');
+      runtimeMissing.push(`  ${rel}\n      ${ref}   →   ${target}`);
+    }
+  }
+}
+
+if (runtimeMissing.length) {
+  console.error(
+    `${runtimeMissing.length} reference(s) from a page point at a file the build does not have:\n` +
+      runtimeMissing.join('\n') +
+      '\n\nThese are resolved by the BROWSER, against the built tree, so a wrong one\n' +
+      'fails nowhere in this repository: the build succeeds and the reader gets an\n' +
+      'empty box. Moving a page between directories is what breaks them, because a\n' +
+      "relative path that was right at the old depth is wrong at the new one and\n" +
+      'still looks perfectly reasonable.',
+  );
+  process.exit(1);
+}
+
 /* ---- where citations live ------------------------------------------------
  * An explicit list rather than a glob. A .html in a code comment is usually an
  * illustration of a rule ("a page written as both x.astro and x.html…"), not a
@@ -406,7 +491,8 @@ if (staleGone.length) {
 }
 
 console.log(
-  `${live} documentation link(s) resolve across ${SCAN.length} file(s), ` +
+  `${runtimeOk} runtime reference(s) from pages resolve; ` +
+    `${live} documentation link(s) resolve across ${SCAN.length} file(s), ` +
     `against ${routes.size} route(s) derived from docs/ ` +
     `(${GONE.length} deliberately-dead name(s) recorded).`,
 );

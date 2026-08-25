@@ -101,7 +101,7 @@ import DocPage from '../../layouts/DocPage.astro';
 
 <script is:inline type="module">
   import { createApp } from 'vue';
-  import LinkGroup from './compiled/link-group.js';
+  import LinkGroup from '../storybook/compiled/link-group.js';
 
   // links.ts's services array, verbatim — link-group.vue only imports its TYPE,
   // so the data is passed at the call site exactly as footer.astro does.

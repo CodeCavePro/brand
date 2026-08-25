@@ -172,8 +172,8 @@ import DocPage from '../../layouts/DocPage.astro';
 
 <script is:inline type="module">
   import { createApp } from 'vue';
-  import Review from './compiled/Review.js';
-  import { usePlaceholders } from './placeholders.js';
+  import Review from '../storybook/compiled/Review.js';
+  import { usePlaceholders } from '../storybook/placeholders.js';
 
   createApp(Review, {
     item: {

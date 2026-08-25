@@ -115,8 +115,8 @@ import DocPage from '../../layouts/DocPage.astro';
 
 <script is:inline type="module">
   import { createApp } from 'vue';
-  import ArticlePreview from './compiled/ArticlePreview.js';
-  import { usePlaceholders } from './placeholders.js';
+  import ArticlePreview from '../storybook/compiled/ArticlePreview.js';
+  import { usePlaceholders } from '../storybook/placeholders.js';
 
   createApp(ArticlePreview, {
     article: {
