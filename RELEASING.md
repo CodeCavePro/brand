@@ -12,9 +12,10 @@ reissued. Everything else in this runbook is reversible; that is not.
 - A token value changed in `docs/` and consumers need it — a minor bump.
 - The package layout changed (export paths, module shape) — a **major** bump,
   now that 1.0 is out and the layout is a promise.
-- The very first publish, [CCWEB2-318](https://codecave.atlassian.net/browse/CCWEB2-318)
-  phase 5. Read [First publish only](#first-publish-only) as well; it has
-  preconditions the routine path does not.
+- A first publish of some future package. Read [First publish only](#first-publish-only)
+  as well; it has preconditions the routine path does not. This one's first
+  publish is long done — the registry has been serving `@codecavepro/brand`
+  since 1.0.0.
 
 **Do not use it** for changes that do not reach the tarball. The package ships
 `dist/` plus `README.md` and `LICENSE` — 57 files as of 2.2.0. Storybook
@@ -257,9 +258,9 @@ Two things in the summary are worth reading rather than skimming:
 
 ### 6. Close the loop
 
-Comment the version and tag on the CCWEB2-318 phase-5 issue. If this publish
-changed a token value, say which — the site consumes these, and a value change
-is the only kind of release with downstream work attached.
+Comment the version and tag on whichever issue the release was for. If this
+publish changed a token value, say which — the site consumes these, and a value
+change is the only kind of release with downstream work attached.
 
 codecave.pro will not move on its own: it installs with `pnpm install
 --frozen-lockfile`, so it runs whatever its lockfile pins until someone raises
