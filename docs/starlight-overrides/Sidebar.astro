@@ -1,0 +1,23 @@
+---
+/* Starlight's left sidebar, emptied.
+ *
+ * The guides' cross-document navigation is the sub-nav in the Header override —
+ * the same bar, from the same menu.ts, that the other 35 pages carry. A left
+ * sidebar would list the same four guides a second time in a different visual
+ * language, and the in-document axis is already the table of contents on the
+ * right, which stays.
+ *
+ * It is also empty as configured, which is worth recording because it looks
+ * like a config mistake and is not one. `autogenerate` filters routes on
+ * `entry.filePath` relative to the collection directory rather than on
+ * `entry.id` (utils/navigation.ts). Our entries have ids under `guides/` and
+ * filePaths of `docs/DESIGN.md` — the actual shipped files, which is the entire
+ * point of the loader — so every entry is filtered out and the group renders
+ * with its label and no links, silently. Making it work would mean giving each
+ * entry a filePath that does not exist.
+ *
+ * Rendering nothing here removes the sidebar's CONTENT, including the theme
+ * select — this system documents no light theme, and DESIGN.md says so. The
+ * wrapper element is PageFrame's and is collapsed in docs/starlight.css.
+ */
+---

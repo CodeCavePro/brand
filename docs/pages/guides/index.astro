@@ -1,0 +1,133 @@
+---
+/* The guides gallery — the front door to the third surface.
+ *
+ * WHY THIS IS A HAND-BUILT PAGE AND THE FOUR GUIDES ARE NOT. Starlight renders
+ * the guides from a collection; it does not render a section index, and
+ * autogenerating one would mean authoring prose inside content.config.ts, which
+ * is the one thing that loader must not do. So the surface's front door is an
+ * ordinary DocPage like every other gallery here, and Starlight owns only the
+ * long-form pages underneath it.
+ *
+ * That split has a second benefit worth stating: this page goes through
+ * DocPage, so check:links sees it, the passthrough check asserts it rendered,
+ * and MAIN has something to point at that is not one particular guide.
+ *
+ * A static route beats Starlight's injected `[...slug]` catch-all, so
+ * guides/index.html is this file rather than a collection entry. That is Astro
+ * route priority — specific over rest-parameter — and it is asserted by the
+ * passthrough check every build rather than trusted.
+ */
+import DocPage from '../../layouts/DocPage.astro';
+import { SUB } from '../../components/menu.ts';
+
+/* The cards are the sub-nav, so the two cannot disagree about what exists or
+   what order it is in. Descriptions live here because they are chrome; the
+   titles come from menu.ts because they are navigation. */
+const BLURB: Record<string, string> = {
+  'brand-guide':
+    'The whole system in a page — colour roles, type, the four messaging pillars. Start here if you have five minutes.',
+  'design-rules':
+    'The canonical rules document. Product context, visual foundations, colour, typography, spacing and radius, components, motion, voice, twelve anti-patterns, known divergences, provenance.',
+  'using-the-kit':
+    'What the package contains, where every value came from, and the workflow for consuming it in another project.',
+  'skill-definition':
+    'The map rather than the rules: what is inside, when to reach for it, and the one thing it must not be used for.',
+};
+
+const SOURCE: Record<string, string> = {
+  'brand-guide': 'docs/guide.md',
+  'design-rules': 'docs/DESIGN.md',
+  'using-the-kit': 'docs/README.md',
+  'skill-definition': 'docs/SKILL.md',
+};
+---
+<DocPage title="CODECAVE — Guides" nav="guides">
+
+<div class="shell">
+
+  <a class="back" href="../index.html">&larr; Design system</a>
+
+  <p class="eyebrow">The written half</p>
+  <h1>The rules, in prose</h1>
+  <p class="lead">Every other surface here shows you something. These four say <em>why</em> —
+     and until now they were downloadable files rather than pages, which is a strange
+     shape for the most carefully written material in the repository. They are rendered
+     from exactly the files that ship: <code>docs/DESIGN.md</code>,
+     <code>docs/README.md</code>, <code>docs/SKILL.md</code> and <code>docs/guide.md</code>,
+     unmoved and unedited.</p>
+
+  <div class="cards">
+    {SUB.guides.map((g) => (
+      <a class="card" href={g.href.replace('guides/', '')}>
+        <strong>{g.label}</strong>
+        <span>{BLURB[g.name]}</span>
+        <span class="f">{SOURCE[g.name]}</span>
+      </a>
+    ))}
+  </div>
+
+  <p class="note">
+    <strong>These pages are rendered from the shipped files, not from copies.</strong>
+    <code>docs/DESIGN.md</code> and <code>docs/SKILL.md</code> both carry frontmatter that
+    belongs to something else — a token manifest and Claude Skill metadata, where
+    <code>user-invocable: true</code> is what makes it a slash command. Neither block was
+    touched to make these pages exist; the page title is synthesized at load time instead.
+    So the file you read here and the file a consumer downloads are the same bytes, and
+    there is no second copy to drift.
+  </p>
+
+</div>
+
+</DocPage>
+
+<style is:global>
+
+    /* Deliberately the same shell as examples/index.astro. Two galleries that
+       look different for no reason is worse than one duplicated ladder, and
+       .page-container is not usable here for the reason recorded there. */
+    body { padding: 0 0 6rem; }
+    .shell { box-sizing: border-box; max-width: var(--max-width-desktop);
+             margin: 0 auto; padding: 4rem var(--gutter-base) 0; }
+    @media (min-width: 768px)  { .shell { padding-inline: var(--gutter-md); } }
+    @media (min-width: 1280px) { .shell { padding-inline: var(--gutter-xl); } }
+
+    .back { display: inline-block; margin-bottom: 2.5rem; text-decoration: none;
+            color: var(--color-body-secondary-lighter); font-size: var(--text-caption); }
+    .back:hover { color: var(--color-heading); }
+
+    .eyebrow { margin: 0 0 0.75rem; color: var(--color-hovered);
+               font-size: var(--text-caption); font-weight: var(--font-weight-bold);
+               letter-spacing: 0.08em; text-transform: uppercase; }
+    h1 { margin: 0; font-size: var(--text-heading-md);
+         line-height: var(--text-heading-md--line-height); letter-spacing: -0.02em; }
+    .lead { max-width: 68ch; margin: 1.25rem 0 0;
+            color: var(--color-body-secondary-lighter);
+            font-size: var(--text-md); line-height: var(--leading-md); }
+    .lead code { font-family: var(--font-mono); font-size: 0.8125rem;
+                 color: var(--color-brand-200); }
+
+    .cards { display: grid; gap: 1rem; margin-top: 3rem;
+             grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); }
+    .card { display: grid; gap: 0.5rem; align-content: start; padding: 1.75rem 1.75rem 2rem;
+            text-decoration: none; border-radius: var(--radius-card);
+            background: var(--color-surface-secondary);
+            border: 1px solid var(--color-surface-quaternary);
+            transition: border-color var(--transition-colors),
+                        background var(--transition-colors); }
+    .card:hover { background: var(--color-surface-tertiary);
+                  border-color: var(--color-action); }
+    .card strong { color: var(--color-heading); font-size: var(--text-subhead);
+                   line-height: var(--leading-subhead); font-weight: var(--font-weight-bold); }
+    .card span { color: var(--color-body-secondary-lighter);
+                 font-size: var(--text-caption); line-height: var(--leading-caption); }
+    .card .f { margin-top: 0.375rem; color: var(--color-body-secondary-lighter);
+               font-family: var(--font-mono); font-size: 0.75rem; }
+
+    .note { margin-top: 4rem; padding: 1rem 1.25rem; border-radius: var(--radius-control);
+            border: 1px solid var(--color-surface-quaternary);
+            color: var(--color-body-secondary-lighter);
+            font-size: var(--text-caption); line-height: var(--leading-caption); }
+    .note strong { color: var(--color-heading); }
+    .note code { font-family: var(--font-mono); font-size: 0.8125rem;
+                 color: var(--color-hovered); }
+</style>

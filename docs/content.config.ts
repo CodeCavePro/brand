@@ -1,42 +1,77 @@
-/* SPIKE — CCWEB2-374. Not a decision; see STARLIGHT-SPIKE.md for the findings.
+/* The prose collection: four files that already exist, rendered as pages.
  *
- * Can Starlight render the REAL prose where it already lives — without moving
- * the files and without editing frontmatter that belongs to other systems?
- *
- * Yes. That is what this proves.
- *
- * The four prose files are the entire case for adopting Starlight: 1,577 lines
- * that today render as no pages at all, only as downloadable payload. Two of
- * them already carry frontmatter, and it is NOT Starlight's to take:
+ * THE FILES ARE NOT MOVED AND NOT EDITED, and that is the whole design of this
+ * loader rather than a convenience. `docs/DESIGN.md`, `README.md`, `SKILL.md`
+ * and `guide.md` are payload — they ship to dist/ and are cited by path from
+ * eight other files — so they cannot become collection entries under
+ * `src/content/`. And two of them already carry frontmatter that belongs to
+ * somebody else:
  *
  *   docs/SKILL.md   name / description / user-invocable  — Claude Skill metadata.
  *                   `user-invocable: true` is what makes it a slash command.
  *   docs/DESIGN.md  name / category / surface / colors   — a token manifest.
  *
- * Starlight's docsSchema() requires `title`, and writing one into these files
- * is not free: the blocks are read by other tools, and both files ship to
- * dist/ as payload and are cited by name. So the title is SYNTHESIZED at load
- * time instead, and the files on disk are never touched.
+ * Starlight's docsSchema() requires a `title`, so writing one into those blocks
+ * would mean editing metadata two other systems read, to satisfy a third. The
+ * title is SYNTHESIZED here instead and the files on disk are never touched.
  *
- * Two details that each cost a build to find:
+ * TWO THINGS THAT LOOK OPTIONAL AND ARE NOT:
  *
- *   - The data has to go through `parseData()`. Setting `data` on the store
- *     directly stores the entry — the loader reports four successes — and
- *     Starlight then renders none of them, because the schema never ran and
- *     the entries are not valid docs. Silent: no error, no page, exit 0.
+ *   1. The data goes through `parseData()`. Setting `data` on the store
+ *      directly stores the entry — the loader reports four successes — and
+ *      Starlight then renders none of them, because the schema never ran and
+ *      the entries are not valid docs. No error, no page, exit 0.
  *
- *   - Deriving the title from the first `# heading` is NOT good enough, and
- *     this file leaves it wrong deliberately so the finding stays visible.
- *     Three of the four open with "# CODECAVE Design System", so three sidebar
- *     entries and three search results come out identically named. A real
- *     adoption needs a per-file title map here.
+ *   2. The titles are a MAP, not the first `# heading`. Deriving them from the
+ *      heading is the obvious thing and it is wrong here: three of the four
+ *      open with "# CODECAVE Design System", so the navigation came out with
+ *      three identical entries. The heading is what the document calls the
+ *      SYSTEM; the title is what it calls ITSELF, and only one of those is
+ *      written down anywhere.
+ *
+ * The slugs here are also the routes, and docs/components/menu.ts points a
+ * navigation bar at them. check:links asserts the two agree in both directions
+ * — a slug the bar names and this file does not render, and a guide this file
+ * renders that no bar names.
  */
 import { defineCollection } from 'astro:content';
 import { docsSchema } from '@astrojs/starlight/schema';
 import fs from 'node:fs';
 import path from 'node:path';
 
-const FILES = ['DESIGN.md', 'README.md', 'SKILL.md', 'guide.md'];
+/** The four, in reading order — shortest orientation first, reference last.
+ *
+ *  `order` drives the page order. Left to itself Starlight sorts entries
+ *  alphabetically, which puts the 948-line rules document first and the 28-line
+ *  orientation third: correct as a filename sort, useless as a path through the
+ *  material. */
+const GUIDES = [
+  {
+    file: 'guide.md',
+    slug: 'brand-guide',
+    title: 'Brand guide',
+    description: 'The whole system in a page: colours, type, voice and the four messaging pillars.',
+  },
+  {
+    file: 'DESIGN.md',
+    slug: 'design-rules',
+    title: 'Design rules',
+    description:
+      'The canonical rules document — colour, typography, spacing, motion, voice, and the twelve anti-patterns.',
+  },
+  {
+    file: 'README.md',
+    slug: 'using-the-kit',
+    title: 'Using the kit',
+    description: 'What the package contains, where each value came from, and how to consume it.',
+  },
+  {
+    file: 'SKILL.md',
+    slug: 'skill-definition',
+    title: 'Skill definition',
+    description: 'The map: what is inside, when to reach for it, and what it must not be used for.',
+  },
+];
 
 /** Strip a leading `---` block, whoever it belongs to. */
 function stripFrontmatter(src: string): string {
@@ -49,22 +84,51 @@ export const collections = {
   docs: defineCollection({
     loader: {
       name: 'codecave-prose-loader',
-      load: async ({ store, renderMarkdown, parseData }) => {
+      load: async ({ store, renderMarkdown, parseData, logger }) => {
         store.clear();
         const root = path.join(process.cwd(), 'docs');
-        for (const file of FILES) {
-          const body = stripFrontmatter(fs.readFileSync(path.join(root, file), 'utf8'));
-          const title = (body.match(/^#\s+(.+)$/m)?.[1] ?? file).trim();
-          const id = 'guides/' + file.replace(/\.md$/, '').toLowerCase();
-          const filePath = `docs/${file}`;
+
+        for (const [i, guide] of GUIDES.entries()) {
+          const full = path.join(root, guide.file);
+
+          /* A renamed prose file would otherwise drop its page silently — the
+             collection would simply be one entry shorter, and a shorter bar
+             looks like a shorter bar. */
+          if (!fs.existsSync(full)) {
+            throw new Error(
+              `content.config.ts: docs/${guide.file} does not exist.\n` +
+                `The prose collection names it explicitly; a rename has to be made here too.`,
+            );
+          }
+
+          const body = stripFrontmatter(fs.readFileSync(full, 'utf8'));
+          const id = `guides/${guide.slug}`;
+          const filePath = `docs/${guide.file}`;
+
           store.set({
             id,
             filePath,
             body,
-            data: await parseData({ id, data: { title }, filePath }),
+            data: await parseData({
+              id,
+              filePath,
+              data: {
+                title: guide.title,
+                description: guide.description,
+                sidebar: { order: i },
+                /* An edit link would point at a collection path that does not
+                   exist. These four live at the repo root. */
+                editUrl: false,
+              },
+            }),
             rendered: await renderMarkdown(body),
           });
         }
+
+        logger.info(
+          `prose collection — ${GUIDES.length} guide(s) rendered from files that stay where they are: ` +
+            GUIDES.map((g) => g.file).join(', '),
+        );
       },
     },
     schema: docsSchema(),

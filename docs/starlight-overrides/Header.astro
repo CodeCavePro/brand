@@ -1,30 +1,65 @@
 ---
-/* SPIKE — CCWEB2-374. Starlight's Header, replaced with the site's own bar.
+/* The docs chrome, standing in for Starlight's own header.
  *
- * The point of the test: BrandNav is a Vue component rendered with NO client
- * directive, so it emits static HTML and ships no JavaScript — exactly as
- * DsNav does on the 34 hand-built pages. If that survives inside Starlight's
- * shell, the two navigations are one component rather than two that have to be
- * kept in agreement.
+ * Starlight ships a header, and this site already has one — so the question is
+ * not which is nicer but which is TRUE. DsNav renders BrandNav, the component
+ * the package actually ships, with no client directive: static HTML, no
+ * JavaScript. A second bar that merely resembled it would be the arrangement
+ * this repo removed when ds-nav.css was deleted — a docs site demonstrating a
+ * navigation nothing ships.
  *
- * `up` is hard-coded to '../' because every page in this spike lives one level
- * down, at /guides/*. A real adoption would have to derive it, and cannot do so
- * from Astro.url.pathname for the reason DocPage records — under
- * build.format: 'preserve' a directory index is requested at one depth in dev
- * and emitted at another by the build.
+ * So the guides get the same two tiers as the other 35 pages, from the same two
+ * components and the same menu.ts. There is no third copy of the bar anywhere,
+ * and check:links asserts this file still renders both tiers — without that,
+ * deleting one leaves a build that succeeds and four pages off the navigation.
+ *
+ * WHY `up` IS A CONSTANT HERE AND DERIVED IN DocPage. Every page this override
+ * renders is a collection entry under guides/, exactly one level down — there is
+ * no index and no deeper nesting, because guides/index.html is a hand-built
+ * DocPage that never reaches this file. So the depth is a fact about the
+ * collection rather than about the request, and reading it off
+ * Astro.url.pathname would reintroduce CCWEB2-336: under build.format
+ * 'preserve' a directory index is requested at one depth in dev and emitted at
+ * another by the build.
+ *
+ * ASSERTED, NOT ASSUMED: if the collection ever gains an entry at another
+ * depth, this throws rather than emitting a page whose every relative URL is
+ * wrong — which is the failure that renders perfectly and 404s on click.
  */
-import BrandNav from '../authored/common/BrandNav.vue';
-import { MAIN } from '../components/menu.ts';
+import DsNav from '../components/DsNav.astro';
+import SubNav from '../components/SubNav.astro';
+import { SUB } from '../components/menu.ts';
 
 const up = '../';
-const half = Math.ceil(MAIN.length / 2);
-const toNav = (i: (typeof MAIN)[number]) => ({ name: i.label, href: `${up}${i.href}` });
+
+/* `guides/brand-guide` -> `brand-guide`. Starlight puts the route's entry on
+   locals; the id is the key the loader stored, which is also the SUB name. */
+const id: string = Astro.locals.starlightRoute?.id ?? '';
+const segments = id.split('/').filter(Boolean);
+
+if (segments.length !== 2 || segments[0] !== 'guides') {
+  throw new Error(
+    `Header override: entry id "${id}" is not guides/<slug>.\n` +
+      `This override hard-codes up='../' because every collection entry sits one\n` +
+      `level down. An entry at another depth needs a derived prefix, not this file.`,
+  );
+}
+
+const current = segments[1];
+
+/* A slug renamed in content.config.ts without menu.ts following would render a
+   section bar with nothing marked — which looks identical to a page correctly
+   outside the bar. SubNav throws on an unknown `current`, so this only has to
+   make sure the name reaches it. */
+if (!SUB.guides?.some((i) => i.name === current)) {
+  throw new Error(
+    `Header override: no SUB["guides"] item named "${current}".\n` +
+      `content.config.ts and menu.ts disagree about the guide slugs.\n` +
+      `Known: ${(SUB.guides ?? []).map((i) => i.name).join(', ') || '(none)'}`,
+  );
+}
 ---
-<BrandNav
-  left={MAIN.slice(0, half).map(toNav)}
-  right={MAIN.slice(half).map(toNav)}
-  logo={`${up}assets/codecave-wide.svg`}
-  logoHref={`${up}index.html`}
-  logoAlt="CODECAVE"
-  logoLabel="CODECAVE design system — documentation home"
-/>
+<div class="ds-nav-stack">
+  <DsNav current="guides" up={up} />
+  <SubNav section="guides" current={current} up={up} />
+</div>

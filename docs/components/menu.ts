@@ -34,11 +34,22 @@ export interface MenuItem {
   href: string;
 }
 
-/** The main menu. Two items, because there are two surfaces.
+/** The main menu. Three items, because there are three surfaces.
  *
- *  BrandNav splits its items around the centred wordmark, so a two-item menu
- *  falls one to each side without any arrangement being chosen here. */
+ *  In reading order rather than any order of importance: the guides say what
+ *  the rules ARE, the kitchen sink shows a part, the examples show the parts
+ *  composed. A reader who follows the bar left to right goes from prose to
+ *  specimen to deliverable.
+ *
+ *  BrandNav splits its items around the centred wordmark. With three that is
+ *  two left and one right, which is arithmetic rather than a layout decision
+ *  taken here. */
 export const MAIN: MenuItem[] = [
+  {
+    name: 'guides',
+    label: 'Guides',
+    href: 'guides/index.html',
+  },
   {
     name: 'kitchen-sink',
     label: 'Kitchen sink',
@@ -84,6 +95,16 @@ export const SUB: Record<string, MenuItem[]> = {
     { name: 'content', label: 'Content', href: 'kitchen-sink/index.html#content' },
     { name: 'compositions', label: 'Compositions', href: 'kitchen-sink/index.html#compositions' },
     { name: 'findings', label: 'Findings', href: 'kitchen-sink/index.html#findings' },
+  ],
+  /* Sibling pages, like examples/ and unlike kitchen-sink/. The order is the
+     collection's reading order and has to stay in step with GUIDES in
+     content.config.ts -- check:links asserts the two agree in both directions,
+     which is what makes a slug rename fail here rather than in a browser. */
+  guides: [
+    { name: 'brand-guide', label: 'Brand guide', href: 'guides/brand-guide.html' },
+    { name: 'design-rules', label: 'Design rules', href: 'guides/design-rules.html' },
+    { name: 'using-the-kit', label: 'Using the kit', href: 'guides/using-the-kit.html' },
+    { name: 'skill-definition', label: 'Skill definition', href: 'guides/skill-definition.html' },
   ],
   examples: [
     { name: 'deck', label: 'Deck', href: 'examples/deck.html' },

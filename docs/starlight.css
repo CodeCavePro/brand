@@ -1,0 +1,132 @@
+/* Starlight's shell, reconciled with this site's chrome.
+ *
+ * Loaded through `customCss` in astro.config.mjs, after colors_and_type.css and
+ * nav.css — so every value here is a token that is already declared, and this
+ * file introduces none of its own.
+ *
+ * It exists because Starlight assumes it owns the page furniture: one header of
+ * a known height, a left sidebar, its own surface colours. This site had all
+ * three first, and the guides are not allowed to be a second design. Everything
+ * below is that reconciliation and nothing else — no new look, no overrides of
+ * Starlight's typography, and nothing that would make a guide page render
+ * differently from the 35 pages around it.
+ */
+
+:root {
+  /* THE ONE MEASUREMENT THAT MATTERS.
+   *
+   * --sl-nav-height is not decoration: Starlight reserves it as the height of
+   * the fixed header AND uses it to offset the page content, the sidebar top
+   * and every scroll target. Its default 4rem is one bar. This site has two, so
+   * the default under-reserved by 82px and the sub-nav sat on top of the page —
+   * the h1 of every guide rendered at y=136 underneath a bar ending at y=158,
+   * in a build that was green and a page that looked deliberate.
+   *
+   * Derived from the same --ds-bar nav.css builds the bars out of, so the
+   * reserve cannot drift from the thing it reserves for. Two tiers, no wrapped
+   * row: the guides sub-nav is four items and measures 583px laid out on one
+   * line, and below 768px nav.css dissolves the stack entirely — so there is no
+   * width at which this bar wraps while this reserve applies. (The kitchen
+   * sink's seven-item bar is 986px and does wrap, which is why .ds-anchor
+   * budgets for a third row and this does not.) */
+  --sl-nav-height: calc(2 * var(--ds-bar));
+
+  /* No sidebar, so no inset. See the override that empties it. */
+  --sl-sidebar-width: 0rem;
+  --sl-content-inline-start: 0rem;
+}
+
+/* --- the header is a container, not a bar -------------------------------- */
+
+/* Starlight paints its own surface, hairline and 24px gutter on the header.
+   All three are already the bars' own job: BrandNav and .ds-subnav bring the
+   translucent surface, the backdrop blur and the rule under each tier, and
+   .page-container brings the gutter ladder. Left in place they double every
+   one — a 24px inset that no other page's bar has, over a #23262f field that
+   is not a colour in this system.
+
+   `:root` raises specificity past Starlight's own scoped `.header` rule without
+   naming the build hash in its class, which changes whenever the component
+   does. */
+:root header.header {
+  height: var(--sl-nav-height);
+  padding: 0;
+  background: transparent;
+  border-bottom: 0;
+  /* The stack inside is sticky, this is fixed; the stack's own z-index is 20
+     and Starlight's header is 10, so the two tiers stay above the content
+     either way. Nothing here needs to raise it. */
+}
+
+/* --- no left sidebar ------------------------------------------------------ */
+
+/* The guides' navigation is the sub-nav, on every page of the site and marking
+   the current guide. A left sidebar would list the same four items a second
+   time, six inches away, in a different visual language.
+ *
+ * It is also empty as configured, and the reason is worth knowing before
+ * anyone tries to switch it back on: `autogenerate` filters routes by
+ * `entry.filePath` relative to the collection directory, not by `entry.id`
+ * (utils/navigation.ts). These entries have ids under `guides/` and filePaths
+ * of `docs/DESIGN.md` — the real files, which is the whole point of the loader —
+ * so every one of them is filtered out and the group renders with a label and
+ * no links. No warning; the sidebar simply comes out empty.
+ *
+ * The wrapper survives the component override because PageFrame renders it, so
+ * it is collapsed here. `starlight-menu-button` lives inside it and goes too,
+ * which is correct: it opens the sidebar. */
+:root nav.sidebar {
+  display: none;
+}
+
+/* --- the content column --------------------------------------------------- */
+
+/* Starlight's default content width is 45rem, which is a good measure for prose
+   and too narrow for these four: DESIGN.md is mostly tables, several of them
+   six columns wide. This is the site's own desktop maximum, so a guide lines up
+   with every other page rather than sitting in a narrower column of its own. */
+:root {
+  --sl-content-width: var(--max-width-desktop);
+}
+
+/* A wide table scrolls inside its own box rather than widening the page. */
+.sl-markdown-content table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* --- below the drawer breakpoint ------------------------------------------ */
+
+/* nav.css dissolves .ds-nav-stack under 768px on purpose: the main bar becomes
+ * a drawer, and sticking a wrapper around both would pin the sub-bar over the
+ * content it exists to navigate. Starlight's header is `position: fixed`
+ * regardless, which quietly reinstated exactly that — measured at 375px, the
+ * sub-nav wrapped to two rows, ran 100px past the reserve, and stayed pinned
+ * over the article while the page scrolled underneath it.
+ *
+ * So below the same breakpoint the header stops being a bar and becomes an
+ * ordinary block in the flow, and the reserve goes to zero because there is
+ * nothing overlaying anything to reserve for. That is the site's own behaviour
+ * restored rather than a mobile design invented here — and it needs no measured
+ * height, which is the property nav.css's own header insists on: a wrapped
+ * sub-nav is 125px at 375px and something else at 420px, so any number written
+ * down here would be wrong at most widths.
+ */
+@media (max-width: 767px) {
+  :root {
+    --sl-nav-height: 0rem;
+  }
+
+  :root header.header {
+    position: static;
+    height: auto;
+  }
+
+  /* The "On this page" strip is fixed to `--sl-nav-height`, so a zero reserve
+     would pin it to the top of the viewport and over the bars. In the flow it
+     sits where it reads: after the navigation, before the article. */
+  :root .right-sidebar-container nav {
+    position: static;
+  }
+}

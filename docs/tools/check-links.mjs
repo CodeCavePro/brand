@@ -78,10 +78,87 @@ if (unlayouted.length) {
   process.exit(1);
 }
 
+/* ---- the four routes that legitimately do NOT go through DocPage ---------
+ * The guides are rendered by Starlight, so DocPage never runs for them and the
+ * assertion above cannot reach them. That is a hole in "every route carries the
+ * same main menu" unless something else closes it, and an exemption that closes
+ * nothing is worse than no exemption at all -- it reads as coverage.
+ *
+ * What actually carries the menu there is the Header override, which renders
+ * the same DsNav and SubNav out of the same menu.ts. So the invariant holds by
+ * a different mechanism, and this asserts that mechanism is still wired: the
+ * config has to name the override, and the override has to render both tiers.
+ * Deleting either one leaves a build that succeeds and four pages with
+ * Starlight's own header on them.
+ */
+const configSrc = fs.readFileSync(path.join(root, 'astro.config.mjs'), 'utf8');
+const OVERRIDE = 'docs/starlight-overrides/Header.astro';
+
+if (!configSrc.includes(OVERRIDE)) {
+  console.error(
+    `astro.config.mjs does not name ${OVERRIDE} as Starlight's Header.\n` +
+      `Without it the four guide routes render Starlight's own header instead of\n` +
+      `this site's bar -- a build that succeeds and a surface that is off-brand and\n` +
+      `off-navigation at once.`,
+  );
+  process.exit(1);
+}
+
+const overrideSrc = fs.readFileSync(path.join(root, OVERRIDE), 'utf8');
+const missingTiers = ['DsNav', 'SubNav'].filter((c) => !overrideSrc.includes(`<${c}`));
+if (missingTiers.length) {
+  console.error(
+    `${OVERRIDE} does not render: ${missingTiers.join(', ')}.\n` +
+      `The guides carry both tiers because they are pages of this site, not a\n` +
+      `documentation appliance bolted to the side of it.`,
+  );
+  process.exit(1);
+}
+
 /* Everything under docs/ that is not a page is payload and is copied verbatim. */
 for (const file of walk(docs)) {
   if (file.startsWith(pages + path.sep)) continue;
   routes.add(path.relative(docs, file).split(path.sep).join('/'));
+}
+
+/* ---- the prose collection ------------------------------------------------
+ * Four routes exist that have no .astro under pages/: Starlight renders them
+ * from the collection in docs/content.config.ts, out of DESIGN.md, README.md,
+ * SKILL.md and guide.md where those already sit.
+ *
+ * A route set derived from pages/ alone cannot see them, and the failure that
+ * causes is silent in the worst way -- every link to a guide would be reported
+ * as DEAD, so the honest response to adding the surface would have been to stop
+ * trusting this check. It is taught about the collection instead.
+ *
+ * The slugs are read out of the config rather than listed here. There is
+ * exactly one place the guide routes are decided, and this is not it.
+ */
+const collectionSrc = fs.readFileSync(path.join(docs, 'content.config.ts'), 'utf8');
+const guides = [...collectionSrc.matchAll(/file:\s*'([^']+)',\s*slug:\s*'([^']+)'/g)].map((m) => ({
+  file: m[1],
+  slug: m[2],
+}));
+
+if (guides.length < 4) {
+  console.error(
+    `only ${guides.length} guide(s) read out of docs/content.config.ts — the GUIDES shape ` +
+      `changed, and this check would report every guide route as dead if it kept going.`,
+  );
+  process.exit(1);
+}
+
+for (const g of guides) {
+  /* The loader throws on a missing file at build time. This says so without a
+     build, which is the only reason check:links runs in CI at all. */
+  if (!fs.existsSync(path.join(docs, g.file))) {
+    console.error(
+      `docs/content.config.ts names docs/${g.file}, which does not exist.\n` +
+        `The prose collection renders the shipped files in place; a rename has to be made there too.`,
+    );
+    process.exit(1);
+  }
+  routes.add(`guides/${g.slug}.html`);
 }
 
 if (routes.size < 40) {
@@ -117,6 +194,62 @@ if (badTargets.length) {
       '\n"works" — the URL changes, the page scrolls — and the reader is left looking' +
       '\nat whatever sits below a heading they cannot see. Eight of thirteen targets' +
       '\nshipped that way before this asked.',
+  );
+  process.exit(1);
+}
+
+/* ---- and every nav target that is a PAGE has to be a page ----------------
+ * The block above only ever looked at hrefs containing a '#', because when it
+ * was written the only sub-nav worth doubting was the kitchen sink's in-page
+ * anchors. That left the sibling-page bars entirely unchecked -- six under
+ * examples/ and, once the guides landed, four more. A menu entry pointing at a
+ * page that does not exist is the plainest dead link on the site and was the
+ * one kind nothing here asked about.
+ *
+ * `[^']+\.html` ends at the quote, so an anchor href is not matched twice. */
+const pageTargets = [...menuSrc.matchAll(/href: '([^']+\.html)'/g)].map((m) => m[1]);
+if (pageTargets.length < 10) {
+  console.error(
+    `only ${pageTargets.length} page target(s) read out of menu.ts — the shape changed, ` +
+      `and this check would assert nothing if it kept going.`,
+  );
+  process.exit(1);
+}
+const deadTargets = pageTargets.filter(
+  (t) => !routes.has(t) && !routes.has(t.replace(/index\.html$/, '')),
+);
+if (deadTargets.length) {
+  console.error(
+    `${deadTargets.length} navigation target(s) point at nothing:\n` +
+      deadTargets.map((t) => `  ${t}`).join('\n') +
+      '\n\nEvery MAIN and SUB href that names a page has to be one. A guide slug\n' +
+      'renamed in content.config.ts without menu.ts following lands exactly here,\n' +
+      'and lands nowhere else: the build succeeds, the bar renders, and the link\n' +
+      '404s.',
+  );
+  process.exit(1);
+}
+
+/* ---- menu.ts and content.config.ts have to agree about the guides --------
+ * Two files decide what a guide is called: the collection decides the ROUTE,
+ * the menu decides the BAR. The check above catches a slug the menu points at
+ * and the collection does not render. This catches the other direction -- a
+ * guide that exists and is in no bar, which is the orphan-page failure the
+ * whole surface was added to fix. */
+const guidesBlock = menuSrc.match(/\n {2}guides:\s*\[([\s\S]*?)\n {2}\],/);
+if (!guidesBlock) {
+  console.error(`menu.ts has no SUB["guides"] block, so the four guide routes are in no bar.`);
+  process.exit(1);
+}
+const barred = [...guidesBlock[1].matchAll(/href: 'guides\/([a-z0-9-]+)\.html'/g)].map((m) => m[1]);
+const unbarred = guides.map((g) => g.slug).filter((s) => !barred.includes(s));
+if (unbarred.length) {
+  console.error(
+    `${unbarred.length} guide(s) render but appear in no navigation:\n` +
+      unbarred.map((s) => `  guides/${s}.html  (from docs/content.config.ts)`).join('\n') +
+      '\n\nA rendered page nothing links to is reachable only by typing its URL.\n' +
+      'All four guides were in that state before this surface existed, which is\n' +
+      'the reason it does.',
   );
   process.exit(1);
 }
