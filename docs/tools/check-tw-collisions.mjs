@@ -38,12 +38,20 @@
  * That is what makes direction B worth checking at all. If it were ordinary
  * last-one-wins, a consumer could fix it by moving an import.
  *
- * WHY THIS RUNS IN CI AND check-captures.mjs DOES NOT. Both of its inputs are
- * in this repo: source_examples/ is committed, and Tailwind's default theme
- * comes from a devDependency pinned to the version the site resolves — the same
- * trick build-storybook.mjs uses for dompurify, for the same reason. Neither
- * direction needs the private site checkout. If a site checkout happens to be
- * present the pin is asserted against it; if not, the check still runs.
+ * WHY THIS RUNS IN CI. Both of its inputs are in this repo: source_examples/ is
+ * committed, and Tailwind's default theme comes from a devDependency pinned to
+ * the version the site resolves — the same trick build-storybook.mjs uses for
+ * dompurify, for the same reason. Neither direction needs the private site
+ * checkout.
+ *
+ * It does still LOOK at a site checkout when one is beside it, and that survived
+ * the removal of check-captures.mjs on 2026-08-25 because it is a different kind
+ * of question. The captures check asserted that this repo had not moved ahead of
+ * the site, which is now the normal state. These two ask whether a token would
+ * collide in the CONSUMER's app, and the consumer is the site: the Tailwind pin
+ * is asserted against the version the site builds with, and the site's own .vue
+ * files widen the undeclared-property sweep. Neither says this repo is wrong for
+ * being ahead.
  */
 import fs from 'node:fs';
 import path from 'node:path';

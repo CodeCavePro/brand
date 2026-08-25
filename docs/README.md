@@ -399,25 +399,18 @@ storybook goes on documenting an older site than the sources sitting beside it.
 The same check runs on every push in `.github/workflows/static.yml`, ahead of
 the deploy, and it is the one guarantee that always runs.
 
-That check proves the bridge matches the captures. It cannot prove the
-**captures** still match the site — nothing in a checkout of this repository
-can, because the answer lives in another repository. With a `codecave.pro`
-checkout beside this one:
+That check proves the bridge matches the sources. **Nothing proves those sources
+match codecave.pro, and as of 2026-08-25 nothing tries.** `check:captures` did,
+and was removed: the site installs this package and pins it with
+`--frozen-lockfile`, so it lags between releases by design. Components are
+developed here, tried in the storybook here, published, and the site bumps
+afterwards — a check demanding the two be equal was red for exactly the changes
+it existed to protect.
 
-```bash
-npm run check:captures
-```
-
-It compares all 30 site-derived captures against their origins and names any
-that have drifted. The comparison normalises line endings, because the site
-checkout does not pin them and a Windows clone of it is CRLF throughout — raw
-bytes would mark all 30 as drifted on any Windows machine and never on CI,
-which tells you about the reader's `core.autocrlf` and nothing about the site. Deliberately outside `npm run check` and outside
-CI: `codecave.pro` is private, and with no checkout the command fails loudly
-rather than reporting a success it did not earn. Run it before trusting any
-claim of the form "production does X" — every such claim in this package rests
-on those files. Last measured clean 2026-08-21; it found thirteen drifted files
-the day before.
+The reading that goes with it: a specimen on this site is a record of what **this
+repository** ships, which is what codecave.pro will get at its next bump, not
+necessarily what it renders today. Treat any claim of the form "production does
+X" about a component with that in mind.
 
 Regenerating the bridge is the other half, and it needs the `codecave.pro`
 checkout — the storybook compiles the real components with the same

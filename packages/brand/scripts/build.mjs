@@ -168,15 +168,24 @@ function shippedAs(rel) {
 /**
  * The two roots a shipped file can come from.
  *
- * source_examples/ is EVIDENCE — captured from codecave.pro, authored by nobody
- * here, and check:captures proves it still matches. authored/ is the opposite
- * and exists for exactly one reason: BrandNav.vue is the site bar and the docs
- * bar reconciled into one component, so it has no upstream to be captured from.
- * Neither repo owns it any more.
+ * source_examples/ began as EVIDENCE — captured from codecave.pro, authored by
+ * nobody here, with check:captures proving it still matched. authored/ is the
+ * opposite and exists for exactly one reason: BrandNav.vue is the site bar and
+ * the docs bar reconciled into one component, so it has no upstream to be
+ * captured from. Neither repo owns it any more.
  *
- * Kept as two directories rather than a flag or a list, because the rule that
- * matters — nothing under source_examples/ is authored — stops being checkable
- * the moment the two live side by side. The directory name IS the claim.
+ * Kept as two directories rather than a flag or a list, because the directory
+ * name IS the claim.
+ *
+ * THAT CLAIM IS NOW HALF TRUE, AND KNOWINGLY SO. check:captures was deleted on
+ * 2026-08-25: the site installs this package and pins it, so demanding the two
+ * be equal was red for exactly the changes it was meant to protect. What that
+ * leaves is 37 of the 51 files under source_examples/ having no upstream at
+ * all — they are the origin now, and editing one is the normal way to change a
+ * component. Only 8 are still copies of something codecave.pro owns
+ * (menu.ts, paths.ts, links.ts, global.css, logo.svg and three pages), and
+ * nothing verifies those any more. Moving the 37 into authored/ is the fix and
+ * has not been done.
  */
 const ROOTS = ['source_examples', 'authored'];
 

@@ -57,7 +57,11 @@ const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const siteDir = path.resolve(process.argv[2] ?? path.join(docs, '..', '..', 'codecave.pro'));
 if (!fs.existsSync(path.join(siteDir, 'node_modules'))) {
   console.error(`codecave.pro checkout with node_modules not found at ${siteDir}`);
-  console.error('Pass it as the first argument: node build-storybook.mjs <path>');
+  console.error('');
+  console.error('It is needed for its TOOLCHAIN, not its source: vue/compiler-sfc, esbuild');
+  console.error('and tailwindcss at the versions the site builds with. Install it there, or');
+  console.error('pass a path:');
+  console.error('  node docs/tools/build-storybook.mjs ../path/to/codecave.pro');
   process.exit(1);
 }
 
@@ -78,10 +82,15 @@ const SRC = path.join(docs, 'source_examples');
  * restores the directory depth the captures flattened away.
  *
  * Nothing about a specimen's MEANING changes. `npm run check` asserts the
- * package's copies are byte-identical to the captures, and check-captures.mjs
- * asserts the captures are byte-identical to the site, so the two roots are
- * the same bytes and a specimen is still a record of what codecave.pro ships.
- * The chain is one link longer and every link is checked.
+ * package's copies are byte-identical to the sources under source_examples/, so
+ * the two roots are the same bytes either way.
+ *
+ * What a specimen is a record OF has changed, though, and the comment here used
+ * to say otherwise: it claimed a chain to codecave.pro, with check-captures.mjs
+ * as the far link. That link was cut on 2026-08-25 — the site installs this
+ * package now and pins it, so it lags by design and a check demanding equality
+ * was wrong. A specimen is a record of what THIS repository ships, which is
+ * what the site will get at its next bump rather than what it renders today.
  *
  * Entries the package does NOT carry stay on the captures, and the build says
  * which those are on every run rather than hiding the split. Today they are

@@ -34,12 +34,27 @@ label ([live query](https://codecave.atlassian.net/issues?jql=project%20%3D%20CC
 
     The version mechanic stays true and is the thing to remember — CI installs with `pnpm install --frozen-lockfile`, so the site runs whatever its lockfile pins and nothing moves it on its own. A token change here reaches the site only when someone raises the range and regenerates the lockfile. pnpm's `minimumReleaseAge` guard used to add a day on top of that, and no longer does: codecave.pro's `pnpm-workspace.yaml` exempts this package as a whole, with an entry naming no version at all. Every *wildcard* spelling is still rejected — `@codecavepro/brand@*`, `@x`, `@>=0.0.0` — which is why both repos said for a while that a whole-package exemption was unavailable. It is the wildcards that are unavailable; an entry with no version predicate is a different thing and pnpm accepts it.
 
-    **Never build or publish a component from a stale capture — and read what
-    "stale" is measured against.** `npm run check:captures` diffs
-    `docs/source_examples/` against **whatever branch the codecave.pro checkout
-    happens to be on**, so a checkout sitting on an unmerged branch reports that
-    branch's own fixes as capture drift. The captures record what the site
-    *ships*: put the checkout on `development` before believing the answer.
+    **Nothing compares this repository to codecave.pro any more.**
+    `check-captures.mjs` was deleted on 2026-08-25, along with its npm script and
+    its release gate. The reason is the version mechanic above: the site installs
+    this package and pins it, so it lags by design. Components are developed
+    here, tried in the storybook here, published, and only then does the site
+    bump — which means a check demanding the two be equal was red for exactly the
+    changes it existed to protect, and green only when there was nothing to
+    release. It had already narrowed itself: 37 of the 51 files under
+    `source_examples/` have no upstream left, and it reported them as "frozen by
+    definition".
+
+    **The consequence to hold: `docs/source_examples/` is now mostly ORIGIN, not
+    evidence, and nothing checks the part that is still evidence.** Eight files
+    are copies of things codecave.pro owns — `header/menu.ts`, `helpers/paths.ts`,
+    `footer/links.ts`, `styles/global.css`, `assets/images/logo.svg`,
+    `footer/footer.astro`, `homepage/testimonial.astro`, `helpers/image-url.ts` —
+    and those can now rot silently. The other 37 are the source of the shipped
+    components, so **editing one is the ordinary way to change a component**,
+    whatever the directory name says. Moving those 37 into `docs/authored/`,
+    which already exists for exactly this reason, is the fix and has not been
+    done.
 
 
 Open bugs in what codecave.pro ships, found while resyncing the captures or
@@ -168,8 +183,7 @@ errors: the page renders, the canvas is simply empty. `npm run check:importmap`
 reads the bare specifiers out of `storybook/compiled/*.js` and the keys out of
 `DocPage.astro`'s `importmapJson` and fails on either mismatch, since a mapped
 specifier nothing imports is a claim that has stopped being true. Both inputs
-are committed, so unlike `check:captures` it needs no site checkout and runs in
-CI.
+are committed, so it needs no site checkout and runs in CI.
 
 **A layout may not derive a page's depth from `Astro.url.pathname`.** With
 `build.format: 'preserve'`, a directory index is requested at `/storybook` in
@@ -380,10 +394,10 @@ check that walks `dist/` in place, so a package can be correct on disk and broke
 for everyone who installs it. Its reference walk **mirrors `referencesOf()` in
 `build.mjs` by copy; keep the two in step.**
 
-**`check:captures` is the one precondition the pipeline cannot enforce.** It
-needs a codecave.pro checkout, and CI's is refused — `CODECAVE_PRO_TOKEN` is set
-and returns 403. The release workflow attempts it, fails the release on drift,
-and warns loudly when it could not run at all. Run it locally before tagging.
+**The release has no capture gate, deliberately.** It briefly did; see the note
+where that step used to be in `release.yml`. A release is the moment this
+repository is furthest ahead of the site, so a check requiring the two to match
+would fail every real release.
 
 The README is authored because npm renders it as the package page and there is
 nowhere else for that page to come from — it is manifest-adjacent, the same

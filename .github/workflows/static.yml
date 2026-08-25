@@ -120,10 +120,10 @@ jobs:
 
       # Both inputs are in this checkout — source_examples/ is committed, and
       # Tailwind's default theme comes from a devDependency pinned to the
-      # version the site resolves — so unlike check:captures this one needs no
-      # site checkout and belongs in CI. It catches a token that would silently
-      # redefine a Tailwind default in every consumer's app, which nothing
-      # about the docs build or the package build would ever notice.
+      # version the site resolves — so this needs no site checkout and belongs
+      # in CI. It catches a token that would silently redefine a Tailwind
+      # default in every consumer's app, which nothing about the docs build or
+      # the package build would ever notice.
       - name: Check the token layer against Tailwind
         run: npm run check:collisions
 

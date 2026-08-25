@@ -92,7 +92,7 @@ var __sfc__ = /* @__PURE__ */ _defineComponent({
             onMousemove: handleMouseMove,
             onMouseenter: handleMouseEnter,
             onMouseleave: handleMouseLeave,
-            class: _normalizeClass(`cursor-pointer flex items-center justify-center relative z-[1] overflow-hidden w-full h-11 px-6 py-1 rounded-full bg-glow-25 ${props.class ?? ""}`)
+            class: _normalizeClass(`cursor-pointer flex items-center justify-center relative z-[1] overflow-hidden w-full h-12 px-6 py-1 rounded-full bg-glow-25 ${props.class ?? ""}`)
           }, [
             _createElementVNode(
               "span",

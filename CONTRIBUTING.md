@@ -54,35 +54,32 @@ it invisibly: a doctored capture looks exactly like a real one.
 A hand-written stub lived here once, as `lib/strapi.ts`. It is gone. Nothing
 under `source_examples/` is authored.
 
-Refreshing them from the live site is a different act and is legitimate — that
-is [CCWEB2-315](https://codecave.atlassian.net/browse/CCWEB2-315), and it is not
-a one-time job. It measured nine drifted files on 2026-08-19, thirteen on
-2026-08-20 and zero on 2026-08-21.
+**That rule now covers a minority of the directory, and nothing enforces it.**
+`check:captures` compared these files against a codecave.pro checkout and was
+deleted on 2026-08-25 — see [CLAUDE.md](/CLAUDE.md) for the reasoning, which is
+short: the site installs this package and pins it with `--frozen-lockfile`, so
+it is *supposed* to lag between releases. Components are developed here, tried
+in the storybook here, published, and the site bumps afterwards. A check
+requiring the two to be equal was red for exactly the changes it existed to
+protect.
 
-`npm run check:captures` is what measures it, and **it reads whatever branch the
-codecave.pro checkout beside this one happens to be on.** Point it at a feature
-branch and it will report that branch's own unmerged work as capture drift — the
-captures record what the site *ships*, so the checkout belongs on `development`
-before you believe the answer, and certainly before you "refresh" anything to
-match.
+So, concretely:
 
-To find out where they stand right now:
+- **37 of the 51 files have no upstream at all.** The site deleted its copies
+  when the package took the components over. These are the origin now, and
+  editing one is the ordinary way to change a component.
+- **8 are still copies of things codecave.pro owns** — `header/menu.ts`,
+  `helpers/paths.ts`, `footer/links.ts`, `styles/global.css`,
+  `assets/images/logo.svg`, `footer/footer.astro`, `homepage/testimonial.astro`,
+  `helpers/image-url.ts`. Those are the ones the "nothing here is authored" rule
+  still means something about, and they can now go stale without anyone being
+  told.
+- **6 are captures of this repo's own earlier token files** and never had a site
+  upstream.
 
-```bash
-npm run check:captures
-```
-
-It compares every capture against a `codecave.pro` checkout (expected beside
-this repo; pass a path as an argument otherwise) and names the drifted ones.
-**It is not part of `npm run check`**, because the site repository is private
-and a fresh checkout has nothing to compare against — with no checkout the
-command fails loudly rather than reporting success, so it can only ever be run
-somewhere the answer is real.
-
-The release workflow attempts it — a publish is the one moment a stale capture
-becomes permanent — but the checkout is refused today, so it warns and continues
-rather than blocking releases on a repository CI cannot read. **Treat it as
-yours to run before tagging.** See [RELEASING.md](/RELEASING.md).
+Moving the 37 into `docs/authored/` would put the directory name back in step
+with the truth, and make the remaining `source_examples/` 100% real captures.
+That has not been done.
 
 ### The derived half of `ds-bundle/`
 
@@ -263,9 +260,17 @@ properties nothing declares. The first time it ran it found
 [CCWEB2-323](https://codecave.atlassian.net/browse/CCWEB2-323).
 
 Both of its inputs live here — `source_examples/` is committed, and Tailwind's
-theme comes from a devDependency pinned to the version the site resolves — so
-unlike `check:captures` it runs in CI. It also sweeps the full site checkout for
-undeclared properties when one is beside this repo, and says which it did.
+theme comes from a devDependency pinned to the version the site resolves — so it
+runs in CI. It also sweeps the full site checkout for undeclared properties when
+one is beside this repo, and says which it did.
+
+That is the one place a site checkout is still read for an *answer* rather than
+for its toolchain, and it survived the removal of `check:captures` because it
+asks a different question. The captures check asserted this repo had not moved
+ahead of the site. This one asks whether a token would collide in the
+**consumer's** app — and the consumer is the site, so the Tailwind pin is
+checked against the version it builds with. Neither half calls this repo wrong
+for being ahead.
 
 ### Line endings are content, so leave `.gitattributes` alone
 

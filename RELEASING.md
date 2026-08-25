@@ -21,11 +21,14 @@ reissued. Everything else in this runbook is reversible; that is not.
 specimens, docs pages, `DESIGN.md` and `WEBSITE-REVIEW.md` are none of them.
 Those deploy with GitHub Pages on push and need no release.
 
-**A capture *is* a change that reaches the tarball, now that components ship.**
-Refreshing `docs/source_examples/` moves published bytes, so it is a release,
-and `npm run check:captures` is a precondition of every publish rather than only
-the first — with the checkout on `development`, because it reads whatever branch
-it finds. See [CONTRIBUTING.md](/CONTRIBUTING.md).
+**A change under `docs/source_examples/` *is* a change that reaches the
+tarball, now that components ship.** That directory is where the nineteen
+shipped components live, so editing one moves published bytes and needs a
+release.
+
+There is no longer a check comparing it to codecave.pro, and there should not
+be: the site installs this package and pins it, so a release is precisely the
+moment the two are furthest apart. See [CONTRIBUTING.md](/CONTRIBUTING.md).
 
 ## Who publishes
 
@@ -398,11 +401,11 @@ which puts you back in the 72-hour window above, with an escalation attached.
 The routine release assumes the package already exists on the registry. The
 first one has three preconditions the rest do not, in this order:
 
-1. **`docs/source_examples/` has been re-measured.** Run
-   `npm run check:captures`. A clean result is **not durable** — the captures
-   measured nine drifted files on 2026-08-19 and thirteen the next day. Nothing
-   in the token package is built from a capture today, but check before
-   assuming that is still true.
+1. **`docs/source_examples/` has been re-measured.** This step is historical:
+   it meant `npm run check:captures`, which was removed on 2026-08-25 once the
+   site became a pinned consumer of this package rather than its upstream.
+   Nothing replaces it, and nothing needs to — a first publish today has the
+   same preconditions as any other.
 2. **Every name is settled.** **A token name is only cheap to change while
    nobody has installed it** — before the first publish a rename is free, after
    it a rename is a `2.0.0`. Two were caught this way and both were free:
