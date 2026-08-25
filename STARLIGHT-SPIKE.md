@@ -1,59 +1,50 @@
-# Starlight spike — CCWEB2-374
+# Starlight — CCWEB2-374
 
-A **spike, not a decision.** This branch (`spike/starlight-ccweb2-374`) exists to
-replace a recommendation I made from reading with one made from building. It
-should be read, argued with, and then either merged deliberately or deleted.
+This started as a spike and is now a working adoption on
+`spike/starlight-ccweb2-374`. The branch name is kept because CLAUDE.md and the
+Jira ticket cite it.
 
-Everything below was measured on this branch, at `@astrojs/starlight` **0.41.8**
-against `astro` **7.2.4**.
+**It is still not merged, and merging it is still a decision.** What changed is
+what the decision is about: no longer "would this work" — it does — but whether a
+third surface and a Starlight dependency are wanted. Everything below was
+measured on the branch, at `@astrojs/starlight` **0.41.8** against `astro`
+**7.2.4**.
 
-## The headline
+## Why it was worth doing at all
 
-**It works, and my earlier analysis was wrong.**
+`DESIGN.md`, `README.md`, `SKILL.md` and `guide.md` are **1,601 lines that
+rendered as no pages at all** — the best-written material in the repository,
+reachable only as a file download. They now render at four routes, from the files
+where they already live, unmoved and unedited.
 
-I previously said Starlight would collide with `build.format: 'preserve'`,
-because Starlight branches on `format === 'file'`. Half of that is true and the
-conclusion drawn from it was not. `preserve` is a **named strategy** in
-Starlight's `createPathFormatter` — but it is aliased to `directory`, and *that*
-is what breaks it, not a missing case:
+## The blocker that was not one
+
+The ticket recommended against migrating because Starlight collides with
+`build.format: 'preserve'`. That was wrong, and specifically wrong: `preserve` is
+a **named strategy** in Starlight's `createPathFormatter` — aliased to
+`directory`, and the aliasing is the whole fault:
 
 ```js
 const formatStrategies = {
   file:      { addBase: fileWithBase, handleExtension: ensureHtmlExtension },
   directory: defaultFormatStrategy,
-  preserve:  defaultFormatStrategy,   // ← same object as directory
+  preserve:  defaultFormatStrategy,   // same object as directory
 };
 ```
 
-Out of the box that yields **three disagreeing spellings of one page**:
+Out of the box that gives one page four spellings:
 
 | | value |
 |---|---|
-| file emitted | `dist/guides/spike.html` |
-| sidebar link | `/guides/spike/` — **404** |
-| `<link rel=canonical>` | `…/guides/spike.html/` — a trailing slash after `.html` |
-| sitemap `<loc>` | `…/guides/spike` — a third spelling |
+| file emitted | `dist/guides/x.html` |
+| sidebar link | `/guides/x/` — **404** |
+| `<link rel=canonical>` | `…/guides/x.html/` |
+| sitemap `<loc>` | `…/guides/x` |
 
-**And the build succeeds.** Nothing warns. Only clicking a link finds it. That
-is the failure class this repo keeps writing checks for.
+**And the build succeeds.** `trailingSlash: 'never'` reconciles all four.
 
-## One line fixes it
-
-```js
-build: { format: 'preserve' },
-trailingSlash: 'never',
-```
-
-| | before | after |
-|---|---|---|
-| sidebar link | `/guides/spike/` | `/guides/spike` |
-| canonical | `…/spike.html/` | `…/guides/spike.html` |
-| sitemap | `…/spike` | `…/guides/spike` |
-| build | 0 errors | 0 errors |
-
-That relies on the host serving `/guides/spike` for `guides/spike.html`.
-**Verified against the live host** rather than assumed — `brand.codecave.pro`
-(Cloudflare in front of Pages):
+That relies on the host serving `/guides/x` for `guides/x.html`. **Verified
+against the live host** rather than assumed — `brand.codecave.pro`:
 
 ```
 200  /kitchen-sink/button.html   <title>Button — CODECAVE storybook
@@ -63,159 +54,129 @@ That relies on the host serving `/guides/spike` for `guides/spike.html`.
 
 The 404 matters: it proves the 200 is a real file and not a catch-all.
 
-## The two alternatives are worse, and the repo already knows it
-
-Both formats that make Starlight work out of the box **fail this repo's own
-passthrough check**, which is a pleasant confirmation that the guard earns its
-keep:
+The two formats that make Starlight work unaided are worse, and this repo's own
+passthrough check says so:
 
 | `build.format` | site | Starlight | build |
 |---|---|---|---|
 | `preserve` | fine | links 404 | **succeeds — silently wrong** |
-| `directory` | 30 leaf pages move to `x/index.html` | fine | fails |
-| `file` | 2 index pages move to `x.html` | fine | fails |
+| `directory` | 30 leaf pages move | fine | fails |
+| `file` | 2 index pages move | fine | fails |
 
-So `preserve` + `trailingSlash: 'never'` is not a compromise; it is the only
-combination where both halves are correct.
+## What the adoption is
 
-## The header override — what you asked about
+**A third surface.** `guides` joins `kitchen-sink` and `examples` in `MAIN`, in
+reading order — prose, then part, then composition — and gets a `SUB` bar of its
+own. Before this the four rendered pages were **orphans**: nothing on the site
+linked to them and they were reachable only by typing the URL. That is exactly
+the failure CLAUDE.md warns about for a page that skips the layout, arrived at
+from the other direction.
 
-**It works.** `components: { Header: './docs/starlight-overrides/Header.astro' }`,
-rendering `BrandNav.vue` with no client directive, exactly as `DsNav` does on the
-34 hand-built pages:
+**`guides/index.html` is a hand-built `DocPage`, not a Starlight page.** Starlight
+renders no section index, and autogenerating one would mean authoring prose inside
+`content.config.ts` — the one thing that loader must not do. So the front door is
+an ordinary gallery like `examples/index.astro`, and Starlight owns only the four
+long-form pages beneath it. A static route beats Starlight's injected `[...slug]`,
+and the passthrough check asserts it every build.
 
-```
-rendered links:  ['Kitchen sink', 'Examples']
-logo href:       ../index.html
-leaked attrs:    none
-```
+**The chrome is this site's, both tiers.** The `Header` override renders the same
+`DsNav` and `SubNav` from the same `menu.ts` as the other 35 pages, and marks the
+current guide. There is no second copy of the bar.
 
-One trap on the way: my first attempt guessed the prop names (`leftItems`,
-`ctaHref`). Vue does not error on unknown props — it renders them as literal
-lowercased HTML attributes, so the bar came out with `ctahref="…"` on the
-element and **two empty `<ul>`s**. It looked plausible in a grep, because
-`brand-nav-link` still appears three times in the scoped `<style>` block. The
-real props are `left` / `right` / `logo` / `logoHref`.
+**Titles are a map, not the first heading.** Three of the four open with
+`# CODECAVE Design System`. The heading is what each document calls the *system*;
+the title is what it calls *itself*, and only one of those was written down.
 
-## Visual integration is close to free
+**The files are never touched.** Two carry frontmatter belonging to other systems
+— `SKILL.md`'s is Claude Skill metadata, where `user-invocable: true` is what
+makes it a slash command, and `DESIGN.md`'s is a token manifest — so the loader
+synthesizes the title instead. Verified with `git status` after a full build.
 
-`customCss: ['./docs/colors_and_type.css']` and the page is CODECAVE:
+## Four faults found by measuring the rendered page
 
-| | value |
-|---|---|
-| `--color-surface-primary` | `#0a0a0b` — beats Starlight's `--sl-color-bg: #17181c` |
-| body background | `rgb(10, 10, 11)` |
-| body font | Satoshi |
-| nav link height | `48px` — the `--control-height` grid |
-| `h1` | 56px Satoshi — `--text-heading-lg` |
+Not one was visible in a build log. Each was found by asking the browser.
 
-## The actual goal: rendering the real prose
+**1. `--sl-nav-height` is the whole layout contract.** Not just the header's
+height: also the content offset, the sidebar top, and `scroll-padding-top` for
+every anchor. Starlight's default 4rem is *one* bar; this site has two, so it
+under-reserved by 82px and **every guide's `h1` rendered underneath the sub-nav**
+— h1 at y=136, bar ending at y=158 — on a page that otherwise looked deliberate.
+It is derived from `--ds-bar` now, so the reserve cannot drift from the thing it
+reserves for.
 
-This is the whole case for adopting Starlight — `DESIGN.md`, `README.md`,
-`SKILL.md` and `guide.md` are **1,601 lines that render as no pages at all**
-today, only as downloadable payload.
+**2. Starlight's header is `position: fixed` at every width.** Below 768px
+`nav.css` deliberately dissolves `.ds-nav-stack` so the two bars scroll away;
+sticking them would pin the sub-bar over the content it navigates. The fixed
+header reinstated exactly that bug: measured at 375px, the sub-nav wrapped to two
+rows, ran 100px past the reserve, and stayed pinned over the article while the
+page scrolled underneath. Below that breakpoint the header is an ordinary block
+in the flow now, which needs no measured height — a wrapped sub-nav is 125px at
+375px and something else at 420px.
 
-(That number is measured, not inherited. `CLAUDE.md` says 1,565 and is out of
-date — a separate one-line fix on `development`, not this branch's business.)
+**3. The autogenerated sidebar was empty, silently.** `autogenerate` filters
+routes on `entry.filePath` relative to the collection directory, **not** on
+`entry.id` (`utils/navigation.ts:234`). These entries have ids under `guides/`
+and filePaths of `docs/DESIGN.md` — the real files, which is the entire point of
+the loader — so every entry was filtered out and the group rendered with its
+label and no links. It would have duplicated the sub-nav anyway, so `Sidebar`
+renders nothing and the wrapper is collapsed. The theme select went with it,
+which is correct: this system documents no light theme and `DESIGN.md` says so.
 
-**It works, with the files untouched.** All four now build:
+**4. Pagefind built a search index nothing could query.** Its only UI lives in
+the header this site replaces. `pagefind: false` — an index with no way to reach
+it is the kind of claim this repository checks rather than makes. Search is a
+feature decision, not a side effect.
 
-```
-/guides/design    117 KB   13 <h2>
-/guides/readme     72 KB   10 <h2>
-/guides/skill      31 KB    6 <h2>
-/guides/guide      21 KB    4 <h2>
-```
+Two more, fixed earlier in the branch: `publicDir` was serving this site's own
+source (`OWNED` in `astro-passthrough.mjs`), and `@types/mdx` broke `check:ports`
+in a way `skipLibCheck: true` would have "fixed" by deleting the reason ports are
+ports (`types: []` instead).
 
-The obstacle, and it is real: **two of the four already have frontmatter, and it
-is not Starlight's.**
+## What the checks learned
 
-- `docs/SKILL.md` — `name` / `description` / `user-invocable`. Claude Skill
-  metadata; `user-invocable: true` is what makes it a slash command.
-- `docs/DESIGN.md` — `name` / `category` / `surface` / `colors`. A token manifest.
+The spike's one unfixed cost was that `check-links.mjs` derives routes from
+`pages/` and cannot see a collection, so `/guides/*` sat outside the dead-link
+check. That is closed, and closing it turned up a gap that predates Starlight:
 
-`docsSchema()` requires `title`. Writing one into these files would edit blocks
-other tools read, in files that ship as payload and are cited by name. So
-`docs/content.config.ts` **synthesizes** the title in a custom loader instead.
-Nothing on disk changes — verified with `git status` after a full build.
+- It derives the four collection routes from `content.config.ts`, and asserts
+  every prose file that config names still exists.
+- It asserts `menu.ts` and the collection agree **in both directions** — a slug
+  the bar names and the collection does not render, and a guide that renders and
+  is in no bar.
+- It checks navigation targets that are **pages** rather than anchors. Nothing
+  did: the assertion only ever matched hrefs containing `#`, so the six
+  `examples/*.html` targets had never been verified either.
+- `DocPage` cannot run for a Starlight route, so it asserts the mechanism that
+  replaces it: the config names the override, and the override renders both tiers.
 
-Two things that each cost a build to find, both recorded in that file:
+All seven were verified by breaking them one at a time. Six failed on the first
+try; **the seventh passed and should not have** — `includes('<SubNav')` is
+satisfied by `<SubNavX`, so renaming the component slipped straight through the
+assertion written to catch it. It is a tag test now. Same mistake `usesAlias()`
+was fixed for, from the other side.
 
-1. **The data must go through `parseData()`.** Setting `data` on the store
-   directly stores the entries — the loader reports four successes — and
-   Starlight renders none of them, because the schema never ran. No error, no
-   page, exit 0.
-2. **Deriving the title from the first `# heading` is not good enough.** Three of
-   the four open with `# CODECAVE Design System`, so three sidebar entries and
-   three search results come out identically named. Left wrong on purpose in the
-   loader so the finding stays visible. A real adoption needs a title map.
+## What it costs
 
-## Costs, all fixable, all silent by default
+- **A dependency**, and its tree, for four pages.
+- **JavaScript on those four pages.** 7 script tags against 1 on a hand-built
+  page — down from 11 before the sidebar and Pagefind came out, but not zero;
+  the table of contents is a custom element. *BrandNav needs no JavaScript by
+  construction* still holds for the bar. It does not hold for the page around it.
+- **A shell this repo does not own.** All four faults above were Starlight's
+  layout assumptions meeting this site's, and all four were silent. That class of
+  problem does not end here; it is the standing cost of the integration.
 
-**1. It would have served this site's own source.** `publicDir` and `srcDir` are
-both `docs/`, so `content.config.ts`, the collection markdown and the header
-override were all copied to `dist/` and served — payload went 197 → 200. Fixed by
-adding them to `OWNED` in `astro-passthrough.mjs`, which deletes Astro-owned
-paths after the build. Back to exactly 197.
+## What I would still not do
 
-**2. It breaks `check:ports`.** Starlight pulls in `@types/mdx`, whose
-`types.d.ts` references a `JSX` namespace nothing here provides — four errors in
-a file no adapter imports. `skipLibCheck: true` would silence it and is
-*precisely* what that tsconfig's comment says must not happen, since strict lib
-checking is what makes the adapters ports rather than stubs. Fixed with
-`"types": []`, which scopes auto-included `@types` without weakening
-`skipLibCheck: false`.
-
-**3. Starlight pages ship JavaScript.** 11 `<script>` tags against 3 on a
-hand-built page — theme select, table of contents, mobile menu, Pagefind. The
-repo's standing property that *"BrandNav needs no JavaScript by construction"*
-holds for the bar itself but **not** for the page around it. It also adds a
-Pagefind search index and a sitemap, neither of which existed before.
-
-**3a. The search index does NOT swallow the rest of the site — checked, because
-the build line reads as though it might.** Pagefind logs *"Found 44 HTML
-files"*, which is every page in `dist/`: the 34 hand-built ones and the six raw
-deliverables included. It **indexes four**, verified by decompressing
-`dist/pagefind/fragment/` and reading the `url` out of each — the four guides and
-nothing else. Starlight scopes indexing to its own `data-pagefind-body`, so a
-storybook specimen or `examples/raw/poster.html` is scanned and discarded rather
-than turned into a search result. Worth knowing that the alarming number is fine.
-
-One genuine wrinkle underneath it: the indexed URL is `/guides/skill.html`, while
-the sidebar links `/guides/skill`. Both resolve on the host, so nothing breaks —
-but search results and navigation address the same page by different strings, and
-a future canonical-URL rule would have to pick one.
-
-**4. `check-links.mjs` cannot see Starlight routes.** It derives the route set
-from `docs/pages/**`, and Starlight's come from a collection. So `/guides/*` is
-invisible to the dead-link check, and the "every page imports DocPage" assertion
-silently exempts them. A real adoption needs that check taught about the
-collection, or the 35 citations it guards stop being fully guarded.
-
-## What I would do
-
-**Adopt it for `/guides/` only, or not at all — but the earlier "don't migrate"
-was based on a blocker that turns out to be one config line.**
-
-The case for: 1,601 lines of the best-written prose in this repository currently
-render as nothing. Starlight gives them navigation, search and a table of
-contents for roughly 40 lines of config, and the brand survives intact.
-
-The case against, honestly: four silent failure modes had to be found by hand in
-one afternoon, three of them invisible to a green build. That is the same tax
-this repository has been paying down all week with checks, and adopting Starlight
-adds surface that none of those checks currently cover — item 4 especially.
-
-**Do not** let Starlight own the 34 hand-built pages. Nothing here suggests that
+**Do not let Starlight own the 34 hand-built pages.** Nothing here suggests it
 would be an improvement, and `format: 'preserve'` exists precisely because those
 URLs are cited 35 times, once from inside the shipped `colors_and_type.css`.
 
 ## Reproducing
 
 ```bash
-git checkout spike/starlight-ccweb2-374
-npm install
-npm run docs:build && npm run check
+git checkout spike/starlight-ccweb2-374 && npm install && npm run docs:build && npm run check
 ```
 
-Then look at `/guides/design`, and at `docs/starlight-overrides/Header.astro`.
+Then look at `/guides/`, `/guides/design-rules`, and `docs/starlight.css`, where
+every reconciliation above is written next to the measurement that forced it.
