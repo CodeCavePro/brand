@@ -6,6 +6,7 @@ import { BREAKPOINTS } from "@helpers/breakpoints.ts";
 import GlowButton from "@codecavepro/brand/components/common/GlowButton.vue";
 import TypingEffect from "@codecavepro/brand/components/common/effects/TypingEffect.vue";
 import TechnologyCard from "./technology-card.vue";
+import HeaderBrows from "../common/HeaderBrows.vue";
 import { carouselGestureLocker } from "@helpers/carousel-gesture-locker.ts";
 
 /* See ArticlePreview.vue: the fields read here, not the generated Strapi
@@ -70,16 +71,7 @@ const carouselLocker = carouselGestureLocker()
           ${hideSelected ? 'pt-8' : 'flex flex-col pt-4 md:pt-14 pb-20 xl:pb-0 swipe-over'}`">
     <div v-if="!hideSelected" class="flex flex-col items-center text-center">
       <div class="space-y-3">
-        <div class="flex justify-center gap-6 font-bold text-xl">
-          <div class="flex flex-col xl:flex-row xl:gap-2">
-            <span class="text-body-primary">15+</span>
-            <span class="text-body-secondary-lighter">Years of experience</span>
-          </div>
-          <div class="flex flex-col xl:flex-row xl:gap-2">
-            <span class="text-body-primary">4.8</span>
-            <span class="text-body-secondary-lighter">Average rating</span>
-          </div>
-        </div>
+        <HeaderBrows/>
         <TypingEffect
             :text1="selectedTechnology.title1"
             :text2="selectedTechnology.title2"
