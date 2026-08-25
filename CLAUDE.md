@@ -218,6 +218,50 @@ Related rule: **nothing under `docs/source_examples/` is authored** — which,
 since the components moved to `docs/authored/`, is a claim about eight files
 rather than a rule spanning the whole component tree.
 
+### Storybook is where a component is developed
+
+Added under [CCWEB2-383](https://codecave.atlassian.net/browse/CCWEB2-383).
+`npm run storybook` opens it on 6006; `npm test` drives every story through
+**headless Chromium** and exits non-zero. Both CI workflows run it.
+[CONTRIBUTING.md](/CONTRIBUTING.md) § *Developing a component* carries the rules
+with their reasons.
+
+**Two different things here are called "storybook" and the collision is new.**
+Storybook the tool is `.storybook/`, stories in `docs/stories/`.
+`docs/storybook/` is the compiled bundles, ports and placeholders the
+kitchen-sink pages mount, and it keeps that name because every specimen identity
+derives from it. Nothing under `docs/storybook/` belongs to Storybook.
+
+**Stories go in `docs/stories/`, never in a source root** — `authored/` means
+"this ships", `source_examples/` means "this is evidence", and a story is
+neither. It would also move the `sourceDigest` that `check:tw-bridge` reads, so
+every new story would report the compiled bundles stale for no reason.
+
+**Neither resolver in `.storybook/main.ts` is new logic**, and that is the point:
+site path aliases go through `docs/tools/import-aliases.mjs`, and the
+relative-path re-rooting is `build-storybook.mjs`'s rule — literal path first,
+only a miss gets re-rooted, so a genuinely broken import stays broken. Also
+`@vitejs/plugin-vue` must stay a **direct** devDependency: `@storybook/vue3-vite`
+does not depend on it and never mentions it, and without it every `.vue` reaches
+rolldown as JavaScript.
+
+**The browser is real, not jsdom.** Half of what this design system asserts is
+CSS, and a contrast ratio or a `::before` transform does not exist until
+something has laid the page out.
+
+**Watch a new test fail for the reason you intend before making it pass.** The
+first version of one used `toHaveClass(/opacity-20/)`, which is not a regex
+match — jest-dom takes class *names* and stringifies a RegExp — so its `not.`
+half passed vacuously and would have kept passing after the fix.
+
+**The suite has already earned this.** Its first two runs found six defects that
+every check here was blind to, because each component rendered, typechecked and
+photographed perfectly: `Button` styled a disabled state without disabling it and
+sampled `isDisabled` once at setup; `Radio` declared `modelValue` and ignored it;
+`TextField` emitted on blur while `InputText` beside it emitted per keystroke;
+and neither input wired its error message to its field. A component change since
+means the site gets them at its next bump.
+
 ### The package, in one paragraph
 
 `packages/brand/` is a **pure derivative of `docs/`** — it copies
