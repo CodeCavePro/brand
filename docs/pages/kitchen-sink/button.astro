@@ -51,7 +51,7 @@ import DocPage from '../../layouts/DocPage.astro';
         <tr><td>as</td><td><code>'link'</code></td><td>Chooses the element: <code>&lt;a href&gt;</code> when <code>'link'</code>, else <code>&lt;button&gt;</code>.</td></tr>
         <tr><td>title</td><td><code>string</code></td><td>The label. Optional — icon buttons omit it and let the slot carry the content.</td></tr>
         <tr><td>href</td><td><code>string</code></td><td>Only read when <code>as="link"</code>.</td></tr>
-        <tr><td>isDisabled</td><td><code>boolean</code></td><td>Visual only — see the warning below.</td></tr>
+        <tr><td>isDisabled</td><td><code>boolean</code></td><td>Makes the control inert — <code>disabled</code> on the button; on the link, no <code>href</code> plus <code>aria-disabled</code> — and dims it to 20%. See findings.</td></tr>
         <tr><td>type</td><td><code>'submit'</code></td><td>Declared in props but never bound in the template.</td></tr>
         <tr><td>class</td><td><code>string</code></td><td>Appended to the variant class. This is how callers give <code>primary</code> its box.</td></tr>
       </tbody>
@@ -147,8 +147,9 @@ import DocPage from '../../layouts/DocPage.astro';
   <section class="sb-section">
     <h2>States</h2>
     <p>Hover and active are real here — move the pointer over the first canvas.
-       So is "disabled": these buttons carry <code>isDisabled</code> and you can
-       still click and focus them, because the prop is visual only (see findings).</p>
+       So is "disabled": these buttons carry <code>isDisabled</code>, so they are
+       inert to pointer and keyboard alike — and at 20% opacity, close to
+       unreadable (see findings).</p>
     <div class="sb-stories">
 
       <div class="sb-story">
@@ -182,12 +183,13 @@ import DocPage from '../../layouts/DocPage.astro';
   <section class="sb-section">
     <h2>Findings</h2>
 
-    <p class="sb-note is-warn"><strong><code>isDisabled</code> does not disable the button.</strong>
-      It only sets <code>cursor-not-allowed opacity-20</code> on the class string.
-      The template never binds the <code>disabled</code> attribute, so the element
-      stays focusable, keyboard-activatable and clickable — and when
-      <code>as="link"</code> the <code>&lt;a&gt;</code> still navigates. Anything
-      relying on this prop to block submission is not protected.</p>
+    <p class="sb-note is-warn"><strong>A disabled button is unreadable, not merely dimmed.</strong>
+      <code>isDisabled</code> composites the control to 20% opacity, which puts the
+      label at <strong>1.55:1</strong> against its own fill and the control at
+      <strong>1.72:1</strong> against the page — below every contrast floor there
+      is, including the 3:1 one that applies to a disabled control's boundary. The
+      element itself is inert, so this is a legibility question rather than a
+      behavioural one, and what replaces 20% is a design call.</p>
 
     <p class="sb-note is-warn"><strong>The <code>type</code> prop is declared but never used.</strong>
       <code>type?: 'submit'</code> appears in <code>defineProps</code> and then

@@ -38,16 +38,14 @@ animations are GSAP-driven — the TypingEffect character stagger
 both components (GlowButton already has the identical pattern for
 `pointer: coarse`), plus a global CSS collapse for the rest. WCAG 2.3.3 / 2.2.2.
 
-### 2.2 `isDisabled` does not disable (`common/Button.vue`)
-The prop only appends `cursor-not-allowed opacity-20` to the class string; the
-`disabled` attribute is never bound. The control stays focusable,
-keyboard-activatable and clickable — and with `as="link"` the anchor still
-navigates. Any form relying on it to block submission is unprotected.
-On top of that, at opacity-20 the label-to-fill contrast composites to
-**1.55:1** and the whole control sits at 1.72:1 against the page — visually
-gone but still live, the worst combination.
-**Fix:** bind `:disabled="isDisabled"` (and `aria-disabled` for the link case);
-consider a less drastic disabled treatment than 20% opacity.
+### 2.2 The disabled treatment is unreadable (`common/Button.vue`)
+At `opacity-20` the label-to-fill contrast composites to **1.55:1** and the whole
+control sits at **1.72:1** against the page — below every contrast floor there
+is, including the 3:1 one that applies to a disabled control's boundary. The
+control is inert, so nothing is *reachable* that should not be; it simply cannot
+be read.
+**Fix:** a less drastic disabled treatment than 20% opacity. That is a colour
+decision, so it belongs with Maria Shaban rather than being picked here.
 
 ### 2.3 Form errors are invisible twice over (`common/InputText.vue`)
 - The error message renders in a plain `<span>`: no `role="alert"`, no

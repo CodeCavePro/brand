@@ -88,8 +88,12 @@ export const DisabledIsNotReactive: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const target = canvas.getByRole('button', { name: 'Target' });
-    await expect(target).not.toHaveClass(/opacity-20/);
+    // className/toContain, not toHaveClass(/re/): jest-dom's toHaveClass takes
+    // class NAMES and stringifies a RegExp to "/opacity-20/", which no element
+    // ever carries -- so the `not.` half passed vacuously and would have gone on
+    // passing after the component was fixed.
+    await expect(target.className).not.toContain('opacity-20');
     await userEvent.click(canvas.getByTestId('toggle'));
-    await expect(target).toHaveClass(/opacity-20/);
+    await expect(target.className).toContain('opacity-20');
   },
 };

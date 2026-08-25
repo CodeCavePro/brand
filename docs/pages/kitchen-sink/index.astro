@@ -483,10 +483,10 @@ import DocPage from '../../layouts/DocPage.astro';
       use. Lift either component out of a Tailwind build and the shorthand
       collapses, snapping the indicator instead of easing it.</p>
 
-    <p class="sb-note is-warn"><strong><code>Button</code>'s <code>isDisabled</code> does not disable anything.</strong>
-      It sets opacity and a cursor. The <code>disabled</code> attribute is never
-      bound, so the control stays clickable and keyboard-reachable — and as a link
-      it still navigates.</p>
+    <p class="sb-note is-warn"><strong><code>Button</code>'s disabled treatment is unreadable.</strong>
+      <code>isDisabled</code> makes the control inert, then composites it to 20%
+      opacity — <strong>1.72:1</strong> against the page, below every contrast
+      floor there is. What replaces 20% is a design call.</p>
 
     <p class="sb-note is-warn"><strong><code>TextField</code> syncs its model on <code>change</code>, not <code>input</code>.</strong>
       The parent's <code>v-model</code> only updates on blur, while

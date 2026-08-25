@@ -4,7 +4,7 @@
 import { defineComponent as _defineComponent2 } from "vue";
 import { createVNode as _createVNode, unref as _unref, createElementVNode as _createElementVNode, openBlock as _openBlock2, createElementBlock as _createElementBlock2 } from "vue";
 
-// ../../codecave.pro/node_modules/.pnpm/marked@18.0.5/node_modules/marked/lib/marked.esm.js
+// ../node_modules/marked/lib/marked.esm.js
 function M() {
   return { async: false, breaks: false, extensions: null, gfm: true, hooks: null, pedantic: false, renderer: null, silent: false, tokenizer: null, walkTokens: null };
 }

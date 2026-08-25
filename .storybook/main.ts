@@ -72,7 +72,7 @@ const config: StorybookConfig = {
   // dropping one into either root would move the sourceDigest that
   // check:tw-bridge uses to decide the compiled bundles are stale.
   stories: ['../docs/stories/**/*.mdx', '../docs/stories/**/*.stories.@(ts|js)'],
-  addons: ['@storybook/addon-docs', '@storybook/addon-a11y'],
+  addons: ['@storybook/addon-docs', '@storybook/addon-a11y', '@storybook/addon-vitest'],
   framework: { name: '@storybook/vue3-vite', options: {} },
   core: { disableTelemetry: true },
   viteFinal(cfg) {
