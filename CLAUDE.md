@@ -41,20 +41,32 @@ label ([live query](https://codecave.atlassian.net/issues?jql=project%20%3D%20CC
     here, tried in the storybook here, published, and only then does the site
     bump — which means a check demanding the two be equal was red for exactly the
     changes it existed to protect, and green only when there was nothing to
-    release. It had already narrowed itself: 37 of the 51 files under
-    `source_examples/` have no upstream left, and it reported them as "frozen by
+    release. It had already narrowed itself: 37 of the then-51 files under
+    `source_examples/` had no upstream left, and it reported them as "frozen by
     definition".
 
-    **The consequence to hold: `docs/source_examples/` is now mostly ORIGIN, not
-    evidence, and nothing checks the part that is still evidence.** Eight files
-    are copies of things codecave.pro owns — `header/menu.ts`, `helpers/paths.ts`,
-    `footer/links.ts`, `styles/global.css`, `assets/images/logo.svg`,
-    `footer/footer.astro`, `homepage/testimonial.astro`, `helpers/image-url.ts` —
-    and those can now rot silently. The other 37 are the source of the shipped
-    components, so **editing one is the ordinary way to change a component**,
-    whatever the directory name says. Moving those 37 into `docs/authored/`,
-    which already exists for exactly this reason, is the fix and has not been
-    done.
+    **`docs/source_examples/` is now mostly ORIGIN rather than evidence**, and the
+    part that was unverifiable evidence was cut on the same day rather than left
+    to rot. 46 files: **37 are the origin** of the shipped components — editing one
+    is the ordinary way to change a component, whatever the directory name says —
+    **6 are captures of this repo's own earlier token files**, and **2 are live
+    inputs the build reads**: `styles/global.css`, which `build-storybook.mjs`
+    parses for the `:root` and `@theme` blocks it scopes into the demo canvases
+    (it throws if the `:root` is missing), and `assets/images/logo.svg`, which a
+    kitchen-sink page renders.
+
+    **The last one, `helpers/image-url.ts`, is the only file here nothing reads.**
+    Its `NOT_SHIPPED` entry keeps it on the grounds that sixteen site-only pages
+    still use it — a claim about codecave.pro that nothing here can check any
+    more. It is the one remaining piece of unverified evidence.
+
+    Five files went on 2026-08-25 because they existed only to be quoted:
+    `helpers/paths.ts` — the site's route table, which the package deliberately
+    never shipped — plus `footer/footer.astro`, `footer/links.ts`,
+    `header/menu.ts` and `homepage/testimonial.astro`, whose only role was to
+    import it and be cited by prose. The prose now attributes those facts to
+    codecave.pro, where the files actually live. Moving the 37 into
+    `docs/authored/` is still the unfinished half.
 
 
 Open bugs in what codecave.pro ships, found while resyncing the captures or

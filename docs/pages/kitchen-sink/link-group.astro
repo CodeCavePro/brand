@@ -3,7 +3,7 @@
  *
  * Shell extraction. Mounting pattern and why it is not an island: button.astro.
 
- * The services array is copied from links.ts and contains 'UX\UI design' — a
+ * The services array is copied from codecave.pro’s footer/links.ts and contains 'UX\UI design' — a
  * backslash escaped for JavaScript. It survives because `is:inline` hands the
  * script through untouched; checked in a browser, the link reads UX\UI design. */
 import DocPage from '../../layouts/DocPage.astro';
@@ -37,7 +37,7 @@ import DocPage from '../../layouts/DocPage.astro';
       <thead><tr><th>Prop</th><th>Type</th><th>Notes</th></tr></thead>
       <tbody>
         <tr><td>groupName <span class="sb-req">*</span></td><td><code>string</code></td><td>Uppercased in CSS, 12px, <code>--color-body-secondary</code>.</td></tr>
-        <tr><td>items <span class="sb-req">*</span></td><td><code>Link[]</code></td><td>From <code>footer/links.ts</code>. Each has <code>name</code> and <code>href</code>.</td></tr>
+        <tr><td>items <span class="sb-req">*</span></td><td><code>Link[]</code></td><td>From codecave.pro’s <code>footer/links.ts</code>. Each has <code>name</code> and <code>href</code>.</td></tr>
       </tbody>
     </table>
   </section>
@@ -52,9 +52,9 @@ import DocPage from '../../layouts/DocPage.astro';
         </div>
         <div class="sb-story-body">
           <span class="sb-story-name">Services</span>
-          <span class="sb-story-args">groupName="Services" items = links.ts verbatim (12)</span>
+          <span class="sb-story-args">groupName="Services" items = codecave.pro’s links.ts verbatim (12)</span>
           <span class="sb-story-note">Hover a link: #C7C7DB → #B19AFE. The items are the real
-            <code>footer/links.ts</code> services array — five of the twelve share the
+            codecave.pro’s <code>footer/links.ts</code> services array — five of the twelve share the
             e-commerce path.</span>
         </div>
       </div>

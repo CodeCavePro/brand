@@ -105,10 +105,6 @@ const NOT_SHIPPED = [
    '@codecavepro/brand/tokens.css, so shipping it would have the package ' +
    'import itself. The storybook still reads it from the captures, where it ' +
    'belongs, to build tw-bridge.css.'],
-  ['footer/footer.astro',
-   'an Astro component. Nothing that installs this package can render one ' +
-   'without Astro, and it imports build-time-only modules besides.'],
-  ['homepage/testimonial.astro', 'ditto.'],
   ['helpers/image-url.ts',
    'the site\'s CMS URL joiner: it imports strapiUrl from lib/strapi.ts, ' +
    'which carries the CMS host and the shape of a private token. Nothing ' +
@@ -138,9 +134,37 @@ const NOT_SHIPPED = [
    * evidence of anything. Excluding it would have been the wrong shape of fix:
    * NOT_SHIPPED is for captures that exist and must not ship, not for captures
    * that should not exist.
+   *
+   * Two entries left on 2026-08-25 for that exact reason. footer/footer.astro
+   * and homepage/testimonial.astro were deleted along with helpers/paths.ts,
+   * which they imported: the package never shipped the site's route table, so
+   * carrying a copy of it bought nothing, and those two captures existed only
+   * to be quoted in prose. Their exclusions went with them.
    */
 ];
 const EXCLUDED = new Set(NOT_SHIPPED.map(([rel]) => rel));
+
+/* An exclusion naming a capture that does not exist is a claim that has
+ * stopped being true, and it reads as coverage: the list is what a reader
+ * consults to find out why something is missing, so a stale line answers a
+ * question about a file nobody has. The build stayed green through both
+ * deletions above and said nothing, which is how this got noticed by hand.
+ *
+ * Same shape as assertPeersDeclared() failing on a declared peer nothing
+ * imports, and check:importmap failing on a mapped specifier nothing imports. */
+function assertExclusionsExist() {
+  const missing = NOT_SHIPPED.map(([rel]) => rel).filter(
+    (rel) => !fs.existsSync(docs('source_examples', rel)),
+  );
+  if (!missing.length) return;
+  console.error('build failed — NOT_SHIPPED excludes captures that do not exist:');
+  for (const rel of missing) console.error(`  source_examples/${rel}`);
+  console.error('');
+  console.error('An exclusion is for a capture that EXISTS and must not ship. If the');
+  console.error('capture is gone, delete its entry rather than leaving a reason for a');
+  console.error('file nobody has.');
+  process.exit(1);
+}
 
 /** A capture's path inside dist/, restoring the site's own directory depth. */
 function shippedAs(rel) {
@@ -177,15 +201,19 @@ function shippedAs(rel) {
  * Kept as two directories rather than a flag or a list, because the directory
  * name IS the claim.
  *
- * THAT CLAIM IS NOW HALF TRUE, AND KNOWINGLY SO. check:captures was deleted on
- * 2026-08-25: the site installs this package and pins it, so demanding the two
- * be equal was red for exactly the changes it was meant to protect. What that
- * leaves is 37 of the 51 files under source_examples/ having no upstream at
- * all — they are the origin now, and editing one is the normal way to change a
- * component. Only 8 are still copies of something codecave.pro owns
- * (menu.ts, paths.ts, links.ts, global.css, logo.svg and three pages), and
- * nothing verifies those any more. Moving the 37 into authored/ is the fix and
- * has not been done.
+ * THAT CLAIM IS NOW MOSTLY THE OTHER WAY ROUND, AND KNOWINGLY SO.
+ * check:captures was deleted on 2026-08-25: the site installs this package and
+ * pins it, so demanding the two be equal was red for exactly the changes it was
+ * meant to protect. Of the 46 files under source_examples/, 37 have no upstream
+ * at all — they are the ORIGIN now, and editing one is the normal way to change
+ * a component — 6 are captures of this repo's own earlier token files, and 2 are
+ * live inputs the build reads (global.css, logo.svg). Exactly one is
+ * unverifiable evidence: helpers/image-url.ts, excluded below.
+ *
+ * The five that were only ever quoted went with the check: helpers/paths.ts, the
+ * site's route table which this package deliberately never shipped, and the four
+ * captures whose only role was to import it. Moving the 37 into authored/ is the
+ * unfinished half.
  */
 const ROOTS = ['source_examples', 'authored'];
 
@@ -866,6 +894,7 @@ for (const [src, target, , rel] of COPIES) {
   else fs.copyFileSync(src, target);
 }
 
+assertExclusionsExist();
 assertDistResolves();
 
 for (const [produce, dest] of DERIVED) {

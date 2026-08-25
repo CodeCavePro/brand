@@ -65,17 +65,25 @@ protect.
 
 So, concretely:
 
-- **37 of the 51 files have no upstream at all.** The site deleted its copies
+- **37 of the 46 files have no upstream at all.** The site deleted its copies
   when the package took the components over. These are the origin now, and
   editing one is the ordinary way to change a component.
-- **8 are still copies of things codecave.pro owns** — `header/menu.ts`,
-  `helpers/paths.ts`, `footer/links.ts`, `styles/global.css`,
-  `assets/images/logo.svg`, `footer/footer.astro`, `homepage/testimonial.astro`,
-  `helpers/image-url.ts`. Those are the ones the "nothing here is authored" rule
-  still means something about, and they can now go stale without anyone being
-  told.
 - **6 are captures of this repo's own earlier token files** and never had a site
   upstream.
+- **2 are live inputs, not evidence.** `styles/global.css` is parsed by
+  `build-storybook.mjs` for the `:root` and `@theme` blocks it scopes into the
+  demo canvases — it throws if the `:root` is missing — and
+  `assets/images/logo.svg` is rendered by a kitchen-sink page. If either is
+  wrong, something here breaks or renders wrong, which is its own check.
+- **1 is unverified evidence: `helpers/image-url.ts`.** Nothing reads it. Its
+  `NOT_SHIPPED` entry keeps it because sixteen site-only pages still use it,
+  which is a claim about codecave.pro that nothing here can check any more.
+
+Five others were deleted on 2026-08-25 rather than left unverifiable:
+`helpers/paths.ts` — the site's route table, which the package deliberately
+never shipped — and `footer/footer.astro`, `footer/links.ts`, `header/menu.ts`
+and `homepage/testimonial.astro`, whose only role was to import it and be quoted
+in prose. Those citations now name codecave.pro, where the files live.
 
 Moving the 37 into `docs/authored/` would put the directory name back in step
 with the truth, and make the remaining `source_examples/` 100% real captures.
