@@ -47,18 +47,13 @@ label ([live query](https://codecave.atlassian.net/issues?jql=project%20%3D%20CC
 
     **`docs/source_examples/` is now mostly ORIGIN rather than evidence**, and the
     part that was unverifiable evidence was cut on the same day rather than left
-    to rot. 46 files: **37 are the origin** of the shipped components — editing one
+    to rot. 45 files: **37 are the origin** of the shipped components — editing one
     is the ordinary way to change a component, whatever the directory name says —
     **6 are captures of this repo's own earlier token files**, and **2 are live
     inputs the build reads**: `styles/global.css`, which `build-storybook.mjs`
     parses for the `:root` and `@theme` blocks it scopes into the demo canvases
     (it throws if the `:root` is missing), and `assets/images/logo.svg`, which a
     kitchen-sink page renders.
-
-    **The last one, `helpers/image-url.ts`, is the only file here nothing reads.**
-    Its `NOT_SHIPPED` entry keeps it on the grounds that sixteen site-only pages
-    still use it — a claim about codecave.pro that nothing here can check any
-    more. It is the one remaining piece of unverified evidence.
 
     **A component that reaches for one company's data does not belong here, and
     that is a different test from what it is written in.** The six site-owned

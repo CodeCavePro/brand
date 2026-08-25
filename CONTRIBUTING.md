@@ -65,7 +65,7 @@ protect.
 
 So, concretely:
 
-- **37 of the 46 files have no upstream at all.** The site deleted its copies
+- **37 of the 45 files have no upstream at all.** The site deleted its copies
   when the package took the components over. These are the origin now, and
   editing one is the ordinary way to change a component.
 - **6 are captures of this repo's own earlier token files** and never had a site
@@ -75,9 +75,6 @@ So, concretely:
   demo canvases — it throws if the `:root` is missing — and
   `assets/images/logo.svg` is rendered by a kitchen-sink page. If either is
   wrong, something here breaks or renders wrong, which is its own check.
-- **1 is unverified evidence: `helpers/image-url.ts`.** Nothing reads it. Its
-  `NOT_SHIPPED` entry keeps it because sixteen site-only pages still use it,
-  which is a claim about codecave.pro that nothing here can check any more.
 
 
 Moving the 37 into `docs/authored/` would put the directory name back in step

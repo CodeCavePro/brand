@@ -39,7 +39,8 @@ import DocPage from '../../layouts/DocPage.astro';
     <table class="sb-props">
       <thead><tr><th>Prop</th><th>Type</th><th>Notes</th></tr></thead>
       <tbody>
-        <tr><td>item <span class="sb-req">*</span></td><td><code>Feature</code></td><td>Strapi entity. Reads <code>image.url</code>, <code>image.name</code>, <code>content</code> (markdown).</td></tr>
+        <tr><td>item <span class="sb-req">*</span></td><td><code>PainPoint</code></td><td>The two fields the component reads, declared in the component itself: <code>image.url</code>, <code>image.name</code>, <code>content</code> (markdown). A generated CMS entity satisfies it unchanged; the component carries no CMS schema.</td></tr>
+        <tr><td>resolveImage</td><td><code>(url: string) =&gt; string</code></td><td>Supplied by the caller for relative media URLs; omit it when they are already absolute.</td></tr>
       </tbody>
     </table>
     <p style="margin-top:1rem">The renderer overrides two node types only:
@@ -104,7 +105,7 @@ import DocPage from '../../layouts/DocPage.astro';
       This card used to parse <code>item.content</code> with <code>marked</code> and
       bind the result straight to <code>v-html</code>. Markdown permits raw HTML and
       <code>marked</code> dropped its own <code>sanitize</code> option in v5, so
-      anything an editor could type into the Strapi <code>content</code> field
+      anything an editor could type into the CMS <code>content</code> field
       executed in every visitor's page — an XSS sink gated only by CMS access
       control. As of the 2026-08-20 resync the component wraps the parse in
       <code>sanitize()</code> from <code>isomorphic-dompurify</code>, which closes it.

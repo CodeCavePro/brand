@@ -53,7 +53,7 @@ import DocPage from '../../layouts/DocPage.astro';
       <span class="sb-tag is-vue">Vue island</span>
       <span class="sb-tag">src/components/common/Review.vue</span>
       <span class="sb-tag">rendered live from compiled/Review.js</span>
-      <span class="sb-tag">Strapi</span>
+      <span class="sb-tag">CMS-neutral</span>
     </div>
   </header>
 
@@ -62,7 +62,8 @@ import DocPage from '../../layouts/DocPage.astro';
     <table class="sb-props">
       <thead><tr><th>Prop</th><th>Type</th><th>Notes</th></tr></thead>
       <tbody>
-        <tr><td>item <span class="sb-req">*</span></td><td><code>Testimonial</code></td><td>Reads <code>photo.url</code>, <code>photo.name</code>, <code>name</code>, <code>position</code>, <code>review</code>, <code>linkedinurl</code>, <code>verification</code>.</td></tr>
+        <tr><td>item <span class="sb-req">*</span></td><td><code>TestimonialCard</code></td><td>The six fields the component reads, declared in the component itself: <code>photo.url</code>, <code>photo.name</code>, <code>name</code>, <code>position</code>, <code>review</code>, <code>linkedinurl</code>, <code>verification</code>. A generated CMS entity satisfies it unchanged; the component carries no CMS schema.</td></tr>
+        <tr><td>resolveImage</td><td><code>(url: string) =&gt; string</code></td><td>Supplied by the caller for relative media URLs; omit it when they are already absolute.</td></tr>
         <tr><td>className</td><td><code>string</code></td><td>Interpolated with no fallback — see findings.</td></tr>
       </tbody>
     </table>
@@ -139,7 +140,7 @@ import DocPage from '../../layouts/DocPage.astro';
     <p class="sb-note is-warn"><strong>A sentinel filename controls rendering.</strong>
       The avatar is gated on <code>item.photo.name !== 'no-image.svg'</code>. The
       contract between CMS and component is a magic string: rename the placeholder
-      asset in Strapi and every testimonial sprouts a broken avatar. There is also
+      asset in the CMS and every testimonial sprouts a broken avatar. There is also
       no guard on <code>photo</code> itself, so a testimonial with no photo
       relation throws on <code>photo.name</code> rather than falling back.</p>
 

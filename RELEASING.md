@@ -435,14 +435,14 @@ Worth knowing before someone files a release request for one of these:
 - **Font binaries.** A licensing question, not an oversight. The stylesheets
   declare six Satoshi faces and ship no files; consumers supply them. See the
   [package README](packages/brand/README.md).
-- **The four CMS-shaped components.** `ArticlePreview`, `Review`,
-  `pain-points-item` and `technologies` reach the site's Strapi host and token
-  through `helpers/image-url.ts`. `build.mjs` excludes them by name in
-  `NOT_SHIPPED`, each with its reason; they ship when
-  [CCWEB2-332](https://codecave.atlassian.net/browse/CCWEB2-332) inverts that
-  dependency site-side. The rest of the components ship as of 1.2.0 — but
-  **nothing is published from `docs/source_examples/` until the captures have
-  been re-measured against the live site, ever.**
+- **Nothing CMS-shaped, any more.** `ArticlePreview`, `Review`,
+  `pain-points-item` and `technologies` used to reach a CMS host and token
+  through `helpers/image-url.ts`, so `NOT_SHIPPED` held all four.
+  [CCWEB2-332](https://codecave.atlassian.net/browse/CCWEB2-332) inverted that:
+  each declares the fields it reads and takes an optional `resolveImage()`, the
+  caller supplies the resolver, and all four ship. `helpers/image-url.ts` was
+  deleted rather than excluded — a package that knows where the content lives
+  has the dependency the wrong way round, and an exclusion only hides it.
 - **Anything authored in `packages/`.** `README.md` is the single exception,
   because npm renders it as the package page and there is nowhere else for that
   page to come from — and even its example values are asserted against the

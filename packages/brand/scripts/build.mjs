@@ -105,36 +105,6 @@ const NOT_SHIPPED = [
    '@codecavepro/brand/tokens.css, so shipping it would have the package ' +
    'import itself. The storybook still reads it from the captures, where it ' +
    'belongs, to build tw-bridge.css.'],
-  ['helpers/image-url.ts',
-   'the site\'s CMS URL joiner: it imports strapiUrl from lib/strapi.ts, ' +
-   'which carries the CMS host and the shape of a private token. Nothing ' +
-   'shippable reaches it any more — CCWEB2-332 inverted that dependency, so ' +
-   'the four CMS-shaped components now take an optional resolveImage() and ' +
-   'default to identity. It stays captured because sixteen site-only pages ' +
-   'still use it, and it stays out because a design system has no business ' +
-   'knowing where the content lives.'],
-
-  /* THE ONE THE SITE KEPT.
-   *
-   * Seven used to sit here. Each reached codecave.pro's own route table, link
-   * list or menu data -- paths.ts, links.ts, menu.ts -- so installing one would
-   * have put the site's navigation behind an npm release: changing a menu item
-   * would mean publishing. That is why 2.0.0 stopped shipping them.
-   *
-   * Six of the seven have since had that reach REMOVED rather than tolerated.
-   * They take the same information as props -- basePath, items, serviceLinks,
-   * ctaHref, href, logo -- which is what let BrandNav ship when desktop-menu
-   * could not, and the site passes it in from the modules it still owns. The
-   * exclusion was never about the components; it was about what they read.
-   *
-   * The seventh, desktop-menu.vue, has no entry here because it no longer
-   * EXISTS. BrandNav replaced it outright, codecave.pro deleted the file on
-   * 2026-08-24, and the capture went with it -- source_examples/ records what
-   * the site ships, so a capture of a file the site does not have is not
-   * evidence of anything. Excluding it would have been the wrong shape of fix:
-   * NOT_SHIPPED is for captures that exist and must not ship, not for captures
-   * that should not exist.
-   */
 ];
 const EXCLUDED = new Set(NOT_SHIPPED.map(([rel]) => rel));
 
@@ -198,11 +168,11 @@ function shippedAs(rel) {
  * THAT CLAIM IS NOW MOSTLY THE OTHER WAY ROUND, AND KNOWINGLY SO.
  * check:captures was deleted on 2026-08-25: the site installs this package and
  * pins it, so demanding the two be equal was red for exactly the changes it was
- * meant to protect. Of the 46 files under source_examples/, 37 have no upstream
+ * meant to protect. Of the 45 files under source_examples/, 37 have no upstream
  * at all — they are the ORIGIN now, and editing one is the normal way to change
  * a component — 6 are captures of this repo's own earlier token files, and 2 are
- * live inputs the build reads (global.css, logo.svg). Exactly one is
- * unverifiable evidence: helpers/image-url.ts, excluded below.
+ * live inputs the build reads (global.css, logo.svg). Nothing under either root
+ * is evidence of a repository this one cannot see.
  */
 const ROOTS = ['source_examples', 'authored'];
 

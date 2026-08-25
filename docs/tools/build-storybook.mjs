@@ -93,11 +93,11 @@ const SRC = path.join(docs, 'source_examples');
  * what the site will get at its next bump rather than what it renders today.
  *
  * Entries the package does NOT carry stay on the captures, and the build says
- * which those are on every run rather than hiding the split. Today they are
- * the three components CCWEB2-332 is about: they reach getImageUrl, which
- * imports the site's CMS host and token, so they cannot ship. A specimen for
- * a component nobody can install is still worth having — it documents the
- * site, which is the storybook's job.
+ * which those are on every run rather than hiding the split. Today there are
+ * none: every component under source_examples/ ships. That is worth printing
+ * anyway, because a specimen quietly falling back to the captures is exactly
+ * the drift this arrangement exists to prevent, and the build log is the only
+ * place it would ever show.
  */
 const PKG = path.join(docs, '..', 'packages', 'brand', 'dist', 'src');
 if (!fs.existsSync(PKG)) {

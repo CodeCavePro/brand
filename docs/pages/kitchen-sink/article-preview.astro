@@ -27,7 +27,7 @@ import DocPage from '../../layouts/DocPage.astro';
       <span class="sb-tag is-vue">Vue island</span>
       <span class="sb-tag">src/components/common/ArticlePreview.vue</span>
       <span class="sb-tag">rendered live from compiled/ArticlePreview.js</span>
-      <span class="sb-tag">Strapi</span>
+      <span class="sb-tag">CMS-neutral</span>
     </div>
   </header>
 
@@ -36,7 +36,9 @@ import DocPage from '../../layouts/DocPage.astro';
     <table class="sb-props">
       <thead><tr><th>Prop</th><th>Type</th><th>Notes</th></tr></thead>
       <tbody>
-        <tr><td>article <span class="sb-req">*</span></td><td><code>Article</code></td><td>Strapi entity. Reads <code>slug</code>, <code>cover.url</code>, <code>cover.name</code>, <code>date</code>, <code>locale</code>, <code>title</code>, <code>excerpt</code>, <code>readingtime</code>.</td></tr>
+        <tr><td>article <span class="sb-req">*</span></td><td><code>ArticleSummary</code></td><td>The seven fields the component reads, declared in the component itself: <code>slug</code>, <code>cover.url</code>, <code>cover.name</code>, <code>date</code>, <code>locale</code>, <code>title</code>, <code>excerpt</code>, <code>readingtime</code>. TypeScript is structural, so a generated CMS entity satisfies it unchanged — but the component carries no CMS schema.</td></tr>
+        <tr><td>resolveImage</td><td><code>(url: string) =&gt; string</code></td><td>CMS media URLs arrive relative (<code>uploads/x.png</code>). The caller supplies the resolver; pass nothing when the URLs are already absolute, and the component uses them as they are.</td></tr>
+        <tr><td>basePath</td><td><code>string</code></td><td>Prefix the slug is appended to. The caller owns where its articles live.</td></tr>
         <tr><td>className</td><td><code>string</code></td><td>Appended to the anchor. Note the prop is <code>className</code>, not <code>class</code> — unlike Button.</td></tr>
       </tbody>
     </table>
