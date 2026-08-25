@@ -1,0 +1,37 @@
+/* ============================================================================
+ * The storybook's stylesheet -- and it is deliberately a CONSUMER's stylesheet.
+ * ----------------------------------------------------------------------------
+ * These three lines are the ones packages/brand/README.md tells an installing
+ * project to write, with `@codecavepro/brand/x.css` spelled as the path it is
+ * built from. docs/ is the ORIGIN and packages/ is a pure derivative whose
+ * byte-identity `npm run check` asserts, so importing the origin here is the
+ * same stylesheet a landing page or a HubSpot theme would get -- with no
+ * `npm run build` standing between a token edit and the canvas.
+ *
+ * ORDER IS LOAD-BEARING and the README says why: several @theme entries in
+ * theme.css are deliberate self-references (`--color-glow-25: var(--color-glow-25)`).
+ * The declaration is what makes Tailwind emit the utility; the VALUE comes from
+ * the unlayered :root in colors_and_type.css, which beats @layer theme. Put
+ * tokens behind a layer, or drop them, and the same line resolves to nothing.
+ * ========================================================================== */
+
+@import "tailwindcss";
+@import "../docs/colors_and_type.css";
+@import "../docs/theme.css";
+
+/* Automatic content detection would not find any of this: Vite's root is the
+ * repo, but Tailwind only scans what it can reach from the CSS file, and a
+ * utility used by exactly one component and nothing else is emitted or not with
+ * no error either way -- the story renders unstyled and the build stays green.
+ * The same failure the package README warns installers about, one directory up. */
+@source "../docs/authored";
+@source "../docs/source_examples";
+@source "../docs/stories";
+
+/* The ground. Components are drawn for the site's dark surface, so a canvas
+ * left at Storybook's white makes every specimen look broken. */
+body {
+  background: var(--color-surface-primary);
+  color: var(--color-body-primary);
+  font-family: var(--font-sans);
+}

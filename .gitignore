@@ -80,3 +80,7 @@ packages/*/LICENSE
 # real command, and a stale tarball committed to the tree is something someone
 # would eventually reach for.
 *.tgz
+
+# Storybook build output. Same rule as /dist/ above: rebuilt from a clean
+# checkout, so none of it is source.
+/storybook-static/
