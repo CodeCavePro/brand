@@ -9,11 +9,10 @@ This repository contains resources for the **CODECAVE** brand such as [logos](/l
 >
 > **That is the target state, and we are not there yet.** `docs/` began highly divergent from the
 > shipped site, so the current phase runs the other way: the design system is converging *onto*
-> the website, without giving up the brand identity in the process. While that convergence is in
-> progress the site is the reference — where the two disagree `docs/` moves, and a genuine
-> site-side flaw is written up in [WEBSITE-REVIEW.md](/WEBSITE-REVIEW.md) for a human designer
-> rather than silently "corrected" here. Once convergence is reached the direction inverts and
-> the paragraph above governs.
+> the website, without giving up the brand identity in the process. **That convergence is
+> reached and the direction has inverted** — the site installs this package and keeps no
+> copies, so `docs/` is the reference and the paragraph above governs. Review findings live in
+> [WEBSITE-REVIEW.md](/WEBSITE-REVIEW.md); the component ones are now this repository's to fix.
 >
 > **Convergence is reached when codecave.pro installs `@codecavepro/brand` and deletes its own
 > copy of the palette.** Not when the two "look the same" — that is a judgement someone has to

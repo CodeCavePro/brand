@@ -418,10 +418,17 @@ because no brand project exists yet. The `brand-kit` label is what makes them
 movable in bulk when one does. **Print colour space / CMYK is deliberately not
 filed anywhere:** it is Maria Shaban's decision and gets its own project later.
 
-Site-side flaws still go to [WEBSITE-REVIEW.md](/WEBSITE-REVIEW.md), which is
-already mirrored as CCWEB2-270…310. It stays a file only because ten places
-cite it by section number, three of them inside the shipped
-`docs/colors_and_type.css`.
+[WEBSITE-REVIEW.md](/WEBSITE-REVIEW.md) is the component and token review,
+mirrored as CCWEB2-270…310. **Its findings are mostly OURS now** — it was
+written when the components were the site's, and they now live in
+`docs/authored/` and ship in the package, so a component remark is this
+repository's to fix and reaches the site at its next bump. Only remarks about
+files the site still owns are the site's.
+
+**Its section numbers must not be renumbered.** They are cited by number from
+the shipped `docs/colors_and_type.css` and from `docs/DESIGN.md`; the list
+starting at section 2 is deliberate, because section 1's only finding was
+fixed and deleted.
 
 ## Core Visual Foundation
 These are the foundational rules and assets that dictate how every other template is built. [[1](https://weirmedia.ca/web-design)]

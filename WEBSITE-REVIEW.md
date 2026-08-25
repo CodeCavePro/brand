@@ -7,34 +7,25 @@ of `src/styles/global.css` after the palette rebuild, and WCAG 2.1 contrast
 math computed against the current palette (page ground `#0A0A0B`, card ground
 `#0F0F15`).
 
-The design system in this repo now **follows the site** — nothing below was
-"fixed" in the DS unless the remark says so in as many words, and only one does
-(4 · checkbox squash), because the defect made the documentation itself render
-wrong. Each remark names the source file so it can be addressed where it lives.
+**The direction of truth inverted on 2026-08-25, and it changes who acts on
+this list.** When these remarks were compiled, `docs/` documented codecave.pro
+and every component below was the site's. The components now live in
+`docs/authored/`, ship in `@codecavepro/brand`, and the site installs them and
+keeps no copies — so **a finding about a component is this repository's to fix,
+and reaches the site at its next version bump.** Only findings about files the
+site still owns are the site's.
+
+Each remark names the source file so it can be addressed where it lives.
 Severity: **P0** = ship-blocking (security or accessibility failure), **P1** =
 incorrect behavior or broken contract, **P2** = hygiene and polish.
 
 **This file lists only what is still open.** Remarks are deleted as they are
 fixed rather than struck through — the Jira backlog under
 [CCWEB2](https://codecave.atlassian.net/browse/CCWEB2) is the record of what was
-done and when.
+done and when. Every remark below was re-verified against
+`docs/authored/` on 2026-08-25.
 
 ---
-
-## 1 · P0 — Security
-
-### 1.1 Unsanitized CMS markdown reaches `v-html` — **FIXED 2026-08-20**
-`src/components/project/pain-points-item.vue` parsed `item.content` with
-`marked` and bound the result via `v-html`. Markdown permits raw HTML and no
-sanitizer ran (marked dropped its own in v5), so anything an editor could type
-into the Strapi content field executed in every visitor's page. This was an XSS
-sink gated only by CMS access control.
-**Fix:** run the parsed HTML through DOMPurify (or equivalent) before binding.
-
-**Resolved.** The component now imports `sanitize` from `isomorphic-dompurify`
-and wraps the parse: `sanitize(marked.parse(contentString))`. Confirmed against
-`codecave.pro` `development` during the capture resync (CCWEB2-315). This was
-the only P0 in this document; section 1 is now empty of open items.
 
 ## 2 · P0 — Accessibility
 
@@ -82,12 +73,6 @@ fix.
 tech reports the whole footer as one flat run of anchors — no group boundaries,
 no counts. A `<nav aria-labelledby>` + `<ul>` fixes it without moving a pixel.
 
-### 2.6 Card titles are hard-coded `<h2>`
-`common/ArticlePreview.vue` and `homepage/technology-card.vue` both emit `<h2>`
-per card. Six technology cards per section put six `h2`s alongside the
-section's own heading and flatten the document outline.
-**Fix:** a `headingLevel` prop, or `<h3>` under the section heading.
-
 ### 2.7 Smaller a11y defects
 - **Alt text is a CMS filename** — `ArticlePreview.vue` binds
   `:alt="article.cover.name"` (`bim-export-hero.png` read aloud). The image is
@@ -110,7 +95,6 @@ section's own heading and flatten the document outline.
 | 3.4 | `common/TextField.vue` | Auto-resize runs only in the input handler — programmatic value changes (draft restore, prefill) leave content clipped under `overflow: hidden` | watch `modelValue` and re-measure |
 | 3.5 | `common/Review.vue` | Avatar gated on the magic string `photo.name !== 'no-image.svg'`; no null guard on `photo` (throws); `linkedinurl.length > 1` accepts any 2+-char string as a URL and throws on `null` | explicit `hasPhoto` flag from the CMS; real URL validation |
 | 3.6 | `homepage/technology-card.vue` | `index?: number` is optional but `rotate[index]`/`translate[index]` are unguarded — the mobile carousel really does omit it, interpolating the literal string `undefined` into classes | default the prop, guard the lookup |
-| 3.7 | `homepage/technology-card.vue` | Routing switches on the **display name** (`getTechnologyUrl`), returning `''` for anything unmatched — rewording or translating a label silently kills its CTA; the six names are duplicated in `header/menu.ts` and `footer/links.ts` | route by a stable slug shared by all three |
 | 3.8 | `project/pain-points-item.vue` | Markdown parsed once at `<script setup>` level, not in `computed` — swapping `item` without remount leaves stale body text next to the new image | wrap in `computed()` |
 | 3.9 | `common/GlowButton.vue` | The `class` prop lands on both the wrapper div and the inner anchor — positional utilities double-apply (`Cookies.vue` passes `w-full max-w-[12.5rem]!`) | apply caller class to the wrapper only |
 | 3.10 | `common/effects/TypingEffect.vue` | `SplitText.create('.split-text span')` queries the whole document — a second instance re-splits and animates the first one's characters | scope via template ref |
@@ -138,8 +122,14 @@ section's own heading and flatten the document outline.
   floor — as a flex item beside a label long enough to wrap, it gives up width
   while keeping its height and renders as a tall rounded slot. Any consumer with
   a sentence-length label (the newsletter opt-in on the contact form is one)
-  hits it. Add `shrink-0`. *Fixed ahead in the port (`flex: none`) because it
-  made the brand documentation render a broken control.*
+  hits it. Add `shrink-0`.
+
+  **This one now ships.** The note here used to say it was "fixed ahead in the
+  port" — that fix lived in the docs-side copy and did not survive the
+  component's promotion into the package. Verified 2026-08-25: neither
+  `shrink-0` nor `flex: none` appears in `docs/authored/common/Checkbox.vue`,
+  nor in `@codecavepro/brand@2.2.0`'s copy of it. Every consumer that gives a
+  checkbox a wrapping label gets the tall rounded slot.
 - **`Checkbox.vue`'s `secondary` variant is dead code.** The props type says
   `variant?: 'primary'`, so the `case 'secondary'` branches in
   `labelVariantClass` and `inputVariantClass` are unreachable through the typed
@@ -151,34 +141,34 @@ section's own heading and flatten the document outline.
   does not have, which is how the design-system port came to carry a specimen
   for it.
 
-## 5 · P2 — Token layer (`src/styles/global.css`)
+## 5 · P2 — Token layer
+
+**This section changed owner.** It was written against
+`codecave.pro/src/styles/global.css`. That file now declares **zero** custom
+properties — it imports `@codecavepro/brand/tokens.css` and `/theme.css` — so
+the ramps below are **this package's**, in `docs/colors_and_type.css`, and the
+findings are ours to answer rather than a designer's to relay.
 
 - **The gray ramp is non-monotonic.** `gray-1000 #050505` is *darker* than
   `gray-1100 #0F0F15` (relative luminance 0.0015 vs 0.0050). By luminance,
   `#0F0F15` belongs between gray-950 and gray-1000. Rename or reorder — ramp
-  numbers that stop meaning "darker as they grow" get misused.
+  numbers that stop meaning "darker as they grow" get misused. The declaration
+  in `colors_and_type.css` carries a `NOTE` admitting the inversion, which makes
+  it documented rather than fixed.
 - **The brand ramp hides neutrals and one inversion.** `brand-950 #0A0A0B` (the
   page ground) is a neutral near-black, and `brand-25/50` are grays — they read
   as violet steps but aren't. `brand-500 #5F20FE` is slightly *lighter* than
   `brand-400 #5F3ABD` (L 0.106 vs 0.091).
 - **Raw ramps in bare `:root`, semantics in `@theme`.** This works only because
-  unlayered `:root` out-cascades Tailwind's `theme` layer. Side effects: the
-  self-referential aliases (`--color-glow-25: var(--color-glow-25)` etc.) would
-  be circular in any other arrangement, and redefining `--color-gray-*` values
-  silently repaints Tailwind's *default* gray palette for any future
-  `text-gray-*` utility (none are used today — worth keeping that way or moving
-  the ramps into `@theme`).
-- **`tailwind.config.ts` is never loaded.** Two routes try. `global.css` says
-  `@config "../../tailwind.config.js"` and the file is `.ts`;
-  `astro.config.mjs` passes `tailwindcss({ config: … })`, an option
-  `@tailwindcss/vite` has never had. `darkMode`, content globs and
-  `theme.extend` are all inert. Delete it — wiring it up would unstyle every
-  Vue component, since the glob has no `.vue`.
-- **One real font cut — FIXED 2026-08-24.** Only `Satoshi-Regular.ttf` was
-  shipped, with no `font-weight` descriptor at all, so that one file matched
-  every weight and 97 elements were browser-synthesized. **Fix:** ten faces as
-  woff2 with woff fallback — 300/400/500/700/900, upright and italic — with
-  `font-display: swap`. CCWEB2-309.
+  unlayered `:root` out-cascades Tailwind's `theme` layer, and the package now
+  depends on that arrangement deliberately: `tokens.css` carries the values,
+  `theme.css` carries the names, and several `@theme` entries are
+  self-referential (`--x: var(--x)`) precisely so Tailwind emits the utility
+  while the value comes from `tokens.css`. **Do not "fix" one on sight** — behind
+  a layered or absent `tokens.css` the same line is a cycle that resolves to
+  nothing. The live risk that remains: redefining `--color-gray-*` silently
+  repaints Tailwind's *default* gray palette for any future `text-gray-*`
+  utility. None are used today; worth keeping it that way.
 - **Naming nits:** `--color-text-body-primary` (gray-200) vs
   `--color-body-primary` (gray-50) is a near-collision that invites the wrong
   pick; `--color-default-transparent` points at opaque `gray-100`; the comment

@@ -397,11 +397,14 @@ under the **`brand-kit`** label. They sit in the website project because no bran
 project exists yet; the label is what makes them movable in bulk when one does.
 [CLAUDE.md](/CLAUDE.md) carries the current index with status.
 
-**Site-side flaws are not ours to fix.** A genuine bug in what codecave.pro ships
-gets written up in [WEBSITE-REVIEW.md](/WEBSITE-REVIEW.md) for a human designer
-and filed in CCWEB2 *without* the `brand-kit` label — never silently "corrected"
-in `docs/`. While the design system is still converging onto the site, the site
-is the reference.
+**A flaw in a file the SITE still owns is not ours to fix.** It gets written up
+in [WEBSITE-REVIEW.md](/WEBSITE-REVIEW.md) and filed in CCWEB2 *without* the
+`brand-kit` label — never silently "corrected" in `docs/`.
+
+That is a much smaller set than it used to be. The components moved here, so a
+flaw in one of them **is** ours: fix it in `docs/authored/`, release, and the
+site gets it at its next bump. What remains genuinely site-side is the site's
+own pages, layouts and configuration.
 
 Print colour space — CMYK, and whether a spot colour is used — is deliberately
 not filed anywhere. It is Maria Shaban's decision and gets its own project.
