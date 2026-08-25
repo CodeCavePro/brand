@@ -79,11 +79,6 @@ So, concretely:
   `NOT_SHIPPED` entry keeps it because sixteen site-only pages still use it,
   which is a claim about codecave.pro that nothing here can check any more.
 
-Five others were deleted on 2026-08-25 rather than left unverifiable:
-`helpers/paths.ts` — the site's route table, which the package deliberately
-never shipped — and `footer/footer.astro`, `footer/links.ts`, `header/menu.ts`
-and `homepage/testimonial.astro`, whose only role was to import it and be quoted
-in prose. Those citations now name codecave.pro, where the files live.
 
 Moving the 37 into `docs/authored/` would put the directory name back in step
 with the truth, and make the remaining `source_examples/` 100% real captures.

@@ -60,13 +60,13 @@ label ([live query](https://codecave.atlassian.net/issues?jql=project%20%3D%20CC
     still use it — a claim about codecave.pro that nothing here can check any
     more. It is the one remaining piece of unverified evidence.
 
-    Five files went on 2026-08-25 because they existed only to be quoted:
-    `helpers/paths.ts` — the site's route table, which the package deliberately
-    never shipped — plus `footer/footer.astro`, `footer/links.ts`,
-    `header/menu.ts` and `homepage/testimonial.astro`, whose only role was to
-    import it and be cited by prose. The prose now attributes those facts to
-    codecave.pro, where the files actually live. Moving the 37 into
-    `docs/authored/` is still the unfinished half.
+    **A component that reaches for one company's data does not belong here, and
+    that is a different test from what it is written in.** The six site-owned
+    components shipped once their reach became props — `items`, `serviceLinks`,
+    `ctaHref`, `basePath`, `logo`. A footer carrying an EIN, a street address and
+    a schema.org LocalBusiness graph, or a section calling a CMS for six known
+    record ids, has nothing left underneath the data; those are assemblies OF
+    shipped parts, not parts.
 
 
 Open bugs in what codecave.pro ships, found while resyncing the captures or

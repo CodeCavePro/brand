@@ -134,12 +134,6 @@ const NOT_SHIPPED = [
    * evidence of anything. Excluding it would have been the wrong shape of fix:
    * NOT_SHIPPED is for captures that exist and must not ship, not for captures
    * that should not exist.
-   *
-   * Two entries left on 2026-08-25 for that exact reason. footer/footer.astro
-   * and homepage/testimonial.astro were deleted along with helpers/paths.ts,
-   * which they imported: the package never shipped the site's route table, so
-   * carrying a copy of it bought nothing, and those two captures existed only
-   * to be quoted in prose. Their exclusions went with them.
    */
 ];
 const EXCLUDED = new Set(NOT_SHIPPED.map(([rel]) => rel));
@@ -147,8 +141,8 @@ const EXCLUDED = new Set(NOT_SHIPPED.map(([rel]) => rel));
 /* An exclusion naming a capture that does not exist is a claim that has
  * stopped being true, and it reads as coverage: the list is what a reader
  * consults to find out why something is missing, so a stale line answers a
- * question about a file nobody has. The build stayed green through both
- * deletions above and said nothing, which is how this got noticed by hand.
+ * question about a file nobody has. Deleting a capture leaves its exclusion
+ * behind with nothing to say so — the build goes on succeeding.
  *
  * Same shape as assertPeersDeclared() failing on a declared peer nothing
  * imports, and check:importmap failing on a mapped specifier nothing imports. */
@@ -209,11 +203,6 @@ function shippedAs(rel) {
  * a component — 6 are captures of this repo's own earlier token files, and 2 are
  * live inputs the build reads (global.css, logo.svg). Exactly one is
  * unverifiable evidence: helpers/image-url.ts, excluded below.
- *
- * The five that were only ever quoted went with the check: helpers/paths.ts, the
- * site's route table which this package deliberately never shipped, and the four
- * captures whose only role was to import it. Moving the 37 into authored/ is the
- * unfinished half.
  */
 const ROOTS = ['source_examples', 'authored'];
 
