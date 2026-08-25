@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "build": "npm run build --workspace @codecavepro/brand",
-    "check": "npm run check --workspace @codecavepro/brand && npm run check:ports && node docs/tools/check-tw-bridge.mjs && npm run check:collisions && npm run check:importmap && npm run check:findings && npm run check:examples && npm run check:links",
+    "check": "npm run check:eol && npm run check --workspace @codecavepro/brand && npm run check:ports && node docs/tools/check-tw-bridge.mjs && npm run check:collisions && npm run check:importmap && npm run check:findings && npm run check:examples && npm run check:links",
     "check:importmap": "node docs/tools/check-importmap.mjs",
     "check:findings": "node docs/tools/check-findings.mjs",
     "check:examples": "node docs/tools/check-examples.mjs",
@@ -24,7 +24,8 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build -o storybook-static",
     "test": "vitest run --project storybook",
-    "test:watch": "vitest --project storybook"
+    "test:watch": "vitest --project storybook",
+    "check:eol": "node docs/tools/check-eol.mjs"
   },
   "engines": {
     "node": ">=22"

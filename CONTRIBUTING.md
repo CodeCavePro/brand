@@ -347,6 +347,15 @@ served a two-day-old build the whole while. `text=auto` on its own would not
 have helped: it normalises what is committed and leaves the checkout
 platform-native, which is exactly the state that caused it.
 
+`npm run check:eol` asks the question directly, and CI runs it before the digest
+check so the cause is reported ahead of the consequence. It exists because
+`.gitattributes` governs CHECKOUT and nothing governs what a tool writes
+afterwards: an editor or a script emitting platform-native endings puts a file
+back to CRLF, and until this check existed the build said "regenerate the
+storybook" or "drifted: X differs from Y" — both true statements about a
+consequence, neither naming the cause. Thirty files went back to CRLF this way
+on 2026-08-25 and it took a diff to see why.
+
 If you clone into a tree that predates the file, or the check reports a digest
 mismatch it identifies as a line-ending difference, renormalise in place:
 

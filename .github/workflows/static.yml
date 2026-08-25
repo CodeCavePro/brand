@@ -67,6 +67,13 @@ jobs:
       # Runs unconditionally and depends on nothing. If this fails, the
       # committed storybook does not match the component sources, so whatever
       # we publish would be documenting an earlier state of them.
+      # First, because it explains the next one. tw-bridge digests the WORKING
+      # TREE, so a CRLF checkout fails that check with a message telling you to
+      # regenerate the storybook -- which on Windows re-records the CRLF digest
+      # and fails again. That loop ran 36 times across 2026-08-20 and 21.
+      - name: Check line endings
+        run: npm run check:eol
+
       - name: Verify the storybook matches its sources
         run: node docs/tools/check-tw-bridge.mjs
 
