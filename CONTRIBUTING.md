@@ -34,7 +34,7 @@ places you change it. Knowing which category a file is in is most of the job:
 | **Component sources** | `docs/authored/**` | **Edit these.** This is where a component changes. |
 | **Provenance captures** | `docs/source_examples/**` | **Never edit.** These are copies of files another repository owns. |
 | **Generated** | `packages/brand/dist/`, the derived half of `ds-bundle/` (including its Components cards), `docs/storybook/compiled/`, `docs/storybook/tw-bridge.css` | Never edit. Rebuild. |
-| **Artwork** | SVGs under `docs/assets/`, `docs/build/`, `docs/imagery/`, `src/`, `favicons/` | Edit the hex literally — SVG has no cascade to inherit a token from. |
+| **Artwork** | SVGs under `src/logos/` (masters), `docs/logos/`, `docs/favicons/`, `docs/assets/`, `docs/imagery/` | Edit the hex literally — SVG has no cascade to inherit a token from. |
 | **Swatch captions** | `docs/index.html`, `docs/index.html`, `docs/pages/preview/colors-*.astro` | Edit the literal. Here the hex *is the content* — a `var()` would render nothing. On the ported page the literals are a data array at the top of the file; that is still a literal. |
 | **Email** | `docs/examples/raw/email.html`, `newsletter.html` | Edit the literal. Email clients do not support custom properties; this is not a shortcut. |
 | **Prose** | `docs/DESIGN.md`, `README.md`, `docs/README.md`, `docs/SKILL.md` | Update the ones that state the value. `DESIGN.md` is the rulebook and always states it. |

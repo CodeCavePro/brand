@@ -67,7 +67,7 @@ const toNav = (i: (typeof MAIN)[number]) => ({ name: i.label, href: `${up}${i.hr
   left={MAIN.slice(0, half).map(toNav)}
   right={MAIN.slice(half).map(toNav)}
   current={MAIN.find((i) => i.name === current)?.label}
-  logo={`${up}assets/codecave-wide.svg`}
+  logo={`${up}logos/codecave-wide.svg`}
   logoHref={`${up}index.html`}
   logoAlt="CODECAVE"
   logoLabel="CODECAVE design system — documentation home"

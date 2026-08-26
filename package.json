@@ -21,7 +21,8 @@
     "docs:dev": "astro dev",
     "docs:build": "astro build",
     "docs:preview": "astro preview",
-    "release": "npm publish --workspace @codecavepro/brand --access public"
+    "release": "npm publish --workspace @codecavepro/brand --access public",
+    "assets:generate": "bash docs/tools/generate-brand-assets.sh"
   },
   "engines": {
     "node": ">=22"

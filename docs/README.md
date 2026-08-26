@@ -107,8 +107,10 @@ PDF and email builders, native apps. The CSS remains the source of truth.
 ├── guide.md                   short orientation note
 ├── tokens/                    the same tokens as typed TS modules, for non-CSS consumers
 ├── brand.json                 machine-readable palette, type and voice summary
-├── assets/                    brand marks, raster lockups, UI icons, font originals
-├── build/                     runtime assets, original filenames, byte-for-byte
+├── assets/                    UI icons, the checkbox tick, font originals
+├── logos/                     the 3 vector masters + the 72-file raster ramp
+├── icons/                     the 7-step square icon ramp
+├── favicons/                  ICO, Apple touch, PWA icons, site.webmanifest
 ├── fonts/                     6 Satoshi cuts (woff2 + woff) + fonts.css
 ├── imagery/                   decorative line-and-glow art, on its #050505 ground
 │   └── source/                the same 8 SVGs untouched, byte-for-byte
@@ -149,10 +151,19 @@ mount, their ports and their placeholders; the specimen PAGES live under
 identity — scoped style ids, `__file` — is derived from it, and renaming it
 would rewrite every `data-v-` attribute in every bundle for nothing.
 
-**`build/` is the runtime asset directory.** It holds the marks a packager or
-runtime consumes, under their original source filenames, copied byte-for-byte
-from the captured snapshots. Nothing in `build/` was redrawn, re-encoded or
-optimized.
+**`logos/`, `icons/` and `favicons/` are the rendered brand assets**, and they
+are the only home each one has. They are output: `tools/generate-brand-assets.sh`
+renders all three from the vector masters in the repository's `src/logos/`, and
+they are tracked so a consumer can take a PNG without owning a rasteriser.
+
+They used to exist three times over — at the repository root as the script's
+output, and again under `build/` and `assets/` as hand-made copies. The copies
+were byte-identical and nothing derived them, so a re-render updated one home
+and left the other two silently saying something else. 43 files were duplicated
+that way. `build/` is gone; its two files that were not copies are `logos/logo.svg`
+(codecave.pro's header lockup, which this repository does not draw) and
+`site.webmanifest`, now served from the site root where its absolute icon paths
+resolve — they pointed at `/icons/` and 404'd from the day it was captured.
 
 **`imagery/source/` is the same contract for the decorative art** — eight SVGs
 copied byte-for-byte out of `codecave.pro/src/assets/images/`. The seven files
@@ -163,21 +174,21 @@ canvas. Ship from `imagery/source/`; review from `imagery/`.
 
 | Group | Files | Source |
 |---|---|---|
-| Vectors | `codecave-wide.svg`, `codecave-tall.svg`, `codecave.svg` | brand repo `src/` |
-| Site marks | `logo.svg` | `codecave.pro` production |
-| Raster lockups | `logo.png`, `logo-tall.png`, `icon.png` (1024²) | brand repo `logos/` |
-| Icon ramp | `icons/16x16.png` … `icons/512x512.png` (7 sizes) | brand repo `icons/` |
-| Web runtime | `favicon.ico`, `favicon.svg`, `favicon-96x96.png`, `apple-touch-icon.png`, `web-app-manifest-192x192.png`, `web-app-manifest-512x512.png`, `site.webmanifest` | brand repo `favicons/` |
+| Vectors | `logos/codecave-wide.svg`, `logos/codecave-tall.svg`, `logos/codecave.svg` | `src/logos/`, copied on render |
+| Site marks | `logos/logo.svg` | `codecave.pro` production |
+| Raster lockups | `logos/codecave-{wide,tall}-{size}-{finish}.png`, `logos/codecave-{size}x{size}.png` (8 sizes × 4 finishes × 3 lockups) | rendered from `src/logos/` |
+| Icon ramp | `icons/16x16.png` … `icons/512x512.png` (7 sizes) | rendered from `src/logos/codecave.svg` |
+| Web runtime | `favicons/favicon.ico`, `favicon.svg`, `favicon-96x96.png`, `apple-touch-icon.png`, `web-app-manifest-192x192.png`, `web-app-manifest-512x512.png`, and `site.webmanifest` at the site root | rendered from `src/logos/codecave.svg` |
 
 **The production site's own `public/favicon.svg` is not shipped here.** As
 captured, `codecave.pro` still serves the Astro starter's default favicon — a
 stock framework glyph, not a CODECAVE mark. It is left in the evidence snapshot
 (`context/local-code/codecave.pro/files/public/favicon.svg`) and deliberately
-kept out of `build/`. Use `build/favicon.svg`, which is the real brand mark.
+kept out of the rendered ramps. Use `favicons/favicon.svg`, the real brand mark.
 
-`assets/` holds the wider brand kit: the 1024px raster lockups plus the 256px
-review cuts in all four finishes, the square 256px and 1024px app marks, the
-chevron and stacked vectors, the checkbox tick, and the original font uploads.
+`assets/` holds what is not rendered from a master: the UI icons, the checkbox
+tick, and the original font uploads. The lockups and app marks it used to
+duplicate now live once, in `logos/`.
 
 **Every lockup exists in eight sizes × four finishes.** The brand repo's
 `build.sh` renders `src/codecave.svg`, `src/codecave-wide.svg` and
@@ -205,7 +216,7 @@ set.
 
 | Card | What to inspect | What it demonstrates |
 |---|---|---|
-| `kitchen-sink/index.html` | The hub over both halves. Confirm every card and story opens, and that the lockup renders. | `build/codecave.svg`, `.divider`, `.eyebrow` |
+| `kitchen-sink/index.html` | The hub over both halves. Confirm every card and story opens, and that the lockup renders. | `logos/codecave.svg`, `.divider`, `.eyebrow` |
 | `kitchen-sink/colors-primary.html` | That `#5F20FE` never fills a large area, and that cyan appears nowhere as a UI color. | `--color-action`, `--color-hovered`, `--color-glow-25`, `--gradient-brand`, the 12-step brand ramp, the 13-step gray ramp, the single-use accents, the technology wash, the 4-step error ramp. Source: `source_examples/styles/global.css`, `tokens/colors.css` |
 | `kitchen-sink/colors-theme-dark.html` | Four surfaces one hair apart — check they still separate. Read the contrast ratios on the foreground ramp. | `--color-surface-primary/-secondary/-tertiary/-quaternary`, `--color-body-*`, `.card` in situ |
 | `kitchen-sink/colors-theme-light.html` | The three light surfaces that legitimately exist, and why no light theme may be derived from them. | `gray-50` as ink vs. as a field, inverse lockup usage, `error-100` rationale |
@@ -217,7 +228,7 @@ set.
 | `kitchen-sink/components-inputs.html` | Click into the fields. The floating label must never collide with the value, and focus must be a halo rather than an outline. | `.field`, `.field.is-error`, `.error-message`, `label .required`, `.checkbox`, `.chip`, radios, the assembled consultation form. Source: `common/InputText.vue`, `TextField.vue`, `Checkbox.vue`, `Radio.vue`, `common/forms/ContactUsForm.vue` |
 | `kitchen-sink/components-progress.html` | That the bar is violet at 15% and near-white only at 100%. If early progress reads near-white, the gradient is being sized to the fill instead of the track. | `.rule`, `.progress`, `.progress-value`, `.progress.is-indeterminate`, `--gradient-brand` as a field, and three counter-examples: stretched full width, gradient sized to the fill, thickened to 16px. Source: the brand repository's previously published `docs/index.html` |
 | `kitchen-sink/brand-imagery.html` | Every plate must show visible strokes. A plate that reads as flat near-black means the `#050505` ground rect is missing from that file, not that the art is subtle. | The seven harvested section backgrounds on their required ground, the `0.8 / 0.65 / 0.55 / 0.45` opacity ladder that produces the falloff, the three gradient stops, and the two imagery-only literals recovered in the deep pass (`#391398`, `#4C4759`). Source: `codecave.pro/src/assets/images/` |
-| `kitchen-sink/brand-assets.html` | Every frame must contain artwork. An empty frame means a missing file, not a styling bug. Check the 16px icon still reads as a chevron. | Real files from `build/` and `assets/` loaded via `<img>`, `<object>` and CSS `url(...)`: both lockups, the chevron, all four raster finishes at 256px, the seven-step `build/icons/` ramp at native size, the web runtime set (`favicon.ico`, `apple-touch-icon.png`, both PWA manifest icons), the production `logo.svg`, the 1024² app icon, and the six font specimens |
+| `kitchen-sink/brand-assets.html` | Every frame must contain artwork. An empty frame means a missing file, not a styling bug. Check the 16px icon still reads as a chevron. | Real files from `logos/`, `icons/` and `favicons/` loaded via `<img>`, `<object>` and CSS `url(...)`: both lockups, the chevron, all four raster finishes at 256px, the seven-step `icons/` ramp at native size, the web runtime set (`favicon.ico`, `apple-touch-icon.png`, both PWA manifest icons), the production `logo.svg`, the 1024² app icon, and the six font specimens |
 
 These cards no longer sit on a surface of their own. `kitchen-sink/index.html`
 gathers them and the component stories below on one page, and the main menu
@@ -325,7 +336,7 @@ all six artifacts now carry the company address.
 
 ## Reuse workflow
 
-1. **Copy `colors_and_type.css`, `fonts/` and `build/`** into the target project,
+1. **Copy `colors_and_type.css`, `fonts/` and `favicons/`** into the target project,
    keeping the relative layout — the stylesheet resolves fonts as
    `./fonts/Satoshi-*.woff2`.
 2. **Link it once**, at the root of the document. The tokens land on `:root` and
