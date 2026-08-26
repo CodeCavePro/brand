@@ -42,7 +42,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { PUBLISHED } from './astro-passthrough.mjs';
+import { publishedSource } from './astro-passthrough.mjs';
 
 const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'docs');
 const raw = path.join(docs, 'examples', 'raw');
@@ -54,13 +54,7 @@ const raw = path.join(docs, 'examples', 'raw');
  * resolver was not. The map is read from the passthrough, never restated;
  * that file is the one place that decides what src/ publishes and where. */
 const srcRoot = path.resolve(docs, '..', 'src');
-function sourceOf(siteRel) {
-  for (const [from, to] of PUBLISHED) {
-    if (siteRel === to) return path.join(srcRoot, from);
-    if (siteRel.startsWith(`${to}/`)) return path.join(srcRoot, from, siteRel.slice(to.length + 1));
-  }
-  return path.join(docs, siteRel);
-}
+const sourceOf = (siteRel) => publishedSource(srcRoot, siteRel) ?? path.join(docs, siteRel);
 const rel = (p) => path.relative(process.cwd(), p);
 const fail = (msg) => {
   console.error(msg);

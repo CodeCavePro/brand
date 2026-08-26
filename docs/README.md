@@ -111,7 +111,7 @@ PDF and email builders, native apps. The CSS remains the source of truth.
 ├── logos/                     the 3 vector masters + the 72-file raster ramp
 ├── icons/                     the 7-step square icon ramp
 ├── favicons/                  ICO, Apple touch, PWA icons, site.webmanifest
-├── fonts/                     6 Satoshi cuts + fonts.css — published from src/fonts/
+├── fonts/                     6 Satoshi cuts + fonts.css — published from src/styles/fonts/
 ├── imagery/                   decorative line-and-glow art, on its #050505 ground
 │   └── source/                the same 8 SVGs untouched, byte-for-byte
 ├── pages/                     every route on the site, as .astro

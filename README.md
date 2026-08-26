@@ -31,7 +31,7 @@ This repository contains resources for the **CODECAVE** brand such as [logos](/d
 | [src/logos/](/src/logos) | The three SVG masters. Every raster in the repository is rendered from these. | yes |
 | [src/styles/](/src/styles) | `colors_and_type.css` — **the deliverable** — and `theme.css`. | yes |
 | [src/tokens/](/src/tokens) | The same tokens as typed TS modules, hand-mirrored from the CSS. | yes |
-| [src/fonts/](/src/fonts) | Six Satoshi cuts (woff2 + woff) and `fonts.css`. | the CSS |
+| [src/styles/fonts/](/src/styles/fonts) | Six Satoshi cuts (woff2 + woff) and `fonts.css`. | the CSS |
 | [src/components/](/src/components) | Every Vue component, helper and icon the system ships. | yes |
 | [src/captured/](/src/captured) | The eight files copied from codecave.pro. | **never** |
 | [docs/](/docs) | The website — pages, layouts, and the published brand kit. | pages, yes |
@@ -47,16 +47,19 @@ What produces what:
 | `npm run build:package` | `src/` | `packages/brand/dist/` |
 | `npm run build:storybook` | `src/components/`, `src/captured/` | `docs/storybook/compiled/` |
 | `npm run build:assets` | `src/logos/` | `docs/logos/`, `docs/icons/`, `docs/favicons/` |
+| `npm run preview` | builds, then serves `dist/` | nothing |
 | `npm run check` | all of it | nothing — it asserts |
 | `npm run release:package` | `packages/brand/` | npm |
 
-**The bare verbs are the site**, because that is what you touch most: `build`,
-`preview`, and `dev` (which is `build` then `preview`). Everything else the
-repository produces is named for what it produces — `build:package`,
-`build:storybook`, `build:assets`, `release:package`.
+**The bare verbs are the site**, because that is what you touch most: `dev` is
+the dev server, `build` writes `dist/`, and `preview` builds and then serves it.
+Everything else the repository produces is named for what it produces —
+`build:package`, `build:storybook`, `build:assets`, `release:package`.
 
-There is deliberately no `astro dev` script; [CONTRIBUTING.md](/CONTRIBUTING.md)
-says why.
+The dev server needs two rewrites to be usable here — directory-index routing and
+serving the published half of `src/` — and both live in
+`tools/astro-passthrough.mjs`. [CONTRIBUTING.md](/CONTRIBUTING.md) explains what
+breaks without them.
 
 ## Design System
 
@@ -153,12 +156,12 @@ art since the rebuild; the token layer's sole cyan is the deep technology wash a
 | Logo     |  [Satoshi](https://www.fontshare.com/fonts/satoshi)  |       700 (bold)          |
 
 The design system ships **six real cuts** — Light, Regular, Italic, Medium, Bold and Black — as
-`woff2` with `woff` fallbacks in [src/fonts/](/src/fonts), each bound with a proper
+`woff2` with `woff` fallbacks in [src/styles/fonts/](/src/styles/fonts), each bound with a proper
 `font-weight` descriptor.
 
 > **The live site has not caught up.** `codecave.pro` still self-hosts a single
 > `Satoshi-Regular.ttf` declared with no `font-weight`, so 300 and 700 are synthesized by the
-> browser there rather than being real cuts. Shipping the files from `src/fonts/` fixes that
+> browser there rather than being real cuts. Shipping the files from `src/styles/fonts/` fixes that
 > without changing the design. See [docs/DESIGN.md §10.3](/docs/DESIGN.md#103-synthesized-vs-real-font-weights).
 >
 > **The logo artwork predates Satoshi.** The wordmarks in [src/](/src) are outlined paths drawn in
@@ -175,7 +178,7 @@ no components:
 @import "@codecavepro/brand/css";
 ```
 
-It authors nothing. `packages/brand/` copies `src/styles/colors_and_type.css` and `src/fonts/fonts.css`
+It authors nothing. `packages/brand/` copies `src/styles/colors_and_type.css` and `src/styles/fonts/fonts.css`
 byte-for-byte and compiles `src/tokens/*.ts`, so the file in your `node_modules` and the file at
 <https://brand.codecave.pro/colors_and_type.css> are provably the same bytes. **`docs/` stays the
 single origin — fixes go there, never to `packages/`.**

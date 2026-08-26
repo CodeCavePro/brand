@@ -71,7 +71,7 @@ const OWNED = ['pages', 'layouts', 'components', 'content.config.ts', 'starlight
 export const PUBLISHED = [
   ['styles/colors_and_type.css', 'colors_and_type.css'],
   ['styles/theme.css', 'theme.css'],
-  ['fonts', 'fonts'],
+  ['styles/fonts', 'fonts'],
   ['tokens', 'tokens'],
 ];
 
@@ -85,6 +85,33 @@ function walk(dir) {
 
 const rel = (from, f) => path.relative(from, f).split(path.sep).join('/');
 
+/** The file on disk behind a published site path, or null if src/ does not
+ *  publish that path. The one resolver: the build hook, the dev middleware,
+ *  check-links.mjs and check-examples.mjs all go through it, because four
+ *  copies of this arithmetic is how the deliverables came to be reported as
+ *  broken when they were correct. */
+export function publishedSource(srcRoot, siteRel) {
+  for (const [from, to] of PUBLISHED) {
+    if (siteRel === to) return path.join(srcRoot, from);
+    if (siteRel.startsWith(`${to}/`)) {
+      return path.join(srcRoot, from, siteRel.slice(to.length + 1));
+    }
+  }
+  return null;
+}
+
+const MIME = {
+  '.css': 'text/css',
+  '.js': 'text/javascript',
+  '.ts': 'text/plain',
+  '.json': 'application/json',
+  '.webmanifest': 'application/manifest+json',
+  '.woff': 'font/woff',
+  '.woff2': 'font/woff2',
+  '.svg': 'image/svg+xml',
+  '.png': 'image/png',
+};
+
 export default function docsPassthrough() {
   let docs;
 
@@ -93,6 +120,36 @@ export default function docsPassthrough() {
     hooks: {
       'astro:config:done': ({ config }) => {
         docs = fileURLToPath(config.srcDir);
+      },
+
+      /* publicDir serves docs/ in dev; nothing serves the published half of
+       * src/, because the copy above happens at astro:build:done. Without
+       * this the dev server 404s /colors_and_type.css -- the site loads with
+       * no styling at all and the only clue is a Starlight catch-all warning
+       * about a getStaticPaths route. Same table, same resolver. */
+      'astro:server:setup': ({ server }) => {
+        const srcRoot = path.resolve(docs, '..', 'src');
+        server.middlewares.use((req, res, next) => {
+          const siteRel = decodeURIComponent((req.url || '').split('?')[0]).replace(/^\//, '');
+
+          /* build.format 'preserve' emits x/index.html, and every link in this
+           * site carries .html so the pages also open from disk. The dev server
+           * routes the same page as /x and 404s /x/index.html -- so the whole
+           * main menu is dead in dev while the leaf pages are perfect, which
+           * reads as broken navigation rather than as the wrong server. Rewrite
+           * it to the route Astro actually has. */
+          if (siteRel.endsWith('index.html')) {
+            /* No trailing slash: dev serves /kitchen-sink and 404s
+             * /kitchen-sink/ just as readily as /kitchen-sink/index.html. */
+            req.url = `/${siteRel.slice(0, -'index.html'.length).replace(/\/$/, '')}`;
+            return next();
+          }
+
+          const file = publishedSource(srcRoot, siteRel);
+          if (!file || !fs.existsSync(file) || !fs.statSync(file).isFile()) return next();
+          res.setHeader('Content-Type', MIME[path.extname(file)] || 'application/octet-stream');
+          fs.createReadStream(file).pipe(res);
+        });
       },
 
       'astro:build:done': ({ dir, logger }) => {
@@ -124,6 +181,32 @@ export default function docsPassthrough() {
             const r = isDir ? `${to}/${rel(source, f)}` : to;
             if (fs.existsSync(path.join(out, r))) published += 1;
             else missing.push(`  src/${from}  did not reach dist/${r}`);
+          }
+        }
+
+        /* --- a published stylesheet's own url() resolves AT THE SOURCE ---- */
+
+        /* colors_and_type.css binds its faces as url(./fonts/...). That path
+         * was correct only after publishing while the fonts sat at src/fonts/
+         * and the stylesheet at src/styles/ -- so the tarball and the built
+         * site were fine, and Vite reported the source as unresolvable in a
+         * WARN nobody reads. A relative reference has to be right in BOTH
+         * places, which is the same rule dist/ mirrors the source for. */
+        for (const [from] of PUBLISHED) {
+          const source = path.join(srcRoot, from);
+          if (!fs.existsSync(source)) continue;
+          const sheets = (fs.statSync(source).isDirectory() ? walk(source) : [source])
+            .filter((f) => f.endsWith('.css'));
+          for (const sheet of sheets) {
+            const css = fs.readFileSync(sheet, 'utf8');
+            for (const m of css.matchAll(/url\(\s*[\'"]?([^\'")]+)/g)) {
+              const target = m[1].trim();
+              if (/^(?:[a-z]+:|\/|#|data:)/i.test(target)) continue;
+              if (fs.existsSync(path.resolve(path.dirname(sheet), target))) continue;
+              missing.push(
+                `  ${rel(srcRoot, sheet)}  reaches ${target}, which does not resolve beside the file that names it`,
+              );
+            }
           }
         }
 

@@ -126,7 +126,7 @@ npm run build:package && npm run check
 ```
 
 `check` asserts what the package promises: three files byte-identical to their
-origin (`src/styles/colors_and_type.css`, `src/fonts/fonts.css`, the root `LICENSE`),
+origin (`src/styles/colors_and_type.css`, `src/styles/fonts/fonts.css`, the root `LICENSE`),
 `dist/tokens.css` still re-extracting from `src/styles/colors_and_type.css` and
 `dist/theme.css` from `src/styles/theme.css` to exactly what shipped, every component
 matching the source it was copied from, the ports typechecking, and the

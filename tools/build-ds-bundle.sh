@@ -40,8 +40,8 @@ mkdir -p "$dst/tokens" "$dst/fonts" "$dst/vendor/gsap" "$dst/compiled"
 
 cp "$srcs/styles/colors_and_type.css" "$dst/colors_and_type.css"
 cp "$srcs/tokens/colors.ts" "$srcs/tokens/layout.ts" "$srcs/tokens/typography.ts" "$dst/tokens/"
-cp "$srcs/fonts/fonts.css" "$dst/fonts/"
-for f in "$srcs"/fonts/*.woff "$srcs"/fonts/*.woff2; do
+cp "$srcs/styles/fonts/fonts.css" "$dst/fonts/"
+for f in "$srcs"/styles/fonts/*.woff "$srcs"/styles/fonts/*.woff2; do
   [ -e "$f" ] && cp "$f" "$dst/fonts/"
 done
 
@@ -80,9 +80,9 @@ check() {
 }
 pair "$srcs/styles/colors_and_type.css" colors_and_type.css
 for t in colors layout typography; do pair "$srcs/tokens/$t.ts" "tokens/$t.ts"; done
-pair "$srcs/fonts/fonts.css" fonts/fonts.css
+pair "$srcs/styles/fonts/fonts.css" fonts/fonts.css
 for f in "$dst"/fonts/*.woff "$dst"/fonts/*.woff2; do
-  [ -e "$f" ] && pair "$srcs/fonts/$(basename "$f")" "fonts/$(basename "$f")"
+  [ -e "$f" ] && pair "$srcs/styles/fonts/$(basename "$f")" "fonts/$(basename "$f")"
 done
 cmp -s "$src/storybook/tw-bridge.css" "$dst/tw-bridge.css" || { echo "DRIFT  tw-bridge.css" >&2; drift=1; }
 cmp -s "$src/vendor/vue.esm-browser.prod.js" "$dst/vendor/vue.esm-browser.prod.js" \

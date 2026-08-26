@@ -61,7 +61,7 @@ Three rules that make a design read as CODECAVE:
    is the signature type pattern.
 
 The system designs to three weights — 300, 400, 700. All six Satoshi cuts now ship as real files
-in `src/fonts/`, properly bound, so nothing is browser-synthesized here; the live site still
+in `src/styles/fonts/`, properly bound, so nothing is browser-synthesized here; the live site still
 serves one TTF and lags behind. Design to 300/400/700 and do not reach for 500, 600 or 900.
 
 ## Where the truth lives

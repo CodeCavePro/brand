@@ -58,7 +58,7 @@ const checkOnly = process.argv.includes('--check');
 /** Files copied verbatim: [source, destination-inside-dist]. */
 const VERBATIM = [
   [srcDir('styles', 'colors_and_type.css'), 'colors_and_type.css'],
-  [srcDir('fonts', 'fonts.css'), 'fonts.css'],
+  [srcDir('styles', 'fonts', 'fonts.css'), 'fonts.css'],
 ];
 
 /**

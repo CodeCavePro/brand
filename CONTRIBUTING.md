@@ -318,13 +318,28 @@ The site is built with Astro now ([CCWEB2-317](https://codecave.atlassian.net/br
 npm run dev
 ```
 
-**That builds and then previews; there is deliberately no `astro dev` script.**
-With `build.format: 'preserve'` a directory index is requested without its
-`index.html` in dev but emitted with it by the build, and the menu links
-carry `.html` so that every page also opens from disk. So the dev server 404s on
-every top-level menu entry while serving the leaf pages perfectly — it looks like
-the navigation is broken rather than like the wrong server. `npm run dev` is a few
-seconds slower and shows the site the way it actually ships.
+**The dev server needs two rewrites to be usable here, and both are in
+`tools/astro-passthrough.mjs`.** Neither is cosmetic; without them the site is
+unusable in dev in a way that looks like the site is broken rather than the
+server:
+
+-   **A directory's `index.html` request is rewritten to the directory route.**
+    With `build.format: 'preserve'` the
+    build emits `kitchen-sink/index.html`, and every link here carries `.html` so
+    the pages also open straight from disk. The dev server routes that page as
+    the bare directory name and 404s `/kitchen-sink/index.html` and its
+    trailing-slash form alike — so every entry in the main menu is dead while
+    the leaf pages are perfect.
+-   **The published half of `src/` is served.** `publicDir` serves `docs/`;
+    `colors_and_type.css`, `theme.css`, `fonts/` and `tokens/` are authored under
+    `src/` and copied out at `astro:build:done`, which never runs in dev. Without
+    the middleware `/colors_and_type.css` 404s and the whole site renders
+    unstyled, the only clue being a Starlight catch-all warning about a
+    `getStaticPaths()` route.
+
+`npm run preview` builds and then serves `dist/`, which is the form that
+actually ships. Use it when the question is about the build rather than about
+a component.
 
 `docs/` is still the origin and is still committed — the build reads from it and
 writes to `dist/`, which is not. **Nothing about the one rule changes:** if the

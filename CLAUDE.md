@@ -19,7 +19,7 @@ and the build scripts inside the directory that publishes the website.
 | `src/logos/` | the three SVG masters — every raster is rendered from them | yes |
 | `src/styles/` | `colors_and_type.css` (the deliverable) and `theme.css` | yes |
 | `src/tokens/` | the same tokens as typed TS modules, hand-mirrored | yes |
-| `src/fonts/` | six Satoshi cuts and `fonts.css` | the CSS only |
+| `src/styles/fonts/` | six Satoshi cuts and `fonts.css` | the CSS only |
 | `src/components/` | every component, helper and icon the system ships | yes |
 | `src/captured/` | the eight files copied from codecave.pro | **never** |
 | `docs/` | the website, and the published brand kit | pages, yes |
@@ -253,7 +253,7 @@ rather than a rule spanning the whole component tree.
 ### The package, in one paragraph
 
 `packages/brand/` is a **pure derivative of `src/`** — it copies
-`src/styles/colors_and_type.css` and `src/fonts/fonts.css` byte-for-byte, copies
+`src/styles/colors_and_type.css` and `src/styles/fonts/fonts.css` byte-for-byte, copies
 the root `LICENSE`, copies the components out of `src/components/` and
 `src/captured/`, extracts `tokens.css` from `colors_and_type.css` and
 `theme.css` from `src/styles/theme.css`, and compiles `src/tokens/*.ts`. No

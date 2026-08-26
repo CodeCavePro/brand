@@ -9,9 +9,9 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "npm run build && npm run preview",
+    "dev": "astro dev",
+    "preview": "npm run build && astro preview",
     "build": "astro build",
-    "preview": "astro preview",
     "build:package": "npm run build --workspace @codecavepro/brand",
     "build:storybook": "node tools/build-storybook.mjs",
     "build:assets": "bash tools/generate-brand-assets.sh",
