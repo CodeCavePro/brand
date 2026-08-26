@@ -6,10 +6,10 @@ wrapper layer.
 
 Link one stylesheet and the whole system is live on `:root`.
 
-> **Status: stable.** The token *values* mirror what
-> [codecave.pro](https://codecave.pro) ships, and the package *layout* — export paths,
+> **Status: stable.** The token _values_ mirror what
+> [codecave.pro](https://codecave.pro) ships, and the package _layout_ — export paths,
 > module shape — is settled under semver: an export will not move or disappear outside a
-> major bump. Token *values* can change in a minor or patch release, because they track a
+> major bump. Token _values_ can change in a minor or patch release, because they track a
 > living design system; pin an exact version if you need them frozen.
 
 ## Install
@@ -48,7 +48,7 @@ redesign turns into a find-and-replace across your codebase.
 `@codecavepro/brand/css` is the design system **whole**: the tokens, ten `@font-face`
 rules, base rules for `html`, `body`, `h1`–`h6` and `a`, two layout primitives and
 around sixty component classes. That is what you want for a page that should look like
-CODECAVE. It is *not* what you want in an app that already has a base layer — dropping
+CODECAVE. It is _not_ what you want in an app that already has a base layer — dropping
 it in restyles every heading and link you have.
 
 For that case there is a second stylesheet holding the custom properties and nothing
@@ -60,7 +60,7 @@ else:
 
 Same 103 properties on `:root`, same values, zero rules. Nothing it declares can change
 how a single existing element renders — a `var()` only takes effect where you write
-one. Fonts come with it only as a *name*: `--font-sans` says Satoshi, and declaring the
+one. Fonts come with it only as a _name_: `--font-sans` says Satoshi, and declaring the
 faces stays your call (see below).
 
 Use it to end a duplicated palette without signing up for a redesign in the same commit.
@@ -70,7 +70,7 @@ Use it to end a duplicated palette without signing up for a redesign in the same
 The same file is served, byte for byte, from the published design system:
 
 ```html
-<link rel="stylesheet" href="https://brand.codecave.pro/colors_and_type.css">
+<link rel="stylesheet" href="https://brand.codecave.pro/colors_and_type.css" />
 ```
 
 The package build asserts that identity, so the file in your `node_modules` and the
@@ -81,17 +81,17 @@ file at that URL are provably the same bytes.
 `@codecavepro/brand/css` declares ten `@font-face` rules for **Satoshi**, but **no font
 binaries are included** — that is a licensing question, not an oversight. Until you
 supply the files, the faces 404 and the browser falls back down the stack
-(`-apple-system`, `Segoe UI`, Roboto, …). Tokens, colours and the type *scale* are all
+(`-apple-system`, `Segoe UI`, Roboto, …). Tokens, colours and the type _scale_ are all
 correct regardless; only the typeface is missing.
 
 The two stylesheets expect the files in **different places**, because one is meant to be
 dropped into a project on its own:
 
-| Import | `@font-face` URLs | Put the `.woff2`/`.woff` files at |
-|---|---|---|
-| `@codecavepro/brand/css` | `./fonts/Satoshi-*.woff2` | a `fonts/` directory **beside** the stylesheet |
-| `@codecavepro/brand/fonts.css` | `./Satoshi-*.woff2` | **beside** the stylesheet itself |
-| `@codecavepro/brand/tokens.css` | *none — it declares no faces* | wherever your own `@font-face` rules point |
+| Import                          | `@font-face` URLs             | Put the `.woff2`/`.woff` files at              |
+| ------------------------------- | ----------------------------- | ---------------------------------------------- |
+| `@codecavepro/brand/css`        | `./fonts/Satoshi-*.woff2`     | a `fonts/` directory **beside** the stylesheet |
+| `@codecavepro/brand/fonts.css`  | `./Satoshi-*.woff2`           | **beside** the stylesheet itself               |
+| `@codecavepro/brand/tokens.css` | _none — it declares no faces_ | wherever your own `@font-face` rules point     |
 
 Get the cuts from [Fontshare](https://www.fontshare.com/fonts/satoshi) — 300, 400, 500,
 700 and 900, each upright and italic, which is the ten faces these stylesheets declare.
@@ -100,7 +100,7 @@ synthesize; the design system documents why in
 [DESIGN.md §10.3](https://github.com/CodeCavePro/brand/blob/development/docs/DESIGN.md#103-synthesized-vs-real-font-weights).
 
 **Do not use the `stylesheet.css` that comes in the Fontshare download.** It declares
-Bold and Black *both* as `font-weight: bold`, and their italics likewise, so four cuts
+Bold and Black _both_ as `font-weight: bold`, and their italics likewise, so four cuts
 collide into two slots and whichever is declared last silently wins — your `900` text
 renders Bold, or your `700` renders Black, with nothing to indicate which. Take the
 binaries from that download and the declarations from here.
@@ -111,13 +111,19 @@ For consumers that cannot read a stylesheet — design tooling, canvas/WebGL ren
 PDF and email builders, native apps:
 
 ```ts
-import { color, radius, fontSize, spacing, gradientBrand } from '@codecavepro/brand';
+import {
+  color,
+  radius,
+  fontSize,
+  spacing,
+  gradientBrand,
+} from "@codecavepro/brand";
 
-color.action;          // '#5F20FE'
+color.action; // '#5F20FE'
 color.surfaceSecondary; // '#0F0F15'
-radius.card;           // '1.5rem'
-fontSize.headingLg;    // { size: '3.5rem', lineHeight: '130%' }
-fontSize.body;         // { size: '1rem', lineHeight: '1.5rem' }
+radius.card; // '1.5rem'
+fontSize.headingLg; // { size: '3.5rem', lineHeight: '130%' }
+fontSize.body; // { size: '1rem', lineHeight: '1.5rem' }
 spacing.sectionPaddingTop; // '12.5rem'
 ```
 
@@ -131,14 +137,14 @@ Everything is `as const`, so the values are literal types, and the key unions ar
 exported for building your own maps:
 
 ```ts
-import type { SemanticColor, Radius, FontSizeStep } from '@codecavepro/brand';
+import type { SemanticColor, Radius, FontSizeStep } from "@codecavepro/brand";
 ```
 
-| Module | Exports |
-|---|---|
-| colour | `brand`, `gray`, `accent`, `technologyGradient`, `error`, `color`, `gradientBrand` |
-| layout | `radius`, `gutter`, `spacing`, `shadow`, `maxWidthDesktop`, `breakpointSm` |
-| typography | `fontFamily`, `fontSize`, `fontWeight`, `eyebrow` |
+| Module     | Exports                                                                            |
+| ---------- | ---------------------------------------------------------------------------------- |
+| colour     | `brand`, `gray`, `accent`, `technologyGradient`, `error`, `color`, `gradientBrand` |
+| layout     | `radius`, `gutter`, `spacing`, `shadow`, `maxWidthDesktop`, `breakpointSm`         |
+| typography | `fontFamily`, `fontSize`, `fontWeight`, `eyebrow`                                  |
 
 Two things to know about it:
 
@@ -149,7 +155,7 @@ Two things to know about it:
 
 ## The components
 
-19 components and 13 icons — the buttons, the form controls and the forms
+20 components and 13 icons — the buttons, the form controls and the forms
 themselves, the nav bar, the footer link group, the article and technology
 cards, the review card and the typing effect codecave.pro renders — ship as
 **source**, byte-for-byte the files the site builds from. Not a reimplementation
@@ -168,8 +174,11 @@ the rest could follow.
 
 ```vue
 <BrandNav
-  :left="[{ name: &apos;Workflow&apos;, href: &apos;/workflow&apos; }, { name: &apos;Services&apos;, slot: &apos;services&apos; }]"
-  :right="[{ name: &apos;Insights&apos;, href: &apos;/insights&apos; }]"
+  :left="[
+    { name: 'Workflow', href: '/workflow' },
+    { name: 'Services', slot: 'services' },
+  ]"
+  :right="[{ name: 'Insights', href: '/insights' }]"
   :logo="wordmarkUrl"
   current="Workflow"
 >
@@ -184,9 +193,9 @@ resolve through your own asset pipeline.
 
 ```vue
 <script setup lang="ts">
-import Button from '@codecavepro/brand/components/common/Button.vue';
-import TextField from '@codecavepro/brand/components/common/TextField.vue';
-import CloudIcon from '@codecavepro/brand/assets/icons/cloud-icon.vue';
+import Button from "@codecavepro/brand/components/common/Button.vue";
+import TextField from "@codecavepro/brand/components/common/TextField.vue";
+import CloudIcon from "@codecavepro/brand/assets/icons/cloud-icon.vue";
 </script>
 
 <template>
@@ -212,7 +221,7 @@ components; leave one out and only those are affected — `gsap` by `GlowButton.
 Every colour, radius and control height in these components is a token — but they reach
 most of them through **Tailwind utility classes** (`bg-surface-primary`,
 `text-heading-md`, `rounded-custom`), and a utility class exists only if Tailwind knows
-the name. `tokens.css` gives you the *values*; `theme.css` gives Tailwind the names, so
+the name. `tokens.css` gives you the _values_; `theme.css` gives Tailwind the names, so
 you need both:
 
 ```css
@@ -271,7 +280,10 @@ three that show images take an optional resolver and default to leaving the URL 
 <Review :item="testimonial" />
 
 <!-- URLs relative to your own media host -->
-<Review :item="testimonial" :resolve-image="(u) => `https://cdn.example.com/${u}`" />
+<Review
+  :item="testimonial"
+  :resolve-image="(u) => `https://cdn.example.com/${u}`"
+/>
 ```
 
 Their props are declared as the fields each one reads — `item.photo.url`,
