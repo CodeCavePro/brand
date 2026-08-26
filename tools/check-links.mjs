@@ -21,6 +21,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { PUBLISHED } from './astro-passthrough.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const docs = path.join(root, 'docs');
@@ -124,6 +125,25 @@ if (missingTiers.length) {
 for (const file of walk(docs)) {
   if (file.startsWith(pages + path.sep)) continue;
   routes.add(path.relative(docs, file).split(path.sep).join('/'));
+}
+
+/* And the published half of src/ -- colors_and_type.css, theme.css, the fonts
+ * and the token modules are authored there and copied out to these URLs by the
+ * passthrough. A route is a route whether the build rendered it, copied it from
+ * docs/ or copied it from src/; leaving this out reported the front page's own
+ * stylesheet as a dead link the day the file moved. The map is READ from the
+ * passthrough rather than restated, because that file is the one place that
+ * decides what src/ publishes and where. */
+for (const [from, to] of PUBLISHED) {
+  const source = path.join(root, 'src', from);
+  if (!fs.existsSync(source)) continue;
+  if (!fs.statSync(source).isDirectory()) {
+    routes.add(to);
+    continue;
+  }
+  for (const file of walk(source)) {
+    routes.add(`${to}/${path.relative(source, file).split(path.sep).join('/')}`);
+  }
 }
 
 /* ---- the prose collection ------------------------------------------------
@@ -433,7 +453,7 @@ const SCAN = [
   'docs/DESIGN.md',
   'docs/SKILL.md',
   'docs/guide.md',
-  'docs/colors_and_type.css',
+  'src/styles/colors_and_type.css',
   'packages/brand/README.md',
   '.design-sync/conventions.md',
 ];

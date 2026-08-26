@@ -1,4 +1,5 @@
-/* Keep dist/ a superset of docs/, and prove it every build.
+/* Keep dist/ a superset of docs/ AND of the published half of src/, and
+ * prove it every build.
  *
  * An Astro integration, wired in astro.config.mjs. It runs once, after the
  * build, and does two things — one of them mechanical, one of them the actual
@@ -52,6 +53,28 @@ import { fileURLToPath } from 'node:url';
  */
 const OWNED = ['pages', 'layouts', 'components', 'content.config.ts', 'starlight-overrides'];
 
+/** Authored files that are ALSO deliverables, and the URL each one keeps.
+ *
+ * colors_and_type.css IS the product -- six standalone deliverables link it as
+ * `../../colors_and_type.css`, it resolves its own faces as `./fonts/*.woff2`,
+ * and the README tells a consumer to copy it. It is equally the file someone
+ * edits to change a token. It used to sit in docs/ so that publicDir would
+ * serve it, which put the origin of the design system inside the directory
+ * that publishes the website: someone looking for the tokens found the
+ * components in src/ and the tokens nowhere near them.
+ *
+ * So these live in src/ with the rest of the source and are copied out to the
+ * SAME URLs they have always had -- nothing a consumer or a deliverable links
+ * to moves. The copy is asserted like every other payload file, for the reason
+ * this whole file exists: a copy that quietly stops happening produces a build
+ * that succeeds and a site with no styling at all. */
+export const PUBLISHED = [
+  ['styles/colors_and_type.css', 'colors_and_type.css'],
+  ['styles/theme.css', 'theme.css'],
+  ['fonts', 'fonts'],
+  ['tokens', 'tokens'],
+];
+
 function walk(dir) {
   if (!fs.existsSync(dir)) return [];
   return fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
@@ -80,6 +103,29 @@ export default function docsPassthrough() {
         }
 
         const missing = [];
+
+        /* --- the published half of src/ reaches its URL ------------------- */
+
+        const srcRoot = path.resolve(docs, '..', 'src');
+        let published = 0;
+
+        for (const [from, to] of PUBLISHED) {
+          const source = path.join(srcRoot, from);
+          if (!fs.existsSync(source)) {
+            missing.push(`  src/${from}  is named by PUBLISHED and does not exist`);
+            continue;
+          }
+          const isDir = fs.statSync(source).isDirectory();
+          const target = path.join(out, to);
+          fs.mkdirSync(path.dirname(target), { recursive: true });
+          fs.cpSync(source, target, { recursive: true });
+
+          for (const f of isDir ? walk(source) : [source]) {
+            const r = isDir ? `${to}/${rel(source, f)}` : to;
+            if (fs.existsSync(path.join(out, r))) published += 1;
+            else missing.push(`  src/${from}  did not reach dist/${r}`);
+          }
+        }
 
         /* --- every payload file survived the copy ------------------------- */
 
@@ -133,6 +179,7 @@ export default function docsPassthrough() {
 
         logger.info(
           `passthrough verified — ${payload.length} payload file(s) copied, ` +
+            `${published} published from src/, ` +
             `${pages.length} page(s) rendered.`,
         );
       },

@@ -223,8 +223,8 @@ rather than a rule spanning the whole component tree.
 `packages/brand/` is a **pure derivative of `docs/`** — it copies
 `colors_and_type.css` and `fonts.css` byte-for-byte, copies the root `LICENSE`,
 copies the components out of `src/components/`, extracts `tokens.css` from
-`colors_and_type.css` and `theme.css` from `docs/theme.css`, and compiles
-`docs/tokens/*.ts`. No *design content* under `packages/` is authored; the only
+`colors_and_type.css` and `theme.css` from `src/styles/theme.css`, and compiles
+`src/tokens/*.ts`. No *design content* under `packages/` is authored; the only
 tracked files are its manifest, build script and `README.md`, and `npm run
 check` asserts the byte-identity of every copy. **`docs/` remains the single
 origin; edit there, never in `packages/`.**
@@ -436,7 +436,7 @@ repository's to fix and reaches the site at its next bump. Only remarks about
 files the site still owns are the site's.
 
 **Its section numbers must not be renumbered.** They are cited by number from
-the shipped `docs/colors_and_type.css` and from `docs/DESIGN.md`; the list
+the shipped `src/styles/colors_and_type.css` and from `docs/DESIGN.md`; the list
 starting at section 2 is deliberate, because section 1's only finding was
 fixed and deleted.
 

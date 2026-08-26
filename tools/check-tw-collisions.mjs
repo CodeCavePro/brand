@@ -60,6 +60,7 @@ import { fileURLToPath } from 'node:url';
 const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'docs');
 const repo = path.resolve(docs, '..');
 const srcRoot = path.resolve(docs, '..', 'src');
+const styles = path.join(srcRoot, 'styles');
 const captures = path.join(srcRoot, 'captured');
 const authored = path.join(srcRoot, 'components');
 /* Both roots. global.css stays under captures/ and is read by name below;
@@ -145,7 +146,7 @@ const problems = [];
  * exists only because Tailwind emits a default is exactly what direction A is
  * looking for.
  *
- * The package half is read from docs/colors_and_type.css's :root block, the
+ * The package half is read from src/styles/colors_and_type.css's :root block, the
  * origin dist/tokens.css is extracted from (scripts/build.mjs), not from the
  * built file — dist/ is gitignored, so CI would resolve nothing. `npm run
  * check` asserts the two are identical before this ever runs. */
@@ -154,7 +155,7 @@ const siteGlobals = new Set(declarations(globalCss).keys());
 
 const IMPORTS_TOKENS = /^\s*@import\s+["']@codecavepro\/brand\/tokens\.css["']/m;
 if (IMPORTS_TOKENS.test(globalCss)) {
-  const origin = fs.readFileSync(path.join(docs, 'colors_and_type.css'), 'utf8');
+  const origin = fs.readFileSync(path.join(styles, 'colors_and_type.css'), 'utf8');
   const open = origin.search(/^:root\s*\{[ \t]*$/m);
   const close = origin.indexOf('\n}\n', open);
   if (open === -1 || close === -1) {
@@ -175,14 +176,14 @@ if (IMPORTS_TOKENS.test(globalCss)) {
  * invisible required-field asterisk is exactly the bug this check should find.
  *
  * Same discipline as the block above: follow the import rather than assume it,
- * and read the ORIGIN (docs/theme.css) rather than the generated dist/. */
+ * and read the ORIGIN (src/styles/theme.css) rather the generated dist/. */
 const IMPORTS_THEME = /^\s*@import\s+["']@codecavepro\/brand\/theme\.css["']/m;
 if (IMPORTS_THEME.test(globalCss)) {
-  const themeOrigin = fs.readFileSync(path.join(docs, 'theme.css'), 'utf8');
+  const themeOrigin = fs.readFileSync(path.join(styles, 'theme.css'), 'utf8');
   const open = themeOrigin.search(/^@theme\s*\{[ \t]*$/m);
   const close = themeOrigin.indexOf(`\n}\n`, open);
   if (open === -1 || close === -1) {
-    console.error('docs/theme.css has no single top-level @theme block to read names from.');
+    console.error('src/styles/theme.css has no single top-level @theme block to read names from.');
     console.error('Direction A was not checked; nothing about undeclared names was verified.');
     process.exit(1);
   }
@@ -233,7 +234,7 @@ if (!fs.existsSync(TW_THEME)) {
 }
 
 const tw = declarations(fs.readFileSync(TW_THEME, 'utf8'));
-const pkg = declarations(fs.readFileSync(path.join(docs, 'colors_and_type.css'), 'utf8'));
+const pkg = declarations(fs.readFileSync(path.join(styles, 'colors_and_type.css'), 'utf8'));
 
 const open = [];
 for (const [name, ours] of pkg) {

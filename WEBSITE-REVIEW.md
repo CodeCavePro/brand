@@ -146,7 +146,7 @@ no counts. A `<nav aria-labelledby>` + `<ul>` fixes it without moving a pixel.
 **This section changed owner.** It was written against
 `codecave.pro/src/styles/global.css`. That file now declares **zero** custom
 properties — it imports `@codecavepro/brand/tokens.css` and `/theme.css` — so
-the ramps below are **this package's**, in `docs/colors_and_type.css`, and the
+the ramps below are **this package's**, in `src/styles/colors_and_type.css`, and the
 findings are ours to answer rather than a designer's to relay.
 
 - **The gray ramp is non-monotonic.** `gray-1000 #050505` is *darker* than

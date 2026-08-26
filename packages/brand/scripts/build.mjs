@@ -57,8 +57,8 @@ const checkOnly = process.argv.includes('--check');
 
 /** Files copied verbatim: [source, destination-inside-dist]. */
 const VERBATIM = [
-  [docs('colors_and_type.css'), 'colors_and_type.css'],
-  [docs('fonts', 'fonts.css'), 'fonts.css'],
+  [srcDir('styles', 'colors_and_type.css'), 'colors_and_type.css'],
+  [srcDir('fonts', 'fonts.css'), 'fonts.css'],
 ];
 
 /**
@@ -352,7 +352,7 @@ function assertTokensSuffice() {
   }
   console.error('');
   console.error('It resolves on codecave.pro because the site declares it privately, and');
-  console.error('nowhere else. Add it to docs/colors_and_type.css — or to docs/theme.css if');
+  console.error('nowhere else. Add it to src/styles/colors_and_type.css — or to src/styles/theme.css if');
   console.error('a utility class should exist for it, which for a value read only from a');
   console.error('scoped style block it should not.');
   process.exit(1);
@@ -756,8 +756,8 @@ function derive(produce, dest) {
 
 /** Files derived from a docs/ source, as [produce, destination-inside-dist]. */
 const DERIVED = [
-  [() => extractRoot(docs('colors_and_type.css')), 'tokens.css'],
-  [() => extractTheme(docs('theme.css')), 'theme.css'],
+  [() => extractRoot(srcDir('styles', 'colors_and_type.css')), 'tokens.css'],
+  [() => extractTheme(srcDir('styles', 'theme.css')), 'theme.css'],
 ];
 
 /* Both derived stylesheets, re-derived, so the agreement check runs against
@@ -777,11 +777,11 @@ for (const [src] of COPIES) {
   if (!fs.existsSync(src)) problems.push(`missing source: ${path.relative(repo, src)}`);
 }
 for (const name of TOKENS) {
-  const src = docs('tokens', `${name}.ts`);
+  const src = srcDir('tokens', `${name}.ts`);
   if (!fs.existsSync(src)) problems.push(`missing source: ${path.relative(repo, src)}`);
 }
 if (problems.length) {
-  console.error('build failed — the package cannot be built from docs/:');
+  console.error('build failed — the package cannot be built from src/:');
   for (const p of problems) console.error(`  ${p}`);
   process.exit(1);
 }
@@ -866,7 +866,7 @@ themeAgrees();
 assertTokensSuffice();
 
 for (const name of TOKENS) {
-  fs.copyFileSync(docs('tokens', `${name}.ts`), tmp('tokens', `${name}.ts`));
+  fs.copyFileSync(srcDir('tokens', `${name}.ts`), tmp('tokens', `${name}.ts`));
 }
 
 // The barrel is generated rather than committed so that adding a token module

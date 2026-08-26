@@ -28,6 +28,9 @@ set -eu
 
 root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 src="$root/docs"
+# The stylesheet, the token modules and the fonts are authored, so they live in
+# src/ now; the compiled bundles and tw-bridge.css are output and stay in docs/.
+srcs="$root/src"
 dst="$root/ds-bundle"
 
 [ -d "$src" ] || { echo "no docs/ at $src" >&2; exit 1; }
@@ -35,10 +38,10 @@ dst="$root/ds-bundle"
 
 mkdir -p "$dst/tokens" "$dst/fonts" "$dst/vendor/gsap" "$dst/compiled"
 
-cp "$src/colors_and_type.css" "$dst/colors_and_type.css"
-cp "$src/tokens/colors.ts" "$src/tokens/layout.ts" "$src/tokens/typography.ts" "$dst/tokens/"
-cp "$src/fonts/fonts.css" "$dst/fonts/"
-for f in "$src"/fonts/*.woff "$src"/fonts/*.woff2; do
+cp "$srcs/styles/colors_and_type.css" "$dst/colors_and_type.css"
+cp "$srcs/tokens/colors.ts" "$srcs/tokens/layout.ts" "$srcs/tokens/typography.ts" "$dst/tokens/"
+cp "$srcs/fonts/fonts.css" "$dst/fonts/"
+for f in "$srcs"/fonts/*.woff "$srcs"/fonts/*.woff2; do
   [ -e "$f" ] && cp "$f" "$dst/fonts/"
 done
 
@@ -56,6 +59,17 @@ done
 # Verify rather than trust. A copy that silently failed is the failure mode this
 # whole script exists to close, so prove every pair byte-identical before exiting 0.
 drift=0
+# Two forms, because the origins are now two roots: check() takes one path
+# under docs/, pair() takes the origin and the destination separately for the
+# authored files that moved to src/ and are published under a different name.
+pair() {
+  if cmp -s "$1" "$dst/$2"; then
+    :
+  else
+    echo "DRIFT  $2" >&2
+    drift=1
+  fi
+}
 check() {
   if cmp -s "$src/$1" "$dst/$1"; then
     :
@@ -64,11 +78,11 @@ check() {
     drift=1
   fi
 }
-check colors_and_type.css
-for t in colors layout typography; do check "tokens/$t.ts"; done
-check fonts/fonts.css
+pair "$srcs/styles/colors_and_type.css" colors_and_type.css
+for t in colors layout typography; do pair "$srcs/tokens/$t.ts" "tokens/$t.ts"; done
+pair "$srcs/fonts/fonts.css" fonts/fonts.css
 for f in "$dst"/fonts/*.woff "$dst"/fonts/*.woff2; do
-  [ -e "$f" ] && check "fonts/$(basename "$f")"
+  [ -e "$f" ] && pair "$srcs/fonts/$(basename "$f")" "fonts/$(basename "$f")"
 done
 cmp -s "$src/storybook/tw-bridge.css" "$dst/tw-bridge.css" || { echo "DRIFT  tw-bridge.css" >&2; drift=1; }
 cmp -s "$src/vendor/vue.esm-browser.prod.js" "$dst/vendor/vue.esm-browser.prod.js" \
@@ -83,4 +97,4 @@ for c in $CARDS; do
 done
 
 [ "$drift" -eq 0 ] || { echo "ds-bundle is NOT in sync with docs/" >&2; exit 1; }
-echo "ds-bundle derived files match docs/ (stylesheet, 3 token modules, fonts.css, $(ls "$dst"/fonts/*.woff "$dst"/fonts/*.woff2 2>/dev/null | wc -l | tr -d ' ') font binaries, tw-bridge.css, $(( 1 + $(ls "$dst"/vendor/gsap/*.js 2>/dev/null | wc -l | tr -d ' ') )) vendor runtime file(s), $(ls "$dst"/compiled/*.js 2>/dev/null | wc -l | tr -d ' ') compiled component bundle(s))"
+echo "ds-bundle derived files match src/ and docs/ (stylesheet, 3 token modules, fonts.css, $(ls "$dst"/fonts/*.woff "$dst"/fonts/*.woff2 2>/dev/null | wc -l | tr -d ' ') font binaries, tw-bridge.css, $(( 1 + $(ls "$dst"/vendor/gsap/*.js 2>/dev/null | wc -l | tr -d ' ') )) vendor runtime file(s), $(ls "$dst"/compiled/*.js 2>/dev/null | wc -l | tr -d ' ') compiled component bundle(s))"

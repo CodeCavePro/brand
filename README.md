@@ -29,7 +29,7 @@ Everything published lives under [docs/](/docs). Start at the front door and rea
 | | What | Where |
 |---|---|---|
 | 1 | **The rules** — foundations, the 26-step ramp, components, motion, anti-patterns, known divergences | [docs/DESIGN.md](/docs/DESIGN.md) |
-| 2 | **The tokens** — every value as a CSS custom property, semantic layer over raw ramp | [docs/colors_and_type.css](/docs/colors_and_type.css) |
+| 2 | **The tokens** — every value as a CSS custom property, semantic layer over raw ramp | [src/styles/colors_and_type.css](/src/styles/colors_and_type.css) |
 | 3 | **The brand kit** — lockups, clear space, palette, type scale, the glow CTA | [docs/index.html](/docs/index.html) |
 | 4 | **The specimens** — 12 review cards, one concern each | [docs/preview/](/docs/preview/) |
 | 5 | **The storybook** — 13 components with real prop signatures and variant matrices | [docs/storybook/](/docs/storybook/) |
@@ -41,8 +41,8 @@ object:
 <link rel="stylesheet" href="colors_and_type.css">
 ```
 
-Also in `docs/`: [tokens/](/docs/tokens) (the same tokens as typed TS modules, for consumers that
-cannot read a stylesheet), [fonts/](/docs/fonts) (six real Satoshi cuts), [assets/](/docs/assets)
+Also in `docs/`: [tokens/](/src/tokens) (the same tokens as typed TS modules, for consumers that
+cannot read a stylesheet), [fonts/](/src/fonts) (six real Satoshi cuts), [assets/](/docs/assets)
 and [build/](/docs/build) (marks, icons and favicons), [imagery/](/docs/imagery) (the decorative
 line-and-glow layer), [artifacts/](/docs/artifacts) (deck, email, newsletter, form, poster and
 landing templates), and [src/components/](/src/components) (the component sources the
@@ -122,12 +122,12 @@ art since the rebuild; the token layer's sole cyan is the deep technology wash a
 | Logo     |  [Satoshi](https://www.fontshare.com/fonts/satoshi)  |       700 (bold)          |
 
 The design system ships **six real cuts** — Light, Regular, Italic, Medium, Bold and Black — as
-`woff2` with `woff` fallbacks in [docs/fonts/](/docs/fonts), each bound with a proper
+`woff2` with `woff` fallbacks in [src/fonts/](/src/fonts), each bound with a proper
 `font-weight` descriptor.
 
 > **The live site has not caught up.** `codecave.pro` still self-hosts a single
 > `Satoshi-Regular.ttf` declared with no `font-weight`, so 300 and 700 are synthesized by the
-> browser there rather than being real cuts. Shipping the files from `docs/fonts/` fixes that
+> browser there rather than being real cuts. Shipping the files from `src/fonts/` fixes that
 > without changing the design. See [docs/DESIGN.md §10.3](/docs/DESIGN.md#103-synthesized-vs-real-font-weights).
 >
 > **The logo artwork predates Satoshi.** The wordmarks in [src/](/src) are outlined paths drawn in
@@ -144,8 +144,8 @@ no components:
 @import "@codecavepro/brand/css";
 ```
 
-It authors nothing. `packages/brand/` copies `docs/colors_and_type.css` and `docs/fonts/fonts.css`
-byte-for-byte and compiles `docs/tokens/*.ts`, so the file in your `node_modules` and the file at
+It authors nothing. `packages/brand/` copies `src/styles/colors_and_type.css` and `src/fonts/fonts.css`
+byte-for-byte and compiles `src/tokens/*.ts`, so the file in your `node_modules` and the file at
 <https://brand.codecave.pro/colors_and_type.css> are provably the same bytes. **`docs/` stays the
 single origin — fixes go there, never to `packages/`.**
 

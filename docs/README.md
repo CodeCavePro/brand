@@ -39,7 +39,7 @@ produces rather than the technology it uses:
 Lenis 1.3.11 smooth scroll, vue3-carousel, Strapi as the content backend. 61
 `.astro` files, 45 `.vue` components, zero React, no Storybook. The Tailwind 4
 `@theme` block in `src/styles/global.css` is the authoritative token source; the
-brand repository's `docs/tokens/*.css` publish the same ramp independently.
+brand repository's `src/tokens/*.css` publish the same ramp independently.
 
 **Conversion shape.** Exactly one primary action per page — a violet glow button
 reading "Get a free consultation" — supported by a consultation form that asks
@@ -101,17 +101,17 @@ PDF and email builders, native apps. The CSS remains the source of truth.
 ├── index.html                 dark front door, and the brand page it absorbed:
 │                              lockups, palette, type scale, voice, posture
 ├── DESIGN.md                  THE rules — canonical source of truth
-├── colors_and_type.css        THE deliverable: tokens + component class layer
+├── colors_and_type.css        THE deliverable — published from src/styles/
 ├── README.md                  this file — package guide and preview manifest
 ├── SKILL.md                   agent-facing entry point
 ├── guide.md                   short orientation note
-├── tokens/                    the same tokens as typed TS modules, for non-CSS consumers
+├── tokens/                    typed TS modules — published from src/tokens/
 ├── brand.json                 machine-readable palette, type and voice summary
 ├── assets/                    UI icons, the checkbox tick, font originals
 ├── logos/                     the 3 vector masters + the 72-file raster ramp
 ├── icons/                     the 7-step square icon ramp
 ├── favicons/                  ICO, Apple touch, PWA icons, site.webmanifest
-├── fonts/                     6 Satoshi cuts (woff2 + woff) + fonts.css
+├── fonts/                     6 Satoshi cuts + fonts.css — published from src/fonts/
 ├── imagery/                   decorative line-and-glow art, on its #050505 ground
 │   └── source/                the same 8 SVGs untouched, byte-for-byte
 ├── pages/                     every route on the site, as .astro
@@ -128,6 +128,13 @@ PDF and email builders, native apps. The CSS remains the source of truth.
     ├── raw/                   6 standalone deliverables — Astro never renders these
     └── examples.css           the chrome around them
 ```
+
+**Three of the entries above are published, not stored, here.**
+`colors_and_type.css`, `tokens/` and `fonts/` are authored under the
+repository's `src/` and copied to these URLs by the build, so every link a
+consumer or a deliverable already has keeps working. `tools/astro-passthrough.mjs`
+holds the map and asserts the copy arrived; `check:links` and `check:examples`
+read the same map rather than restating it.
 
 **The components are not in here.** They live at the repository root, in
 `src/components/` (every component, helper and icon — edit there) and

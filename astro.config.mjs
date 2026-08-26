@@ -134,7 +134,7 @@ export default defineConfig({
       /* BrandNav says it needs tokens and nothing else; Starlight links neither.
          Does handing it the real stylesheet style the bar, or does the global
          class layer fight Starlight’s own? */
-      customCss: ['./docs/colors_and_type.css', './docs/nav.css', './docs/starlight.css'],
+      customCss: ['./src/styles/colors_and_type.css', './docs/nav.css', './docs/starlight.css'],
       /* No search index. Starlight builds one with Pagefind by default and puts
          the search box in its Header — the component this site replaces with its
          own bar, which has no slot for one and should not grow a search field

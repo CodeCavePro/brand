@@ -31,7 +31,7 @@ user-invocable: true
 Extracted from first-party source, not from a rendered page:
 
 - **`CodeCavePro/brand`** (GitHub, `main` and `development`) — published brand
-  token files (`docs/tokens/colors.css`, `layout.css`, `typography.css`), the
+  token files (`src/tokens/colors.css`, `layout.css`, `typography.css`), the
   `ds-bundle/` re-export, the three wordmark SVGs and the favicon. Evidence:
   `context/github/CodeCavePro-brand/`,
   `context/github/CodeCavePro-brand-development.md`.

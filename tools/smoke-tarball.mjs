@@ -100,16 +100,16 @@ async function assertModuleResolves() {
  * tree; this asks it of what actually installed.
  */
 function assertCssIdentical() {
-  const origin = path.join(docs, 'colors_and_type.css');
+  const origin = path.join(docs, '..', 'src', 'styles', 'colors_and_type.css');
   const installed = path.join(root, 'dist', 'colors_and_type.css');
   if (!fs.existsSync(installed)) {
     fail('dist/colors_and_type.css is missing', 'the "./css" export points at nothing');
     return;
   }
   if (fs.readFileSync(installed).equals(fs.readFileSync(origin))) {
-    ok('dist/colors_and_type.css is byte-identical to docs/colors_and_type.css');
+    ok('dist/colors_and_type.css is byte-identical to src/styles/colors_and_type.css');
   } else {
-    fail('dist/colors_and_type.css DIFFERS from docs/colors_and_type.css', 'the buildless URL and the origin have diverged');
+    fail('dist/colors_and_type.css DIFFERS from src/styles/colors_and_type.css', 'the buildless URL and the origin have diverged');
   }
 }
 

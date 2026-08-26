@@ -126,9 +126,9 @@ npm run build && npm run check
 ```
 
 `check` asserts what the package promises: three files byte-identical to their
-origin (`docs/colors_and_type.css`, `docs/fonts/fonts.css`, the root `LICENSE`),
-`dist/tokens.css` still re-extracting from `docs/colors_and_type.css` and
-`dist/theme.css` from `docs/theme.css` to exactly what shipped, every component
+origin (`src/styles/colors_and_type.css`, `src/fonts/fonts.css`, the root `LICENSE`),
+`dist/tokens.css` still re-extracting from `src/styles/colors_and_type.css` and
+`dist/theme.css` from `src/styles/theme.css` to exactly what shipped, every component
 matching the source it was copied from, the ports typechecking, and the
 storybook matching both component roots. If the
 byte-identity assertion fails, **do not fix it in `packages/`** — the fix

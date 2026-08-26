@@ -30,7 +30,7 @@ places you change it. Knowing which category a file is in is most of the job:
 
 | Category | Files | What to do |
 |---|---|---|
-| **Origin** | `docs/colors_and_type.css`, `docs/tokens/*.ts` | **Edit these.** Both, together — the `.ts` is a hand-maintained mirror, not a compilation. |
+| **Origin** | `src/styles/colors_and_type.css`, `src/tokens/*.ts` | **Edit these.** Both, together — the `.ts` is a hand-maintained mirror, not a compilation. |
 | **Component sources** | `src/components/**` | **Edit these.** This is where a component changes. |
 | **Provenance captures** | `src/captured/**` | **Never edit.** These are copies of files another repository owns. |
 | **Generated** | `packages/brand/dist/`, the derived half of `ds-bundle/` (including its Components cards), `docs/storybook/compiled/`, `docs/storybook/tw-bridge.css` | Never edit. Rebuild. |
@@ -114,9 +114,9 @@ on you.
 
 ### Changing a token value
 
-1. Edit `docs/colors_and_type.css`. This is the real source of truth — if it and
+1. Edit `src/styles/colors_and_type.css`. This is the real source of truth — if it and
    anything else disagree, **the CSS wins and the other thing is the bug.**
-2. Mirror it in `docs/tokens/*.ts`. Nothing compiles the CSS into the TS; it is
+2. Mirror it in `src/tokens/*.ts`. Nothing compiles the CSS into the TS; it is
    maintained by hand and it *has* silently diverged before. Packaging the mirror
    once turned up two latent bugs nothing in `docs/` consumed: an extensionless
    ESM import, and an interpolation of `brand[660]`, a ramp step that has never
@@ -319,8 +319,8 @@ npm run dev
 ```
 
 **That builds and then previews; there is deliberately no `astro dev` script.**
-With `build.format: 'preserve'` a directory index is requested at `/kitchen-sink`
-in dev but emitted at `/kitchen-sink/index.html` by the build, and the menu links
+With `build.format: 'preserve'` a directory index is requested without its
+`index.html` in dev but emitted with it by the build, and the menu links
 carry `.html` so that every page also opens from disk. So the dev server 404s on
 every top-level menu entry while serving the leaf pages perfectly — it looks like
 the navigation is broken rather than like the wrong server. `npm run dev` is a few

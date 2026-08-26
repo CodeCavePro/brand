@@ -464,13 +464,13 @@ const oxide = req('@tailwindcss/oxide');
  * not vestigial -- --duration-control lives there because the package has no
  * token for it, and Checkbox.vue and Radio.vue read it from their scoped
  * styles. Drop it and two specimens silently lose their transition. */
-const themeSrc = fs.readFileSync(path.join(docs, 'theme.css'), 'utf8');
+const themeSrc = fs.readFileSync(path.join(srcRoot, 'styles', 'theme.css'), 'utf8');
 const themeBlock = themeSrc.match(/@theme \{[\s\S]*?\n\}/);
-if (!themeBlock) throw new Error('no @theme block found in docs/theme.css');
+if (!themeBlock) throw new Error('no @theme block found in src/styles/theme.css');
 
-const tokensSrc = fs.readFileSync(path.join(docs, 'colors_and_type.css'), 'utf8');
+const tokensSrc = fs.readFileSync(path.join(srcRoot, 'styles', 'colors_and_type.css'), 'utf8');
 const tokensRoot = tokensSrc.match(/^:root \{([\s\S]*?)^\}/m);
-if (!tokensRoot) throw new Error('no :root block found in docs/colors_and_type.css');
+if (!tokensRoot) throw new Error('no :root block found in src/styles/colors_and_type.css');
 
 const globalCss = fs.readFileSync(path.join(CAPTURES, 'styles', 'global.css'), 'utf8');
 const siteRoot = globalCss.match(/^:root \{([\s\S]*?)^\}/m);

@@ -35,16 +35,32 @@
  *    apart. It now derives both from --d-base / --dr-control at the system's
  *    own ratios, and a raw cqi literal is how that would come undone.
  *
- * The ramp is read from docs/colors_and_type.css, the origin -- so a palette
+ * The ramp is read from src/styles/colors_and_type.css, the origin -- so a palette
  * change moves this check with it rather than leaving it asserting last
  * month's numbers.
  */
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { PUBLISHED } from './astro-passthrough.mjs';
 
 const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'docs');
 const raw = path.join(docs, 'examples', 'raw');
+
+/* A deliverable links `../../colors_and_type.css`, which is a SITE path: the
+ * file is authored under src/ and published at the root of dist/. Resolving it
+ * against the source tree alone reported all twelve as broken the day they
+ * moved, which is the wrong answer -- the deliverables are correct and the
+ * resolver was not. The map is read from the passthrough, never restated;
+ * that file is the one place that decides what src/ publishes and where. */
+const srcRoot = path.resolve(docs, '..', 'src');
+function sourceOf(siteRel) {
+  for (const [from, to] of PUBLISHED) {
+    if (siteRel === to) return path.join(srcRoot, from);
+    if (siteRel.startsWith(`${to}/`)) return path.join(srcRoot, from, siteRel.slice(to.length + 1));
+  }
+  return path.join(docs, siteRel);
+}
 const rel = (p) => path.relative(process.cwd(), p);
 const fail = (msg) => {
   console.error(msg);
@@ -60,7 +76,7 @@ const source = new Map(files.map((f) => [f, fs.readFileSync(path.join(raw, f), '
 
 /* ---- the ramp, from the origin ------------------------------------------ */
 const palette = fs
-  .readFileSync(path.join(docs, 'colors_and_type.css'), 'utf8')
+  .readFileSync(path.join(docs, '..', 'src', 'styles', 'colors_and_type.css'), 'utf8')
   .replace(/\/\*[\s\S]*?\*\//g, ''); // a commented-out declaration is not one
 
 const px = (v) => {
@@ -142,7 +158,11 @@ for (const [file, src] of source) {
     refs += 1;
     const clean = target.split('#')[0].split('?')[0];
     if (!clean) continue;
-    if (!fs.existsSync(path.resolve(raw, clean))) broken.push(`  ${file} → ${target}`);
+    const abs = path.resolve(raw, clean);
+    const siteRel = path.relative(docs, abs).split(path.sep).join('/');
+    if (!fs.existsSync(abs) && !fs.existsSync(sourceOf(siteRel))) {
+      broken.push(`  ${file} → ${target}`);
+    }
   }
 }
 
