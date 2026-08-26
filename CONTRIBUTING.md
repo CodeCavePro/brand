@@ -224,12 +224,14 @@ produces an ERESOLVE that looks like a broken dependency graph and is not.
 npm run check
 ```
 
-That is six assertions in one: the package is byte-identical to its origin,
-every storybook port typechecks, the compiled storybook matches the captures it
-was built from, no token silently redefines a Tailwind default, the vendored runtime
-map resolves exactly what the bundles import, and the findings counts
-three files quote agree with the story pages. All six are things that would
-otherwise rot quietly.
+That is eight assertions in one: the package is byte-identical to its origin,
+every storybook port typechecks, the compiled storybook matches the sources it
+was built from, no token silently redefines a Tailwind default, the vendored
+runtime map resolves exactly what the bundles import and every file it names is
+on disk, the findings counts three files quote agree with the story pages, the
+six deliverables' own references still resolve, and every documentation route
+cited in prose still exists. All eight are things that would otherwise rot
+quietly, and CI runs the same eight on `development` and on `chore/*`.
 
 "Byte-identical" has one exception, and it is stated by the check itself rather
 than left to be discovered. Some spellings the site uses cannot survive the

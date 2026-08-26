@@ -1,4 +1,15 @@
-# Deploy docs/ to GitHub Pages, rebuilding the storybook first when it can.
+# Verify the repository, and deploy docs/ to Pages from development.
+#
+# TWO BEHAVIOURS, ONE FILE. On development it does what it always did: verify,
+# rebuild the storybook when it can, build, publish. On chore/* it does every
+# one of those things EXCEPT publish — the deploy job carries the ref check.
+# Branches were unverified until 2026-08-26, so a pull request showed no checks
+# and the first run against a change happened after it had already merged.
+#
+# The guard is on the DEPLOY job rather than on the trigger, deliberately: a
+# branch that cannot build is a branch worth failing, and gating the trigger
+# instead would have told us nothing until merge. It also catches
+# workflow_dispatch from a branch, which used to publish that branch.
 #
 # The storybook's compiled/*.js and tw-bridge.css are generated from
 # src/components/ and src/captured/, but the generator needs the codecave.pro repo's
@@ -6,7 +17,7 @@
 # website builds with, which is the whole point. That means the rebuild can
 # only run where this workflow can reach that repo.
 #
-# So the job is in two halves, and the order matters:
+# So the job is in three parts, and the order matters:
 #
 #   1. A verification that ALWAYS runs. check-tw-bridge.mjs needs nothing but
 #      node, and it proves the committed storybook is in step with the sources
@@ -16,6 +27,11 @@
 #   1b. A typecheck of storybook/ports/ against the interfaces in ports.d.ts.
 #      Needs typescript, so it follows step 1 rather than joining it — step 1
 #      keeps its "nothing but node" property.
+#
+#   1c. The package built and checked against src/. Needs the install, and
+#      must precede the rebuild below, which compiles each specimen from
+#      packages/brand/dist/ and refuses to run without it. Together 1, 1b and
+#      1c are exactly what `npm run check` runs -- all eight assertions.
 #
 #   2. A rebuild that runs when the toolchain is reachable, and is skipped
 #      without failing when it is not. Pages must keep deploying either way:
@@ -30,12 +46,16 @@
 # Rebuild prerequisites: CodeCavePro/codecave.pro must be readable. If it is
 # private, add a repo-scoped PAT as the CODECAVE_PRO_TOKEN secret; the default
 # GITHUB_TOKEN cannot read another repository.
-name: Deploy static content to Pages
+name: Verify, and deploy Pages from development
 
 on:
-  # Runs on pushes targeting the default branch
+  # development is the branch that DEPLOYS. chore/* runs everything except the
+  # deploy — see the `if` on that job — so a branch gets the full nine checks
+  # and a real build before anyone merges it. Nothing here ran on a branch
+  # before, which meant a pull request showed no checks at all and the first
+  # time a change was verified was after it was already on the default branch.
   push:
-    branches: ["development"]
+    branches: ["development", "chore/*"]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -46,11 +66,14 @@ permissions:
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+# Keyed on the ref, so a branch run can never queue behind or delay a
+# production deploy. Every development run still shares one group and is never
+# cancelled — that is the original property: one concurrent deployment, allowed
+# to finish. Branch runs get a group each and DO cancel, because a superseded
+# check of a branch is worth nothing.
 concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  group: pages-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/development' }}
 
 jobs:
   build:
@@ -126,6 +149,24 @@ jobs:
       # the package build would ever notice.
       - name: Check the token layer against Tailwind
         run: npm run check:collisions
+
+      # The package is a pure derivative of src/, and this asserts it: every
+      # copied file byte-identical to its origin, theme.css agreeing with the
+      # tokens, the README's quoted values matching the compiled module. It was
+      # only ever run by release.yml, which means a change that broke the
+      # package stayed green here and surfaced at publish time.
+      #
+      # It also has to happen BEFORE the rebuild below, which is the bug this
+      # step fixes rather than merely covers: build-storybook.mjs compiles each
+      # specimen from packages/brand/dist/ and refuses to run without it. CI
+      # never built the package, so the rebuild step would have failed with
+      # "The package is not built" -- invisibly, because it only runs when
+      # CODECAVE_PRO_TOKEN can reach codecave.pro, which it currently cannot.
+      - name: Build the package
+        run: npm run build:package
+
+      - name: Check the package against its origin
+        run: npm run check --workspace @codecavepro/brand
 
       # ---- optional rebuild ------------------------------------------------
       # continue-on-error so an unreachable or private codecave.pro downgrades
@@ -268,9 +309,16 @@ jobs:
         run: npm run build
 
       # ---- publish ---------------------------------------------------------
+      # Guarded on the same ref as the deploy job. A branch run has just proved
+      # the thing worth proving — every check passes and the site builds — and
+      # a Pages-shaped tarball no branch can deploy is not worth uploading on
+      # every push. Note this is the LAST thing skipped: `npm run build` above
+      # runs everywhere, so a branch that cannot build still fails.
       - name: Setup Pages
+        if: github.ref == 'refs/heads/development'
         uses: actions/configure-pages@v5
       - name: Upload artifact
+        if: github.ref == 'refs/heads/development'
         uses: actions/upload-pages-artifact@v3
         with:
           # dist/, not docs/ — CCWEB2-317. docs/ is now sources plus payload
@@ -281,6 +329,12 @@ jobs:
 
   deploy:
     needs: build
+    # ONLY development publishes. Without this line adding chore/* above would
+    # put whatever is on a work-in-progress branch onto brand.codecave.pro, and
+    # the last branch pushed would be the live site until someone pushed
+    # development again. The build job above still runs in full on a branch —
+    # what is skipped is the publish, not the verification.
+    if: github.ref == 'refs/heads/development'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
