@@ -127,7 +127,7 @@ on you.
 4. Grep for the old value and triage every hit against the table above.
 5. Rebuild and check:
    ```bash
-   npm run build && npm run check
+   npm run build:package && npm run check
    ```
 6. Regenerate the bundle if the CSS moved:
    ```bash

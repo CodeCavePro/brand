@@ -10,7 +10,7 @@
 		{
 			"label": "Build",
 			"type": "shell",
-			"command": "npm run docs:build",
+			"command": "npm run build",
 			"problemMatcher": []
 		}
 	]

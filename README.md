@@ -43,14 +43,20 @@ What produces what:
 
 | Run | Reads | Writes |
 |---|---|---|
-| `npm run build` | `src/` | `packages/brand/dist/` |
-| `npm run docs:build` | `docs/` + the published half of `src/` | `dist/` |
-| `npm run storybook:build` | `src/components/`, `src/captured/` | `docs/storybook/compiled/` |
-| `npm run assets:generate` | `src/logos/` | `docs/logos/`, `docs/icons/`, `docs/favicons/` |
+| `npm run build` | `docs/` + the published half of `src/` | `dist/` |
+| `npm run build:package` | `src/` | `packages/brand/dist/` |
+| `npm run build:storybook` | `src/components/`, `src/captured/` | `docs/storybook/compiled/` |
+| `npm run build:assets` | `src/logos/` | `docs/logos/`, `docs/icons/`, `docs/favicons/` |
 | `npm run check` | all of it | nothing — it asserts |
+| `npm run release:package` | `packages/brand/` | npm |
 
-`npm run dev` builds the site and previews it. There is deliberately no `astro dev`
-script; [CONTRIBUTING.md](/CONTRIBUTING.md) says why.
+**The bare verbs are the site**, because that is what you touch most: `build`,
+`preview`, and `dev` (which is `build` then `preview`). Everything else the
+repository produces is named for what it produces — `build:package`,
+`build:storybook`, `build:assets`, `release:package`.
+
+There is deliberately no `astro dev` script; [CONTRIBUTING.md](/CONTRIBUTING.md)
+says why.
 
 ## Design System
 

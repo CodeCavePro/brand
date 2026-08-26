@@ -9,12 +9,12 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "npm run docs:build && npm run docs:preview",
-    "build": "npm run build --workspace @codecavepro/brand",
-    "docs:build": "astro build",
-    "docs:preview": "astro preview",
-    "storybook:build": "node tools/build-storybook.mjs",
-    "assets:generate": "bash tools/generate-brand-assets.sh",
+    "dev": "npm run build && npm run preview",
+    "build": "astro build",
+    "preview": "astro preview",
+    "build:package": "npm run build --workspace @codecavepro/brand",
+    "build:storybook": "node tools/build-storybook.mjs",
+    "build:assets": "bash tools/generate-brand-assets.sh",
     "check": "npm run check --workspace @codecavepro/brand && npm run check:ports && npm run check:tw-bridge && npm run check:collisions && npm run check:importmap && npm run check:findings && npm run check:examples && npm run check:links",
     "check:ports": "tsc --noEmit --project docs/storybook/ports/tsconfig.json",
     "check:tw-bridge": "node tools/check-tw-bridge.mjs",
@@ -23,7 +23,7 @@
     "check:findings": "node tools/check-findings.mjs",
     "check:examples": "node tools/check-examples.mjs",
     "check:links": "node tools/check-links.mjs",
-    "release": "npm publish --workspace @codecavepro/brand --access public"
+    "release:package": "npm publish --workspace @codecavepro/brand --access public"
   },
   "engines": {
     "node": ">=22"

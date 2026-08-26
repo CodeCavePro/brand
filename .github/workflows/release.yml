@@ -154,7 +154,7 @@ jobs:
       # the README value assertions, so a palette change that left the package
       # page behind stops here.
       - name: Build the package
-        run: npm run build
+        run: npm run build:package
 
       # The same suite CI already runs on every push to development, plus the
       # package's own byte-identity check against docs/.
@@ -197,7 +197,7 @@ jobs:
           node tools/smoke-tarball.mjs "$SMOKE/node_modules/@codecavepro/brand"
 
       # ---- publish ---------------------------------------------------------
-      # `npm run release`, not a bare `npm publish`: the root manifest and the
+      # `npm run release:package`, not a bare `npm publish`: the root manifest and the
       # package manifest share the name `@codecavepro/brand`, so the two are
       # distinguished by PATH and only by path. The script carries the
       # --workspace flag that picks the right one. See RELEASING.md.
@@ -206,7 +206,7 @@ jobs:
       # the publish is refused" at the bottom of this file before changing
       # anything.
       - name: Publish
-        run: npm run release
+        run: npm run release:package
 
       # The publish exiting 0 is npm's account of the publish. This is the
       # registry's.

@@ -34,7 +34,7 @@ they have always had. `tools/astro-passthrough.mjs` holds that map in
 **read** the same map rather than restating it, because both broke the day the
 files moved and both were wrong about correct deliverables.
 
-`npm run assets:generate` needs Inkscape and ImageMagick and will not run on a
+`npm run build:assets` needs Inkscape and ImageMagick and will not run on a
 stock Windows checkout. That is why the rendered ramps are tracked: they are the
 record of the last run.
 

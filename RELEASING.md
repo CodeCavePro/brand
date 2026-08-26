@@ -122,7 +122,7 @@ tag is pushed there is no rehearsal left, so this is where a mistake is still
 free.
 
 ```bash
-npm run build && npm run check
+npm run build:package && npm run check
 ```
 
 `check` asserts what the package promises: three files byte-identical to their
@@ -132,10 +132,10 @@ origin (`src/styles/colors_and_type.css`, `src/fonts/fonts.css`, the root `LICEN
 matching the source it was copied from, the ports typechecking, and the
 storybook matching both component roots. If the
 byte-identity assertion fails, **do not fix it in `packages/`** — the fix
-belongs in `docs/`, which is the origin. See [CLAUDE.md](/CLAUDE.md).
+belongs in `src/`, which is the origin. See [CLAUDE.md](/CLAUDE.md).
 
 `npm run check` needs `dist/` to exist, which is why `release.yml` runs
-`npm run build` immediately before it — a fresh checkout has no `dist/` at all,
+`npm run build:package` immediately before it — a fresh checkout has no `dist/` at all,
 and a `check` run against one would be asserting things about nothing.
 
 ### 3. Validate the tarball — the actual artifact
@@ -310,7 +310,7 @@ The fallback is the old manual path, and it needs an npm login and org
 membership:
 
 ```bash
-npm run release -- --otp=123456
+npm run release:package -- --otp=123456
 ```
 
 **The `--workspace` flag inside that script is not optional, and it is the

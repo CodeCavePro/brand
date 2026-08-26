@@ -180,7 +180,7 @@ jobs:
 
       - name: Rebuild the storybook
         if: steps.toolchain.outcome == 'success'
-        run: npm run storybook:build -- _toolchain
+        run: npm run build:storybook -- _toolchain
 
       # The generator pins esbuild's absWorkingDir, so unchanged sources
       # reproduce byte-identical output regardless of where it ran. Anything
@@ -265,7 +265,7 @@ jobs:
       # passthrough that silently stopped would deploy a site missing almost
       # every page, with a green tick. See tools/astro-passthrough.mjs.
       - name: Build the docs site
-        run: npm run docs:build
+        run: npm run build
 
       # ---- publish ---------------------------------------------------------
       - name: Setup Pages
