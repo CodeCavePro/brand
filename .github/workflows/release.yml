@@ -70,7 +70,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v7
         with:
-          node-version: '22'
+          node-version: '24'
           registry-url: 'https://registry.npmjs.org'
           package-manager-cache: false
 
@@ -79,14 +79,13 @@ jobs:
       # authentication error that reads like a misconfigured trusted publisher,
       # which is a long way to walk for a wrong npm.
       #
-      # Worth knowing that the node pin is 22 and the floor is 22.14, so the
-      # margin is one minor line rather than two majors. That is deliberate --
-      # 22 is the LTS this repository is developed on, and package.json's
-      # engines say >=22 -- but it means this assertion is doing real work
-      # rather than restating something obviously true. npm is the tighter of
-      # the two in practice: the floor is 11.5.1 and Node 22.23 bundles 11.7.0,
-      # so a runner pinned to an older 22.x patch is what would trip it. The
-      # remedy is in the failure message.
+      # The pin is 24 and the floor is 22.14, so there is a wide margin here --
+      # which is the point of asserting rather than assuming: the margin is a
+      # property of the RUNNER IMAGE, not of this file, and setup-node resolves
+      # `24` to whatever 24.x the image currently offers. This was briefly
+      # pinned to 22, where the margin is one minor line instead of two majors
+      # and npm is the tighter half (floor 11.5.1; Node 22.23 bundles 11.7.0).
+      # Either way the remedy is in the failure message.
       - name: Assert the toolchain can do OIDC
         run: |
           set -euo pipefail
