@@ -61,16 +61,16 @@ Three rules that make a design read as CODECAVE:
    is the signature type pattern.
 
 The system designs to three weights — 300, 400, 700. All six Satoshi cuts now ship as real files
-in `docs/fonts/`, properly bound, so nothing is browser-synthesized here; the live site still
+in `src/styles/fonts/`, properly bound, so nothing is browser-synthesized here; the live site still
 serves one TTF and lags behind. Design to 300/400/700 and do not reach for 500, 600 or 900.
 
 ## Where the truth lives
 
 - `docs/DESIGN.md` — the canonical rules: foundations, the full ramp, components, motion, voice,
   logo usage, anti-patterns and the known divergences. Read this first.
-- `docs/colors_and_type.css` — every token with comments on intended use, then the component
+- `src/styles/colors_and_type.css` — every token with comments on intended use, then the component
   layer. Each block names the source file it was transcribed from.
-- `docs/tokens/*.ts` — the same tokens as typed modules, for consumers that cannot read a
+- `src/tokens/*.ts` — the same tokens as typed modules, for consumers that cannot read a
   stylesheet.
 - `docs/preview/` — twelve review cards, one concern each, rendering live tokens and real
   components. `docs/storybook/` — thirteen components with variant matrices.
@@ -102,7 +102,7 @@ serves one TTF and lags behind. Design to 300/400/700 and do not reach for 500, 
 | Path | Contents |
 |---|---|
 | `styles.css` | Root stylesheet — a re-export. Rendered designs receive only this file's import closure; since the package rebuild that closure is one file: |
-| `colors_and_type.css` | **The whole system.** Six `@font-face` bindings, the two raw ramps (12 violet brand steps and 13 grays, verbatim from the site's 2026 rebuild), the single-use accents, the semantic token layer, the type scale, radii, spacing, shadows, the dark `html`/`body` baseline, and the component class layer (`.btn` + variants, `.card`, `.field`, `.checkbox`, `.chip`, `.eyebrow`, `.lead`, `.stat`, `.divider`, `.rule`/`.progress`, `.page-container`, `.section-container`). Verbatim copy of `docs/colors_and_type.css`. |
+| `colors_and_type.css` | **The whole system.** Six `@font-face` bindings, the two raw ramps (12 violet brand steps and 13 grays, verbatim from the site's 2026 rebuild), the single-use accents, the semantic token layer, the type scale, radii, spacing, shadows, the dark `html`/`body` baseline, and the component class layer (`.btn` + variants, `.card`, `.field`, `.checkbox`, `.chip`, `.eyebrow`, `.lead`, `.stat`, `.divider`, `.rule`/`.progress`, `.page-container`, `.section-container`). Verbatim copy of `src/styles/colors_and_type.css`. |
 | `tokens/colors.ts`, `tokens/typography.ts`, `tokens/layout.ts` | The same tokens as typed TS modules, for consumers that cannot read a stylesheet. Mirrors of the CSS; the CSS wins if they ever disagree. |
 | `fonts/` | Six real Satoshi cuts in woff2 + woff (300/400/500/700/900 + italics), bound by `colors_and_type.css`. `fonts/fonts.css` is a standalone binding for dropping `fonts/` into another project alone. |
 | `components/Foundations/` | Four rendered reference cards: Colors, Typography, Spacing, Patterns. Reference sheets, not components — they render with plain HTML against `styles.css`, so they double as proof the token layer resolves. |

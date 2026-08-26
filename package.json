@@ -9,18 +9,21 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build --workspace @codecavepro/brand",
-    "check": "npm run check --workspace @codecavepro/brand && npm run check:ports && node docs/tools/check-tw-bridge.mjs && npm run check:collisions && npm run check:importmap && npm run check:findings && npm run check:examples && npm run check:links",
-    "check:importmap": "node docs/tools/check-importmap.mjs",
-    "check:findings": "node docs/tools/check-findings.mjs",
-    "check:examples": "node docs/tools/check-examples.mjs",
-    "check:links": "node docs/tools/check-links.mjs",
+    "dev": "astro dev",
+    "preview": "npm run build && astro preview",
+    "build": "astro build",
+    "build:package": "npm run build --workspace @codecavepro/brand",
+    "build:storybook": "node tools/build-storybook.mjs",
+    "build:assets": "bash tools/generate-brand-assets.sh",
+    "check": "npm run check --workspace @codecavepro/brand && npm run check:ports && npm run check:tw-bridge && npm run check:collisions && npm run check:importmap && npm run check:findings && npm run check:examples && npm run check:links",
     "check:ports": "tsc --noEmit --project docs/storybook/ports/tsconfig.json",
-    "check:collisions": "node docs/tools/check-tw-collisions.mjs",
-    "docs:dev": "astro dev",
-    "docs:build": "astro build",
-    "docs:preview": "astro preview",
-    "release": "npm publish --workspace @codecavepro/brand --access public"
+    "check:tw-bridge": "node tools/check-tw-bridge.mjs",
+    "check:collisions": "node tools/check-tw-collisions.mjs",
+    "check:importmap": "node tools/check-importmap.mjs",
+    "check:findings": "node tools/check-findings.mjs",
+    "check:examples": "node tools/check-examples.mjs",
+    "check:links": "node tools/check-links.mjs",
+    "release:package": "npm publish --workspace @codecavepro/brand --access public"
   },
   "engines": {
     "node": ">=22"
@@ -28,9 +31,14 @@
   "devDependencies": {
     "@astrojs/starlight": "^0.41.8",
     "@astrojs/vue": "7.0.2",
+    "@tailwindcss/vite": "4.3.3",
     "astro": "7.2.4",
     "dompurify": "3.4.14",
+    "gsap": "3.15.0",
+    "isomorphic-dompurify": "3.22.0",
+    "marked": "18.0.5",
     "tailwindcss": "4.3.3",
-    "vue": "3.5.41"
+    "vue": "3.5.41",
+    "vue3-carousel": "0.17.0"
   }
 }

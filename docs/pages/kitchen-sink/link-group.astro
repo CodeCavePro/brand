@@ -12,7 +12,6 @@ import DocPage from '../../layouts/DocPage.astro';
   title="LinkGroup — CODECAVE storybook"
   nav="kitchen-sink"
   stylesheets={['../storybook/tw-bridge.css','storybook.css']}
-  importmap
 >
 <div class="sb">
   <a class="sb-back" href="index.html">&larr; All components</a>
@@ -26,7 +25,7 @@ import DocPage from '../../layouts/DocPage.astro';
     <div class="sb-tags">
       <span class="sb-tag is-vue">Vue island</span>
       <span class="sb-tag">src/components/footer/link-group.vue</span>
-      <span class="sb-tag">rendered live from compiled/link-group.js</span>
+      <span class="sb-tag">rendered live from src/components/footer/link-group.vue</span>
       <span class="sb-tag">composes Button</span>
     </div>
   </header>
@@ -99,9 +98,9 @@ import DocPage from '../../layouts/DocPage.astro';
 
 </div>
 
-<script is:inline type="module">
+<script type="module">
   import { createApp } from 'vue';
-  import LinkGroup from '../storybook/compiled/link-group.js';
+  import LinkGroup from '../../../src/components/footer/link-group.vue';
 
   // link-group.vue imports only the TYPE of its items, never a link table, so
   // the data is passed at the call site. These twelve are the real service list.

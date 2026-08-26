@@ -318,7 +318,7 @@ the rules, the reasoning, the anti-patterns — is documented separately:
 It authors nothing. Every byte is copied, extracted or compiled out of `docs/` in the
 repository above: `css` and `fonts.css` are copied verbatim, `tokens.css` is extracted
 from the same file `css` is copied from, `theme.css` is extracted from the capture of
-codecave.pro's `global.css`, and the typed module is compiled from `docs/tokens/*.ts`.
+codecave.pro's `global.css`, and the typed module is compiled from `src/tokens/*.ts`.
 A name that `theme.css` and `tokens.css` both give a literal value must agree, and the
 build fails if it does not — otherwise one of the two would be dead and nobody would
 see it. `docs/` stays the single origin, and CI asserts on every push that

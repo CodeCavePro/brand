@@ -10,7 +10,7 @@ math computed against the current palette (page ground `#0A0A0B`, card ground
 **The direction of truth inverted on 2026-08-25, and it changes who acts on
 this list.** When these remarks were compiled, `docs/` documented codecave.pro
 and every component below was the site's. The components now live in
-`docs/authored/`, ship in `@codecavepro/brand`, and the site installs them and
+`src/components/`, ship in `@codecavepro/brand`, and the site installs them and
 keeps no copies — so **a finding about a component is this repository's to fix,
 and reaches the site at its next version bump.** Only findings about files the
 site still owns are the site's.
@@ -23,7 +23,7 @@ incorrect behavior or broken contract, **P2** = hygiene and polish.
 fixed rather than struck through — the Jira backlog under
 [CCWEB2](https://codecave.atlassian.net/browse/CCWEB2) is the record of what was
 done and when. Every remark below was re-verified against
-`docs/authored/` on 2026-08-25.
+`src/components/` on 2026-08-25.
 
 ---
 
@@ -127,7 +127,7 @@ no counts. A `<nav aria-labelledby>` + `<ul>` fixes it without moving a pixel.
   **This one now ships.** The note here used to say it was "fixed ahead in the
   port" — that fix lived in the docs-side copy and did not survive the
   component's promotion into the package. Verified 2026-08-25: neither
-  `shrink-0` nor `flex: none` appears in `docs/authored/common/Checkbox.vue`,
+  `shrink-0` nor `flex: none` appears in `src/components/common/Checkbox.vue`,
   nor in `@codecavepro/brand@2.2.0`'s copy of it. Every consumer that gives a
   checkbox a wrapping label gets the tall rounded slot.
 - **`Checkbox.vue`'s `secondary` variant is dead code.** The props type says
@@ -146,7 +146,7 @@ no counts. A `<nav aria-labelledby>` + `<ul>` fixes it without moving a pixel.
 **This section changed owner.** It was written against
 `codecave.pro/src/styles/global.css`. That file now declares **zero** custom
 properties — it imports `@codecavepro/brand/tokens.css` and `/theme.css` — so
-the ramps below are **this package's**, in `docs/colors_and_type.css`, and the
+the ramps below are **this package's**, in `src/styles/colors_and_type.css`, and the
 findings are ours to answer rather than a designer's to relay.
 
 - **The gray ramp is non-monotonic.** `gray-1000 #050505` is *darker* than

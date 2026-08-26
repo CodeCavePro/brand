@@ -22,7 +22,7 @@ reissued. Everything else in this runbook is reversible; that is not.
 specimens, docs pages, `DESIGN.md` and `WEBSITE-REVIEW.md` are none of them.
 Those deploy with GitHub Pages on push and need no release.
 
-**A change under `docs/authored/` *is* a change that reaches the tarball.**
+**A change under `src/components/` *is* a change that reaches the tarball.**
 That directory is where the nineteen shipped components live, so editing one
 moves published bytes and needs a release.
 
@@ -122,20 +122,20 @@ tag is pushed there is no rehearsal left, so this is where a mistake is still
 free.
 
 ```bash
-npm run build && npm run check
+npm run build:package && npm run check
 ```
 
 `check` asserts what the package promises: three files byte-identical to their
-origin (`docs/colors_and_type.css`, `docs/fonts/fonts.css`, the root `LICENSE`),
-`dist/tokens.css` still re-extracting from `docs/colors_and_type.css` and
-`dist/theme.css` from `docs/theme.css` to exactly what shipped, every component
+origin (`src/styles/colors_and_type.css`, `src/styles/fonts/fonts.css`, the root `LICENSE`),
+`dist/tokens.css` still re-extracting from `src/styles/colors_and_type.css` and
+`dist/theme.css` from `src/styles/theme.css` to exactly what shipped, every component
 matching the source it was copied from, the ports typechecking, and the
 storybook matching both component roots. If the
 byte-identity assertion fails, **do not fix it in `packages/`** — the fix
-belongs in `docs/`, which is the origin. See [CLAUDE.md](/CLAUDE.md).
+belongs in `src/`, which is the origin. See [CLAUDE.md](/CLAUDE.md).
 
 `npm run check` needs `dist/` to exist, which is why `release.yml` runs
-`npm run build` immediately before it — a fresh checkout has no `dist/` at all,
+`npm run build:package` immediately before it — a fresh checkout has no `dist/` at all,
 and a `check` run against one would be asserting things about nothing.
 
 ### 3. Validate the tarball — the actual artifact
@@ -154,7 +154,7 @@ mkdir -p /tmp/brand-smoke && (cd /tmp/brand-smoke && npm init -y && npm i "$OLDP
 ```
 
 ```bash
-node docs/tools/smoke-tarball.mjs /tmp/brand-smoke/node_modules/@codecavepro/brand
+node tools/smoke-tarball.mjs /tmp/brand-smoke/node_modules/@codecavepro/brand
 ```
 
 That prints seventeen assertions and exits 0, or names what is broken and exits
@@ -176,12 +176,11 @@ only `from "..."`, reported that everything resolved over a 1.6.0 tarball whose
 `Checkbox.vue` reached a `checked-icon.svg` that was not in it, and the bug
 shipped (CCWEB2-370). A background-image is a reference like any other.
 
-The reference walk is the assertion worth understanding. The captures flatten
-the site's `src/components/` level away while their imports still climb through
-it — `common/Checkbox.vue` reaches `../../assets/icons/asterisk-icon.vue` — so
-the package ships at the site's depth to keep those resolving. The storybook
-cannot catch a regression there, because `build-storybook.mjs` re-roots escaping
-imports with a resolver plugin and a consumer's `import` has no such plugin. A
+The reference walk is the assertion worth understanding. `dist/src/` mirrors
+the source tree one file to one file, so a relative import means the same thing
+in both — `common/Checkbox.vue` reaches `../assets/icons/asterisk-icon.vue`
+here and in the tarball. That is what lets this walk be a real test: it asks the
+*built* files, and the answer is not distorted by a layout the build invented. A
 dangling reference means the package is broken for every consumer while looking
 fine in this repo.
 
@@ -311,7 +310,7 @@ The fallback is the old manual path, and it needs an npm login and org
 membership:
 
 ```bash
-npm run release -- --otp=123456
+npm run release:package -- --otp=123456
 ```
 
 **The `--workspace` flag inside that script is not optional, and it is the

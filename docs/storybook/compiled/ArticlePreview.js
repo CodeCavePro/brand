@@ -1,6 +1,6 @@
 /* GENERATED from @codecavepro/brand/components/common/ArticlePreview.vue by tools/build-storybook.mjs — do not edit. */
 
-// ../packages/brand/dist/src/components/common/ArticlePreview.vue
+// ../packages/brand/dist/src/common/ArticlePreview.vue
 import { defineComponent as _defineComponent } from "vue";
 import { createElementVNode as _createElementVNode, unref as _unref, toDisplayString as _toDisplayString, normalizeClass as _normalizeClass, openBlock as _openBlock, createElementBlock as _createElementBlock } from "vue";
 
@@ -15,7 +15,7 @@ var formattedDate = (locale, date) => {
   }).format(newDate);
 };
 
-// ../packages/brand/dist/src/components/common/ArticlePreview.vue
+// ../packages/brand/dist/src/common/ArticlePreview.vue
 var _hoisted_1 = ["href"];
 var _hoisted_2 = { class: "flex flex-col sm:flex-row gap-5 sm:gap-8 h-fit" };
 var _hoisted_3 = ["src", "alt"];
@@ -86,7 +86,7 @@ var __sfc__ = /* @__PURE__ */ _defineComponent({
     };
   }
 });
-__sfc__.__file = "authored/common/ArticlePreview.vue";
+__sfc__.__file = "components/common/ArticlePreview.vue";
 var ArticlePreview_default = __sfc__;
 export {
   ArticlePreview_default as default

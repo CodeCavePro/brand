@@ -6,6 +6,38 @@ editable, what is derived, what to run) and [RELEASING.md](/RELEASING.md)
 (publishing the npm package). When a rule here changes, check whether one of
 those states it too.
 
+## Where everything is — one rule
+
+**`src/` is authored; everything else is produced from it.** That was not true
+until 2026-08-26, and the shape it replaced is why this section exists: the
+components were in `docs/authored/`, the tokens in `docs/`, the SVG masters in a
+root `src/` that held nothing else, the rendered logos in three places at once,
+and the build scripts inside the directory that publishes the website.
+
+| Directory | Holds | Edit? |
+|---|---|---|
+| `src/logos/` | the three SVG masters — every raster is rendered from them | yes |
+| `src/styles/` | `colors_and_type.css` (the deliverable) and `theme.css` | yes |
+| `src/tokens/` | the same tokens as typed TS modules, hand-mirrored | yes |
+| `src/styles/fonts/` | six Satoshi cuts and `fonts.css` | the CSS only |
+| `src/components/` | every component, helper and icon the system ships | yes |
+| `src/captured/` | the eight files copied from codecave.pro | **never** |
+| `docs/` | the website, and the published brand kit | pages, yes |
+| `tools/` | every build and check script | yes |
+| `packages/brand/` | the npm package — a pure derivative | **never** |
+| `dist/` | the built website, gitignored | never |
+
+Three of the paths a consumer links — `colors_and_type.css`, `tokens/` and
+`fonts/` — are authored under `src/` and *published* into `dist/` at the URLs
+they have always had. `tools/astro-passthrough.mjs` holds that map in
+`PUBLISHED` and asserts the copy arrived; `check:links` and `check:examples`
+**read** the same map rather than restating it, because both broke the day the
+files moved and both were wrong about correct deliverables.
+
+`npm run build:assets` needs Inkscape and ImageMagick and will not run on a
+stock Windows checkout. That is why the rendered ramps are tracked: they are the
+record of the last run.
+
 ## Where open work lives — read this before assuming there is none
 
 **Jira is the only list.** This repo used to keep a `TODO.md`; it was deleted on
@@ -47,7 +79,7 @@ here, tried in the storybook here, published, and only then does the site
 bump — which means a check demanding the two be equal was red for exactly the
 changes it existed to protect, and green only when there was nothing to
 release. It had already narrowed itself: 37 of the then-51 files under
-`source_examples/` had no upstream left, and it reported them as "frozen by
+`src/captured/` had no upstream left, and it reported them as "frozen by
 definition".
 
 **A component that reaches for one company's data does not belong here, and
@@ -64,7 +96,7 @@ Finished under [CCWEB2-317](https://codecave.atlassian.net/browse/CCWEB2-317) on
 2026-08-21, so it is architecture now rather than open work. **Sources stay in
 `docs/`, output goes to gitignored `dist/`, and Pages deploys `dist/`.** Every
 page is an `.astro` under `docs/pages/`, and everything else in `docs/` is
-payload that passes through — which `docs/tools/astro-passthrough.mjs` asserts
+payload that passes through — which `tools/astro-passthrough.mjs` asserts
 every build, both halves being silent when they fail.
 
 **There are three browsable surfaces, and that is the shape to hold in mind.**
@@ -155,28 +187,55 @@ asserts `menu.ts` and the collection agree in **both** directions: a slug the ba
 names and nothing renders, and a guide that renders and is in no bar. The second
 is the orphan case, which is what the four pages were before the surface existed.
 
-Two rules survive the migration and are in [CONTRIBUTING.md](/CONTRIBUTING.md)
-with their reasons. The one that bites when adding a page: a `.html` at the same
-path wins over the `.astro`, so writing one page in both forms leaves the
-`.astro` dead — Astro's own behaviour is a `WARN` and exit 0, and the
-passthrough check fails the build instead. The one that bites when improving a
-page: **the storybook specimens are not Astro islands and must not become them.**
-They mount `compiled/*.js` in the browser through an import map, which is what
-makes them a record of what codecave.pro ships rather than a rebuild of it, and
-`is:inline` on both tags is what keeps that true — so a *specimen* is still not
-an island. `@astrojs/vue` is no longer unused, though: `DsNav.astro` renders
-`BrandNav.vue` with no client directive, which is the chrome rather than a
-specimen and emits static HTML with no JavaScript at all.
+One rule survives the migration and is in [CONTRIBUTING.md](/CONTRIBUTING.md)
+with its reason, and it bites when adding a page: a `.html` at the same path
+wins over the `.astro`, so writing one page in both forms leaves the `.astro`
+dead — Astro's own behaviour is a `WARN` and exit 0, and the passthrough check
+fails the build instead.
 
-**That import map is checked against the bundles, both ways.** It is the only
-thing resolving the specifiers esbuild deliberately left external, and an
-import-map key is matched exactly — so a capture moving to a different entry
-point of the same package silently kills every specimen on the page. Nothing
-errors: the page renders, the canvas is simply empty. `npm run check:importmap`
-reads the bare specifiers out of `storybook/compiled/*.js` and the keys out of
-`DocPage.astro`'s `importmapJson` and fails on either mismatch, since a mapped
-specifier nothing imports is a claim that has stopped being true. Both inputs
-are committed, so it needs no site checkout and runs in CI.
+**The rule that used to sit beside it said the storybook specimens are not Astro
+islands and must not become them. It is reversed, and the reversal is the point
+of the current arrangement.** A specimen mounted `storybook/compiled/*.js` in the
+browser through an import map, so that a reader saw what codecave.pro shipped
+rather than a rebuild of it; `is:inline` on both tags was what kept that true.
+That argument rested on this repository being downstream, and it has not been
+since 2026-08-25. The components are authored in `src/` and the site installs the
+package built from them, so **compiling a specimen from source is showing what
+ships** — and mounting a prebuilt bundle instead shows whatever the last package
+build produced. The practical half is the reason it changed: a specimen that
+imports the `.vue` hot-reloads while you edit the component, and a prebuilt
+bundle never can.
+
+So a specimen page is now an ordinary `<script type="module">` importing
+`../../../src/components/…`, `@astrojs/vue` compiles them, and `DocPage` no
+longer has an `importmap` prop. **`build:storybook` still runs and still writes
+`compiled/*.js`** — `ds-bundle/` consumes them for a Design project that cannot
+run a bundler. It is simply no longer what this site mounts.
+
+**That leaves three resolvers on a page, and `check:links` judges a reference by
+whichever owns it.** Above the fence is Astro's, at build time, against the
+source tree. A `<script>` *without* `is:inline` is Vite's — also build time, also
+the source tree. Everything else, `is:inline` scripts included, is the browser's
+at request time against the *output* tree. Those are different depths, so one
+path is right for one and quietly wrong for the other: the conversion moved four
+`placeholders.js` imports from correct to broken without changing a character of
+them, and this is the check that said so. The old pairing it replaces — "a page
+importing a bare specifier must pass `importmap`" — is now the opposite
+assertion, that no `is:inline` script may import a bare specifier, because
+nothing resolves one any more.
+
+**The vendored runtime map is checked against the bundles, both ways, and against
+the disk.** `vue` and the gsap entry points are left external by esbuild, so
+something has to resolve them for whatever mounts a bundle — and the mapping is
+a judgement rather than arithmetic (`vue` is one of half a dozen builds in the
+package; `gsap` is a directory). A capture moving to a different entry point of
+the same package silently kills every specimen: nothing errors, the page renders,
+the canvas is simply empty. `npm run check:importmap` reads the bare specifiers
+out of `storybook/compiled/*.js` and the keys out of `tools/storybook-vendor.mjs`
+and fails on either mismatch, **and on a mapped file that is not in
+`docs/vendor/`** — the DocPage version compared two lists of names, so a map
+entry pointing at a runtime nobody committed passed cleanly and 404'd in the
+browser. Both inputs are committed, so it needs no site checkout and runs in CI.
 
 **A layout may not derive a page's depth from `Astro.url.pathname`.** With
 `build.format: 'preserve'`, a directory index is requested at `/storybook` in
@@ -214,20 +273,21 @@ what `StrapiPort` became once the CMS-shaped components took an injected
 `resolveImage()`. So `build-storybook.mjs` names the specimens each port stood
 in for, and names any port nothing reached for at all.
 
-Related rule: **nothing under `docs/source_examples/` is authored** — which,
-since the components moved to `docs/authored/`, is a claim about eight files
+Related rule: **nothing under `src/captured/` is authored** — which,
+since the components moved to `src/components/`, is a claim about eight files
 rather than a rule spanning the whole component tree.
 
 ### The package, in one paragraph
 
-`packages/brand/` is a **pure derivative of `docs/`** — it copies
-`colors_and_type.css` and `fonts.css` byte-for-byte, copies the root `LICENSE`,
-copies the components out of `docs/authored/`, extracts `tokens.css` from
-`colors_and_type.css` and `theme.css` from `docs/theme.css`, and compiles
-`docs/tokens/*.ts`. No *design content* under `packages/` is authored; the only
-tracked files are its manifest, build script and `README.md`, and `npm run
-check` asserts the byte-identity of every copy. **`docs/` remains the single
-origin; edit there, never in `packages/`.**
+`packages/brand/` is a **pure derivative of `src/`** — it copies
+`src/styles/colors_and_type.css` and `src/styles/fonts/fonts.css` byte-for-byte, copies
+the root `LICENSE`, copies the components out of `src/components/` and
+`src/captured/`, extracts `tokens.css` from `colors_and_type.css` and
+`theme.css` from `src/styles/theme.css`, and compiles `src/tokens/*.ts`. No
+*design content* under `packages/` is authored; the only tracked files are its
+manifest, build script and `README.md`, and `npm run check` asserts the
+byte-identity of every copy. **`src/` is the single origin; edit there, never in
+`packages/` and never in `docs/`.**
 
 **The package ships no brand marks, and that is now a decision rather than an
 accident.** `logo.svg` was only ever in the tarball because a menu imported it,
@@ -238,15 +298,15 @@ the font binaries, which stay out for a different reason (redistributing
 third-party type), and the two answers agree about what "the brand kit ships":
 the system, not the assets.
 
-**`docs/authored/` is the root anyone writes into, and as of 2026-08-25 it holds
+**`src/components/` is the root anyone writes into, and as of 2026-08-25 it holds
 every component.** It began as a home for `BrandNav.vue` alone, which has no
 upstream to be captured from — it is the site bar and the docs bar reconciled, so
 neither repo owns it. Everything else joined it once the same became true of them:
 37 files with no upstream left, sitting in a directory whose name said they were
-copies of something. `source_examples/` keeps the eight that really are.
+copies of something. `src/captured/` keeps the eight that really are.
 
 Two directories rather than a flag, because the rule that nothing under
-`source_examples/` is authored stops being checkable the moment the two sit side
+`src/captured/` is authored stops being checkable the moment the two sit side
 by side. **The directory name is the claim**, and a path present in both roots
 fails the build rather than letting whichever walked last win.
 
@@ -265,7 +325,7 @@ has**, and the only way to tell the difference is to ask the tarball.
 capture names a file the package already ships, but spells it in a form that
 only resolves from *outside* the package — so copied verbatim it produces a
 tarball that looks complete and breaks in a consumer's build. The whole rule is
-the table in `docs/tools/import-aliases.mjs`, which is also read by
+the table in `tools/import-aliases.mjs`, which is also read by
 `build-storybook.mjs` when it compares the package's copy of a component against
 the capture it came from: an identical-bytes test there would mean the package
 was *not* built from that capture. Rewritten captures "match their origin once
@@ -332,10 +392,20 @@ one excused difference, and the exception carries its reason in `build.mjs`.
 
 **The component list is computed, never written down.** `build.mjs` takes every
 non-excluded `.vue` under either root as a root and follows everything it
-*reaches* transitively — *in the layout the package ships*, which is why
-`dist/src/` restores the site's `src/components/…` depth rather than keeping the
-captures' flattened one. A reference that lands outside the package fails the
-build and names itself. So a component is added by capturing it, and the only
+*reaches* transitively — *in the layout the package ships*, and **that layout is
+now a mirror of the source**: `dist/src/common/Button.vue` for
+`src/components/common/Button.vue`, one file to one file. A reference that lands
+outside the package fails the build and names itself.
+
+**It ships as a mirror because it did not, and that cost a day.** `dist/src/`
+used to re-insert codecave.pro's `src/components/` level, so a component under
+`src/components/common/` imported `../../assets/…` — a path correct only *after*
+the build re-rooted it. The sources were therefore unimportable by anything
+without that resolver: Vite could not resolve them, and `astro dev` reported
+them as missing npm packages. Mirroring makes `../assets/…` right in **both**
+places, and `exports` absorbs the change — `./components/*` maps to `./dist/src/*`,
+so `@codecavepro/brand/components/common/Button.vue` still resolves for a
+consumer. `components` is a name in the export map now, not a directory. So a component is added by capturing it, and the only
 hand-written thing is `NOT_SHIPPED`, where each exclusion carries its reason as
 a string.
 
@@ -384,7 +454,7 @@ because tagging one version while the manifest says another republishes the
 manifest's, and npm never sees the tag.
 
 The workflow reruns every check plus one that only makes sense against the
-artifact: `docs/tools/smoke-tarball.mjs` installs the packed tarball and asks it
+artifact: `tools/smoke-tarball.mjs` installs the packed tarball and asks it
 seventeen questions. That is not duplication of `npm run check` — `files`,
 `exports` and npm's by-name pickup of `LICENSE`/`README.md` are all invisible to a
 check that walks `dist/` in place, so a package can be correct on disk and broken
@@ -421,12 +491,12 @@ filed anywhere:** it is Maria Shaban's decision and gets its own project later.
 [WEBSITE-REVIEW.md](/WEBSITE-REVIEW.md) is the component and token review,
 mirrored as CCWEB2-270…310. **Its findings are mostly OURS now** — it was
 written when the components were the site's, and they now live in
-`docs/authored/` and ship in the package, so a component remark is this
+`src/components/` and ship in the package, so a component remark is this
 repository's to fix and reaches the site at its next bump. Only remarks about
 files the site still owns are the site's.
 
 **Its section numbers must not be renumbered.** They are cited by number from
-the shipped `docs/colors_and_type.css` and from `docs/DESIGN.md`; the list
+the shipped `src/styles/colors_and_type.css` and from `docs/DESIGN.md`; the list
 starting at section 2 is deliberate, because section 1's only finding was
 fixed and deleted.
 

@@ -1,10 +1,10 @@
 /* GENERATED from @codecavepro/brand/components/project/pain-points-item.vue by tools/build-storybook.mjs — do not edit. */
 
-// ../packages/brand/dist/src/components/project/pain-points-item.vue
+// ../packages/brand/dist/src/project/pain-points-item.vue
 import { defineComponent as _defineComponent2 } from "vue";
 import { createVNode as _createVNode, unref as _unref, createElementVNode as _createElementVNode, openBlock as _openBlock2, createElementBlock as _createElementBlock2 } from "vue";
 
-// ../../codecave.pro/node_modules/.pnpm/marked@18.0.5/node_modules/marked/lib/marked.esm.js
+// ../node_modules/marked/lib/marked.esm.js
 function M() {
   return { async: false, breaks: false, extensions: null, gfm: true, hooks: null, pedantic: false, renderer: null, silent: false, tokenizer: null, walkTokens: null };
 }
@@ -1243,7 +1243,7 @@ var Xt = g.parseInline;
 var Vt = b.parse;
 var Yt = x.lex;
 
-// ../packages/brand/dist/src/components/common/images/LazyImage.vue
+// ../packages/brand/dist/src/common/images/LazyImage.vue
 import { defineComponent as _defineComponent } from "vue";
 import { openBlock as _openBlock, createElementBlock as _createElementBlock } from "vue";
 import { onMounted, onUnmounted, ref } from "vue";
@@ -1305,7 +1305,7 @@ var __sfc__ = /* @__PURE__ */ _defineComponent({
     };
   }
 });
-__sfc__.__file = "authored/common/images/LazyImage.vue";
+__sfc__.__file = "components/common/images/LazyImage.vue";
 var LazyImage_default = __sfc__;
 
 // ../node_modules/dompurify/dist/purify.es.mjs
@@ -2901,7 +2901,7 @@ var adapter = {
 };
 var { sanitize } = adapter;
 
-// ../packages/brand/dist/src/components/project/pain-points-item.vue
+// ../packages/brand/dist/src/project/pain-points-item.vue
 var _hoisted_12 = { class: "mx-1 md:mx-0 p-6 w-56 h-full md:h-auto rounded-3xl bg-surface-secondary space-y-6" };
 var _hoisted_2 = ["innerHTML"];
 var __sfc__2 = /* @__PURE__ */ _defineComponent2({
@@ -2942,7 +2942,7 @@ var __sfc__2 = /* @__PURE__ */ _defineComponent2({
     };
   }
 });
-__sfc__2.__file = "authored/project/pain-points-item.vue";
+__sfc__2.__file = "components/project/pain-points-item.vue";
 var pain_points_item_default = __sfc__2;
 export {
   pain_points_item_default as default

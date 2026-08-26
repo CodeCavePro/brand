@@ -13,7 +13,6 @@ import DocPage from '../../layouts/DocPage.astro';
   title="Checkbox — CODECAVE storybook"
   nav="kitchen-sink"
   stylesheets={['../storybook/tw-bridge.css','storybook.css']}
-  importmap
 >
 <div class="sb">
   <a class="sb-back" href="index.html">&larr; All components</a>
@@ -27,7 +26,7 @@ import DocPage from '../../layouts/DocPage.astro';
     <div class="sb-tags">
       <span class="sb-tag is-vue">Vue island</span>
       <span class="sb-tag">src/components/common/Checkbox.vue</span>
-      <span class="sb-tag">rendered live from compiled/Checkbox.js</span>
+      <span class="sb-tag">rendered live from src/components/common/Checkbox.vue</span>
       <span class="sb-tag">4 combinations</span>
     </div>
   </header>
@@ -52,7 +51,7 @@ import DocPage from '../../layouts/DocPage.astro';
   <section class="sb-section">
     <h2>The matrix</h2>
     <p>These four are the real <code>Checkbox.vue</code> — compiled from
-       <code>authored/</code> and mounted as Vue islands, not HTML
+       <code>src/components/</code> and mounted as Vue islands, not HTML
        imitations. Click them. Hover them too — the tick previews at full scale
        on hover, not only when checked.</p>
     <div class="sb-stories">
@@ -144,9 +143,9 @@ import DocPage from '../../layouts/DocPage.astro';
 
 </div>
 
-<script is:inline type="module">
+<script type="module">
   import { createApp } from 'vue';
-  import Checkbox from '../storybook/compiled/Checkbox.js';
+  import Checkbox from '../../../src/components/common/Checkbox.vue';
 
   const stories = {
     'story-cb1': { id: 'cb1', label: 'I agree to the privacy policy', variant: 'primary',   size: 'medium' },

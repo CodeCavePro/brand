@@ -61,16 +61,16 @@ Three rules that make a design read as CODECAVE:
    is the signature type pattern.
 
 The system designs to three weights — 300, 400, 700. All six Satoshi cuts now ship as real files
-in `docs/fonts/`, properly bound, so nothing is browser-synthesized here; the live site still
+in `src/styles/fonts/`, properly bound, so nothing is browser-synthesized here; the live site still
 serves one TTF and lags behind. Design to 300/400/700 and do not reach for 500, 600 or 900.
 
 ## Where the truth lives
 
 - `docs/DESIGN.md` — the canonical rules: foundations, the full ramp, components, motion, voice,
   logo usage, anti-patterns and the known divergences. Read this first.
-- `docs/colors_and_type.css` — every token with comments on intended use, then the component
+- `src/styles/colors_and_type.css` — every token with comments on intended use, then the component
   layer. Each block names the source file it was transcribed from.
-- `docs/tokens/*.ts` — the same tokens as typed modules, for consumers that cannot read a
+- `src/tokens/*.ts` — the same tokens as typed modules, for consumers that cannot read a
   stylesheet.
 - `docs/preview/` — twelve review cards, one concern each, rendering live tokens and real
   components. `docs/storybook/` — thirteen components with variant matrices.

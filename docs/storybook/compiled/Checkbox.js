@@ -1,6 +1,6 @@
 /* GENERATED from @codecavepro/brand/components/common/Checkbox.vue by tools/build-storybook.mjs — do not edit. */
 
-// ../packages/brand/dist/src/components/common/Checkbox.vue
+// ../packages/brand/dist/src/common/Checkbox.vue
 import { defineComponent as _defineComponent } from "vue";
 import { normalizeClass as _normalizeClass, createElementVNode as _createElementVNode2, toDisplayString as _toDisplayString, openBlock as _openBlock2, createBlock as _createBlock, createCommentVNode as _createCommentVNode, createTextVNode as _createTextVNode, createElementBlock as _createElementBlock2 } from "vue";
 import { computed } from "vue";
@@ -42,10 +42,10 @@ function render(_ctx, _cache) {
   ])]);
 }
 var __sfc__ = { render };
-__sfc__.__file = "authored/assets/icons/asterisk-icon.vue";
+__sfc__.__file = "components/assets/icons/asterisk-icon.vue";
 var asterisk_icon_default = __sfc__;
 
-// ../packages/brand/dist/src/components/common/Checkbox.vue
+// ../packages/brand/dist/src/common/Checkbox.vue
 var _hoisted_12 = ["for"];
 var _hoisted_2 = ["id", "autocomplete", "data-size", "checked"];
 var _hoisted_3 = { class: "flex items-center" };
@@ -130,7 +130,7 @@ var __sfc__2 = /* @__PURE__ */ _defineComponent({
   }
 });
 __sfc__2.__scopeId = "data-v-b7ef7edb";
-__sfc__2.__file = "authored/common/Checkbox.vue";
+__sfc__2.__file = "components/common/Checkbox.vue";
 var __css__ = `
 input[data-v-b7ef7edb] {
   appearance: none;
@@ -152,7 +152,7 @@ input[data-v-b7ef7edb]::before {
   content: '';
   transform: scale(0);
   transition: var(--duration-control) transform ease-in-out;
-  background-image: url("../../assets/images/checked-icon.svg");
+  background-image: url("../assets/images/checked-icon.svg");
   background-repeat: no-repeat;
   background-position: center center;
 }

@@ -652,11 +652,11 @@ cleared on contrast.
 
 ### Logo
 
-Primary lockup is the horizontal wordmark (`build/codecave-wide.svg`,
+Primary lockup is the horizontal wordmark (`logos/codecave-wide.svg`,
 357×110). The chevron glyph is always `#5F20FE`; the wordmark paths are white,
 so the default pairing is white-on-near-black. Use the black-text variant only
 on a genuinely light surface, and the all-white variant for one-ink printing.
-`build/codecave.svg` is the glyph-only mark; `build/favicon.svg` is the real
+`logos/codecave.svg` is the glyph-only mark; `favicons/favicon.svg` is the real
 CODECAVE favicon.
 
 **Three lockups, four finishes, eight sizes.** Everything raster is generated —
@@ -678,7 +678,7 @@ three vectors in `src/` through Inkscape and ImageMagick at 96, 128, 256, 300,
 | `all-black` | flattened to black | one-ink positive printing |
 
 App and web icons are the glyph, never the wordmark: `icons/` carries 16, 32,
-64, 96, 128, 256 and 512px squares (preserved at `build/icons/`), and
+64, 96, 128, 256 and 512px squares (preserved at `icons/`), and
 `favicons/` carries the installable web set — `favicon.ico`, `favicon.svg`,
 `favicon-96x96.png`, `apple-touch-icon.png`, and the 192/512px PWA icons
 declared by `site.webmanifest`. Take these files; regenerate other sizes from
@@ -802,8 +802,9 @@ As captured, `codecave.pro/public/favicon.svg` is still the Astro starter's
 default glyph — a stock framework mark that was never part of this brand. It
 stays in the evidence snapshot
 (`context/local-code/codecave.pro/files/public/favicon.svg`) and is deliberately
-absent from `build/`, so nothing in this package can ship it by accident. The
-real mark is `build/favicon.svg`, generated from `src/codecave.svg`. The fix
+absent from the rendered ramps, so nothing in this package can ship it by
+accident. The real mark is `favicons/favicon.svg`, rendered from
+`src/logos/codecave.svg`. The fix
 upstream is to replace the site's favicon with it.
 
 ### 10.5 The eyebrow now fails contrast at every size
@@ -921,7 +922,7 @@ and the unchanged `#9980FF` / `#1B0D4E` CTA).
 |---|---|---|
 | Brand repo (`main`) — tokens, wordmarks, favicon | `context/github/CodeCavePro-brand/` | `git-clone` |
 | Brand repo (`development`) — `DESIGN.md`, `ds-bundle/` re-export | `context/github/CodeCavePro-brand-development.md` | `git-clone` |
-| Brand repo binaries — `logos/`, `icons/`, `favicons/`, `build.sh` | `context/local-code/brand/files/` | `local-folder` |
+| Brand repo binaries — `docs/logos/`, `docs/icons/`, `docs/favicons/`, `tools/generate-brand-assets.sh` | `context/local-code/brand/files/` | `local-folder` |
 | Production site — components, theme, assets | `context/local-code/codecave.pro/` | `local-folder` |
 | Published brand site | https://codecavepro.github.io/brand | fetched, structural confirmation only |
 | Live production site | https://codecave.gay | named in `.design-sync/config.json` as the measurement source |

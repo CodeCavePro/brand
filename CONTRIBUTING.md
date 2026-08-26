@@ -30,11 +30,11 @@ places you change it. Knowing which category a file is in is most of the job:
 
 | Category | Files | What to do |
 |---|---|---|
-| **Origin** | `docs/colors_and_type.css`, `docs/tokens/*.ts` | **Edit these.** Both, together — the `.ts` is a hand-maintained mirror, not a compilation. |
-| **Component sources** | `docs/authored/**` | **Edit these.** This is where a component changes. |
-| **Provenance captures** | `docs/source_examples/**` | **Never edit.** These are copies of files another repository owns. |
+| **Origin** | `src/styles/colors_and_type.css`, `src/tokens/*.ts` | **Edit these.** Both, together — the `.ts` is a hand-maintained mirror, not a compilation. |
+| **Component sources** | `src/components/**` | **Edit these.** This is where a component changes. |
+| **Provenance captures** | `src/captured/**` | **Never edit.** These are copies of files another repository owns. |
 | **Generated** | `packages/brand/dist/`, the derived half of `ds-bundle/` (including its Components cards), `docs/storybook/compiled/`, `docs/storybook/tw-bridge.css` | Never edit. Rebuild. |
-| **Artwork** | SVGs under `docs/assets/`, `docs/build/`, `docs/imagery/`, `src/`, `favicons/` | Edit the hex literally — SVG has no cascade to inherit a token from. |
+| **Artwork** | SVGs under `src/logos/` (masters), `docs/logos/`, `docs/favicons/`, `docs/assets/`, `docs/imagery/` | Edit the hex literally — SVG has no cascade to inherit a token from. |
 | **Swatch captions** | `docs/index.html`, `docs/index.html`, `docs/pages/preview/colors-*.astro` | Edit the literal. Here the hex *is the content* — a `var()` would render nothing. On the ported page the literals are a data array at the top of the file; that is still a literal. |
 | **Email** | `docs/examples/raw/email.html`, `newsletter.html` | Edit the literal. Email clients do not support custom properties; this is not a shortcut. |
 | **Prose** | `docs/DESIGN.md`, `README.md`, `docs/README.md`, `docs/SKILL.md` | Update the ones that state the value. `DESIGN.md` is the rulebook and always states it. |
@@ -45,7 +45,7 @@ point of the token layer. **Never hard-code a hex in a file that could use a
 
 ## Files you must never hand-edit
 
-### `docs/source_examples/**`
+### `src/captured/**`
 
 These are **copies of files this repository does not own** — what another
 repository actually ships, at a moment in time. They exist to be *evidence*.
@@ -63,13 +63,13 @@ Eight files are left, and none of them is a component:
   repository's own earlier token CSS, kept so the token pages can show what
   changed. `build.mjs` skips them by name; nothing ships from them.
 
-**Components are not here any more.** They moved to `docs/authored/` on
+**Components are not here any more.** They moved to `src/components/` on
 2026-08-25, because 37 of the 45 files in this directory had no upstream left
 and the directory name had quietly become false. What was a rule nothing could
 enforce — `check:captures` was deleted the same week — is now a rule the layout
 states: the directory you may not edit contains nothing anyone would want to.
 
-### `docs/authored/**`
+### `src/components/**`
 
 **This is where components live, and editing one is the ordinary way to change
 a component.** The package is built from these files, the storybook compiles
@@ -83,11 +83,11 @@ shipped file cannot have two origins, and the directory name is the claim.
 
 `ds-bundle/` is split, and the split is not visible from the file names:
 
-- **Derived and gitignored** — regenerate with `sh docs/tools/build-ds-bundle.sh`.
+- **Derived and gitignored** — regenerate with `sh tools/build-ds-bundle.sh`.
 - **Authored and tracked** — `README.md`, `styles.css`, `guidelines/brand.md`,
   and the **Foundations** cards. These have no upstream in `docs/`. Edit them here.
 - **Generated and gitignored** — the **Components** cards, written by
-  `node docs/tools/build-ds-components.mjs` from the `STORIES` table inside it.
+  `node tools/build-ds-components.mjs` from the `STORIES` table inside it.
   That table is the tracked source; the cards are output, like `dist/`.
 
 The two card directories look alike and are opposite. A Foundations card is a
@@ -102,7 +102,7 @@ nothing would say so.
 Both halves run in one order, and the second fails loudly if you skip the first:
 
 ```bash
-sh docs/tools/build-ds-bundle.sh && node docs/tools/build-ds-components.mjs
+sh tools/build-ds-bundle.sh && node tools/build-ds-components.mjs
 ```
 
 One exception worth knowing: `ds-bundle/README.md` is tracked and authored, but
@@ -114,9 +114,9 @@ on you.
 
 ### Changing a token value
 
-1. Edit `docs/colors_and_type.css`. This is the real source of truth — if it and
+1. Edit `src/styles/colors_and_type.css`. This is the real source of truth — if it and
    anything else disagree, **the CSS wins and the other thing is the bug.**
-2. Mirror it in `docs/tokens/*.ts`. Nothing compiles the CSS into the TS; it is
+2. Mirror it in `src/tokens/*.ts`. Nothing compiles the CSS into the TS; it is
    maintained by hand and it *has* silently diverged before. Packaging the mirror
    once turned up two latent bugs nothing in `docs/` consumed: an extensionless
    ESM import, and an interpolation of `brand[660]`, a ramp step that has never
@@ -127,11 +127,11 @@ on you.
 4. Grep for the old value and triage every hit against the table above.
 5. Rebuild and check:
    ```bash
-   npm run build && npm run check
+   npm run build:package && npm run check
    ```
 6. Regenerate the bundle if the CSS moved:
    ```bash
-   sh docs/tools/build-ds-bundle.sh
+   sh tools/build-ds-bundle.sh
    ```
 
 ### Changing a rule rather than a value
@@ -147,7 +147,7 @@ first. The short version: a captured component that depends on something the
 static build cannot carry gets an **interface and an adapter**, never a stub.
 
 - The interface goes in `docs/storybook/ports/ports.d.ts`, the adapter beside it,
-  and the wiring in the `PORTS` table in `docs/tools/build-storybook.mjs`.
+  and the wiring in the `PORTS` table in `tools/build-storybook.mjs`.
 - **An adapter substitutes the environment, never the behaviour.** `SanitizerPort`
   is real `dompurify` with only the `jsdom` half dropped, because a docs page is
   only ever a browser. It shipped as an identity function for a day, and that
@@ -163,14 +163,20 @@ static build cannot carry gets an **interface and an adapter**, never a stub.
   `build-storybook.mjs` run therefore names the specimens each port stood in
   for, and names any port nothing reached for — delete those, or capture what
   needs them.
-- **The import map is checked against the bundles, both ways.** The compiled
-  specimens keep `vue` and the gsap entry points as bare imports, and only the
-  map in `docs/layouts/DocPage.astro` resolves them — where a key is matched
-  *exactly*. Miss one and the browser rejects the whole module graph: the page
-  renders, the canvas is empty, nothing errors. `npm run check:importmap` fails
-  on an unmapped import and on a mapped specifier nothing imports any more,
-  which is a claim about the bundles that has stopped being true. Both inputs
-  are committed, so it runs in CI.
+- **The vendored runtime map is checked against the bundles both ways, and
+  against the disk.** The compiled specimens keep `vue` and the gsap entry
+  points as bare imports, and only a map resolves them — where a key is matched
+  *exactly*, and where the choice of file is a judgement rather than arithmetic
+  (`vue` is one of half a dozen builds in the package; `gsap` is a directory).
+  Miss one and the browser rejects the whole module graph: the page renders, the
+  canvas is empty, nothing errors. `npm run check:importmap` fails on an unmapped
+  import, on a mapped specifier nothing imports any more, and on a mapped file
+  that is not in `docs/vendor/` — that last one is new, because the old check
+  compared two lists of *names* and a map entry pointing at a runtime nobody had
+  committed passed cleanly and 404'd in the browser. The map is
+  `tools/storybook-vendor.mjs`; it lived in `DocPage.astro` until the specimens
+  stopped mounting bundles, and its consumer now is `ds-bundle/`. Both inputs are
+  committed, so it runs in CI.
 - **The six deliverables under `docs/examples/raw/` are checked, because nothing
   else looks at them.** Astro never renders them — that is what makes them
   documents a client can be handed — and the wrapper pages that embed them
@@ -204,7 +210,7 @@ static build cannot carry gets an **interface and an adapter**, never a stub.
   moved neither: a note marked fixed upstream lost its `is-warn`, turning a
   defect into an observation while 55 stayed 55. It also fails when one of
   those three sentences is **reworded**, since the patterns are literal — that
-  is the point. Fix the pattern in `docs/tools/check-findings.mjs` so the claim
+  is the point. Fix the pattern in `tools/check-findings.mjs` so the claim
   stays covered; a check that has quietly stopped covering anything reads
   exactly like one that passes.
 
@@ -218,12 +224,14 @@ produces an ERESOLVE that looks like a broken dependency graph and is not.
 npm run check
 ```
 
-That is six assertions in one: the package is byte-identical to its origin,
-every storybook port typechecks, the compiled storybook matches the captures it
-was built from, no token silently redefines a Tailwind default, the storybook's
-import map resolves exactly what its bundles import, and the findings counts
-three files quote agree with the story pages. All six are things that would
-otherwise rot quietly.
+That is eight assertions in one: the package is byte-identical to its origin,
+every storybook port typechecks, the compiled storybook matches the sources it
+was built from, no token silently redefines a Tailwind default, the vendored
+runtime map resolves exactly what the bundles import and every file it names is
+on disk, the findings counts three files quote agree with the story pages, the
+six deliverables' own references still resolve, and every documentation route
+cited in prose still exists. All eight are things that would otherwise rot
+quietly, and CI runs the same eight on `development` and on `chore/*`.
 
 "Byte-identical" has one exception, and it is stated by the check itself rather
 than left to be discovered. Some spellings the site uses cannot survive the
@@ -237,7 +245,7 @@ through the `exports` map into a second, separately installed copy of the very
 package doing the importing. All are rewritten to relative form on the way into
 `dist/`. Those captures match their origin *once the alias is resolved*, and the
 check prints the two counts separately so neither claim is doing the other's
-work. The rule is the table in `docs/tools/import-aliases.mjs`, shared with
+work. The rule is the table in `tools/import-aliases.mjs`, shared with
 `build-storybook.mjs` — which needs the same answer, because for those files
 identical bytes would mean the package was **not** built from that capture.
 
@@ -276,8 +284,8 @@ for being ahead.
 here are digests or byte-for-byte copies of files in `docs/`, and all three
 read the **working tree**, not the git blob:
 
-- `check-tw-bridge.mjs` compares a sha256 of `docs/authored/` and
-  `docs/source_examples/` against the value recorded in the generated
+- `check-tw-bridge.mjs` compares a sha256 of `src/components/` and
+  `src/captured/` against the value recorded in the generated
   `tw-bridge.css` header. Both roots, so that MOVING a file between them —
   which changes no bytes — still moves the digest.
 - `npm run check` asserts `packages/brand/dist/colors_and_type.css` and
@@ -315,8 +323,31 @@ stays true-looking after the behaviour breaks.
 The site is built with Astro now ([CCWEB2-317](https://codecave.atlassian.net/browse/CCWEB2-317)).
 
 ```bash
-npm run docs:dev
+npm run dev
 ```
+
+**The dev server needs two rewrites to be usable here, and both are in
+`tools/astro-passthrough.mjs`.** Neither is cosmetic; without them the site is
+unusable in dev in a way that looks like the site is broken rather than the
+server:
+
+-   **A directory's `index.html` request is rewritten to the directory route.**
+    With `build.format: 'preserve'` the
+    build emits `kitchen-sink/index.html`, and every link here carries `.html` so
+    the pages also open straight from disk. The dev server routes that page as
+    the bare directory name and 404s `/kitchen-sink/index.html` and its
+    trailing-slash form alike — so every entry in the main menu is dead while
+    the leaf pages are perfect.
+-   **The published half of `src/` is served.** `publicDir` serves `docs/`;
+    `colors_and_type.css`, `theme.css`, `fonts/` and `tokens/` are authored under
+    `src/` and copied out at `astro:build:done`, which never runs in dev. Without
+    the middleware `/colors_and_type.css` 404s and the whole site renders
+    unstyled, the only clue being a Starlight catch-all warning about a
+    `getStaticPaths()` route.
+
+`npm run preview` builds and then serves `dist/`, which is the form that
+actually ships. Use it when the question is about the build rather than about
+a component.
 
 `docs/` is still the origin and is still committed — the build reads from it and
 writes to `dist/`, which is not. **Nothing about the one rule changes:** if the
@@ -330,7 +361,7 @@ exception and always will be — see below.
 
 The half-migrated state is gone, but the machinery that made it survivable is
 not, and it is worth keeping: a page reaches `dist/` either by being rendered or
-by being copied, both silently, and `docs/tools/astro-passthrough.mjs` asserts
+by being copied, both silently, and `tools/astro-passthrough.mjs` asserts
 both every build. Adding a page back as plain `.html` still works.
 
 Four things to know if you write or move a page:
@@ -347,7 +378,7 @@ Four things to know if you write or move a page:
   `srcDir` are the same directory, and when both offer a path Astro keeps the
   copied file and skips the page — a `WARN` in a build that exits 0, leaving the
   new `.astro` as dead source. The build now fails instead: see
-  `docs/tools/astro-passthrough.mjs`.
+  `tools/astro-passthrough.mjs`.
 - **Diff the output against the page you replaced.** `compressHTML` is off, so a
   faithful port renders almost byte-identically and the diff is short enough to
   read. It is off for a better reason than that — on by default it collapsed a
@@ -355,22 +386,37 @@ Four things to know if you write or move a page:
   **upward**" into "lightupward" in three places on the first page tried. In a
   repository whose prose is the asset, that is not a minification setting.
 
-The fourth applies only to `storybook/`, and it is the one worth stating twice:
+The fourth applies only to the specimens, and it used to say the opposite:
 
-- **The specimens are not islands, and must not become them.** Each storybook
-  page carries a browser import map and a module script that mounts
-  `compiled/*.js` — esbuild output from codecave.pro's own toolchain, with `vue`
-  left external. Since CCWEB2-318 phase 4 those bytes come from
-  `@codecavepro/brand` for every component the package ships and from the
-  captures for the rest, which is the same claim either way: the package's
-  components *are* the captures, copied. The build prints the split on every
-  run, so a specimen silently falling back to the captures is visible rather
-  than not. That is what makes a specimen a record of what the site ships
-  rather than a rebuild of it. Both tags need `is:inline`: processed, Astro
-  bundles the module script and rewrites its bare specifiers, and the import map
-  is then resolving nothing. `DocPage`'s `importmap` prop emits the map, which is
-  identical on all thirteen mounting pages. `docs/pages/storybook/button.astro`
-  says all of this at the point where undoing it would be easy.
+- **A specimen imports the component source, and hot-reloads with it.** Each
+  kitchen-sink page carries an ordinary `<script type="module">` that imports
+  `../../../src/components/…` and mounts it, so editing a component updates the
+  open page without a reload. That is the whole reason for the arrangement.
+
+  This rule was **"the specimens are not islands, and must not become them"** —
+  each page carried a browser import map and an `is:inline` script mounting
+  `compiled/*.js`, esbuild output from codecave.pro's own toolchain, so that a
+  specimen was a record of what the site shipped rather than a rebuild of it.
+  That reasoning depended on this repository being downstream, and it stopped
+  being downstream on 2026-08-25. The components are authored in `src/` now and
+  the site installs the package built from them, so a specimen compiled from
+  source *is* what ships, and a prebuilt bundle is whichever version the last
+  package build left behind.
+
+  Two things did not change. `npm run build:storybook` still writes
+  `compiled/*.js` and `tw-bridge.css`; `ds-bundle/` consumes them for a Design
+  project that cannot run a bundler, and its cards still mount them through an
+  import map. And a page still has to link `tw-bridge.css` — without it a
+  component mounts perfectly and renders as raw HTML, every class resolving to
+  nothing, which does not look like a failure at all. `check:links` asks in both
+  directions.
+
+  **Watch the depth when you move one of these pages.** A processed `<script>`
+  is resolved by Vite at build time against the *source* tree; an `is:inline`
+  one, and every `src`/`href`/`url()` in the markup, is resolved by the browser
+  against the *output* tree. Those are different numbers of levels. Converting
+  these pages moved four `placeholders.js` imports from right to wrong without
+  altering a character; `check:links` is what noticed.
 
 The six specimens under `examples/` are **never** rendered. They are the
 deliverable being shown, not pages about it, and an HTML email with a
@@ -402,7 +448,7 @@ in [WEBSITE-REVIEW.md](/WEBSITE-REVIEW.md) and filed in CCWEB2 *without* the
 `brand-kit` label — never silently "corrected" in `docs/`.
 
 That is a much smaller set than it used to be. The components moved here, so a
-flaw in one of them **is** ours: fix it in `docs/authored/`, release, and the
+flaw in one of them **is** ours: fix it in `src/components/`, release, and the
 site gets it at its next bump. What remains genuinely site-side is the site's
 own pages, layouts and configuration.
 

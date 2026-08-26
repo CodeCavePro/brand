@@ -1,6 +1,6 @@
 /* GENERATED from @codecavepro/brand/components/common/Button.vue by tools/build-storybook.mjs — do not edit. */
 
-// ../packages/brand/dist/src/components/common/Button.vue
+// ../packages/brand/dist/src/common/Button.vue
 import { defineComponent as _defineComponent } from "vue";
 import { toDisplayString as _toDisplayString, createElementVNode as _createElementVNode, renderSlot as _renderSlot, normalizeClass as _normalizeClass, openBlock as _openBlock, createElementBlock as _createElementBlock, createTextVNode as _createTextVNode } from "vue";
 import { computed } from "vue";
@@ -74,7 +74,7 @@ w-fit max-w-full min-w-12 min-h-12 rounded-full text-body-primary font-bold tran
     };
   }
 });
-__sfc__.__file = "authored/common/Button.vue";
+__sfc__.__file = "components/common/Button.vue";
 var Button_default = __sfc__;
 export {
   Button_default as default

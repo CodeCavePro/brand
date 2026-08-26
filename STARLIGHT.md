@@ -216,8 +216,8 @@ The branch fixed `check:ports`, which is where the four `Cannot find namespace
 'JSX'` errors were seen. They were not confined to it: TypeScript auto-includes
 every `@types/*` package it finds walking up from a tsconfig, and both tsconfigs
 in this repo walk up to the same root, so `packages/brand/tsconfig.json` swallowed
-it as well. `npm run build` failed on a file no token module imports — and since
-`prepack` runs that build, so would `npm run release`. It carries the same
+it as well. `npm run build:package` failed on a file no token module imports — and since
+`prepack` runs that build, so would `npm run release:package`. It carries the same
 `types: []` now, and each config's comment names the other.
 
 **This is the shape to expect from the dependency, not a one-off.** Nothing under
@@ -228,7 +228,7 @@ this is what it looks like when it is not a layout problem.
 ## Reproducing
 
 ```bash
-npm run docs:build && npm run check
+npm run build && npm run check
 ```
 
 Then look at `/guides/`, `/guides/design-rules`, and `docs/starlight.css`, where

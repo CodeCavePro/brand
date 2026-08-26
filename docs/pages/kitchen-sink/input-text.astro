@@ -11,7 +11,6 @@ import DocPage from '../../layouts/DocPage.astro';
   title="InputText — CODECAVE storybook"
   nav="kitchen-sink"
   stylesheets={['../storybook/tw-bridge.css','storybook.css']}
-  importmap
 >
 <div class="sb">
   <a class="sb-back" href="index.html">&larr; All components</a>
@@ -25,7 +24,7 @@ import DocPage from '../../layouts/DocPage.astro';
     <div class="sb-tags">
       <span class="sb-tag is-vue">Vue island</span>
       <span class="sb-tag">src/components/common/InputText.vue</span>
-      <span class="sb-tag">rendered live from compiled/InputText.js</span>
+      <span class="sb-tag">rendered live from src/components/common/InputText.vue</span>
       <span class="sb-tag">v-model</span>
     </div>
   </header>
@@ -133,9 +132,9 @@ import DocPage from '../../layouts/DocPage.astro';
 
 </div>
 
-<script is:inline type="module">
+<script type="module">
   import { createApp } from 'vue';
-  import InputText from '../storybook/compiled/InputText.js';
+  import InputText from '../../../src/components/common/InputText.vue';
 
   const stories = {
     'story-name':  { id: 'sb-name',  label: 'Name',    type: 'text',

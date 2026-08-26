@@ -17,10 +17,12 @@ user-invocable: true
 | `preview/` | Eleven focused review cards plus a launcher. Static HTML, live tokens, no screenshots. |
 | `imagery/` | The decorative line-and-glow art — seven stroke-only section backgrounds on their required `#050505` ground, with the byte-for-byte originals in `imagery/source/`. This is the brand's only non-photographic image system. |
 | `assets/` | Brand marks and the raster lockup kit: 1024px masters plus 256px review cuts in all four finishes, wide and tall, the square app marks, the chevron, the checkbox tick, original font uploads. |
-| `build/` | Runtime assets under their original source filenames, byte-for-byte from the captured snapshots: the three vectors (`codecave-wide.svg`, `codecave-tall.svg`, `codecave.svg`), the site header mark (`logo.svg`), rasters (`logo.png`, `logo-tall.png`, `icon.png`), the seven-step `build/icons/` ramp (`16x16.png` → `512x512.png`), and the web runtime set (`favicon.ico`, `favicon.svg`, `favicon-96x96.png`, `apple-touch-icon.png`, `web-app-manifest-192x192.png`, `web-app-manifest-512x512.png`, `site.webmanifest`). Nothing here was redrawn or re-encoded. |
+| `logos/` | Every lockup, once: the three vector masters (`codecave-wide.svg`, `codecave-tall.svg`, `codecave.svg`), the site header mark (`logo.svg`), and the raster ramp — 8 sizes × 4 finishes × 3 lockups. Rendered from `src/logos/`; do not redraw. |
+| `icons/` | The seven-step square icon ramp, `16x16.png` → `512x512.png`. |
+| `favicons/` | The web runtime set: `favicon.ico`, `favicon.svg`, `favicon-96x96.png`, `apple-touch-icon.png`, and both PWA manifest icons. `site.webmanifest` sits at the site root. |
 | `fonts/` | Six real Satoshi cuts in woff2 + woff, bound by `colors_and_type.css`. |
-| `authored/` | Every Vue component the system documents, with the helpers and icons they reach for. These are the origin: the package is built from them and codecave.pro installs the result. |
-| `source_examples/` | What is genuinely captured from elsewhere — the production `global.css` this repo reads but does not own, the wordmark, and snapshots of this repo's own earlier token CSS. |
+| `src/components/` | Every Vue component the system documents, with the helpers and icons they reach for. These are the origin: the package is built from them and codecave.pro installs the result. |
+| `src/captured/` | What is genuinely captured from elsewhere — the production `global.css` this repo reads but does not own, the wordmark, and snapshots of this repo's own earlier token CSS. |
 | `storybook/` | One story per component, each mounting the real `.vue` single-file component with its props, variants and source path. |
 | `examples/` | Whole surfaces composed from the system — pitch deck, contact form, marketing email, newsletter, landing page, print poster. One self-contained file each. |
 
@@ -29,15 +31,15 @@ user-invocable: true
 Extracted from first-party source, not from a rendered page:
 
 - **`CodeCavePro/brand`** (GitHub, `main` and `development`) — published brand
-  token files (`docs/tokens/colors.css`, `layout.css`, `typography.css`), the
+  token files (`src/tokens/colors.css`, `layout.css`, `typography.css`), the
   `ds-bundle/` re-export, the three wordmark SVGs and the favicon. Evidence:
   `context/github/CodeCavePro-brand/`,
   `context/github/CodeCavePro-brand-development.md`.
 - **`CodeCavePro/brand` working clone** — the binary trees the bounded GitHub
-  intake does not materialize: `logos/` (8 sizes × 4 finishes × 3 lockups),
-  `icons/` (7 square sizes), `favicons/` (ICO, Apple touch, PWA manifest icons),
-  and `build.sh`, the ImageMagick/Inkscape recipe that generates them all from
-  `src/`. Evidence: `context/local-code/brand/`.
+  intake does not materialize: `docs/logos/` (8 sizes × 4 finishes × 3 lockups),
+  `docs/icons/` (7 square sizes), `docs/favicons/` (ICO, Apple touch, PWA manifest
+  icons), and `tools/generate-brand-assets.sh`, the ImageMagick/Inkscape recipe
+  that renders all three from `src/logos/`. Evidence: `context/local-code/brand/`.
 - **`codecave.pro`** (production codebase) — the authoritative Tailwind 4
   `@theme` block in `src/styles/global.css`, plus 45 Vue components and 61 Astro
   pages. Evidence: `context/local-code/codecave.pro/`.
@@ -59,7 +61,7 @@ Use it when the work is CODECAVE-branded and visual:
 - Choosing a color, radius, type step, shadow or spacing value in that context.
 - Auditing existing work for drift — `DESIGN.md` §9 lists the twelve failure
   modes explicitly.
-- Placing a logo, favicon or app icon. Take the file from `build/` or `assets/`;
+- Placing a logo, favicon or app icon. Take the file from `logos/`, `icons/` or `favicons/`;
   never redraw or re-type the wordmark.
 - Writing UI copy: `DESIGN.md` §8 covers the voice.
 
@@ -85,7 +87,7 @@ exist cannot be generalized into one.
 6. **Open `kitchen-sink/index.html`** when the target is a component and
    `examples/index.html` when it is a whole surface. The storybook mounts the
    genuine `.vue` files; the artifacts show the system at real page density.
-7. **Take assets from `build/` or `assets/`.** Copy them; do not regenerate them.
+7. **Take assets from `logos/`, `icons/` or `favicons/`.** Copy them; do not regenerate them.
 8. **Check `DESIGN.md` §10** before matching production pixel-for-pixel — a
    few rules here intentionally improve on what the live site ships, and one
    former divergence (§10.1) is retired back to production behavior.

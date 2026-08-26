@@ -1,6 +1,6 @@
 /* GENERATED from @codecavepro/brand/components/common/Radio.vue by tools/build-storybook.mjs — do not edit. */
 
-// ../packages/brand/dist/src/components/common/Radio.vue
+// ../packages/brand/dist/src/common/Radio.vue
 import { defineComponent as _defineComponent } from "vue";
 import { createElementVNode as _createElementVNode, toDisplayString as _toDisplayString, normalizeClass as _normalizeClass, openBlock as _openBlock, createElementBlock as _createElementBlock } from "vue";
 import { computed } from "vue";
@@ -55,7 +55,7 @@ var __sfc__ = /* @__PURE__ */ _defineComponent({
   }
 });
 __sfc__.__scopeId = "data-v-3e960a13";
-__sfc__.__file = "authored/common/Radio.vue";
+__sfc__.__file = "components/common/Radio.vue";
 var __css__ = "\ninput[data-v-3e960a13] {\n  width: 17px;\n  height: 17px;\n  appearance: none;\n  -webkit-appearance: none;\n  display: grid;\n  place-content: center;\n}\ninput[data-v-3e960a13]::before {\n  content: '';\n  width: 7px;\n  height: 7px;\n  border-radius: 50%;\n  transform: scale(0);\n  transition: var(--duration-control) transform ease-in-out;\n  background: var(--color-action);\n}\ninput[data-v-3e960a13]:checked::before {\n  transform: scale(1);\n}\n";
 if (typeof document !== "undefined" && !document.getElementById("sfc-style-3e960a13")) {
   const el = document.createElement("style");

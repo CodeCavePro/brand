@@ -42,13 +42,14 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
 import path from 'node:path';
-import { HELPERS_ALIAS, aliasTarget, isAlias, unalias, usesAlias } from '../../../docs/tools/import-aliases.mjs';
+import { HELPERS_ALIAS, aliasTarget, isAlias, unalias, usesAlias } from '../../../tools/import-aliases.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const pkg = path.resolve(here, '..');
 const repo = path.resolve(pkg, '../..');
 
 const docs = (...p) => path.join(repo, 'docs', ...p);
+const srcDir = (...p) => path.join(repo, 'src', ...p);
 const out = (...p) => path.join(pkg, 'dist', ...p);
 const tmp = (...p) => path.join(pkg, '.tmp', ...p);
 
@@ -56,8 +57,8 @@ const checkOnly = process.argv.includes('--check');
 
 /** Files copied verbatim: [source, destination-inside-dist]. */
 const VERBATIM = [
-  [docs('colors_and_type.css'), 'colors_and_type.css'],
-  [docs('fonts', 'fonts.css'), 'fonts.css'],
+  [srcDir('styles', 'colors_and_type.css'), 'colors_and_type.css'],
+  [srcDir('styles', 'fonts', 'fonts.css'), 'fonts.css'],
 ];
 
 /**
@@ -81,19 +82,23 @@ const ROOT_VERBATIM = [[path.join(repo, 'LICENSE'), 'LICENSE']];
  * a specimen in the storybook and a component in a consumer's node_modules are
  * provably the same bytes as the site's.
  *
- * WHY THE LAYOUT CHANGES SHAPE. The captures flatten the site's
- * `src/components/` away — `common/Checkbox.vue` on disk is
- * `src/components/common/Checkbox.vue` on the site. Its imports did not
- * flatten with it: it still climbs `../../assets/icons/asterisk-icon.vue`,
- * which from the source tree lands OUTSIDE the root entirely. Every file with
- * a two-level climb is in that position, and it has never been noticed because
- * build-storybook.mjs carries a resolver that re-roots an overshooting climb
- * back at the root. A bundler plugin can do that; `import` in a
- * consumer's app cannot.
+ * WHY THE LAYOUT MIRRORS THE SOURCE. dist/src/ is docs/authored/ at the same
+ * depth: `common/Checkbox.vue` here is `dist/src/common/Checkbox.vue` there, and
+ * `../assets/icons/asterisk-icon.vue` resolves identically in both.
  *
- * So the package restores the depth the capture removed. dist/src/ IS the
- * site's src/ — components/, assets/, helpers/, lib/ — and every relative
- * import resolves by ordinary path arithmetic, with not one byte edited.
+ * It used to restore the site's `src/components/` level instead, because the
+ * captures had flattened it away while their imports still climbed through it.
+ * That worked for the tarball and left the SOURCE unimportable: an import in
+ * docs/authored/ landed outside the root, so anything reading those files
+ * needed a resolver to re-root the climb. build-storybook.mjs had one; Astro's
+ * dependency scanner did not, and reported six unresolvable imports on a tree
+ * where nothing was actually wrong. A layout only a bundler plugin can follow
+ * is a layout that will keep costing someone an afternoon.
+ *
+ * The export map absorbs the change, so no consumer sees it:
+ * `@codecavepro/brand/components/common/Button.vue` still resolves, because
+ * `./components/*` now points at `./dist/src/*`. `components` is a name in the
+ * export map, not a directory.
  *
  * WHAT IS NOT SHIPPED, and why each one is out. This list is short on purpose:
  * an exclusion is a component people cannot use, so it needs a reason that
@@ -118,7 +123,7 @@ const EXCLUDED = new Set(NOT_SHIPPED.map(([rel]) => rel));
  * imports, and check:importmap failing on a mapped specifier nothing imports. */
 function assertExclusionsExist() {
   const missing = NOT_SHIPPED.map(([rel]) => rel).filter(
-    (rel) => !ROOTS.some((root) => fs.existsSync(docs(root, rel))),
+    (rel) => !ROOTS.some((root) => fs.existsSync(srcDir(root, rel))),
   );
   if (!missing.length) return;
   console.error('build failed — NOT_SHIPPED excludes files that no root has:');
@@ -130,12 +135,10 @@ function assertExclusionsExist() {
   process.exit(1);
 }
 
-/** A capture's path inside dist/, restoring the site's own directory depth. */
+/** A source file's path inside dist/. The layout mirrors the source exactly, so
+ *  this is only the `src/` prefix the export map points into. */
 function shippedAs(rel) {
-  const top = rel.split('/')[0];
-  return ['assets', 'helpers', 'lib'].includes(top)
-    ? `src/${rel}`
-    : `src/components/${rel}`;
+  return `src/${rel}`;
 }
 
 /**
@@ -148,7 +151,7 @@ function shippedAs(rel) {
  * assertPeersDeclared read `@helpers/paths.ts` as a scoped package nothing
  * declares. Two failures, one cause, neither visible until someone rebuilt.
  *
- * The rule itself lives in docs/tools/helpers-alias.mjs, because the storybook
+ * The rule itself lives in tools/helpers-alias.mjs, because the storybook
  * build needs the same answer and must not keep its own copy of it. What is
  * local to here is where it gets applied: resolved by the walk, rewritten on
  * copy, and asserted afterwards against the built output.
@@ -174,13 +177,13 @@ function shippedAs(rel) {
  * the two be equal was red for exactly the changes it was meant to protect. A
  * rule nothing enforces is a comment; a directory layout is not.
  */
-const ROOTS = ['authored', 'source_examples'];
+const ROOTS = ['components', 'captured'];
 
 /** Which root holds a given capture-relative path. Filled by shippable(). */
 const rootOfRel = new Map();
 
 /** The file a shipped path was copied from, in whichever root holds it. */
-const originOf = (rel) => docs(rootOfRel.get(rel) ?? 'authored', rel);
+const originOf = (rel) => srcDir(rootOfRel.get(rel) ?? 'components', rel);
 
 /** A shipped file whose bytes are not its capture's is one of these. */
 const isAliased = (rel) => usesAlias(fs.readFileSync(originOf(captureOf(rel)), 'utf8'));
@@ -266,7 +269,7 @@ function assertDistResolves() {
   }
   console.error('');
   console.error('unalias() rewrites a QUOTED specifier whose prefix is in the table in');
-  console.error('docs/tools/import-aliases.mjs, and nothing else. An alias listed there');
+  console.error('tools/import-aliases.mjs, and nothing else. An alias listed there');
   console.error('with a null target is one this package deliberately does NOT ship --');
   console.error('@styles and @layouts -- so a shipped file reaching one is the bug, not');
   console.error('the missing rewrite. shippable() only follows what referencesOf()');
@@ -349,7 +352,7 @@ function assertTokensSuffice() {
   }
   console.error('');
   console.error('It resolves on codecave.pro because the site declares it privately, and');
-  console.error('nowhere else. Add it to docs/colors_and_type.css — or to docs/theme.css if');
+  console.error('nowhere else. Add it to src/styles/colors_and_type.css — or to src/styles/theme.css if');
   console.error('a utility class should exist for it, which for a value read only from a');
   console.error('scoped style block it should not.');
   process.exit(1);
@@ -457,15 +460,15 @@ function shippable() {
    * so it fails here rather than letting whichever root walked last win. */
   const all = [];
   for (const root of ROOTS) {
-    const base = docs(root);
+    const base = srcDir(root);
     if (!fs.existsSync(base)) continue;
     for (const file of walk(base)) {
       const rel = path.relative(base, file).split(path.sep).join('/');
-      if (root === 'source_examples' && rel.startsWith('brand-repo')) continue;
+      if (root === 'captured' && rel.startsWith('brand-repo')) continue;
       if (rootOfRel.has(rel)) {
         console.error(`build failed — ${rel} exists in both ${rootOfRel.get(rel)}/ and ${root}/.`);
         console.error('One shipped file cannot have two origins. Rename one, or delete');
-        console.error('the authored copy if the site has since grown a real one to capture.');
+        console.error('the src/components/ copy if the site has since grown a real one to capture.');
         process.exit(1);
       }
       rootOfRel.set(rel, root);
@@ -514,11 +517,9 @@ function shippable() {
   return [...seen].sort();
 }
 
-/** Undo shippedAs: assets/, helpers/ and lib/ never live under components/. */
+/** Undo shippedAs. */
 function captureOf(shipped) {
-  return shipped.startsWith('src/components/')
-    ? shipped.slice('src/components/'.length)
-    : shipped.slice('src/'.length);
+  return shipped.slice('src/'.length);
 }
 
 /** Every verbatim copy, as [source, absolute-destination]. */
@@ -755,8 +756,8 @@ function derive(produce, dest) {
 
 /** Files derived from a docs/ source, as [produce, destination-inside-dist]. */
 const DERIVED = [
-  [() => extractRoot(docs('colors_and_type.css')), 'tokens.css'],
-  [() => extractTheme(docs('theme.css')), 'theme.css'],
+  [() => extractRoot(srcDir('styles', 'colors_and_type.css')), 'tokens.css'],
+  [() => extractTheme(srcDir('styles', 'theme.css')), 'theme.css'],
 ];
 
 /* Both derived stylesheets, re-derived, so the agreement check runs against
@@ -776,11 +777,11 @@ for (const [src] of COPIES) {
   if (!fs.existsSync(src)) problems.push(`missing source: ${path.relative(repo, src)}`);
 }
 for (const name of TOKENS) {
-  const src = docs('tokens', `${name}.ts`);
+  const src = srcDir('tokens', `${name}.ts`);
   if (!fs.existsSync(src)) problems.push(`missing source: ${path.relative(repo, src)}`);
 }
 if (problems.length) {
-  console.error('build failed — the package cannot be built from docs/:');
+  console.error('build failed — the package cannot be built from src/:');
   for (const p of problems) console.error(`  ${p}`);
   process.exit(1);
 }
@@ -865,7 +866,7 @@ themeAgrees();
 assertTokensSuffice();
 
 for (const name of TOKENS) {
-  fs.copyFileSync(docs('tokens', `${name}.ts`), tmp('tokens', `${name}.ts`));
+  fs.copyFileSync(srcDir('tokens', `${name}.ts`), tmp('tokens', `${name}.ts`));
 }
 
 // The barrel is generated rather than committed so that adding a token module
@@ -967,9 +968,15 @@ if (fs.existsSync(readme)) {
    * otherwise leave the sentence quietly wrong on the npm page. */
   const counts = /(\d+) components and (\d+) icons/.exec(fs.readFileSync(readme, 'utf8'));
   if (counts) {
-    const under = (sub, suffix) =>
-      shipped.filter((rel) => rel.startsWith(sub) && rel.endsWith(suffix)).length;
-    const real = [under('src/components/', '.vue'), under('src/assets/icons/', '.vue')];
+    /* A component is any shipped .vue that is not an icon. There is no
+     * components/ directory to count any more — dist/src/ mirrors the source,
+     * where a component sits at common/, footer/, header/ and so on. */
+    const isIcon = (rel) => rel.startsWith('src/assets/');
+    const vue = shipped.filter((rel) => rel.endsWith('.vue'));
+    const real = [
+      vue.filter((rel) => !isIcon(rel)).length,
+      vue.filter((rel) => rel.startsWith('src/assets/icons/')).length,
+    ];
     if (Number(counts[1]) !== real[0] || Number(counts[2]) !== real[1]) {
       console.error(
         `build failed — README.md says ${counts[1]} components and ${counts[2]} icons; ` +
