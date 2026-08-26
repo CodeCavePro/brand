@@ -45,6 +45,7 @@
  * and not another fails as a bare-specifier error in a reader's browser, which
  * is precisely the failure the ports exist to make impossible.
  * ======================================================================== */
+import { PORTS, portFor } from './storybook-ports.mjs';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
@@ -258,33 +259,14 @@ if (typeof document !== 'undefined' && !document.getElementById(${JSON.stringify
 }
 
 /* ---- ports: the storybook's outside world -------------------------------
- * Where a captured component reaches outside itself, the storybook inverts the
- * dependency instead of faking it. storybook/ports/ports.d.ts declares the
- * narrow interface the component actually needs and an adapter beside it
- * implements that interface for a static docs build; this table is the only
- * place a specifier is wired to an adapter.
- *
- * The reason it is a port and not a stub is that the contract is checkable —
- * `npm run check` typechecks each adapter against its interface, so an adapter
- * that drifts from what the component imports fails the build rather than
- * failing as an undefined in someone's browser. See ports.d.ts for the rule
- * about what does and does not qualify.
+ * The table itself is tools/storybook-ports.mjs, because the docs site's Vite
+ * build reads the same wiring -- the specimen pages import the component
+ * sources directly, so they hit these specifiers through a different bundler
+ * and must substitute them the same way. See that module for the rule about
+ * what does and does not qualify as a port.
  *
  * Note the specifiers are matched after leading ./ and ../ are stripped, so one
  * entry covers a module however deep the importer sits. */
-const PORTS_DIR = path.join(docs, 'storybook', 'ports');
-const PORTS = [
-  {
-    port: 'SanitizerPort',
-    // Swaps the isomorphic wrapper for the DOMPurify inside it — same engine,
-    // same version, without jsdom, which exists to give the sanitiser a DOM on
-    // a server and has nothing to do in a browser. This one is a port for the
-    // environment only: the specimen sanitises for real. See the adapter, and
-    // the version assertion below.
-    specifier: /^isomorphic-dompurify$/,
-    adapter: 'sanitizer.adapter.ts',
-  },
-];
 
 /* Which specimens each port actually stood in for, filled in as esbuild
  * resolves and printed at the end. `npm run check:ports` typechecks every
@@ -340,9 +322,9 @@ const vuePlugin = {
   setup(build) {
     build.onResolve({ filter: /.*/ }, (args) => {
       const bare = args.path.replace(/^(?:\.\.?\/)+/, '');
-      const hit = PORTS.find((p) => p.specifier.test(bare));
+      const hit = portFor(bare);
       if (hit) exercised.get(hit.port).add(currentEntry);
-      return hit ? { path: path.join(PORTS_DIR, hit.adapter) } : null;
+      return hit ? { path: hit.file } : null;
     });
     build.onLoad({ filter: /\.vue$/ }, (args) => ({
       contents: compileSFC(args.path),

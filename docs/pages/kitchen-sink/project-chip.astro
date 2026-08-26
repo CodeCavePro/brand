@@ -4,7 +4,8 @@
  * Shell extraction. This is the one storybook page with nothing to mount: the
  * component it documents is a pure-Astro div with a slot, so its stories are
  * written as static markup against `.cc-chip` in components.css. Hence no
- * `importmap` prop and no module script — the other thirteen have both. */
+ * module script — the other twelve mount a component and this one has
+ * nothing to mount. */
 import DocPage from '../../layouts/DocPage.astro';
 ---
 <DocPage

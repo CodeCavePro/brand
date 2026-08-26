@@ -12,7 +12,6 @@ import DocPage from '../../layouts/DocPage.astro';
   title="TypingEffect — CODECAVE storybook"
   nav="kitchen-sink"
   stylesheets={['../storybook/tw-bridge.css','storybook.css']}
-  importmap
 >
 <div class="sb">
   <a class="sb-back" href="index.html">&larr; All components</a>
@@ -26,7 +25,7 @@ import DocPage from '../../layouts/DocPage.astro';
     <div class="sb-tags">
       <span class="sb-tag is-vue">Vue island</span>
       <span class="sb-tag">src/components/common/effects/TypingEffect.vue</span>
-      <span class="sb-tag">rendered live from compiled/TypingEffect.js</span>
+      <span class="sb-tag">rendered live from src/components/common/effects/TypingEffect.vue</span>
       <span class="sb-tag">GSAP SplitText</span>
     </div>
   </header>
@@ -100,9 +99,9 @@ import DocPage from '../../layouts/DocPage.astro';
 
 </div>
 
-<script is:inline type="module">
+<script type="module">
   import { createApp } from 'vue';
-  import TypingEffect from '../storybook/compiled/TypingEffect.js';
+  import TypingEffect from '../../../src/components/common/effects/TypingEffect.vue';
 
   createApp(TypingEffect, {
     text1: 'We build software',

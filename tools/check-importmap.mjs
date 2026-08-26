@@ -1,33 +1,46 @@
-/* Prove the storybook's import map covers exactly what its bundles import.
+/* Prove the vendor map covers exactly what the compiled bundles import.
  *
- *   node docs/tools/check-importmap.mjs
+ *   node tools/check-importmap.mjs
  *
  * The compiled specimens are esbuild output with `vue` and the gsap entry
  * points left external, so `import { SplitText } from "gsap/SplitText"`
- * survives into the browser and only the import map in layouts/DocPage.astro
- * resolves it. Miss one and the browser rejects the whole module graph: the
- * page renders, the stylesheets load, the specimen simply never mounts, and
- * nothing anywhere says why.
+ * survives into the browser and only an import map resolves it. Miss one and
+ * the browser rejects the whole module graph: the page renders, the
+ * stylesheets load, the specimen simply never mounts, and nothing anywhere
+ * says why.
  *
  * That is not hypothetical. Refreshing the captures moved TypingEffect from
- * `gsap/dist/SplitText` to `gsap/SplitText` — the site had followed gsap 3.13,
- * which promoted the plugin to a root entry point — and the map kept naming
+ * `gsap/dist/SplitText` to `gsap/SplitText` -- the site had followed gsap 3.13,
+ * which promoted the plugin to a root entry point -- and the map kept naming
  * the old path. That specimen was dead in every built storybook from the
  * refresh until this check was written.
  *
  * Both directions, for the same reason packages/brand checks its peers both
  * ways: an unmapped import kills a page, and a mapped specifier nothing
  * imports any more is a claim about the bundles that has quietly stopped
- * being true. Neither input needs the codecave.pro checkout — compiled/ is
- * committed and the layout is right here — so this runs wherever node does.
+ * being true.
+ *
+ * IT ALSO ASKS WHETHER THE FILE IS THERE, which the DocPage version never did.
+ * That version compared two lists of NAMES, so a map entry pointing at a
+ * vendored runtime nobody had committed passed cleanly and failed as a 404 in
+ * the browser -- the same silent-empty-canvas failure the check exists to
+ * prevent, one layer further in.
+ *
+ * The map moved out of layouts/DocPage.astro when the kitchen-sink specimens
+ * stopped mounting bundles and began importing the .vue sources through Vite.
+ * Its consumer now is ds-bundle/, whose Design-project cards cannot run a
+ * bundler; tools/storybook-vendor.mjs says the rest. Neither input needs the
+ * codecave.pro checkout -- compiled/ and vendor/ are both committed -- so this
+ * runs wherever node does.
  */
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { VENDOR } from './storybook-vendor.mjs';
 
 const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'docs');
 const compiled = path.join(docs, 'storybook', 'compiled');
-const layout = path.join(docs, 'layouts', 'DocPage.astro');
+const vendor = path.join(docs, 'vendor');
 const rel = (p) => path.relative(process.cwd(), p);
 
 /* ---- what the bundles import -------------------------------------------- */
@@ -61,20 +74,11 @@ for (const file of bundles) {
   }
 }
 
-/* ---- what the map declares ---------------------------------------------- */
-const src = fs.readFileSync(layout, 'utf8');
-const block = src.match(/const importmapJson = `([\s\S]*?)`;/);
-if (!block) {
-  console.error(
-    `no importmapJson template literal in ${rel(layout)} — this check reads the map from there.`);
-  process.exit(1);
-}
-
-const mapped = [...block[1].matchAll(/"([^"]+)"\s*:\s*"/g)].map(([, key]) => key);
-if (!mapped.length) {
-  console.error(`the importmapJson template in ${rel(layout)} declares nothing.`);
-  process.exit(1);
-}
+/* ---- what the map declares, and whether it is there --------------------- */
+const mapped = Object.keys(VENDOR);
+const missing = mapped
+  .filter((k) => !fs.existsSync(path.join(vendor, VENDOR[k])))
+  .sort();
 
 /* ---- compare ------------------------------------------------------------ */
 const unmapped = [...imported.keys()].filter((s) => !mapped.includes(s)).sort();
@@ -85,7 +89,8 @@ if (unmapped.length) {
     `${unmapped.length} bare specifier(s) the storybook import map does not resolve.`,
     '\nThe browser rejects the whole module graph, so these never mount:\n' +
     unmapped.map((s) => `  ${s}  (${imported.get(s).join(', ')})`).join('\n') +
-    `\nAdd them to importmapJson in ${rel(layout)}, pointing at docs/vendor/.`);
+    '\nAdd them to VENDOR in tools/storybook-vendor.mjs, naming a file in ' +
+    `${rel(vendor)}.`);
 }
 
 if (unused.length) {
@@ -93,11 +98,20 @@ if (unused.length) {
     `${unused.length} import-map entr${unused.length === 1 ? 'y' : 'ies'} no compiled specimen imports:\n` +
     unused.map((s) => `  ${s}`).join('\n') +
     '\nEither a capture moved to a different entry point and the map was left' +
-    `\nbehind, or the entry is dead. Reconcile it in ${rel(layout)}.`);
+    '\nbehind, or the entry is dead. Reconcile it in tools/storybook-vendor.mjs.');
 }
 
-if (unmapped.length || unused.length) process.exit(1);
+if (missing.length) {
+  console.error(
+    `${missing.length} vendor map target(s) missing from ${rel(vendor)}:\n` +
+    missing.map((k) => `  ${k} -> ${VENDOR[k]}`).join('\n') +
+    '\nThe specifier resolves and the fetch 404s, so the module graph still' +
+    '\nfails and the canvas is still empty.');
+}
+
+if (unmapped.length || unused.length || missing.length) process.exit(1);
 
 console.log(
-  `import map resolves all ${mapped.length} bare specifier(s) across ` +
-  `${bundles.length} compiled specimen(s): ${mapped.join(', ')}`);
+  `vendor map resolves all ${mapped.length} bare specifier(s) across ` +
+  `${bundles.length} compiled specimen(s) to files in ${rel(vendor)}: ` +
+  mapped.join(', '));

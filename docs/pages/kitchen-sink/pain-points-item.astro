@@ -14,7 +14,6 @@ import DocPage from '../../layouts/DocPage.astro';
   title="PainPointsItem — CODECAVE storybook"
   nav="kitchen-sink"
   stylesheets={['../storybook/tw-bridge.css','storybook.css']}
-  importmap
 >
 <div class="sb">
   <a class="sb-back" href="index.html">&larr; All components</a>
@@ -28,7 +27,7 @@ import DocPage from '../../layouts/DocPage.astro';
     <div class="sb-tags">
       <span class="sb-tag is-vue">Vue island</span>
       <span class="sb-tag">src/components/project/pain-points-item.vue</span>
-      <span class="sb-tag">rendered live from compiled/pain-points-item.js</span>
+      <span class="sb-tag">rendered live from src/components/project/pain-points-item.vue</span>
       <span class="sb-tag">v-html</span>
       <span class="sb-tag">sanitized · dompurify 3.4.14</span>
     </div>
@@ -144,10 +143,10 @@ import DocPage from '../../layouts/DocPage.astro';
 
 </div>
 
-<script is:inline type="module">
+<script type="module">
   import { createApp } from 'vue';
-  import PainPointsItem from '../storybook/compiled/pain-points-item.js';
-  import { usePlaceholders } from '../storybook/placeholders.js';
+  import PainPointsItem from '../../../src/components/project/pain-points-item.vue';
+  import { usePlaceholders } from '../../storybook/placeholders.js';
 
   createApp(PainPointsItem, {
     item: {

@@ -4,14 +4,21 @@
  * Shell extraction, and the page that sets the pattern for the other twelve
  * mounted ones. Two things about it are load-bearing and easy to undo:
  *
- *   The `importmap` prop, not an island. The specimen is mounted in the
- *   browser by the module script at the foot of this file, from
- *   ./compiled/Button.js — esbuild output from codecave.pro's own toolchain,
- *   with `vue` left external. `is:inline` keeps Astro's hands off both tags:
- *   processed, the module script would be bundled and its bare specifiers
- *   rewritten, and the import map that resolves them would resolve nothing.
- *   Converting this to <Button client:load /> would compile the component here
- *   instead, and the specimen would stop being a record of what the site ships.
+ *   The import, and where it points. The specimen is mounted in the browser by
+ *   the module script at the foot of this file, from the component SOURCE under
+ *   src/. Astro processes that script -- no `is:inline` -- so Vite compiles the
+ *   .vue and hot-reloads the open page while you edit the component. That is
+ *   the point of it.
+ *
+ *   It used to import ./compiled/Button.js through an `importmap` prop, with
+ *   `is:inline` on both tags, so a specimen was a record of what codecave.pro
+ *   shipped rather than a rebuild of it. That held while this repo was
+ *   downstream; since 2026-08-25 the components are authored in src/ and the
+ *   site installs the package built from them, so source IS what ships and a
+ *   prebuilt bundle is only ever the last build of it.
+ *
+ *   The path is relative to where this FILE sits, not to where the page lands.
+ *   Vite resolves it at build time against the source tree.
  *
  *   The brace guards. `isDisabled={true}` and `{{ title }}` are prose about
  *   Vue, and in .astro a brace opens an expression. Each literal run is emitted
@@ -22,7 +29,6 @@ import DocPage from '../../layouts/DocPage.astro';
   title="Button — CODECAVE storybook"
   nav="kitchen-sink"
   stylesheets={['../storybook/tw-bridge.css','storybook.css']}
-  importmap
 >
 <div class="sb">
   <a class="sb-back" href="index.html">&larr; All components</a>
@@ -35,7 +41,7 @@ import DocPage from '../../layouts/DocPage.astro';
     <div class="sb-tags">
       <span class="sb-tag is-vue">Vue island</span>
       <span class="sb-tag">src/components/common/Button.vue</span>
-      <span class="sb-tag">rendered live from compiled/Button.js</span>
+      <span class="sb-tag">rendered live from src/components/common/Button.vue</span>
       <span class="sb-tag">7 variants</span>
     </div>
   </header>
@@ -221,9 +227,9 @@ import DocPage from '../../layouts/DocPage.astro';
 
 </div>
 
-<script is:inline type="module">
+<script type="module">
   import { createApp } from 'vue';
-  import Button from '../storybook/compiled/Button.js';
+  import Button from '../../../src/components/common/Button.vue';
 
   // Plain-prop stories. primary carries no box of its own (see findings), so
   // the caller-supplied class mirrors what real call sites pass.

@@ -12,7 +12,6 @@ import DocPage from '../../layouts/DocPage.astro';
   title="ArticlePreview — CODECAVE storybook"
   nav="kitchen-sink"
   stylesheets={['../storybook/tw-bridge.css','storybook.css']}
-  importmap
 >
 <div class="sb">
   <a class="sb-back" href="index.html">&larr; All components</a>
@@ -26,7 +25,7 @@ import DocPage from '../../layouts/DocPage.astro';
     <div class="sb-tags">
       <span class="sb-tag is-vue">Vue island</span>
       <span class="sb-tag">src/components/common/ArticlePreview.vue</span>
-      <span class="sb-tag">rendered live from compiled/ArticlePreview.js</span>
+      <span class="sb-tag">rendered live from src/components/common/ArticlePreview.vue</span>
       <span class="sb-tag">CMS-neutral</span>
     </div>
   </header>
@@ -115,10 +114,10 @@ import DocPage from '../../layouts/DocPage.astro';
 
 </div>
 
-<script is:inline type="module">
+<script type="module">
   import { createApp } from 'vue';
-  import ArticlePreview from '../storybook/compiled/ArticlePreview.js';
-  import { usePlaceholders } from '../storybook/placeholders.js';
+  import ArticlePreview from '../../../src/components/common/ArticlePreview.vue';
+  import { usePlaceholders } from '../../storybook/placeholders.js';
 
   createApp(ArticlePreview, {
     article: {

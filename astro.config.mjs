@@ -6,29 +6,59 @@ import { defineConfig } from 'astro/config';
 import vue from '@astrojs/vue';
 import starlight from '@astrojs/starlight'; // SPIKE CCWEB2-374
 import docsPassthrough from './tools/astro-passthrough.mjs';
-import { SITE_ALIAS_PREFIXES, sitePath } from './tools/import-aliases.mjs';
+import { aliasTarget } from './tools/import-aliases.mjs';
+import { portFor } from './tools/storybook-ports.mjs';
 
-/* codecave.pro's path aliases, pointed at the roots that hold those files.
+/* Resolving the specifiers a component is WRITTEN with, against this repo.
  *
- * The components under docs/authored/ are written the way the site writes them,
- * so four of them import `@helpers/...` — a tsconfig `paths` entry in THAT
- * repo, which this one has never declared to Vite. Nothing here imports a
- * component, so nothing broke; the only thing that noticed was Vite's
- * dependency-scan, which reported them as missing npm packages and gave up on
- * pre-bundling with a message about whether they were installed.
+ * The kitchen-sink specimens import the component sources directly -- see
+ * DocPage.astro for why that replaced the compiled bundles -- so Vite now has
+ * to answer the same three questions the package build answers, and answer
+ * them the same way:
  *
- * The table is READ, never restated: tools/import-aliases.mjs is the one
- * place that knows what these prefixes mean, and build.mjs and
- * build-storybook.mjs already read it. A prefix whose directory no root holds
- * is skipped rather than guessed at — `@layouts` and `@styles` are in that
- * table precisely because this package does not ship them. */
+ *   codecave.pro's path aliases   `@helpers/date-formatter.ts` and the rest are
+ *   tsconfig `paths` entries in THAT repo. Nothing here declares them, so the
+ *   dev server reported them as missing npm packages and gave up pre-bundling.
+ *
+ *   THE PACKAGE'S OWN NAME        `@codecavepro/brand/components/common/Button.vue`
+ *   is how a component that renders a Button is written, because the site
+ *   installs this package. Left alone it resolves -- to packages/brand/dist/,
+ *   the BUILT copy, which is a different file that only exists after a package
+ *   build and never hot-reloads. Every specimen would silently go stale.
+ *
+ *   PORTS                         `isomorphic-dompurify` pairs DOMPurify with
+ *   jsdom for SSR; a docs page is only ever a browser. Same table the storybook
+ *   bundles read, for the same reason.
+ *
+ * The mapping is aliasTarget()'s, not sitePath()'s, and the difference is not
+ * cosmetic. aliasTarget answers in the SHIPPED layout -- `src/common/Button.vue`
+ * -- and that layout is a mirror of src/components/, so stripping `src/` lands
+ * on this repo's own tree for every prefix including the package name.
+ * sitePath answers in codecave.pro's layout, where `@components/` is
+ * `components/...`; joined onto src/components/ that is one level too deep, and
+ * the directory-existence test this used to do meant the prefix silently
+ * resolved to nothing rather than to the wrong file.
+ *
+ * A prefix the table maps to null -- `@layouts/`, `@styles/` -- is left
+ * unresolved on purpose. This repo does not have them, and an unresolved
+ * import that names itself beats one quietly pointed somewhere plausible. */
 const ROOTS = ['src/components', 'src/captured'].map((d) =>
   path.join(path.dirname(fileURLToPath(import.meta.url)), d),
 );
-const siteAliases = SITE_ALIAS_PREFIXES.flatMap((prefix) => {
-  const rel = sitePath(prefix);
-  const dir = ROOTS.map((r) => path.join(r, rel)).find((p) => fs.existsSync(p));
-  return dir ? [{ find: prefix.slice(0, -1), replacement: dir }] : [];
+
+const authoredSources = () => ({
+  name: 'codecave:authored-sources',
+  /* Before Vite's own resolution, or `isomorphic-dompurify` and the package
+     name both resolve to node_modules and the substitution never happens. */
+  enforce: /** @type {const} */ ('pre'),
+  resolveId(spec) {
+    const port = portFor(spec);
+    if (port) return port.file;
+    const shipped = aliasTarget(spec);
+    if (!shipped?.startsWith('src/')) return null;
+    const rel = shipped.slice('src/'.length);
+    return ROOTS.map((r) => path.join(r, rel)).find((f) => fs.existsSync(f)) ?? null;
+  },
 });
 
 /* The docs site — CCWEB2-317, and phase 2 of CCWEB2-318.
@@ -96,25 +126,28 @@ export default defineConfig({
    * having changed nothing. That is a second reason, not the reason. */
   compressHTML: false,
 
-  /* vue() is wired and exercised by nothing, and phase 3 settled that it will
-   * stay that way. This comment used to say the storybook would prove it. The
-   * storybook does the opposite: its thirteen specimens mount Vue in the
-   * *browser*, from an import map and docs/storybook/compiled/*.js — esbuild
-   * output from codecave.pro's own toolchain — precisely so that what a reader
-   * sees is what the site ships. Compiling those components here instead is the
-   * one thing the storybook must not do, so `client:load` has no place in it.
+  /* vue() compiles the kitchen-sink specimens, and that is a reversal.
    *
-   * It stays because CCWEB2-318 phase 4 promotes components into the package
-   * and may well want a real island to demonstrate one. Nothing is asserting
-   * that, so treat it as a bet, not a requirement.
+   * This comment used to say the integration was wired and exercised by
+   * nothing, and that it would stay that way: the specimens mounted
+   * storybook/compiled/*.js in the BROWSER, esbuild output from codecave.pro's
+   * own toolchain, precisely so a reader saw what the site shipped rather than
+   * a rebuild of it. Compiling them here was the one thing the storybook must
+   * not do.
    *
-   * The odds got longer on 2026-08-21: phase 4 was resequenced behind phase 6
-   * (see CLAUDE.md for why), so it now waits on the first publish AND on the
-   * website PR, and it may not happen at all. Two conditions retire this, and
-   * either is enough — phase 4 landing without an island, or phase 6 landing
-   * while phase 4 is still unstarted. Then this line and the @astrojs/vue
-   * devDependency both go; re-adding them is one `npm i -D` and two lines, so
-   * there is nothing to preserve by hesitating. */
+   * That argument rested on this repository being downstream, and it has not
+   * been since 2026-08-25. The components are authored in src/ now and the site
+   * installs the package built from them, so compiling a specimen from source
+   * IS showing what ships -- and mounting a prebuilt bundle instead shows
+   * whatever the last package build produced, which is the stale copy.
+   *
+   * The practical half: a specimen that imports the .vue hot-reloads while you
+   * edit the component, which a prebuilt bundle can never do. That is the whole
+   * reason the change was made.
+   *
+   * build:storybook still runs and still writes compiled/*.js -- ds-bundle/
+   * consumes them for a Design project that cannot run a bundler. It is no
+   * longer what this site mounts. */
   integrations: [
     vue(),
     /* SPIKE — CCWEB2-374. Starlight injects a ROOT catch-all `[...slug]`, so the
@@ -164,7 +197,7 @@ export default defineConfig({
   ],
 
   vite: {
-    resolve: { alias: siteAliases },
+    plugins: [authoredSources()],
 
     optimizeDeps: {
       /* Tell Vite what the entrypoints are, because it guesses badly here.

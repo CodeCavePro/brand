@@ -9,9 +9,9 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "npx astro dev",
-    "preview": "npm run build && npx astro preview",
-    "build": "npx astro build",
+    "dev": "astro dev",
+    "preview": "npm run build && astro preview",
+    "build": "astro build",
     "build:package": "npm run build --workspace @codecavepro/brand",
     "build:storybook": "node tools/build-storybook.mjs",
     "build:assets": "bash tools/generate-brand-assets.sh",
@@ -31,9 +31,14 @@
   "devDependencies": {
     "@astrojs/starlight": "^0.41.8",
     "@astrojs/vue": "7.0.2",
+    "@tailwindcss/vite": "4.3.3",
     "astro": "7.2.4",
     "dompurify": "3.4.14",
+    "gsap": "3.15.0",
+    "isomorphic-dompurify": "3.22.0",
+    "marked": "18.0.5",
     "tailwindcss": "4.3.3",
-    "vue": "3.5.41"
+    "vue": "3.5.41",
+    "vue3-carousel": "0.17.0"
   }
 }

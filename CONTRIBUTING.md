@@ -163,14 +163,20 @@ static build cannot carry gets an **interface and an adapter**, never a stub.
   `build-storybook.mjs` run therefore names the specimens each port stood in
   for, and names any port nothing reached for — delete those, or capture what
   needs them.
-- **The import map is checked against the bundles, both ways.** The compiled
-  specimens keep `vue` and the gsap entry points as bare imports, and only the
-  map in `docs/layouts/DocPage.astro` resolves them — where a key is matched
-  *exactly*. Miss one and the browser rejects the whole module graph: the page
-  renders, the canvas is empty, nothing errors. `npm run check:importmap` fails
-  on an unmapped import and on a mapped specifier nothing imports any more,
-  which is a claim about the bundles that has stopped being true. Both inputs
-  are committed, so it runs in CI.
+- **The vendored runtime map is checked against the bundles both ways, and
+  against the disk.** The compiled specimens keep `vue` and the gsap entry
+  points as bare imports, and only a map resolves them — where a key is matched
+  *exactly*, and where the choice of file is a judgement rather than arithmetic
+  (`vue` is one of half a dozen builds in the package; `gsap` is a directory).
+  Miss one and the browser rejects the whole module graph: the page renders, the
+  canvas is empty, nothing errors. `npm run check:importmap` fails on an unmapped
+  import, on a mapped specifier nothing imports any more, and on a mapped file
+  that is not in `docs/vendor/` — that last one is new, because the old check
+  compared two lists of *names* and a map entry pointing at a runtime nobody had
+  committed passed cleanly and 404'd in the browser. The map is
+  `tools/storybook-vendor.mjs`; it lived in `DocPage.astro` until the specimens
+  stopped mounting bundles, and its consumer now is `ds-bundle/`. Both inputs are
+  committed, so it runs in CI.
 - **The six deliverables under `docs/examples/raw/` are checked, because nothing
   else looks at them.** Astro never renders them — that is what makes them
   documents a client can be handed — and the wrapper pages that embed them
@@ -220,8 +226,8 @@ npm run check
 
 That is six assertions in one: the package is byte-identical to its origin,
 every storybook port typechecks, the compiled storybook matches the captures it
-was built from, no token silently redefines a Tailwind default, the storybook's
-import map resolves exactly what its bundles import, and the findings counts
+was built from, no token silently redefines a Tailwind default, the vendored runtime
+map resolves exactly what the bundles import, and the findings counts
 three files quote agree with the story pages. All six are things that would
 otherwise rot quietly.
 
@@ -378,22 +384,37 @@ Four things to know if you write or move a page:
   **upward**" into "lightupward" in three places on the first page tried. In a
   repository whose prose is the asset, that is not a minification setting.
 
-The fourth applies only to `storybook/`, and it is the one worth stating twice:
+The fourth applies only to the specimens, and it used to say the opposite:
 
-- **The specimens are not islands, and must not become them.** Each storybook
-  page carries a browser import map and a module script that mounts
-  `compiled/*.js` — esbuild output from codecave.pro's own toolchain, with `vue`
-  left external. Since CCWEB2-318 phase 4 those bytes come from
-  `@codecavepro/brand` for every component the package ships and from the
-  captures for the rest, which is the same claim either way: the package's
-  components *are* the captures, copied. The build prints the split on every
-  run, so a specimen silently falling back to the captures is visible rather
-  than not. That is what makes a specimen a record of what the site ships
-  rather than a rebuild of it. Both tags need `is:inline`: processed, Astro
-  bundles the module script and rewrites its bare specifiers, and the import map
-  is then resolving nothing. `DocPage`'s `importmap` prop emits the map, which is
-  identical on all thirteen mounting pages. `docs/pages/storybook/button.astro`
-  says all of this at the point where undoing it would be easy.
+- **A specimen imports the component source, and hot-reloads with it.** Each
+  kitchen-sink page carries an ordinary `<script type="module">` that imports
+  `../../../src/components/…` and mounts it, so editing a component updates the
+  open page without a reload. That is the whole reason for the arrangement.
+
+  This rule was **"the specimens are not islands, and must not become them"** —
+  each page carried a browser import map and an `is:inline` script mounting
+  `compiled/*.js`, esbuild output from codecave.pro's own toolchain, so that a
+  specimen was a record of what the site shipped rather than a rebuild of it.
+  That reasoning depended on this repository being downstream, and it stopped
+  being downstream on 2026-08-25. The components are authored in `src/` now and
+  the site installs the package built from them, so a specimen compiled from
+  source *is* what ships, and a prebuilt bundle is whichever version the last
+  package build left behind.
+
+  Two things did not change. `npm run build:storybook` still writes
+  `compiled/*.js` and `tw-bridge.css`; `ds-bundle/` consumes them for a Design
+  project that cannot run a bundler, and its cards still mount them through an
+  import map. And a page still has to link `tw-bridge.css` — without it a
+  component mounts perfectly and renders as raw HTML, every class resolving to
+  nothing, which does not look like a failure at all. `check:links` asks in both
+  directions.
+
+  **Watch the depth when you move one of these pages.** A processed `<script>`
+  is resolved by Vite at build time against the *source* tree; an `is:inline`
+  one, and every `src`/`href`/`url()` in the markup, is resolved by the browser
+  against the *output* tree. Those are different numbers of levels. Converting
+  these pages moved four `placeholders.js` imports from right to wrong without
+  altering a character; `check:links` is what noticed.
 
 The six specimens under `examples/` are **never** rendered. They are the
 deliverable being shown, not pages about it, and an HTML email with a

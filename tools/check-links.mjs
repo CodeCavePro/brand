@@ -296,18 +296,38 @@ if (unbarred.length) {
  * else.
  *
  * check:importmap did not catch it and could not: it compares the bare
- * specifiers inside the bundles against the import map's keys, so it proves
- * `vue` resolves. It never asks whether the PAGE can reach the bundle.
+ * specifiers inside the bundles against the vendor map, so it proves `vue`
+ * resolves. It never asks whether the PAGE can reach the bundle.
  *
  * Same shape as the deliverables losing their assets, one directory up -- and
  * the same answer, which is to ask rather than to remember.
  *
- * Frontmatter is stripped first. Imports above the fence are Astro's, resolved
- * at build time against the SOURCE tree; everything below it is the browser's,
- * resolved at request time against the OUTPUT tree. Judging the two by the same
- * rule is how a layout import gets reported as a dead file.
+ * THERE ARE THREE RESOLVERS ON AN .astro PAGE, not two, and a reference has to
+ * be judged by whichever one owns it:
+ *
+ *   ABOVE THE FENCE            Astro's, at build time, against the SOURCE tree.
+ *                              Skipped -- judging a layout import by the output
+ *                              tree reports every page's layout as a dead file.
+ *
+ *   <script> WITHOUT is:inline Vite's, at build time, also against the SOURCE
+ *                              tree. This is where the kitchen-sink specimens
+ *                              live now: they import the component .vue sources
+ *                              directly, so editing one hot-reloads the page.
+ *                              Judged against the output tree those read as
+ *                              pointing three levels above the site root, which
+ *                              is how this check greeted the change -- twelve
+ *                              dead files, every one of them fine.
+ *
+ *   EVERYTHING ELSE            the browser's, at request time, against the
+ *                              OUTPUT tree. Markup src/href, url(), and the
+ *                              contents of an is:inline script, which Astro
+ *                              ships verbatim.
+ *
+ * So the Vite half is checked against the source tree and the browser half
+ * against the built tree. Neither is exempt; they are asked different questions.
  */
 const runtimeMissing = [];
+const sourceMissing = [];
 const mapMismatch = [];
 let runtimeOk = 0;
 
@@ -319,27 +339,50 @@ for (const file of walk(pages)) {
   const fence = src.startsWith('---') ? src.indexOf('\n---', 3) : -1;
   const body = fence === -1 ? src : src.slice(src.indexOf('\n', fence + 1) + 1);
 
+  /* Who resolves what. A <script> Astro processes is Vite's; one marked
+     is:inline is shipped verbatim and so is the browser's. */
+  const viteScripts = [];
+  const browserBody = body.replace(
+    /<script\b([^>]*)>([\s\S]*?)<\/script>/g,
+    (whole, attrs, inner) => {
+      if (/\bis:inline\b/.test(attrs)) return whole;
+      viteScripts.push(inner);
+      return '';
+    },
+  );
+  const viteBody = viteScripts.join('\n');
+
   /* Where this page's OUTPUT lands, which is what a relative URL resolves
      against. 'preserve' emits pages/x/y.astro at x/y.html, so the directory is
      the page's own directory. */
   const outDir = path.relative(pages, path.dirname(file)).split(path.sep).join('/');
 
-  /* A page that imports a BARE specifier needs the import map, and the layout
-     only emits one when the page asks. The kitchen sink hub mounted twelve
-     components and never asked: `import { createApp } from 'vue'` then fails
-     with "Failed to resolve module specifier", fifteen times, and the page
-     renders every specimen as an empty box. Nothing else notices — the file it
-     imports exists, so even the check above is satisfied.
+  /* A bare specifier inside an is:inline script has nothing to resolve it.
+     Astro ships that script verbatim, so `import { createApp } from 'vue'`
+     reaches the browser as written and dies on "Failed to resolve module
+     specifier" -- the whole module graph is rejected, the page renders, and
+     every specimen on it is an empty box.
 
-     Checked in both directions. A map nothing imports is a claim that has
-     stopped being true, which is the same rule check:importmap applies to the
-     map's own keys. */
-  const bareImports = [
-    ...body.matchAll(/import\s[^'"]*from\s*['"]([^.\/'"][^'"]*)['"]/g),
+     DocPage used to answer this with an `importmap` prop emitting a vendored
+     map. Nothing passes it any more: the specimens import their sources through
+     Vite, which resolves `vue` at build time. So the rule inverted -- from
+     "declare the map" to "do not write an import an is:inline script cannot
+     follow" -- and the map moved to tools/storybook-vendor.mjs, where its one
+     remaining consumer (ds-bundle) is checked against it. */
+  const inlineBare = [
+    ...body
+      .replace(/<script\b([^>]*)>([\s\S]*?)<\/script>/g, (w, a, inner) =>
+        /\bis:inline\b/.test(a) ? inner : '')
+      .matchAll(/import\s[^'"]*from\s*['"]([^.\/'"][^'"]*)['"]/g),
   ].map((m) => m[1]);
   const docPageTag = /<DocPage\b([^>]*)>/.exec(body);
-  const wantsMap = !!docPageTag && /\bimportmap\b/.test(docPageTag[1]);
   const relPage = path.relative(root, file).split(path.sep).join('/');
+
+  if (inlineBare.length) {
+    mapMismatch.push(
+      `  ${relPage}\n      an is:inline script imports ${[...new Set(inlineBare)].join(', ')} — nothing resolves a bare specifier there`,
+    );
+  }
 
   /* And a page that mounts a compiled component needs tw-bridge.css, which is
      the site's Tailwind theme compiled against the utilities those components
@@ -350,40 +393,41 @@ for (const file of walk(pages)) {
 
      Matched inside the <DocPage> tag rather than anywhere in the body, or that
      prose would satisfy the check that the prose is wrong about. */
-  const mountsCompiled = /from\s*['"][^'"]*storybook\/compiled\//.test(body);
+  const mountsCompiled = /from\s*['"][^'"]*\.vue['"]/.test(viteBody);
   const linksBridge = !!docPageTag && /tw-bridge\.css/.test(docPageTag[1]);
 
   if (mountsCompiled && !linksBridge) {
     mapMismatch.push(
-      `  ${relPage}\n      mounts a compiled component but does not link tw-bridge.css — it will render unstyled`,
+      `  ${relPage}\n      mounts a component but does not link tw-bridge.css — it will render unstyled`,
     );
   } else if (linksBridge && !mountsCompiled) {
     mapMismatch.push(
-      `  ${relPage}\n      links tw-bridge.css but mounts no compiled component`,
+      `  ${relPage}\n      links tw-bridge.css but mounts no component`,
     );
   }
 
-  if (bareImports.length && !wantsMap) {
-    mapMismatch.push(
-      `  ${relPage}\n      imports ${[...new Set(bareImports)].join(', ')} but does not pass \`importmap\` to DocPage`,
-    );
-  } else if (wantsMap && !bareImports.length) {
-    mapMismatch.push(
-      `  ${relPage}\n      passes \`importmap\` to DocPage but imports no bare specifier`,
-    );
+  /* The Vite half, against the SOURCE tree — it is resolved at build time from
+     where the page SITS, not from where it lands. A wrong one is a build error
+     rather than a silent 404, so this is a courtesy check; it is here because
+     the two halves are one line apart and reading them under one rule is
+     exactly the mistake this file exists to stop anyone making. */
+  for (const [, ref] of viteBody.matchAll(/from\s*['"](\.[^'"]+)['"]/g)) {
+    if (!fs.existsSync(path.resolve(path.dirname(file), ref))) {
+      sourceMissing.push(`  ${relPage}\n      ${ref}`);
+    }
   }
 
   const refs = [
-    ...[...body.matchAll(/import\s[^'"]*from\s*['"](\.[^'"]+)['"]/g)].map((m) => m[1]),
+    ...[...browserBody.matchAll(/import\s[^'"]*from\s*['"](\.[^'"]+)['"]/g)].map((m) => m[1]),
     /* Any quoted src/href that is a relative URL -- NOT only the ones spelled
        with a leading ./ or ../. The examples gallery links its six cards as a
        bare `href="deck.html"`, which is every bit as relative and every bit as
        breakable by moving the page. Astro expressions are href={...} and are
        unquoted, so they are skipped here and covered by the menu checks. */
-    ...[...body.matchAll(/\s(?:src|href)="([^"]+)"/g)]
+    ...[...browserBody.matchAll(/\s(?:src|href)="([^"]+)"/g)]
       .map((m) => m[1])
       .filter((v) => !/^(?:[a-z][a-z0-9+.-]*:|\/\/|\/|#)/i.test(v)),
-    ...[...body.matchAll(/url\(\s*['"]?(\.\.?\/[^)'"]+)['"]?\s*\)/g)].map((m) => m[1]),
+    ...[...browserBody.matchAll(/url\(\s*['"]?(\.\.?\/[^)'"]+)['"]?\s*\)/g)].map((m) => m[1]),
   ];
 
   for (const ref of new Set(refs)) {
@@ -413,15 +457,26 @@ if (mapMismatch.length) {
   console.error(
     `${mapMismatch.length} page(s) mount a component without what it needs to run:\n` +
       mapMismatch.join('\n') +
-      '\n\nMounting a captured component takes two things the page has to ask for, and\n' +
-      'DocPage supplies neither by default. The IMPORT MAP resolves `vue` and\n' +
-      '`gsap`; without it the script dies on its first import. TW-BRIDGE.CSS is the\n' +
-      "site's Tailwind theme compiled against the utilities those components use;\n" +
+      '\n\nMounting a component takes something the page has to ask for, and\n' +
+      "DocPage supplies it by default to nobody. TW-BRIDGE.CSS is the site's\n" +
+      'Tailwind theme compiled against the utilities those components use;\n' +
       'without it they mount and render as raw HTML, every class resolving to\n' +
-      'nothing. Both fail in the browser and nowhere else, and the second does not\n' +
-      'even look like a failure -- it looks like a component with no styling of its\n' +
-      'own. Asked in both directions, because either one requested and unused is a\n' +
-      'claim that has stopped being true.',
+      'nothing. That fails in the browser and nowhere else, and it does not even\n' +
+      'look like a failure -- it looks like a component with no styling of its\n' +
+      'own. Asked in both directions, because a stylesheet requested and unused\n' +
+      'is a claim that has stopped being true.',
+  );
+  process.exit(1);
+}
+
+if (sourceMissing.length) {
+  console.error(
+    `${sourceMissing.length} reference(s) from a processed <script> point at a file that is not there:\n` +
+      sourceMissing.join('\n') +
+      "\n\nThese are Vite's, resolved at build time against the SOURCE tree, so\n" +
+      'they are relative to where the page sits rather than to where it lands.\n' +
+      'The two are different depths, and a path that is right for one is quietly\n' +
+      'wrong for the other.',
   );
   process.exit(1);
 }

@@ -3,10 +3,11 @@
   "configurations": [
     {
       "name": "docs",
-      "runtimeExecutable": "npx",
+      "runtimeExecutable": "npm",
       "runtimeArgs": [
-        "astro",
+        "run",
         "dev",
+        "--",
         "--port",
         "8127"
       ],

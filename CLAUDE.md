@@ -187,28 +187,55 @@ asserts `menu.ts` and the collection agree in **both** directions: a slug the ba
 names and nothing renders, and a guide that renders and is in no bar. The second
 is the orphan case, which is what the four pages were before the surface existed.
 
-Two rules survive the migration and are in [CONTRIBUTING.md](/CONTRIBUTING.md)
-with their reasons. The one that bites when adding a page: a `.html` at the same
-path wins over the `.astro`, so writing one page in both forms leaves the
-`.astro` dead — Astro's own behaviour is a `WARN` and exit 0, and the
-passthrough check fails the build instead. The one that bites when improving a
-page: **the storybook specimens are not Astro islands and must not become them.**
-They mount `compiled/*.js` in the browser through an import map, which is what
-makes them a record of what codecave.pro ships rather than a rebuild of it, and
-`is:inline` on both tags is what keeps that true — so a *specimen* is still not
-an island. `@astrojs/vue` is no longer unused, though: `DsNav.astro` renders
-`BrandNav.vue` with no client directive, which is the chrome rather than a
-specimen and emits static HTML with no JavaScript at all.
+One rule survives the migration and is in [CONTRIBUTING.md](/CONTRIBUTING.md)
+with its reason, and it bites when adding a page: a `.html` at the same path
+wins over the `.astro`, so writing one page in both forms leaves the `.astro`
+dead — Astro's own behaviour is a `WARN` and exit 0, and the passthrough check
+fails the build instead.
 
-**That import map is checked against the bundles, both ways.** It is the only
-thing resolving the specifiers esbuild deliberately left external, and an
-import-map key is matched exactly — so a capture moving to a different entry
-point of the same package silently kills every specimen on the page. Nothing
-errors: the page renders, the canvas is simply empty. `npm run check:importmap`
-reads the bare specifiers out of `storybook/compiled/*.js` and the keys out of
-`DocPage.astro`'s `importmapJson` and fails on either mismatch, since a mapped
-specifier nothing imports is a claim that has stopped being true. Both inputs
-are committed, so it needs no site checkout and runs in CI.
+**The rule that used to sit beside it said the storybook specimens are not Astro
+islands and must not become them. It is reversed, and the reversal is the point
+of the current arrangement.** A specimen mounted `storybook/compiled/*.js` in the
+browser through an import map, so that a reader saw what codecave.pro shipped
+rather than a rebuild of it; `is:inline` on both tags was what kept that true.
+That argument rested on this repository being downstream, and it has not been
+since 2026-08-25. The components are authored in `src/` and the site installs the
+package built from them, so **compiling a specimen from source is showing what
+ships** — and mounting a prebuilt bundle instead shows whatever the last package
+build produced. The practical half is the reason it changed: a specimen that
+imports the `.vue` hot-reloads while you edit the component, and a prebuilt
+bundle never can.
+
+So a specimen page is now an ordinary `<script type="module">` importing
+`../../../src/components/…`, `@astrojs/vue` compiles them, and `DocPage` no
+longer has an `importmap` prop. **`build:storybook` still runs and still writes
+`compiled/*.js`** — `ds-bundle/` consumes them for a Design project that cannot
+run a bundler. It is simply no longer what this site mounts.
+
+**That leaves three resolvers on a page, and `check:links` judges a reference by
+whichever owns it.** Above the fence is Astro's, at build time, against the
+source tree. A `<script>` *without* `is:inline` is Vite's — also build time, also
+the source tree. Everything else, `is:inline` scripts included, is the browser's
+at request time against the *output* tree. Those are different depths, so one
+path is right for one and quietly wrong for the other: the conversion moved four
+`placeholders.js` imports from correct to broken without changing a character of
+them, and this is the check that said so. The old pairing it replaces — "a page
+importing a bare specifier must pass `importmap`" — is now the opposite
+assertion, that no `is:inline` script may import a bare specifier, because
+nothing resolves one any more.
+
+**The vendored runtime map is checked against the bundles, both ways, and against
+the disk.** `vue` and the gsap entry points are left external by esbuild, so
+something has to resolve them for whatever mounts a bundle — and the mapping is
+a judgement rather than arithmetic (`vue` is one of half a dozen builds in the
+package; `gsap` is a directory). A capture moving to a different entry point of
+the same package silently kills every specimen: nothing errors, the page renders,
+the canvas is simply empty. `npm run check:importmap` reads the bare specifiers
+out of `storybook/compiled/*.js` and the keys out of `tools/storybook-vendor.mjs`
+and fails on either mismatch, **and on a mapped file that is not in
+`docs/vendor/`** — the DocPage version compared two lists of names, so a map
+entry pointing at a runtime nobody committed passed cleanly and 404'd in the
+browser. Both inputs are committed, so it needs no site checkout and runs in CI.
 
 **A layout may not derive a page's depth from `Astro.url.pathname`.** With
 `build.format: 'preserve'`, a directory index is requested at `/storybook` in
