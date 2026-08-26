@@ -178,7 +178,7 @@ jobs:
       # version number cannot be reissued. tools/stamp-version.mjs has the
       # measurement.
       - name: Stamp the version into the package manifest
-        run: node tools/stamp-version.mjs
+        run: node tools/stamp-version.mjs --require-tag
 
       # Creates dist/, which `npm run check` needs — check reads the built
       # package, so it cannot run against a fresh checkout. The build also runs
