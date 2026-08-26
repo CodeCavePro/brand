@@ -86,7 +86,7 @@ var __sfc__ = /* @__PURE__ */ _defineComponent({
     };
   }
 });
-__sfc__.__file = "source_examples/common/ArticlePreview.vue";
+__sfc__.__file = "authored/common/ArticlePreview.vue";
 var ArticlePreview_default = __sfc__;
 export {
   ArticlePreview_default as default

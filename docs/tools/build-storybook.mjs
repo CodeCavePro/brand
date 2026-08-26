@@ -3,14 +3,14 @@
  *
  * The storybook used to demo hand-copied HTML+CSS miniatures (.cc-* classes)
  * that drifted from the components they imitated. This script removes the
- * copy: it takes the verbatim SFCs in docs/source_examples/ and compiles
+ * copy: it takes the verbatim SFCs in docs/authored/ and compiles
  * them to plain ES modules in docs/storybook/compiled/, using the SAME
  * toolchain versions the website builds with — everything here is resolved
  * from the codecave.pro repo's node_modules (vue/compiler-sfc, esbuild,
  * tailwindcss v4). Nothing is downloaded.
  *
  * It also generates docs/storybook/tw-bridge.css: the site's Tailwind theme
- * (source_examples/styles/global.css @theme) compiled against exactly the
+ * (the captured global.css @theme) compiled against exactly the
  * utility classes the SFC templates use, PLUS the site's own :root and @theme
  * tokens scoped to `.sb-canvas, .sb-mount`.
  *
@@ -31,7 +31,7 @@
  * more. The scoping still carries Tailwind's radii into the canvases, which is
  * now belt and braces rather than the thing holding the specimen together.
  *
- * tw-bridge.css records a digest of everything under source_examples/ so
+ * tw-bridge.css records a digest of everything under both roots so
  * check-tw-bridge.mjs can prove the two are in step; see source-digest.mjs.
  *
  * Run:  node docs/tools/build-storybook.mjs [path-to-codecave.pro]
@@ -57,7 +57,11 @@ const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const siteDir = path.resolve(process.argv[2] ?? path.join(docs, '..', '..', 'codecave.pro'));
 if (!fs.existsSync(path.join(siteDir, 'node_modules'))) {
   console.error(`codecave.pro checkout with node_modules not found at ${siteDir}`);
-  console.error('Pass it as the first argument: node build-storybook.mjs <path>');
+  console.error('');
+  console.error('It is needed for its TOOLCHAIN, not its source: vue/compiler-sfc, esbuild');
+  console.error('and tailwindcss at the versions the site builds with. Install it there, or');
+  console.error('pass a path:');
+  console.error('  node docs/tools/build-storybook.mjs ../path/to/codecave.pro');
   process.exit(1);
 }
 
@@ -65,7 +69,26 @@ const req = createRequire(path.join(siteDir, 'package.json'));
 const compiler = req('vue/compiler-sfc');
 const esbuild = req('esbuild');
 
-const SRC = path.join(docs, 'source_examples');
+/* The two roots a component's source can come from, in resolution order.
+ *
+ * authored/ holds what is written here; source_examples/ holds what was
+ * captured from somewhere else. Both are searched, because a specimen does not
+ * care which one supplied the bytes -- but the ORDER is fixed, and build.mjs
+ * fails outright on a path present in both, so the ambiguity never arises. */
+const AUTHORED = path.join(docs, 'authored');
+const CAPTURES = path.join(docs, 'source_examples');
+const ROOTS = [AUTHORED, CAPTURES];
+
+/** The root holding a capture-relative path, or null when no root has it. */
+const rootHolding = (rel) => ROOTS.find((r) => fs.existsSync(path.join(r, rel))) ?? null;
+
+/** Absolute path to a capture-relative file, in whichever root holds it.
+ *  Falls back to authored/ so a file no root has fails by NAME, rather than
+ *  resolving somewhere plausible and wrong. */
+const inRoots = (rel) => path.join(rootHolding(rel) ?? AUTHORED, rel);
+
+/** The root an ABSOLUTE path sits under, or null. */
+const rootUnder = (file) => ROOTS.find((r) => !path.relative(r, file).startsWith('..')) ?? null;
 
 /* The package's shipped component tree — CCWEB2-318 phase 4.
  *
@@ -78,17 +101,22 @@ const SRC = path.join(docs, 'source_examples');
  * restores the directory depth the captures flattened away.
  *
  * Nothing about a specimen's MEANING changes. `npm run check` asserts the
- * package's copies are byte-identical to the captures, and check-captures.mjs
- * asserts the captures are byte-identical to the site, so the two roots are
- * the same bytes and a specimen is still a record of what codecave.pro ships.
- * The chain is one link longer and every link is checked.
+ * package's copies are byte-identical to the sources under docs/authored/, so
+ * the two roots are the same bytes either way.
+ *
+ * What a specimen is a record OF has changed, though, and the comment here used
+ * to say otherwise: it claimed a chain to codecave.pro, with check-captures.mjs
+ * as the far link. That link was cut on 2026-08-25 — the site installs this
+ * package now and pins it, so it lags by design and a check demanding equality
+ * was wrong. A specimen is a record of what THIS repository ships, which is
+ * what the site will get at its next bump rather than what it renders today.
  *
  * Entries the package does NOT carry stay on the captures, and the build says
- * which those are on every run rather than hiding the split. Today they are
- * the three components CCWEB2-332 is about: they reach getImageUrl, which
- * imports the site's CMS host and token, so they cannot ship. A specimen for
- * a component nobody can install is still worth having — it documents the
- * site, which is the storybook's job.
+ * which those are on every run rather than hiding the split. Today there are
+ * none: every component under docs/authored/ ships. That is worth printing
+ * anyway, because a specimen quietly falling back to the captures is exactly
+ * the drift this arrangement exists to prevent, and the build log is the only
+ * place it would ever show.
  */
 const PKG = path.join(docs, '..', 'packages', 'brand', 'dist', 'src');
 if (!fs.existsSync(PKG)) {
@@ -114,8 +142,11 @@ if (!fs.existsSync(PKG)) {
  * Both sides read the rule from import-aliases.mjs rather than restating it. */
 function rootOf(entry) {
   const shipped = path.join(PKG, 'components', entry);
-  if (!fs.existsSync(shipped)) return { file: path.join(SRC, entry), root: SRC, label: 'captures' };
-  const capture = path.join(SRC, entry);
+  if (!fs.existsSync(shipped)) {
+    const root = rootHolding(entry) ?? AUTHORED;
+    return { file: path.join(root, entry), root, label: 'sources' };
+  }
+  const capture = inRoots(entry);
   const captured = fs.readFileSync(capture, 'utf8');
   const expected = usesAlias(captured)
     ? unalias(captured, `src/components/${entry}`)
@@ -157,12 +188,14 @@ function compileSFC(file) {
    * read from. It seeds the scoped-style id and Vue devtools' __file, and both
    * must name the component rather than the directory it happened to be
    * resolved through -- otherwise moving a component into the package (or out
-   * of it, under CCWEB2-332) rewrites every data-v- attribute in its bundle
-   * for no reason anyone could act on. dist/src/components/ IS source_examples/
-   * with the site's depth restored, so stripping that prefix recovers the
-   * capture path exactly. */
+   * of it) rewrites every data-v- attribute in its bundle for no reason anyone
+   * could act on. dist/src/components/ IS the source tree with the site's depth
+   * restored, so stripping that prefix recovers the path exactly -- and because
+   * the identity is relative to whichever ROOT held the file, moving a component
+   * between authored/ and source_examples/ does not touch a scoped id either. */
   const underPkg = !path.relative(PKG, file).startsWith('..');
-  const rel = path.relative(underPkg ? PKG : SRC, file).replace(/\\/g, '/');
+  const base = underPkg ? PKG : (rootUnder(file) ?? AUTHORED);
+  const rel = path.relative(base, file).replace(/\\/g, '/');
   const filename = underPkg ? rel.replace(/^components\//, '') : rel;
   const id = crypto.createHash('sha1').update(filename).digest('hex').slice(0, 8);
   const { descriptor, errors } = compiler.parse(source, { filename });
@@ -202,7 +235,13 @@ function compileSFC(file) {
   }
 
   if (scoped) code += `\n__sfc__.__scopeId = ${JSON.stringify(`data-v-${id}`)};`;
-  code += `\n__sfc__.__file = ${JSON.stringify(`source_examples/${filename}`)};`;
+  /* Devtools' __file must name a path a reader can open, so it is the ROOT
+   * that holds this component -- not the directory the bytes were read from.
+   * A specimen compiled out of the package would otherwise point at dist/,
+   * which is generated and gitignored. */
+  const home = path.basename(rootHolding(filename) ?? AUTHORED);
+  code += `
+__sfc__.__file = ${JSON.stringify(`${home}/${filename}`)};`;
   if (css) {
     code += `
 const __css__ = ${JSON.stringify(css)};
@@ -218,8 +257,8 @@ if (typeof document !== 'undefined' && !document.getElementById(${JSON.stringify
 }
 
 /* The site nests SFCs under src/components/<group>/, so its relative imports
- * climb out of components/ ("../../assets/…"). source_examples/ flattens that
- * one level; when a climb overshoots, re-root it at source_examples/. */
+ * climb out of components/ ("../../assets/…"). The roots flatten that one
+ * level; when a climb overshoots, re-root it at whichever root holds it. */
 function tryFile(p) {
   for (const c of [p, `${p}.ts`, `${p}.js`]) {
     if (fs.existsSync(c) && fs.statSync(c).isFile()) return c;
@@ -316,7 +355,7 @@ const vuePlugin = {
     });
     build.onResolve({ filter: /^\.\.\// }, (args) => {
       if (tryFile(path.resolve(args.resolveDir, args.path))) return null; // esbuild handles it
-      const rerooted = tryFile(path.join(SRC, args.path.replace(/^(\.\.\/)+/, '')));
+      const rerooted = tryFile(inRoots(args.path.replace(/^(\.\.\/)+/, '')));
       return rerooted ? { path: rerooted } : null;
     });
     build.onLoad({ filter: /\.vue$/ }, (args) => ({
@@ -355,7 +394,7 @@ const siteAliases = {
   name: 'site-aliases',
   setup(build) {
     build.onResolve({ filter: new RegExp(`^(?:${SITE_ALIAS_PATTERN})`) }, (args) => ({
-      path: path.join(SRC, sitePath(args.path)),
+      path: inRoots(sitePath(args.path)),
     }));
   },
 };
@@ -364,18 +403,18 @@ const siteAliases = {
 const fromCaptures = [];
 for (const entry of ENTRIES) {
   const name = path.basename(entry, '.vue');
-  const { file, label } = rootOf(entry);
-  if (label === 'captures') fromCaptures.push(entry);
+  const { file, root, label } = rootOf(entry);
+  if (label !== 'package') fromCaptures.push(entry);
   currentEntry = entry;
   const from = label === 'package'
     ? `@codecavepro/brand/components/${entry}`
-    : `source_examples/${entry}`;
+    : `${path.basename(root)}/${entry}`;
   await esbuild.build({
     entryPoints: [file],
     bundle: true,
     format: 'esm',
     outfile: path.join(OUT, `${name}.js`),
-    // Pin esbuild's frame of reference to docs/ so the `// source_examples/…`
+    // Pin esbuild's frame of reference to docs/ so the `// authored/…`
     // annotations it writes into each bundle do not depend on where the script
     // was invoked from. Without this, running from the repo root and running
     // from docs/ emit different comments and every module shows up as changed —
@@ -384,7 +423,7 @@ for (const entry of ENTRIES) {
     absWorkingDir: docs,
     external: ['vue', 'gsap', 'gsap/*'],
     // Bare imports (e.g. pain-points-item's `marked`) resolve from the SITE's
-    // node_modules — source_examples lives in the brand repo, which has none.
+    // node_modules — the component sources live in the brand repo, which has none.
     nodePaths: [path.join(siteDir, 'node_modules')],
     plugins: [siteAliases, vuePlugin],
     banner: {
@@ -447,7 +486,7 @@ const tokensSrc = fs.readFileSync(path.join(docs, 'colors_and_type.css'), 'utf8'
 const tokensRoot = tokensSrc.match(/^:root \{([\s\S]*?)^\}/m);
 if (!tokensRoot) throw new Error('no :root block found in docs/colors_and_type.css');
 
-const globalCss = fs.readFileSync(path.join(SRC, 'styles', 'global.css'), 'utf8');
+const globalCss = fs.readFileSync(path.join(CAPTURES, 'styles', 'global.css'), 'utf8');
 const siteRoot = globalCss.match(/^:root \{([\s\S]*?)^\}/m);
 if (!siteRoot) throw new Error('no :root block found in source_examples/styles/global.css');
 const rootBlock = [null, `${tokensRoot[1]}${siteRoot[1]}`];
@@ -508,7 +547,7 @@ const twCompiler = await twNode.compile(input, {
   onDependency: () => {},
 });
 const scanner = new oxide.Scanner({
-  sources: [{ base: SRC, pattern: '**/*.vue', negated: false }],
+  sources: ROOTS.map((base) => ({ base, pattern: '**/*.vue', negated: false })),
 });
 const candidates = scanner.scan();
 const built = twCompiler.build(candidates);
@@ -562,14 +601,14 @@ ${emittedTheme ? dedupe(emittedTheme[1]) : ''}
 
 const bridge = `/* GENERATED by tools/build-storybook.mjs — do not edit.
  * The site's Tailwind v4 theme (source_examples/styles/global.css @theme)
- * compiled against the utility classes the source_examples SFC templates
+ * compiled against the utility classes the component SFC templates
  * actually use, plus the site's tokens scoped to the demo canvases so the
  * real components render exactly as the live site does. This file serves
  * mounted components only — it does not restyle the docs.
  *
- * The digest below covers every file under source_examples/, this file's only
- * source. Verify with: node docs/tools/check-tw-bridge.mjs
-${DIGEST_PREFIX}${sourceDigest(SRC)}
+ * The digest below covers every file under authored/ and source_examples/,
+ * this file's only sources. Verify with: node docs/tools/check-tw-bridge.mjs
+${DIGEST_PREFIX}${sourceDigest(ROOTS)}
  */
 ` + built + canvasScope + '\n';
 fs.writeFileSync(path.join(docs, 'storybook', 'tw-bridge.css'), bridge);

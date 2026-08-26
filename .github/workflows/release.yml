@@ -18,12 +18,10 @@
 # all run before anything reaches the registry — so a bad tag costs a red run,
 # not a burned version number.
 #
-# What this job canNOT verify, and why the runbook still has a local
-# precondition: `npm run check:captures` compares docs/source_examples/ against
-# a checkout of CodeCavePro/codecave.pro, which CI cannot read today
-# (CODECAVE_PRO_TOKEN is set and returns 403). It is attempted below and warns
-# when it is skipped. Publishing from stale captures is the one failure this
-# pipeline cannot catch for you.
+# What this job does NOT check, deliberately: whether the component sources
+# still match codecave.pro. The site installs this package and pins it, so it
+# is *supposed* to be behind between releases — see the note where that step
+# used to be.
 name: Publish @codecavepro/brand to npm
 
 on:
@@ -163,53 +161,19 @@ jobs:
       - name: Check
         run: npm run check
 
-      # ---- captures --------------------------------------------------------
-      # source_examples/ is EVIDENCE, and a capture that has fallen behind the
-      # site reads exactly like a current one. RELEASING.md makes re-measuring
-      # it a precondition of every publish, now that components ship.
+      # There is deliberately NO step here comparing the component sources to
+      # codecave.pro. This job briefly had one, and it was a rule from the
+      # arrangement that CCWEB2-318 replaced.
       #
-      # continue-on-error, and a warning rather than a failure, for one reason:
-      # the checkout is refused today, so a hard gate would mean this package
-      # could never be released at all. The day CODECAVE_PRO_TOKEN works, this
-      # becomes a real gate with no further edit — the run step below fails the
-      # release on drift.
-      - name: Check out the codecave.pro toolchain
-        id: toolchain
-        continue-on-error: true
-        uses: actions/checkout@v7
-        with:
-          repository: CodeCavePro/codecave.pro
-          path: _toolchain
-          token: ${{ secrets.CODECAVE_PRO_TOKEN || github.token }}
-          persist-credentials: false
-
-      - name: Verify the captures against the live site
-        if: steps.toolchain.outcome == 'success'
-        run: node docs/tools/check-captures.mjs _toolchain
-
-      - name: Warn that the captures were not verified
-        if: steps.toolchain.outcome != 'success'
-        run: |
-          echo "::warning title=Captures not verified::CodeCavePro/codecave.pro could not be checked out, so docs/source_examples/ was not compared against the site. Components are built from those captures. Run 'npm run check:captures' locally with the site on 'development' before trusting this release."
-          {
-            echo "### Captures were not verified"
-            echo ""
-            echo "\`CodeCavePro/codecave.pro\` could not be checked out, so"
-            echo "\`docs/source_examples/\` was **not** compared against the site it was captured"
-            echo "from. Nineteen components are built from those captures."
-            echo ""
-            echo "This is the one precondition in [RELEASING.md](https://github.com/CodeCavePro/brand/blob/development/RELEASING.md)"
-            echo "that this pipeline cannot enforce. Run it locally, with the site checkout on"
-            echo "\`development\` — it reads whatever branch it finds:"
-            echo ""
-            echo '```'
-            echo "npm run check:captures"
-            echo '```'
-            echo ""
-            echo "See the Pages workflow's summary for how to fix \`CODECAVE_PRO_TOKEN\`; the"
-            echo "same token is what would make this a gate instead of a warning."
-          } >> "$GITHUB_STEP_SUMMARY"
-
+      # The site consumes this package now and pins it with
+      # `pnpm install --frozen-lockfile`, so it runs whatever its lockfile says
+      # until someone raises the range. LAGGING IS ITS NORMAL STATE. A release
+      # is the moment the library moves furthest ahead of it — components are
+      # developed here, tested in the storybook here, published, and only then
+      # does the site bump. A gate demanding the two be equal would therefore be
+      # red for exactly the change it was meant to protect, and green only in
+      # the window when there is nothing to release.
+      #
       # ---- rehearse on the actual artifact ---------------------------------
       # Everything above reads the tree. This installs the tarball and asks it
       # the questions a consumer asks first, because `files`, `exports` and

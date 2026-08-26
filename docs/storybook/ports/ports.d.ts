@@ -1,12 +1,20 @@
 /**
  * The storybook's ports.
  *
- * A captured component sometimes reaches outside itself — for a CMS base URL,
- * for an HTML sanitiser. The storybook is a static docs site with no CMS token
- * and no server, so it cannot always satisfy those imports the way production
- * does. The dependency is inverted rather than faked: each interface here
- * declares the narrow thing a component actually needs, and an adapter beside
- * it supplies an implementation that works in a docs page.
+ * A component sometimes reaches outside itself — for an HTML sanitiser. The
+ * storybook is a static docs site with no server, so it cannot always satisfy
+ * those imports the way production does. The dependency is inverted rather than
+ * faked: each interface here declares the narrow thing a component actually
+ * needs, and an adapter beside it supplies an implementation that works in a
+ * docs page.
+ *
+ * A CMS used to be the other case, and is deliberately no longer one. Where the
+ * environment can be substituted, a port belongs here; where the component was
+ * reaching for one company's DATA — a CMS host, a CRM's field names — the fix
+ * is not a port at all but a prop, so that the site supplies it and the
+ * component never knows. lib/crm/types.ts is that boundary for forms, and
+ * resolveImage() is it for images. Neither has an adapter here, because
+ * neither is a port.
  *
  * "Works in a docs page" is not a licence to do less. An adapter substitutes the
  * environment, never the behaviour — SanitizerPort really sanitises, using the

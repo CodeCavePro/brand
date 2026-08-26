@@ -19,7 +19,8 @@ user-invocable: true
 | `assets/` | Brand marks and the raster lockup kit: 1024px masters plus 256px review cuts in all four finishes, wide and tall, the square app marks, the chevron, the checkbox tick, original font uploads. |
 | `build/` | Runtime assets under their original source filenames, byte-for-byte from the captured snapshots: the three vectors (`codecave-wide.svg`, `codecave-tall.svg`, `codecave.svg`), the site header mark (`logo.svg`), rasters (`logo.png`, `logo-tall.png`, `icon.png`), the seven-step `build/icons/` ramp (`16x16.png` → `512x512.png`), and the web runtime set (`favicon.ico`, `favicon.svg`, `favicon-96x96.png`, `apple-touch-icon.png`, `web-app-manifest-192x192.png`, `web-app-manifest-512x512.png`, `site.webmanifest`). Nothing here was redrawn or re-encoded. |
 | `fonts/` | Six real Satoshi cuts in woff2 + woff, bound by `colors_and_type.css`. |
-| `source_examples/` | The high-signal originals — brand token CSS, production `global.css`, and every Vue/Astro component the system documents — copied out of `context/` so they can be read directly. |
+| `authored/` | Every Vue component the system documents, with the helpers and icons they reach for. These are the origin: the package is built from them and codecave.pro installs the result. |
+| `source_examples/` | What is genuinely captured from elsewhere — the production `global.css` this repo reads but does not own, the wordmark, and snapshots of this repo's own earlier token CSS. |
 | `storybook/` | One story per component, each mounting the real `.vue` single-file component with its props, variants and source path. |
 | `examples/` | Whole surfaces composed from the system — pitch deck, contact form, marketing email, newsletter, landing page, print poster. One self-contained file each. |
 

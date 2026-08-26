@@ -166,7 +166,8 @@ layer (see below).
 **Error:** `-100` `#FE9A9A` · `-200` `#FE2020` · `-300` `#B42318` · `-400`
 `#CA1400`
 
-Two quirks are upstream facts, not package errors (WEBSITE-REVIEW.md §5): the
+Two quirks are this package's own, and are recorded rather than fixed
+(WEBSITE-REVIEW.md §5): the
 gray ramp is **non-monotonic past 950** — `gray-1100` `#0F0F15`, the card
 surface, is *lighter* than `gray-1000` `#050505` — and `brand-500` is lighter
 than `brand-400`. The semantic layer hides both, which is one more reason
@@ -737,7 +738,8 @@ ships, and a divergence below becomes a bug in production rather than a
 considered correction here. The criterion is deliberately a fact you can check
 in the site's `package.json`, not a judgement about whether the two look the
 same: measured by hand, that judgement moved by nine files in a single day. See
-[CCWEB2-318](https://codecave.atlassian.net/browse/CCWEB2-318) for the work and
+[CCWEB2-318](https://codecave.atlassian.net/browse/CCWEB2-318) for the work, which
+closed on 2026-08-25, and
 [CCWEB2-316](https://codecave.atlassian.net/browse/CCWEB2-316) for this
 criterion.
 

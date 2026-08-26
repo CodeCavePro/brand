@@ -42,7 +42,7 @@ function render(_ctx, _cache) {
   ])]);
 }
 var __sfc__ = { render };
-__sfc__.__file = "source_examples/assets/icons/asterisk-icon.vue";
+__sfc__.__file = "authored/assets/icons/asterisk-icon.vue";
 var asterisk_icon_default = __sfc__;
 
 // ../packages/brand/dist/src/components/common/Checkbox.vue
@@ -130,7 +130,7 @@ var __sfc__2 = /* @__PURE__ */ _defineComponent({
   }
 });
 __sfc__2.__scopeId = "data-v-b7ef7edb";
-__sfc__2.__file = "source_examples/common/Checkbox.vue";
+__sfc__2.__file = "authored/common/Checkbox.vue";
 var __css__ = `
 input[data-v-b7ef7edb] {
   appearance: none;

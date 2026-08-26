@@ -12,20 +12,23 @@ reissued. Everything else in this runbook is reversible; that is not.
 - A token value changed in `docs/` and consumers need it — a minor bump.
 - The package layout changed (export paths, module shape) — a **major** bump,
   now that 1.0 is out and the layout is a promise.
-- The very first publish, [CCWEB2-318](https://codecave.atlassian.net/browse/CCWEB2-318)
-  phase 5. Read [First publish only](#first-publish-only) as well; it has
-  preconditions the routine path does not.
+- A first publish of some future package. Read [First publish only](#first-publish-only)
+  as well; it has preconditions the routine path does not. This one's first
+  publish is long done — the registry has been serving `@codecavepro/brand`
+  since 1.0.0.
 
 **Do not use it** for changes that do not reach the tarball. The package ships
-`dist/` plus `README.md` and `LICENSE` — 57 files as of 2.1.2. Storybook
+`dist/` plus `README.md` and `LICENSE` — 57 files as of 2.2.0. Storybook
 specimens, docs pages, `DESIGN.md` and `WEBSITE-REVIEW.md` are none of them.
 Those deploy with GitHub Pages on push and need no release.
 
-**A capture *is* a change that reaches the tarball, now that components ship.**
-Refreshing `docs/source_examples/` moves published bytes, so it is a release,
-and `npm run check:captures` is a precondition of every publish rather than only
-the first — with the checkout on `development`, because it reads whatever branch
-it finds. See [CONTRIBUTING.md](/CONTRIBUTING.md).
+**A change under `docs/authored/` *is* a change that reaches the tarball.**
+That directory is where the nineteen shipped components live, so editing one
+moves published bytes and needs a release.
+
+There is no longer a check comparing it to codecave.pro, and there should not
+be: the site installs this package and pins it, so a release is precisely the
+moment the two are furthest apart. See [CONTRIBUTING.md](/CONTRIBUTING.md).
 
 ## Who publishes
 
@@ -126,8 +129,8 @@ npm run build && npm run check
 origin (`docs/colors_and_type.css`, `docs/fonts/fonts.css`, the root `LICENSE`),
 `dist/tokens.css` still re-extracting from `docs/colors_and_type.css` and
 `dist/theme.css` from `docs/theme.css` to exactly what shipped, every component
-matching the capture it was copied from, the ports typechecking, and the
-storybook matching `docs/source_examples/`. If the
+matching the source it was copied from, the ports typechecking, and the
+storybook matching both component roots. If the
 byte-identity assertion fails, **do not fix it in `packages/`** — the fix
 belongs in `docs/`, which is the origin. See [CLAUDE.md](/CLAUDE.md).
 
@@ -245,9 +248,9 @@ before the publish step has cost nothing.
 
 Two things in the summary are worth reading rather than skimming:
 
-- **"Captures were not verified"**, if it appears. `docs/source_examples/` is
-  evidence, nineteen components are built from it, and CI cannot reach the site
-  today. This is the one precondition the pipeline cannot enforce for you.
+- **Which root each component came from**, in the storybook rebuild summary. A
+  specimen quietly falling back to the captures is the drift this arrangement
+  exists to prevent, and the log is the only place it shows.
 - **Provenance.** A trusted-publisher release attaches an attestation; the npm
   page shows the commit and the workflow run that built it. If the badge is
   absent, the publish did not go out as a trusted publisher and something in
@@ -255,9 +258,9 @@ Two things in the summary are worth reading rather than skimming:
 
 ### 6. Close the loop
 
-Comment the version and tag on the CCWEB2-318 phase-5 issue. If this publish
-changed a token value, say which — the site consumes these, and a value change
-is the only kind of release with downstream work attached.
+Comment the version and tag on whichever issue the release was for. If this
+publish changed a token value, say which — the site consumes these, and a value
+change is the only kind of release with downstream work attached.
 
 codecave.pro will not move on its own: it installs with `pnpm install
 --frozen-lockfile`, so it runs whatever its lockfile pins until someone raises
@@ -396,14 +399,9 @@ which puts you back in the 72-hour window above, with an escalation attached.
 ## First publish only
 
 The routine release assumes the package already exists on the registry. The
-first one has three preconditions the rest do not, in this order:
+first one has two preconditions the rest do not, in this order:
 
-1. **`docs/source_examples/` has been re-measured.** Run
-   `npm run check:captures`. A clean result is **not durable** — the captures
-   measured nine drifted files on 2026-08-19 and thirteen the next day. Nothing
-   in the token package is built from a capture today, but check before
-   assuming that is still true.
-2. **Every name is settled.** **A token name is only cheap to change while
+1. **Every name is settled.** **A token name is only cheap to change while
    nobody has installed it** — before the first publish a rename is free, after
    it a rename is a `2.0.0`. Two were caught this way and both were free:
    `spacing.controlHeight` shipping 44px against production's 48px, and
@@ -415,7 +413,7 @@ first one has three preconditions the rest do not, in this order:
    Note what the first one implies: documenting a divergence honestly is right
    for a token already published, and the wrong thing to do for one you are
    about to publish for the first time and could simply get right.
-3. **Version `1.0.0`.** The manifest already says so, and `1.0.0` is tagged. Publishing straight at 1.0 is a deliberate call, not an oversight:
+2. **Version `1.0.0`.** The manifest already says so, and `1.0.0` is tagged. Publishing straight at 1.0 is a deliberate call, not an oversight:
    the token values are the thing consumers depend on and they already mirror
    production, so a `0.x` would be understating the stability of the only part
    that matters to them. The cost is that the layout is now a promise — an
@@ -432,14 +430,14 @@ Worth knowing before someone files a release request for one of these:
 - **Font binaries.** A licensing question, not an oversight. The stylesheets
   declare six Satoshi faces and ship no files; consumers supply them. See the
   [package README](packages/brand/README.md).
-- **The four CMS-shaped components.** `ArticlePreview`, `Review`,
-  `pain-points-item` and `technologies` reach the site's Strapi host and token
-  through `helpers/image-url.ts`. `build.mjs` excludes them by name in
-  `NOT_SHIPPED`, each with its reason; they ship when
-  [CCWEB2-332](https://codecave.atlassian.net/browse/CCWEB2-332) inverts that
-  dependency site-side. The rest of the components ship as of 1.2.0 — but
-  **nothing is published from `docs/source_examples/` until the captures have
-  been re-measured against the live site, ever.**
+- **Nothing CMS-shaped, any more.** `ArticlePreview`, `Review`,
+  `pain-points-item` and `technologies` used to reach a CMS host and token
+  through `helpers/image-url.ts`, so `NOT_SHIPPED` held all four.
+  [CCWEB2-332](https://codecave.atlassian.net/browse/CCWEB2-332) inverted that:
+  each declares the fields it reads and takes an optional `resolveImage()`, the
+  caller supplies the resolver, and all four ship. `helpers/image-url.ts` was
+  deleted rather than excluded — a package that knows where the content lives
+  has the dependency the wrong way round, and an exclusion only hides it.
 - **Anything authored in `packages/`.** `README.md` is the single exception,
   because npm renders it as the package page and there is nowhere else for that
   page to come from — and even its example values are asserted against the

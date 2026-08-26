@@ -31,7 +31,8 @@ places you change it. Knowing which category a file is in is most of the job:
 | Category | Files | What to do |
 |---|---|---|
 | **Origin** | `docs/colors_and_type.css`, `docs/tokens/*.ts` | **Edit these.** Both, together — the `.ts` is a hand-maintained mirror, not a compilation. |
-| **Provenance captures** | `docs/source_examples/**` | **Never edit.** Refresh *from the live site*, never by hand. |
+| **Component sources** | `docs/authored/**` | **Edit these.** This is where a component changes. |
+| **Provenance captures** | `docs/source_examples/**` | **Never edit.** These are copies of files another repository owns. |
 | **Generated** | `packages/brand/dist/`, the derived half of `ds-bundle/` (including its Components cards), `docs/storybook/compiled/`, `docs/storybook/tw-bridge.css` | Never edit. Rebuild. |
 | **Artwork** | SVGs under `docs/assets/`, `docs/build/`, `docs/imagery/`, `src/`, `favicons/` | Edit the hex literally — SVG has no cascade to inherit a token from. |
 | **Swatch captions** | `docs/index.html`, `docs/index.html`, `docs/pages/preview/colors-*.astro` | Edit the literal. Here the hex *is the content* — a `var()` would render nothing. On the ported page the literals are a data array at the top of the file; that is still a literal. |
@@ -46,43 +47,37 @@ point of the token layer. **Never hard-code a hex in a file that could use a
 
 ### `docs/source_examples/**`
 
-These are **captures of first-party source** — what codecave.pro actually
-shipped, at a moment in time. They exist to be *evidence*. Hand-editing one to
-match what you wish the site did destroys the only thing it is for, and it does
-it invisibly: a doctored capture looks exactly like a real one.
+These are **copies of files this repository does not own** — what another
+repository actually ships, at a moment in time. They exist to be *evidence*.
+Hand-editing one to match what you wish the original did destroys the only thing
+it is for, and it does it invisibly: a doctored capture looks exactly like a
+real one.
 
-A hand-written stub lived here once, as `lib/strapi.ts`. It is gone. Nothing
-under `source_examples/` is authored.
+Eight files are left, and none of them is a component:
 
-Refreshing them from the live site is a different act and is legitimate — that
-is [CCWEB2-315](https://codecave.atlassian.net/browse/CCWEB2-315), and it is not
-a one-time job. It measured nine drifted files on 2026-08-19, thirteen on
-2026-08-20 and zero on 2026-08-21.
+- **`styles/global.css`** — codecave.pro's stylesheet. `build-storybook.mjs`
+  parses it for the `:root` and `@theme` blocks it scopes into the demo canvases,
+  and throws if the `:root` is missing.
+- **`assets/images/logo.svg`** — the wordmark, rendered by a kitchen-sink page.
+- **`brand-repo-styles.css` and `brand-repo-tokens/*.css`** — snapshots of this
+  repository's own earlier token CSS, kept so the token pages can show what
+  changed. `build.mjs` skips them by name; nothing ships from them.
 
-`npm run check:captures` is what measures it, and **it reads whatever branch the
-codecave.pro checkout beside this one happens to be on.** Point it at a feature
-branch and it will report that branch's own unmerged work as capture drift — the
-captures record what the site *ships*, so the checkout belongs on `development`
-before you believe the answer, and certainly before you "refresh" anything to
-match.
+**Components are not here any more.** They moved to `docs/authored/` on
+2026-08-25, because 37 of the 45 files in this directory had no upstream left
+and the directory name had quietly become false. What was a rule nothing could
+enforce — `check:captures` was deleted the same week — is now a rule the layout
+states: the directory you may not edit contains nothing anyone would want to.
 
-To find out where they stand right now:
+### `docs/authored/**`
 
-```bash
-npm run check:captures
-```
+**This is where components live, and editing one is the ordinary way to change
+a component.** The package is built from these files, the storybook compiles
+them, and codecave.pro installs the result at a version it pins — so a change
+here reaches the site when someone bumps it, not before.
 
-It compares every capture against a `codecave.pro` checkout (expected beside
-this repo; pass a path as an argument otherwise) and names the drifted ones.
-**It is not part of `npm run check`**, because the site repository is private
-and a fresh checkout has nothing to compare against — with no checkout the
-command fails loudly rather than reporting success, so it can only ever be run
-somewhere the answer is real.
-
-The release workflow attempts it — a publish is the one moment a stale capture
-becomes permanent — but the checkout is refused today, so it warns and continues
-rather than blocking releases on a repository CI cannot read. **Treat it as
-yours to run before tagging.** See [RELEASING.md](/RELEASING.md).
+`build.mjs` fails the build if the same path exists under both roots. One
+shipped file cannot have two origins, and the directory name is the claim.
 
 ### The derived half of `ds-bundle/`
 
@@ -262,10 +257,18 @@ layer against Tailwind's complete default theme, and sweeps the SFCs for
 properties nothing declares. The first time it ran it found
 [CCWEB2-323](https://codecave.atlassian.net/browse/CCWEB2-323).
 
-Both of its inputs live here — `source_examples/` is committed, and Tailwind's
-theme comes from a devDependency pinned to the version the site resolves — so
-unlike `check:captures` it runs in CI. It also sweeps the full site checkout for
-undeclared properties when one is beside this repo, and says which it did.
+Both of its inputs live here — the component sources are committed, and Tailwind's
+theme comes from a devDependency pinned to the version the site resolves — so it
+runs in CI. It also sweeps the full site checkout for undeclared properties when
+one is beside this repo, and says which it did.
+
+That is the one place a site checkout is still read for an *answer* rather than
+for its toolchain, and it survived the removal of `check:captures` because it
+asks a different question. The captures check asserted this repo had not moved
+ahead of the site. This one asks whether a token would collide in the
+**consumer's** app — and the consumer is the site, so the Tailwind pin is
+checked against the version it builds with. Neither half calls this repo wrong
+for being ahead.
 
 ### Line endings are content, so leave `.gitattributes` alone
 
@@ -273,8 +276,10 @@ undeclared properties when one is beside this repo, and says which it did.
 here are digests or byte-for-byte copies of files in `docs/`, and all three
 read the **working tree**, not the git blob:
 
-- `check-tw-bridge.mjs` compares a sha256 of `docs/source_examples/` against
-  the value recorded in the generated `tw-bridge.css` header.
+- `check-tw-bridge.mjs` compares a sha256 of `docs/authored/` and
+  `docs/source_examples/` against the value recorded in the generated
+  `tw-bridge.css` header. Both roots, so that MOVING a file between them —
+  which changes no bytes — still moves the digest.
 - `npm run check` asserts `packages/brand/dist/colors_and_type.css` and
   `fonts.css` are byte-identical to their origins, and `npm pack` runs it.
 - `build-storybook.mjs` compiles `.vue` SFCs with esbuild, which reproduces only
@@ -392,11 +397,14 @@ under the **`brand-kit`** label. They sit in the website project because no bran
 project exists yet; the label is what makes them movable in bulk when one does.
 [CLAUDE.md](/CLAUDE.md) carries the current index with status.
 
-**Site-side flaws are not ours to fix.** A genuine bug in what codecave.pro ships
-gets written up in [WEBSITE-REVIEW.md](/WEBSITE-REVIEW.md) for a human designer
-and filed in CCWEB2 *without* the `brand-kit` label — never silently "corrected"
-in `docs/`. While the design system is still converging onto the site, the site
-is the reference.
+**A flaw in a file the SITE still owns is not ours to fix.** It gets written up
+in [WEBSITE-REVIEW.md](/WEBSITE-REVIEW.md) and filed in CCWEB2 *without* the
+`brand-kit` label — never silently "corrected" in `docs/`.
+
+That is a much smaller set than it used to be. The components moved here, so a
+flaw in one of them **is** ours: fix it in `docs/authored/`, release, and the
+site gets it at its next bump. What remains genuinely site-side is the site's
+own pages, layouts and configuration.
 
 Print colour space — CMYK, and whether a spot colour is used — is deliberately
 not filed anywhere. It is Maria Shaban's decision and gets its own project.
@@ -404,7 +412,7 @@ not filed anywhere. It is Maria Shaban's decision and gets its own project.
 ## Publishing
 
 Changing `docs/` does not publish anything to npm. **Pushing a bare version tag
-does** — `git push origin 2.1.5` starts
+does** — `git push origin 2.2.0` starts
 [`.github/workflows/release.yml`](/.github/workflows/release.yml), which verifies
 and then publishes as a trusted publisher. There is no npm token in this
 repository and no OTP to type; the tag is the deliberate act, so treat it as one.

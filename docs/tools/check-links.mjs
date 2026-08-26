@@ -428,9 +428,6 @@ const SCAN = [
   'CONTRIBUTING.md',
   'RELEASING.md',
   'CLAUDE.md',
-  /* NOT ASTRO-MIGRATION.md. .gitignore keeps it out of the repo deliberately —
-     it is a local working document, so CI has no copy and listing it here would
-     fail every run on a missing file. */
   'WEBSITE-REVIEW.md',
   'docs/README.md',
   'docs/DESIGN.md',

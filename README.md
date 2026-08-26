@@ -9,17 +9,17 @@ This repository contains resources for the **CODECAVE** brand such as [logos](/l
 >
 > **That is the target state, and we are not there yet.** `docs/` began highly divergent from the
 > shipped site, so the current phase runs the other way: the design system is converging *onto*
-> the website, without giving up the brand identity in the process. While that convergence is in
-> progress the site is the reference — where the two disagree `docs/` moves, and a genuine
-> site-side flaw is written up in [WEBSITE-REVIEW.md](/WEBSITE-REVIEW.md) for a human designer
-> rather than silently "corrected" here. Once convergence is reached the direction inverts and
-> the paragraph above governs.
+> the website, without giving up the brand identity in the process. **That convergence is
+> reached and the direction has inverted** — the site installs this package and keeps no
+> copies, so `docs/` is the reference and the paragraph above governs. Review findings live in
+> [WEBSITE-REVIEW.md](/WEBSITE-REVIEW.md); the component ones are now this repository's to fix.
 >
 > **Convergence is reached when codecave.pro installs `@codecavepro/brand` and deletes its own
 > copy of the palette.** Not when the two "look the same" — that is a judgement someone has to
 > re-make every time anyone asks, and the answer drifted by nine files in one day the last time
 > it was measured by hand. It is a fact you can check in the site's `package.json`. Getting there
-> is [CCWEB2-318](https://codecave.atlassian.net/browse/CCWEB2-318); this criterion is
+> was [CCWEB2-318](https://codecave.atlassian.net/browse/CCWEB2-318), which closed on
+> 2026-08-25; this criterion is
 > [CCWEB2-316](https://codecave.atlassian.net/browse/CCWEB2-316).
 
 ## Design System
@@ -45,7 +45,7 @@ Also in `docs/`: [tokens/](/docs/tokens) (the same tokens as typed TS modules, f
 cannot read a stylesheet), [fonts/](/docs/fonts) (six real Satoshi cuts), [assets/](/docs/assets)
 and [build/](/docs/build) (marks, icons and favicons), [imagery/](/docs/imagery) (the decorative
 line-and-glow layer), [artifacts/](/docs/artifacts) (deck, email, newsletter, form, poster and
-landing templates), and [source_examples/](/docs/source_examples) (the first-party source the
+landing templates), and [authored/](/docs/authored) (the component sources the
 rules were read out of).
 
 `docs/README.md` is the package guide; `docs/SKILL.md` is the agent-facing entry point.
@@ -152,9 +152,9 @@ single origin — fixes go there, never to `packages/`.**
 - [packages/brand/README.md](/packages/brand/README.md) — installing and consuming it.
 - [RELEASING.md](/RELEASING.md) — how it gets published, and how to get out of a bad publish.
 
-> **Not yet published.** The registry has no `@codecavepro/brand` as of 2026-08-21. The first
-> publish is [CCWEB2-318](https://codecave.atlassian.net/browse/CCWEB2-318) phase 5 and has
-> preconditions — see the runbook.
+> **Published on public npm** as [`@codecavepro/brand`](https://www.npmjs.com/package/@codecavepro/brand).
+> Releases go out from a pushed tag as an npm trusted publisher, so each one carries a
+> provenance attestation naming the commit and the workflow run that built it.
 
 ## Other Things To Know
 

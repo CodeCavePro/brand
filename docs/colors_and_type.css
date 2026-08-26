@@ -456,11 +456,11 @@ a:hover { color: var(--color-hovered); }
 /* ===========================================================================
  * COMPONENT LAYER
  * Geometry, color and state pairs transcribed from the production Vue/Astro
- * components captured in source_examples/. Each block names its source file.
+ * components under docs/authored/. Each block names its source file.
  * ======================================================================== */
 
 /* ---------------------------------------------------------------------------
- * Buttons — source: source_examples/common/Button.vue
+ * Buttons — source: authored/common/Button.vue
  * Every control is a 48px pill: min-h-12 px-6 py-1 rounded-full font-bold.
  * ONE solid fill per action. Everything else is bordered, ghost or text.
  *
@@ -538,7 +538,7 @@ a:hover { color: var(--color-hovered); }
 .btn-disabled           { opacity: 0.2; cursor: not-allowed; }
 
 /* ---------------------------------------------------------------------------
- * Glow button — source: source_examples/common/GlowButton.vue
+ * Glow button — source: authored/common/GlowButton.vue
  * The single highest-intent CTA. Lighter violet field (#9980FF) with the only
  * dark text in the system, wrapped in a violet halo. At most ONE per action:
  * a long page may repeat it once at the end, never twice in a viewport.
@@ -683,7 +683,7 @@ a:hover { color: var(--color-hovered); }
 }
 
 /* ---------------------------------------------------------------------------
- * Text input — source: source_examples/common/InputText.vue
+ * Text input — source: authored/common/InputText.vue
  * 64px tall, 8px radius (one of only two small radii in the system), a bold
  * 14px floating label seated in the top-left, and a violet focus halo instead
  * of an outline. Filled, hovered and focused are all distinct.
@@ -765,7 +765,7 @@ a:hover { color: var(--color-hovered); }
   font-size: var(--text-caption);
 }
 
-/* Checkbox — source: source_examples/common/Checkbox.vue
+/* Checkbox — source: authored/common/Checkbox.vue
  * 24px, 8px radius, 2px violet-black border that brightens to --color-action. */
 .checkbox {
   display: inline-flex;

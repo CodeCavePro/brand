@@ -8,9 +8,8 @@ import docsPassthrough from './docs/tools/astro-passthrough.mjs';
  *
  * SOURCES STAY IN docs/. OUTPUT GOES TO dist/, WHICH IS NOT COMMITTED.
  *
- * ASTRO-MIGRATION.md section 3 proposed the opposite — an Astro project in
- * `site/`, a `payload/` directory, and `docs/` as the build output — and that
- * shape cannot be used, because it was designed before packages/brand existed.
+ * The opposite shape was considered and cannot be used — an Astro project in
+ * `site/`, a `payload/` directory, and `docs/` as the build OUTPUT.
  * The package copies `docs/colors_and_type.css` and `docs/fonts/fonts.css`
  * byte-for-byte and `npm run check` asserts the identity. Making `docs/` an
  * outDir would make the package's origin a generated directory, and "docs/ is
@@ -143,9 +142,9 @@ export default defineConfig({
        *
        * Left to itself it globs the project for .html and .vue files to scan
        * for dependencies — and since publicDir is docs/, that sweep picks up
-       * all 36 documentation pages and all 22 captures in source_examples/.
-       * The captures then fail to resolve, 11 times, because they import
-       * site-side components that were never captured:
+       * all 36 documentation pages and every component source under
+       * docs/authored/ and docs/source_examples/. Those then fail to resolve,
+       * 11 times, because they import site-side components nothing here has:
        * `../../assets/icons/asterisk-icon.vue` exists in codecave.pro and has
        * no counterpart here.
        *

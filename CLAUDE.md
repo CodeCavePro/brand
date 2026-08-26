@@ -16,30 +16,11 @@ Open items for the brand package, all in
 [CCWEB2](https://codecave.atlassian.net/browse/CCWEB2) under the **`brand-kit`**
 label ([live query](https://codecave.atlassian.net/issues?jql=project%20%3D%20CCWEB2%20AND%20labels%20%3D%20%22brand-kit%22%20ORDER%20BY%20key%20ASC)):
 
--   [CCWEB2-318](https://codecave.atlassian.net/browse/CCWEB2-318) — **epic. All six phases have landed (2026-08-21), and phase 6's sentence is now finished on the styling side.** The package is on public npm; codecave.pro `development` installs **1.6.1**, imports both `/tokens.css` and `/theme.css` from it, and no longer keeps a palette or an `@theme` block of its own — which is why `docs/theme.css` is now the ORIGIN of that block rather than the site's `global.css` capture. Deriving it from the site had quietly become a circle, and it survived only while the capture was stale. Twelve components moved with it — Button, GlowButton, Checkbox, InputText, TextField, Radio, Review, TypingEffect, ContactUsForm, ResearchForm, LazyImage, pain-points-item — and are gone from the site's `src/`.
+-   [CCWEB2-340](https://codecave.atlassian.net/browse/CCWEB2-340) — build tooling sits in `dependencies`, so every advisory against it reads as production. **This repo is already clean** — everything is a devDependency and `packages/brand` declares no dependencies at all — so it is live only against codecave.pro, where `astro`, the `@astrojs/*` integrations, `@tailwindcss/vite` and `sharp` are all runtime deps. Labelled `brand-kit` but now purely site-side.
 
-    Seven used to stay site-owned: ArticlePreview, link-group, desktop-menu, mobile-menu, services-list, technologies and technology-card each read the site's `paths.ts`, `links.ts` or `menu.ts`, so installing one would have put codecave.pro's navigation behind an npm release — changing a menu item would mean publishing. 2.0.0 stopped shipping them for that reason.
-
-    **2.1.0 ships six of the seven, because the reach was removed rather than tolerated.** The exclusion was never about the components; it was about what they read. Each now takes the same information as props — `basePath`, `items`, `serviceLinks`, `ctaHref`, `href`, `logo` — exactly as BrandNav did, and codecave.pro passes it in from the modules it still owns. **`paths.ts` consequently dropped out of the tarball**: nothing shipped imports it any more, so the package no longer carries one site's route table at all. Nineteen components and thirteen icons ship, and all twelve storybook specimens compile from the package rather than three of them falling back to the captures.
-
-    **codecave.pro consumes all of it as of 2.1.1, and keeps no copies.** `src/components/header/` is `header.astro` and `menu.ts`; the six arrive from the package and `desktop-menu.vue` is deleted rather than imported. The header is Astro now, not Vue: it used to hold a `ref(window.innerWidth)` to pick between the two bars, which forced the whole thing to `client:only`, so **every page was served with no header at all** and grew one when Vue booted. A media query does that job, and BrandNav needs no JavaScript by construction — so the desktop bar is now static HTML and only the drawer hydrates, below `xl`.
-
-    **desktop-menu.vue is gone rather than excluded.** BrandNav replaced it outright, codecave.pro deleted the file on 2026-08-24, and the capture went with it — `source_examples/` records what the site ships, so a capture of a file the site does not have is not evidence of anything. It has no `NOT_SHIPPED` entry, because that list is for captures that exist and must not ship, not for captures that should not exist.
-
-    **The site keeps no copy of anything the package ships, as of 2026-08-24.** Audited by basename and normalised content, which found 19 exact duplicates — nine of them already dead. codecave.pro's `global.css` now declares **zero** custom properties of its own, and `.page-container` / `.section-container` are restated there only because importing `colors_and_type.css` would add ten `@font-face` rules whose `src` paths resolve inside the package; every *value* in them is a token. **37 captures now have no origin left** and are frozen by definition, which is worth watching: `source_examples/` is documented as evidence and nothing authored, and a majority of it can no longer be checked against anything.
-
-    **The fonts are settled.** The package declares ten `@font-face` rules — 300/400/500/700/900, upright and italic, every weight Satoshi has — and codecave.pro declares the same ten. **The binaries are still not in the tarball**: that is a redistribution question, recorded in `build.mjs`, and no release changes it. The vendor's own `stylesheet.css` is unusable and both stylesheets say why next to the declarations.
-
-    **A consumer that installs the components has to put the package back in Tailwind's scan.** Automatic content detection skips `node_modules` and this package ships Vue source, so a utility used only inside an installed component is never emitted — with no error anywhere: the build succeeds, the typecheck passes, and the elements render unstyled. One `@source` line fixes it, the package `README.md` says so, and codecave.pro's `check:classes` fails the build when it is missing (CCWEB2-360).
-
-    The version mechanic stays true and is the thing to remember — CI installs with `pnpm install --frozen-lockfile`, so the site runs whatever its lockfile pins and nothing moves it on its own. A token change here reaches the site only when someone raises the range and regenerates the lockfile. pnpm's `minimumReleaseAge` guard used to add a day on top of that, and no longer does: codecave.pro's `pnpm-workspace.yaml` exempts this package as a whole, with an entry naming no version at all. Every *wildcard* spelling is still rejected — `@codecavepro/brand@*`, `@x`, `@>=0.0.0` — which is why both repos said for a while that a whole-package exemption was unavailable. It is the wildcards that are unavailable; an entry with no version predicate is a different thing and pnpm accepts it.
-
-    **Never build or publish a component from a stale capture — and read what
-    "stale" is measured against.** `npm run check:captures` diffs
-    `docs/source_examples/` against **whatever branch the codecave.pro checkout
-    happens to be on**, so a checkout sitting on an unmerged branch reports that
-    branch's own fixes as capture drift. The captures record what the site
-    *ships*: put the checkout on `development` before believing the answer.
+CCWEB2-318, the epic that inverted the direction of truth, closed on 2026-08-25
+with the 2.2.0 release. What it established is architecture now and is described
+below rather than tracked as work.
 
 
 Open bugs in what codecave.pro ships, found while resyncing the captures or
@@ -48,7 +29,34 @@ package's** — do not "correct" them in `docs/`. A bug leaves this list the
 moment it is fixed; Jira keeps the history, so nothing here is a record:
 
 -   [CCWEB2-320](https://codecave.atlassian.net/browse/CCWEB2-320) — `TextField.vue`'s error message renders at 2.91:1. Accessibility, and a colour decision, so it is **assigned to Maria Shaban**.
--   [CCWEB2-331](https://codecave.atlassian.net/browse/CCWEB2-331) — GlowButton renders 44px against the 48px `--control-height` every other button uses, because its `h-11` has no `min-h-12` under it to cancel it — unlike `Button.vue`, where the same class was dead. Fixing it moves pixels on all eleven call sites, so it is a design call and is **assigned to Maria Shaban**: either GlowButton joins the 48px grid, or the exception gets written down next to the token.
+
+### What the package ships, and what a consumer must do
+
+**The fonts are settled.** The package declares ten `@font-face` rules — 300/400/500/700/900, upright and italic, every weight Satoshi has — and codecave.pro declares the same ten. **The binaries are still not in the tarball**: that is a redistribution question, recorded in `build.mjs`, and no release changes it. The vendor's own `stylesheet.css` is unusable and both stylesheets say why next to the declarations.
+
+**A consumer that installs the components has to put the package back in Tailwind's scan.** Automatic content detection skips `node_modules` and this package ships Vue source, so a utility used only inside an installed component is never emitted — with no error anywhere: the build succeeds, the typecheck passes, and the elements render unstyled. One `@source` line fixes it, the package `README.md` says so, and codecave.pro's `check:classes` fails the build when it is missing (CCWEB2-360).
+
+### How a change here reaches the site
+
+The version mechanic stays true and is the thing to remember — CI installs with `pnpm install --frozen-lockfile`, so the site runs whatever its lockfile pins and nothing moves it on its own. A token change here reaches the site only when someone raises the range and regenerates the lockfile. pnpm's `minimumReleaseAge` guard used to add a day on top of that, and no longer does: codecave.pro's `pnpm-workspace.yaml` exempts this package as a whole, with an entry naming no version at all. Every *wildcard* spelling is still rejected — `@codecavepro/brand@*`, `@x`, `@>=0.0.0` — which is why both repos said for a while that a whole-package exemption was unavailable. It is the wildcards that are unavailable; an entry with no version predicate is a different thing and pnpm accepts it.
+
+`check-captures.mjs` was deleted on 2026-08-25, along with its npm script and
+its release gate. The reason is the version mechanic above: the site installs
+this package and pins it, so it lags by design. Components are developed
+here, tried in the storybook here, published, and only then does the site
+bump — which means a check demanding the two be equal was red for exactly the
+changes it existed to protect, and green only when there was nothing to
+release. It had already narrowed itself: 37 of the then-51 files under
+`source_examples/` had no upstream left, and it reported them as "frozen by
+definition".
+
+**A component that reaches for one company's data does not belong here, and
+that is a different test from what it is written in.** A component ships once
+its reach becomes props — `items`, `serviceLinks`, `ctaHref`, `basePath`,
+`logo`, `resolveImage`, an `ICrmFormClient`. A footer carrying an EIN, a street
+address and a schema.org LocalBusiness graph, or a section calling a CMS for six
+known record ids, has nothing left underneath the data; those are assemblies OF
+shipped parts, not parts.
 
 ### The docs site is Astro
 
@@ -168,8 +176,7 @@ errors: the page renders, the canvas is simply empty. `npm run check:importmap`
 reads the bare specifiers out of `storybook/compiled/*.js` and the keys out of
 `DocPage.astro`'s `importmapJson` and fails on either mismatch, since a mapped
 specifier nothing imports is a claim that has stopped being true. Both inputs
-are committed, so unlike `check:captures` it needs no site checkout and runs in
-CI.
+are committed, so it needs no site checkout and runs in CI.
 
 **A layout may not derive a page's depth from `Astro.url.pathname`.** With
 `build.format: 'preserve'`, a directory index is requested at `/storybook` in
@@ -207,14 +214,15 @@ what `StrapiPort` became once the CMS-shaped components took an injected
 `resolveImage()`. So `build-storybook.mjs` names the specimens each port stood
 in for, and names any port nothing reached for at all.
 
-Related rule: **nothing under `docs/source_examples/` is authored.** A
-hand-written stub used to live there as `lib/strapi.ts`; it is gone.
+Related rule: **nothing under `docs/source_examples/` is authored** — which,
+since the components moved to `docs/authored/`, is a claim about eight files
+rather than a rule spanning the whole component tree.
 
 ### The package, in one paragraph
 
 `packages/brand/` is a **pure derivative of `docs/`** — it copies
 `colors_and_type.css` and `fonts.css` byte-for-byte, copies the root `LICENSE`,
-copies the components out of `docs/source_examples/`, extracts `tokens.css` from
+copies the components out of `docs/authored/`, extracts `tokens.css` from
 `colors_and_type.css` and `theme.css` from `docs/theme.css`, and compiles
 `docs/tokens/*.ts`. No *design content* under `packages/` is authored; the only
 tracked files are its manifest, build script and `README.md`, and `npm run
@@ -230,11 +238,14 @@ the font binaries, which stay out for a different reason (redistributing
 third-party type), and the two answers agree about what "the brand kit ships":
 the system, not the assets.
 
-**`docs/authored/` is the second root, and the only one anyone writes into.**
-`source_examples/` is evidence and nothing there is authored; `authored/` is the
-opposite, and exists because `BrandNav.vue` has no upstream to be captured from —
-it is the site bar and the docs bar reconciled, so neither repo owns it. Two
-directories rather than a flag, because the rule that nothing under
+**`docs/authored/` is the root anyone writes into, and as of 2026-08-25 it holds
+every component.** It began as a home for `BrandNav.vue` alone, which has no
+upstream to be captured from — it is the site bar and the docs bar reconciled, so
+neither repo owns it. Everything else joined it once the same became true of them:
+37 files with no upstream left, sitting in a directory whose name said they were
+copies of something. `source_examples/` keeps the eight that really are.
+
+Two directories rather than a flag, because the rule that nothing under
 `source_examples/` is authored stops being checkable the moment the two sit side
 by side. **The directory name is the claim**, and a path present in both roots
 fails the build rather than letting whichever walked last win.
@@ -320,7 +331,7 @@ one excused difference, and the exception carries its reason in `build.mjs`.
 457px)` at build time, where a `var()` would be invalid CSS.
 
 **The component list is computed, never written down.** `build.mjs` takes every
-non-excluded `.vue` under `source_examples/` as a root and follows everything it
+non-excluded `.vue` under either root as a root and follows everything it
 *reaches* transitively — *in the layout the package ships*, which is why
 `dist/src/` restores the site's `src/components/…` depth rather than keeping the
 captures' flattened one. A reference that lands outside the package fails the
@@ -361,7 +372,7 @@ tarball shipped no licence text at all while `package.json` claimed
 `"Unlicense"`. Copying it beats authoring a second one for the same reason as
 the palette. Publishing the result is [RELEASING.md](/RELEASING.md).
 
-**Publishing is a pushed tag, and nothing else.** `git push origin 2.1.5` runs
+**Publishing is a pushed tag, and nothing else.** `git push origin 2.2.0` runs
 [`.github/workflows/release.yml`](/.github/workflows/release.yml), which verifies
 and then publishes as an npm **trusted publisher** — OIDC, so there is no token
 in this repository, no `NPM_TOKEN` secret and no OTP. Two consequences worth
@@ -380,10 +391,10 @@ check that walks `dist/` in place, so a package can be correct on disk and broke
 for everyone who installs it. Its reference walk **mirrors `referencesOf()` in
 `build.mjs` by copy; keep the two in step.**
 
-**`check:captures` is the one precondition the pipeline cannot enforce.** It
-needs a codecave.pro checkout, and CI's is refused — `CODECAVE_PRO_TOKEN` is set
-and returns 403. The release workflow attempts it, fails the release on drift,
-and warns loudly when it could not run at all. Run it locally before tagging.
+**The release has no capture gate, deliberately.** It briefly did; see the note
+where that step used to be in `release.yml`. A release is the moment this
+repository is furthest ahead of the site, so a check requiring the two to match
+would fail every real release.
 
 The README is authored because npm renders it as the package page and there is
 nowhere else for that page to come from — it is manifest-adjacent, the same
@@ -407,10 +418,17 @@ because no brand project exists yet. The `brand-kit` label is what makes them
 movable in bulk when one does. **Print colour space / CMYK is deliberately not
 filed anywhere:** it is Maria Shaban's decision and gets its own project later.
 
-Site-side flaws still go to [WEBSITE-REVIEW.md](/WEBSITE-REVIEW.md), which is
-already mirrored as CCWEB2-270…310. It stays a file only because ten places
-cite it by section number, three of them inside the shipped
-`docs/colors_and_type.css`.
+[WEBSITE-REVIEW.md](/WEBSITE-REVIEW.md) is the component and token review,
+mirrored as CCWEB2-270…310. **Its findings are mostly OURS now** — it was
+written when the components were the site's, and they now live in
+`docs/authored/` and ship in the package, so a component remark is this
+repository's to fix and reaches the site at its next bump. Only remarks about
+files the site still owns are the site's.
+
+**Its section numbers must not be renumbered.** They are cited by number from
+the shipped `docs/colors_and_type.css` and from `docs/DESIGN.md`; the list
+starting at section 2 is deliberate, because section 1's only finding was
+fixed and deleted.
 
 ## Core Visual Foundation
 These are the foundational rules and assets that dictate how every other template is built. [[1](https://weirmedia.ca/web-design)]
