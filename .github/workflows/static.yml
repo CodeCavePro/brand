@@ -85,7 +85,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: '22'
 
       # Runs unconditionally and depends on nothing. If this fails, the
       # committed storybook does not match the component sources, so whatever
