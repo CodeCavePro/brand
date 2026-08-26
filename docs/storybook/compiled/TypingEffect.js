@@ -62,7 +62,7 @@ var __sfc__ = /* @__PURE__ */ _defineComponent({
     };
   }
 });
-__sfc__.__file = "authored/common/effects/TypingEffect.vue";
+__sfc__.__file = "components/common/effects/TypingEffect.vue";
 var TypingEffect_default = __sfc__;
 export {
   TypingEffect_default as default

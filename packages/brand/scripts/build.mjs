@@ -49,6 +49,7 @@ const pkg = path.resolve(here, '..');
 const repo = path.resolve(pkg, '../..');
 
 const docs = (...p) => path.join(repo, 'docs', ...p);
+const srcDir = (...p) => path.join(repo, 'src', ...p);
 const out = (...p) => path.join(pkg, 'dist', ...p);
 const tmp = (...p) => path.join(pkg, '.tmp', ...p);
 
@@ -122,7 +123,7 @@ const EXCLUDED = new Set(NOT_SHIPPED.map(([rel]) => rel));
  * imports, and check:importmap failing on a mapped specifier nothing imports. */
 function assertExclusionsExist() {
   const missing = NOT_SHIPPED.map(([rel]) => rel).filter(
-    (rel) => !ROOTS.some((root) => fs.existsSync(docs(root, rel))),
+    (rel) => !ROOTS.some((root) => fs.existsSync(srcDir(root, rel))),
   );
   if (!missing.length) return;
   console.error('build failed — NOT_SHIPPED excludes files that no root has:');
@@ -176,13 +177,13 @@ function shippedAs(rel) {
  * the two be equal was red for exactly the changes it was meant to protect. A
  * rule nothing enforces is a comment; a directory layout is not.
  */
-const ROOTS = ['authored', 'source_examples'];
+const ROOTS = ['components', 'captured'];
 
 /** Which root holds a given capture-relative path. Filled by shippable(). */
 const rootOfRel = new Map();
 
 /** The file a shipped path was copied from, in whichever root holds it. */
-const originOf = (rel) => docs(rootOfRel.get(rel) ?? 'authored', rel);
+const originOf = (rel) => srcDir(rootOfRel.get(rel) ?? 'components', rel);
 
 /** A shipped file whose bytes are not its capture's is one of these. */
 const isAliased = (rel) => usesAlias(fs.readFileSync(originOf(captureOf(rel)), 'utf8'));
@@ -459,15 +460,15 @@ function shippable() {
    * so it fails here rather than letting whichever root walked last win. */
   const all = [];
   for (const root of ROOTS) {
-    const base = docs(root);
+    const base = srcDir(root);
     if (!fs.existsSync(base)) continue;
     for (const file of walk(base)) {
       const rel = path.relative(base, file).split(path.sep).join('/');
-      if (root === 'source_examples' && rel.startsWith('brand-repo')) continue;
+      if (root === 'captured' && rel.startsWith('brand-repo')) continue;
       if (rootOfRel.has(rel)) {
         console.error(`build failed — ${rel} exists in both ${rootOfRel.get(rel)}/ and ${root}/.`);
         console.error('One shipped file cannot have two origins. Rename one, or delete');
-        console.error('the authored copy if the site has since grown a real one to capture.');
+        console.error('the src/components/ copy if the site has since grown a real one to capture.');
         process.exit(1);
       }
       rootOfRel.set(rel, root);

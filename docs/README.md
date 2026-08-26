@@ -81,12 +81,12 @@ upfront."* / *"We are ready to sign an NDA — your idea stays yours."*
 capture workspace's raw evidence — full snapshots of the `codecave.pro` and
 brand-repo working trees — and the table above cites it so each claim stays
 traceable to where it was read, not because the folder ships here. The
-component sources are preserved in `authored/` instead, so the code behind the
+component sources are preserved in `src/components/` instead, so the code behind the
 rules can be read without re-running intake: 38 files — every Vue component this
 system documents, with the helpers and icons they reach for. What is genuinely
-captured from elsewhere stays in `source_examples/`: the production
+captured from elsewhere stays in `src/captured/`: the production
 `global.css`, the wordmark, and this repository's own earlier token CSS in
-`source_examples/brand-repo-tokens/`.
+`src/captured/brand-repo-tokens/`.
 
 `tokens/` is the one derived artefact rather than a copy: `colors.ts`,
 `layout.ts` and `typography.ts` mirror `colors_and_type.css` as typed modules
@@ -114,8 +114,6 @@ PDF and email builders, native apps. The CSS remains the source of truth.
 ├── fonts/                     6 Satoshi cuts (woff2 + woff) + fonts.css
 ├── imagery/                   decorative line-and-glow art, on its #050505 ground
 │   └── source/                the same 8 SVGs untouched, byte-for-byte
-├── authored/                  every component, helper and icon — edit here
-├── source_examples/           the eight files captured from elsewhere — never edit
 ├── pages/                     every route on the site, as .astro
 │   ├── kitchen-sink/          25 specimens + the index that gathers them
 │   └── examples/              6 wrapper pages + the gallery
@@ -130,6 +128,15 @@ PDF and email builders, native apps. The CSS remains the source of truth.
     ├── raw/                   6 standalone deliverables — Astro never renders these
     └── examples.css           the chrome around them
 ```
+
+**The components are not in here.** They live at the repository root, in
+`src/components/` (every component, helper and icon — edit there) and
+`src/captured/` (the eight files captured from elsewhere — never edit).
+They moved out because `docs/` is what the site publishes and they are not
+published: the specimens mount the COMPILED bundles under `storybook/compiled/`,
+and the package is built from the sources directly. `src/logos/` holds the three
+vector masters the ramps above are rendered from.
+
 
 **There are two browsable surfaces, and they answer two different questions.**
 `kitchen-sink/` asks whether a **part** is right — a token, a specimen, a live
@@ -217,7 +224,7 @@ set.
 | Card | What to inspect | What it demonstrates |
 |---|---|---|
 | `kitchen-sink/index.html` | The hub over both halves. Confirm every card and story opens, and that the lockup renders. | `logos/codecave.svg`, `.divider`, `.eyebrow` |
-| `kitchen-sink/colors-primary.html` | That `#5F20FE` never fills a large area, and that cyan appears nowhere as a UI color. | `--color-action`, `--color-hovered`, `--color-glow-25`, `--gradient-brand`, the 12-step brand ramp, the 13-step gray ramp, the single-use accents, the technology wash, the 4-step error ramp. Source: `source_examples/styles/global.css`, `tokens/colors.css` |
+| `kitchen-sink/colors-primary.html` | That `#5F20FE` never fills a large area, and that cyan appears nowhere as a UI color. | `--color-action`, `--color-hovered`, `--color-glow-25`, `--gradient-brand`, the 12-step brand ramp, the 13-step gray ramp, the single-use accents, the technology wash, the 4-step error ramp. Source: `src/captured/styles/global.css`, `tokens/colors.css` |
 | `kitchen-sink/colors-theme-dark.html` | Four surfaces one hair apart — check they still separate. Read the contrast ratios on the foreground ramp. | `--color-surface-primary/-secondary/-tertiary/-quaternary`, `--color-body-*`, `.card` in situ |
 | `kitchen-sink/colors-theme-light.html` | The three light surfaces that legitimately exist, and why no light theme may be derived from them. | `gray-50` as ink vs. as a field, inverse lockup usage, `error-100` rationale |
 | `kitchen-sink/typography-specimens.html` | Whether the six Satoshi cuts render distinctly. If they look identical, the `@font-face` binding is broken. | `fonts/Satoshi-*.woff2`, the nine-step scale at true size, `.eyebrow` / `.lead` / `.eyebrow-lead` with a counter-example. Source: `tokens/typography.css`, `homepage/expertise.astro` |

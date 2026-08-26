@@ -59,10 +59,11 @@ import { fileURLToPath } from 'node:url';
 
 const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const repo = path.resolve(docs, '..');
-const captures = path.join(docs, 'source_examples');
-const authored = path.join(docs, 'authored');
+const srcRoot = path.resolve(docs, '..', 'src');
+const captures = path.join(srcRoot, 'captured');
+const authored = path.join(srcRoot, 'components');
 /* Both roots. global.css stays under captures/ and is read by name below;
- * every .vue this scans now lives under authored/, and the scan takes both
+ * every .vue this scans now lives under src/components/, and the scan takes both
  * so that a file moving between them cannot fall out of the sweep. */
 const sourceRoots = [authored, captures].filter((d) => fs.existsSync(d));
 

@@ -66,7 +66,7 @@ export const SELF_NAME = '@codecavepro/brand/';
  */
 const SITE_ALIASES = {
   '@assets/': 'src/assets/',
-  /* `src/` and not `src/components/`: dist/ mirrors docs/authored/, where a
+  /* `src/` and not `src/components/`: dist/ mirrors src/components/, where a
      component sits at its own path rather than under a components/ level. */
   '@components/': 'src/',
   '@helpers/': 'src/helpers/',

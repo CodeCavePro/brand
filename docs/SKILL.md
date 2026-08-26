@@ -21,8 +21,8 @@ user-invocable: true
 | `icons/` | The seven-step square icon ramp, `16x16.png` → `512x512.png`. |
 | `favicons/` | The web runtime set: `favicon.ico`, `favicon.svg`, `favicon-96x96.png`, `apple-touch-icon.png`, and both PWA manifest icons. `site.webmanifest` sits at the site root. |
 | `fonts/` | Six real Satoshi cuts in woff2 + woff, bound by `colors_and_type.css`. |
-| `authored/` | Every Vue component the system documents, with the helpers and icons they reach for. These are the origin: the package is built from them and codecave.pro installs the result. |
-| `source_examples/` | What is genuinely captured from elsewhere — the production `global.css` this repo reads but does not own, the wordmark, and snapshots of this repo's own earlier token CSS. |
+| `src/components/` | Every Vue component the system documents, with the helpers and icons they reach for. These are the origin: the package is built from them and codecave.pro installs the result. |
+| `src/captured/` | What is genuinely captured from elsewhere — the production `global.css` this repo reads but does not own, the wordmark, and snapshots of this repo's own earlier token CSS. |
 | `storybook/` | One story per component, each mounting the real `.vue` single-file component with its props, variants and source path. |
 | `examples/` | Whole surfaces composed from the system — pitch deck, contact form, marketing email, newsletter, landing page, print poster. One self-contained file each. |
 

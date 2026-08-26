@@ -41,7 +41,7 @@ function render(_ctx, _cache) {
   ])]);
 }
 var __sfc__ = { render };
-__sfc__.__file = "authored/assets/icons/asterisk-icon.vue";
+__sfc__.__file = "components/assets/icons/asterisk-icon.vue";
 var asterisk_icon_default = __sfc__;
 
 // ../packages/brand/dist/src/common/InputText.vue
@@ -109,7 +109,7 @@ var __sfc__2 = /* @__PURE__ */ _defineComponent({
   }
 });
 __sfc__2.__scopeId = "data-v-01d686cd";
-__sfc__2.__file = "authored/common/InputText.vue";
+__sfc__2.__file = "components/common/InputText.vue";
 var __css__ = "\ninput[data-v-01d686cd]:-webkit-autofill,\ninput[data-v-01d686cd]:-webkit-autofill:hover,\ninput[data-v-01d686cd]:-webkit-autofill:focus,\ninput[data-v-01d686cd]:-webkit-autofill:active {\n  -webkit-box-shadow: 0 0 0 1000px var(--color-surface-tertiary) inset !important;\n  -webkit-text-fill-color: var(--color-heading) !important;\n  -webkit-background-clip: text !important;\n}\ninput[data-v-01d686cd]:focus {\n  box-shadow: 0 0 16px 0 hsl(from var(--color-brand-500) h s l / 0.5),\n    0 0 4px 0 hsl(from var(--color-brand-500) h s l / 0.6);\n}\ninput.input-error[data-v-01d686cd]:focus,\n.input-error[data-v-01d686cd] {\n  box-shadow: 0 0 16px 0 hsl(from var(--color-error-200) h s l / 0.5),\n    0 0 4px 0 hsl(from var(--color-error-100) h s l / 0.6);\n}\n";
 if (typeof document !== "undefined" && !document.getElementById("sfc-style-01d686cd")) {
   const el = document.createElement("style");

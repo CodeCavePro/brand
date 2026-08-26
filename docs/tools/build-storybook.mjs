@@ -71,12 +71,13 @@ const esbuild = req('esbuild');
 
 /* The two roots a component's source can come from, in resolution order.
  *
- * authored/ holds what is written here; source_examples/ holds what was
+ * src/components/ holds what is written here; src/captured/ holds what was
  * captured from somewhere else. Both are searched, because a specimen does not
  * care which one supplied the bytes -- but the ORDER is fixed, and build.mjs
  * fails outright on a path present in both, so the ambiguity never arises. */
-const AUTHORED = path.join(docs, 'authored');
-const CAPTURES = path.join(docs, 'source_examples');
+const srcRoot = path.resolve(docs, '..', 'src');
+const AUTHORED = path.join(srcRoot, 'components');
+const CAPTURES = path.join(srcRoot, 'captured');
 const ROOTS = [AUTHORED, CAPTURES];
 
 /** The root holding a capture-relative path, or null when no root has it. */
@@ -473,7 +474,7 @@ if (!tokensRoot) throw new Error('no :root block found in docs/colors_and_type.c
 
 const globalCss = fs.readFileSync(path.join(CAPTURES, 'styles', 'global.css'), 'utf8');
 const siteRoot = globalCss.match(/^:root \{([\s\S]*?)^\}/m);
-if (!siteRoot) throw new Error('no :root block found in source_examples/styles/global.css');
+if (!siteRoot) throw new Error('no :root block found in src/captured/styles/global.css');
 const rootBlock = [null, `${tokensRoot[1]}${siteRoot[1]}`];
 
 /* Utilities keep their var(--…) references — do NOT inline theme values.

@@ -47,7 +47,7 @@ here, tried in the storybook here, published, and only then does the site
 bump — which means a check demanding the two be equal was red for exactly the
 changes it existed to protect, and green only when there was nothing to
 release. It had already narrowed itself: 37 of the then-51 files under
-`source_examples/` had no upstream left, and it reported them as "frozen by
+`src/captured/` had no upstream left, and it reported them as "frozen by
 definition".
 
 **A component that reaches for one company's data does not belong here, and
@@ -214,15 +214,15 @@ what `StrapiPort` became once the CMS-shaped components took an injected
 `resolveImage()`. So `build-storybook.mjs` names the specimens each port stood
 in for, and names any port nothing reached for at all.
 
-Related rule: **nothing under `docs/source_examples/` is authored** — which,
-since the components moved to `docs/authored/`, is a claim about eight files
+Related rule: **nothing under `src/captured/` is authored** — which,
+since the components moved to `src/components/`, is a claim about eight files
 rather than a rule spanning the whole component tree.
 
 ### The package, in one paragraph
 
 `packages/brand/` is a **pure derivative of `docs/`** — it copies
 `colors_and_type.css` and `fonts.css` byte-for-byte, copies the root `LICENSE`,
-copies the components out of `docs/authored/`, extracts `tokens.css` from
+copies the components out of `src/components/`, extracts `tokens.css` from
 `colors_and_type.css` and `theme.css` from `docs/theme.css`, and compiles
 `docs/tokens/*.ts`. No *design content* under `packages/` is authored; the only
 tracked files are its manifest, build script and `README.md`, and `npm run
@@ -238,15 +238,15 @@ the font binaries, which stay out for a different reason (redistributing
 third-party type), and the two answers agree about what "the brand kit ships":
 the system, not the assets.
 
-**`docs/authored/` is the root anyone writes into, and as of 2026-08-25 it holds
+**`src/components/` is the root anyone writes into, and as of 2026-08-25 it holds
 every component.** It began as a home for `BrandNav.vue` alone, which has no
 upstream to be captured from — it is the site bar and the docs bar reconciled, so
 neither repo owns it. Everything else joined it once the same became true of them:
 37 files with no upstream left, sitting in a directory whose name said they were
-copies of something. `source_examples/` keeps the eight that really are.
+copies of something. `src/captured/` keeps the eight that really are.
 
 Two directories rather than a flag, because the rule that nothing under
-`source_examples/` is authored stops being checkable the moment the two sit side
+`src/captured/` is authored stops being checkable the moment the two sit side
 by side. **The directory name is the claim**, and a path present in both roots
 fails the build rather than letting whichever walked last win.
 
@@ -334,12 +334,12 @@ one excused difference, and the exception carries its reason in `build.mjs`.
 non-excluded `.vue` under either root as a root and follows everything it
 *reaches* transitively — *in the layout the package ships*, and **that layout is
 now a mirror of the source**: `dist/src/common/Button.vue` for
-`docs/authored/common/Button.vue`, one file to one file. A reference that lands
+`src/components/common/Button.vue`, one file to one file. A reference that lands
 outside the package fails the build and names itself.
 
 **It ships as a mirror because it did not, and that cost a day.** `dist/src/`
 used to re-insert codecave.pro's `src/components/` level, so a component under
-`docs/authored/common/` imported `../../assets/…` — a path correct only *after*
+`src/components/common/` imported `../../assets/…` — a path correct only *after*
 the build re-rooted it. The sources were therefore unimportable by anything
 without that resolver: Vite could not resolve them, and `astro dev` reported
 them as missing npm packages. Mirroring makes `../assets/…` right in **both**
@@ -431,7 +431,7 @@ filed anywhere:** it is Maria Shaban's decision and gets its own project later.
 [WEBSITE-REVIEW.md](/WEBSITE-REVIEW.md) is the component and token review,
 mirrored as CCWEB2-270…310. **Its findings are mostly OURS now** — it was
 written when the components were the site's, and they now live in
-`docs/authored/` and ship in the package, so a component remark is this
+`src/components/` and ship in the package, so a component remark is this
 repository's to fix and reaches the site at its next bump. Only remarks about
 files the site still owns are the site's.
 

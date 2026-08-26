@@ -22,7 +22,7 @@ reissued. Everything else in this runbook is reversible; that is not.
 specimens, docs pages, `DESIGN.md` and `WEBSITE-REVIEW.md` are none of them.
 Those deploy with GitHub Pages on push and need no release.
 
-**A change under `docs/authored/` *is* a change that reaches the tarball.**
+**A change under `src/components/` *is* a change that reaches the tarball.**
 That directory is where the nineteen shipped components live, so editing one
 moves published bytes and needs a release.
 

@@ -22,7 +22,7 @@ import { SITE_ALIAS_PREFIXES, sitePath } from './docs/tools/import-aliases.mjs';
  * build-storybook.mjs already read it. A prefix whose directory no root holds
  * is skipped rather than guessed at — `@layouts` and `@styles` are in that
  * table precisely because this package does not ship them. */
-const ROOTS = ['docs/authored', 'docs/source_examples'].map((d) =>
+const ROOTS = ['src/components', 'src/captured'].map((d) =>
   path.join(path.dirname(fileURLToPath(import.meta.url)), d),
 );
 const siteAliases = SITE_ALIAS_PREFIXES.flatMap((prefix) => {

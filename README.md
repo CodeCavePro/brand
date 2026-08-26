@@ -45,7 +45,7 @@ Also in `docs/`: [tokens/](/docs/tokens) (the same tokens as typed TS modules, f
 cannot read a stylesheet), [fonts/](/docs/fonts) (six real Satoshi cuts), [assets/](/docs/assets)
 and [build/](/docs/build) (marks, icons and favicons), [imagery/](/docs/imagery) (the decorative
 line-and-glow layer), [artifacts/](/docs/artifacts) (deck, email, newsletter, form, poster and
-landing templates), and [authored/](/docs/authored) (the component sources the
+landing templates), and [src/components/](/src/components) (the component sources the
 rules were read out of).
 
 `docs/README.md` is the package guide; `docs/SKILL.md` is the agent-facing entry point.

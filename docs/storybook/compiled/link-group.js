@@ -78,7 +78,7 @@ w-fit max-w-full min-w-12 min-h-12 rounded-full text-body-primary font-bold tran
     };
   }
 });
-__sfc__.__file = "authored/common/Button.vue";
+__sfc__.__file = "components/common/Button.vue";
 var Button_default = __sfc__;
 
 // ../packages/brand/dist/src/footer/link-group.vue
@@ -123,7 +123,7 @@ var __sfc__2 = /* @__PURE__ */ _defineComponent2({
     };
   }
 });
-__sfc__2.__file = "authored/footer/link-group.vue";
+__sfc__2.__file = "components/footer/link-group.vue";
 var link_group_default = __sfc__2;
 export {
   link_group_default as default

@@ -78,7 +78,7 @@ w-fit max-w-full min-w-12 min-h-12 rounded-full text-body-primary font-bold tran
     };
   }
 });
-__sfc__.__file = "authored/common/Button.vue";
+__sfc__.__file = "components/common/Button.vue";
 var Button_default = __sfc__;
 
 // ../packages/brand/dist/src/homepage/technology-card.vue
@@ -142,7 +142,7 @@ var __sfc__2 = /* @__PURE__ */ _defineComponent2({
   }
 });
 __sfc__2.__scopeId = "data-v-26f4d928";
-__sfc__2.__file = "authored/homepage/technology-card.vue";
+__sfc__2.__file = "components/homepage/technology-card.vue";
 var __css__ = "\n.card-wrapper[data-v-26f4d928] {\n  background:\n    linear-gradient(hsl(from var(--color-technology-gradient-25) h s l / 0.1),\n      hsl(from var(--color-technology-gradient-0) h s l / 0.1),\n      hsl(from var(--color-technology-gradient-50) h s l / 0.1)) border-box;\n}\n.card[data-v-26f4d928] {\n  width: 100%;\n  height: 100%;\n  border-radius: inherit;\n  position: relative;\n  background: transparent;\n  backdrop-filter: blur(14px);\n}\n.card[data-v-26f4d928]::before {\n  content: '';\n  position: absolute;\n  z-index: -1;\n  inset: 0;\n  border-radius: inherit;\n  border: 1px solid transparent;\n  outline: 1px solid transparent;\n  -webkit-backface-visibility: hidden;\n  transform: translate3d(0, 0, 0);\n  background: linear-gradient(hsl(from var(--color-brand-500) h s l / 0.35),\n      hsl(from var(--color-brand-400) h s l / 0.675),\n      var(--color-brand-500)) border-box;\n  mask: linear-gradient(black, black) border-box,\n    linear-gradient(black, black) padding-box;\n  mask-composite: subtract;\n}\n";
 if (typeof document !== "undefined" && !document.getElementById("sfc-style-26f4d928")) {
   const el = document.createElement("style");

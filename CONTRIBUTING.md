@@ -31,8 +31,8 @@ places you change it. Knowing which category a file is in is most of the job:
 | Category | Files | What to do |
 |---|---|---|
 | **Origin** | `docs/colors_and_type.css`, `docs/tokens/*.ts` | **Edit these.** Both, together — the `.ts` is a hand-maintained mirror, not a compilation. |
-| **Component sources** | `docs/authored/**` | **Edit these.** This is where a component changes. |
-| **Provenance captures** | `docs/source_examples/**` | **Never edit.** These are copies of files another repository owns. |
+| **Component sources** | `src/components/**` | **Edit these.** This is where a component changes. |
+| **Provenance captures** | `src/captured/**` | **Never edit.** These are copies of files another repository owns. |
 | **Generated** | `packages/brand/dist/`, the derived half of `ds-bundle/` (including its Components cards), `docs/storybook/compiled/`, `docs/storybook/tw-bridge.css` | Never edit. Rebuild. |
 | **Artwork** | SVGs under `src/logos/` (masters), `docs/logos/`, `docs/favicons/`, `docs/assets/`, `docs/imagery/` | Edit the hex literally — SVG has no cascade to inherit a token from. |
 | **Swatch captions** | `docs/index.html`, `docs/index.html`, `docs/pages/preview/colors-*.astro` | Edit the literal. Here the hex *is the content* — a `var()` would render nothing. On the ported page the literals are a data array at the top of the file; that is still a literal. |
@@ -45,7 +45,7 @@ point of the token layer. **Never hard-code a hex in a file that could use a
 
 ## Files you must never hand-edit
 
-### `docs/source_examples/**`
+### `src/captured/**`
 
 These are **copies of files this repository does not own** — what another
 repository actually ships, at a moment in time. They exist to be *evidence*.
@@ -63,13 +63,13 @@ Eight files are left, and none of them is a component:
   repository's own earlier token CSS, kept so the token pages can show what
   changed. `build.mjs` skips them by name; nothing ships from them.
 
-**Components are not here any more.** They moved to `docs/authored/` on
+**Components are not here any more.** They moved to `src/components/` on
 2026-08-25, because 37 of the 45 files in this directory had no upstream left
 and the directory name had quietly become false. What was a rule nothing could
 enforce — `check:captures` was deleted the same week — is now a rule the layout
 states: the directory you may not edit contains nothing anyone would want to.
 
-### `docs/authored/**`
+### `src/components/**`
 
 **This is where components live, and editing one is the ordinary way to change
 a component.** The package is built from these files, the storybook compiles
@@ -276,8 +276,8 @@ for being ahead.
 here are digests or byte-for-byte copies of files in `docs/`, and all three
 read the **working tree**, not the git blob:
 
-- `check-tw-bridge.mjs` compares a sha256 of `docs/authored/` and
-  `docs/source_examples/` against the value recorded in the generated
+- `check-tw-bridge.mjs` compares a sha256 of `src/components/` and
+  `src/captured/` against the value recorded in the generated
   `tw-bridge.css` header. Both roots, so that MOVING a file between them —
   which changes no bytes — still moves the digest.
 - `npm run check` asserts `packages/brand/dist/colors_and_type.css` and
@@ -402,7 +402,7 @@ in [WEBSITE-REVIEW.md](/WEBSITE-REVIEW.md) and filed in CCWEB2 *without* the
 `brand-kit` label — never silently "corrected" in `docs/`.
 
 That is a much smaller set than it used to be. The components moved here, so a
-flaw in one of them **is** ours: fix it in `docs/authored/`, release, and the
+flaw in one of them **is** ours: fix it in `src/components/`, release, and the
 site gets it at its next bump. What remains genuinely site-side is the site's
 own pages, layouts and configuration.
 

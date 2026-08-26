@@ -35,8 +35,9 @@ const bridge = path.join(docs, 'storybook', 'tw-bridge.css');
 /* Both roots, in the same order build-storybook.mjs writes the digest in.
  * A component moving between them changes no bytes, so a digest over one
  * root alone would not notice the move at all. */
-const roots = [path.join(docs, 'authored'), path.join(docs, 'source_examples')];
-const SRC_LABEL = 'authored/ and source_examples/';
+const srcRoot = path.resolve(docs, '..', 'src');
+const roots = [path.join(srcRoot, 'components'), path.join(srcRoot, 'captured')];
+const SRC_LABEL = 'src/components/ and src/captured/';
 
 if (!fs.existsSync(bridge)) {
   console.error(`missing ${path.relative(process.cwd(), bridge)}`);
@@ -66,7 +67,7 @@ const REGENERATE =
  * more than the file list. Anything git cannot answer degrades to a sentence.
  */
 const LOG_HINT =
-  'Run `git log -- docs/authored/ docs/source_examples/` to see what moved.';
+  'Run `git log -- src/components/ src/captured/` to see what moved.';
 
 function changedSince(bridgePath, srcDirs) {
   try {
