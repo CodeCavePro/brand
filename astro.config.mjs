@@ -5,8 +5,8 @@ import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
 import vue from '@astrojs/vue';
 import starlight from '@astrojs/starlight'; // SPIKE CCWEB2-374
-import docsPassthrough from './docs/tools/astro-passthrough.mjs';
-import { SITE_ALIAS_PREFIXES, sitePath } from './docs/tools/import-aliases.mjs';
+import docsPassthrough from './tools/astro-passthrough.mjs';
+import { SITE_ALIAS_PREFIXES, sitePath } from './tools/import-aliases.mjs';
 
 /* codecave.pro's path aliases, pointed at the roots that hold those files.
  *
@@ -17,7 +17,7 @@ import { SITE_ALIAS_PREFIXES, sitePath } from './docs/tools/import-aliases.mjs';
  * dependency-scan, which reported them as missing npm packages and gave up on
  * pre-bundling with a message about whether they were installed.
  *
- * The table is READ, never restated: docs/tools/import-aliases.mjs is the one
+ * The table is READ, never restated: tools/import-aliases.mjs is the one
  * place that knows what these prefixes mean, and build.mjs and
  * build-storybook.mjs already read it. A prefix whose directory no root holds
  * is skipped rather than guessed at — `@layouts` and `@styles` are in that
@@ -52,7 +52,7 @@ const siteAliases = SITE_ALIAS_PREFIXES.flatMap((prefix) => {
  *
  * Astro 7.2.4 accepts the overlap. The cost is that publicDir also copies the
  * three directories Astro *owns* — pages/, layouts/, components/ — into dist/
- * as raw .astro source. docs/tools/astro-passthrough.mjs prunes them and then
+ * as raw .astro source. tools/astro-passthrough.mjs prunes them and then
  * asserts the passthrough actually happened, so if a future Astro changes this
  * behaviour the build fails instead of shipping a hollow site.
  *

@@ -64,7 +64,7 @@ Finished under [CCWEB2-317](https://codecave.atlassian.net/browse/CCWEB2-317) on
 2026-08-21, so it is architecture now rather than open work. **Sources stay in
 `docs/`, output goes to gitignored `dist/`, and Pages deploys `dist/`.** Every
 page is an `.astro` under `docs/pages/`, and everything else in `docs/` is
-payload that passes through — which `docs/tools/astro-passthrough.mjs` asserts
+payload that passes through — which `tools/astro-passthrough.mjs` asserts
 every build, both halves being silent when they fail.
 
 **There are three browsable surfaces, and that is the shape to hold in mind.**
@@ -265,7 +265,7 @@ has**, and the only way to tell the difference is to ask the tarball.
 capture names a file the package already ships, but spells it in a form that
 only resolves from *outside* the package — so copied verbatim it produces a
 tarball that looks complete and breaks in a consumer's build. The whole rule is
-the table in `docs/tools/import-aliases.mjs`, which is also read by
+the table in `tools/import-aliases.mjs`, which is also read by
 `build-storybook.mjs` when it compares the package's copy of a component against
 the capture it came from: an identical-bytes test there would mean the package
 was *not* built from that capture. Rewritten captures "match their origin once
@@ -394,7 +394,7 @@ because tagging one version while the manifest says another republishes the
 manifest's, and npm never sees the tag.
 
 The workflow reruns every check plus one that only makes sense against the
-artifact: `docs/tools/smoke-tarball.mjs` installs the packed tarball and asks it
+artifact: `tools/smoke-tarball.mjs` installs the packed tarball and asks it
 seventeen questions. That is not duplication of `npm run check` — `files`,
 `exports` and npm's by-name pickup of `LICENSE`/`README.md` are all invisible to a
 check that walks `dist/` in place, so a package can be correct on disk and broken

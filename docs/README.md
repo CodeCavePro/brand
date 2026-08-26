@@ -408,7 +408,7 @@ This package — `colors_and_type.css`, `DESIGN.md`, `tokens/`, `preview/`,
 One check, and it needs nothing but node. Run it from the repository root:
 
 ```bash
-node docs/tools/check-tw-bridge.mjs
+node tools/check-tw-bridge.mjs
 ```
 
 It proves `storybook/tw-bridge.css` is still in step with both component roots,
@@ -436,7 +436,7 @@ checkout — the storybook compiles the real components with the same
 vue/esbuild/tailwind versions the site builds with, which is the whole point:
 
 ```bash
-node docs/tools/build-storybook.mjs ../codecave.pro
+node tools/build-storybook.mjs ../codecave.pro
 ```
 
 That checkout must have its dependencies installed, and **it uses pnpm** — its

@@ -29,7 +29,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'docs');
 const stories = path.join(docs, 'pages', 'kitchen-sink');
 const rel = (p) => path.relative(process.cwd(), p);
 

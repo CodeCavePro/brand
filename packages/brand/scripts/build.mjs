@@ -42,7 +42,7 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
 import path from 'node:path';
-import { HELPERS_ALIAS, aliasTarget, isAlias, unalias, usesAlias } from '../../../docs/tools/import-aliases.mjs';
+import { HELPERS_ALIAS, aliasTarget, isAlias, unalias, usesAlias } from '../../../tools/import-aliases.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const pkg = path.resolve(here, '..');
@@ -151,7 +151,7 @@ function shippedAs(rel) {
  * assertPeersDeclared read `@helpers/paths.ts` as a scoped package nothing
  * declares. Two failures, one cause, neither visible until someone rebuilt.
  *
- * The rule itself lives in docs/tools/helpers-alias.mjs, because the storybook
+ * The rule itself lives in tools/helpers-alias.mjs, because the storybook
  * build needs the same answer and must not keep its own copy of it. What is
  * local to here is where it gets applied: resolved by the walk, rewritten on
  * copy, and asserted afterwards against the built output.
@@ -269,7 +269,7 @@ function assertDistResolves() {
   }
   console.error('');
   console.error('unalias() rewrites a QUOTED specifier whose prefix is in the table in');
-  console.error('docs/tools/import-aliases.mjs, and nothing else. An alias listed there');
+  console.error('tools/import-aliases.mjs, and nothing else. An alias listed there');
   console.error('with a null target is one this package deliberately does NOT ship --');
   console.error('@styles and @layouts -- so a shipped file reaching one is the bug, not');
   console.error('the missing rewrite. shippable() only follows what referencesOf()');

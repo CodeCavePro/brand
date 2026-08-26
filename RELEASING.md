@@ -154,7 +154,7 @@ mkdir -p /tmp/brand-smoke && (cd /tmp/brand-smoke && npm init -y && npm i "$OLDP
 ```
 
 ```bash
-node docs/tools/smoke-tarball.mjs /tmp/brand-smoke/node_modules/@codecavepro/brand
+node tools/smoke-tarball.mjs /tmp/brand-smoke/node_modules/@codecavepro/brand
 ```
 
 That prints seventeen assertions and exits 0, or names what is broken and exits

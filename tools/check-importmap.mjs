@@ -25,7 +25,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'docs');
 const compiled = path.join(docs, 'storybook', 'compiled');
 const layout = path.join(docs, 'layouts', 'DocPage.astro');
 const rel = (p) => path.relative(process.cwd(), p);

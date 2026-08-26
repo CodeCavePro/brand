@@ -194,7 +194,7 @@ jobs:
             npm init -y >/dev/null
             npm i "./codecavepro-brand-$VERSION.tgz" --no-audit --no-fund --legacy-peer-deps
           )
-          node docs/tools/smoke-tarball.mjs "$SMOKE/node_modules/@codecavepro/brand"
+          node tools/smoke-tarball.mjs "$SMOKE/node_modules/@codecavepro/brand"
 
       # ---- publish ---------------------------------------------------------
       # `npm run release`, not a bare `npm publish`: the root manifest and the

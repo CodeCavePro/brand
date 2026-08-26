@@ -26,7 +26,7 @@
 
 set -eu
 
-root=$(CDPATH= cd -- "$(dirname -- "$0")/../.." && pwd)
+root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 src="$root/docs"
 dst="$root/ds-bundle"
 

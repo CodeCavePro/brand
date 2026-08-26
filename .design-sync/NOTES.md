@@ -22,7 +22,7 @@ regenerates them. They were untracked until 2026-08-20 — source files with no 
 to review.
 
 **Generated (gitignored).** `components/Components/*/*.html` — seven component cards written by
-`docs/tools/build-ds-components.mjs` from the `STORIES` table inside it. The table is the
+`tools/build-ds-components.mjs` from the `STORIES` table inside it. The table is the
 tracked source; the cards are output.
 
 ## The Components cards mount the real component
@@ -50,7 +50,7 @@ Consequences:
 ### Before every push
 
 ```sh
-sh docs/tools/build-ds-bundle.sh && node docs/tools/build-ds-components.mjs
+sh tools/build-ds-bundle.sh && node tools/build-ds-components.mjs
 ```
 
 The first refreshes the derived half and proves every pair byte-identical; the second regenerates

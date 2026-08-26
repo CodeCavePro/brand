@@ -22,7 +22,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL, fileURLToPath } from 'node:url';
 
-const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'docs');
 
 const root = path.resolve(process.argv[2] ?? '');
 if (!process.argv[2] || !fs.existsSync(path.join(root, 'package.json'))) {

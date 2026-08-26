@@ -163,4 +163,4 @@ Coming soon...
 ## How to Build
 
 Put 3 types of the logo: square, horizontal and vertical into the [source folder](/src).
-Edit the list of desired sizes for logos and icons in the [build script file](docs/tools/generate-brand-assets.sh).
+Edit the list of desired sizes for logos and icons in the [build script file](tools/generate-brand-assets.sh).

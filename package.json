@@ -9,20 +9,21 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build --workspace @codecavepro/brand",
-    "check": "npm run check --workspace @codecavepro/brand && npm run check:ports && node docs/tools/check-tw-bridge.mjs && npm run check:collisions && npm run check:importmap && npm run check:findings && npm run check:examples && npm run check:links",
-    "check:importmap": "node docs/tools/check-importmap.mjs",
-    "check:findings": "node docs/tools/check-findings.mjs",
-    "check:examples": "node docs/tools/check-examples.mjs",
-    "check:links": "node docs/tools/check-links.mjs",
-    "check:ports": "tsc --noEmit --project docs/storybook/ports/tsconfig.json",
-    "check:collisions": "node docs/tools/check-tw-collisions.mjs",
     "dev": "npm run docs:build && npm run docs:preview",
-    "docs:dev": "astro dev",
+    "build": "npm run build --workspace @codecavepro/brand",
     "docs:build": "astro build",
     "docs:preview": "astro preview",
-    "release": "npm publish --workspace @codecavepro/brand --access public",
-    "assets:generate": "bash docs/tools/generate-brand-assets.sh"
+    "storybook:build": "node tools/build-storybook.mjs",
+    "assets:generate": "bash tools/generate-brand-assets.sh",
+    "check": "npm run check --workspace @codecavepro/brand && npm run check:ports && npm run check:tw-bridge && npm run check:collisions && npm run check:importmap && npm run check:findings && npm run check:examples && npm run check:links",
+    "check:ports": "tsc --noEmit --project docs/storybook/ports/tsconfig.json",
+    "check:tw-bridge": "node tools/check-tw-bridge.mjs",
+    "check:collisions": "node tools/check-tw-collisions.mjs",
+    "check:importmap": "node tools/check-importmap.mjs",
+    "check:findings": "node tools/check-findings.mjs",
+    "check:examples": "node tools/check-examples.mjs",
+    "check:links": "node tools/check-links.mjs",
+    "release": "npm publish --workspace @codecavepro/brand --access public"
   },
   "engines": {
     "node": ">=22"

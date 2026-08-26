@@ -30,7 +30,7 @@ import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { sourceDigest, recordedDigest } from './source-digest.mjs';
 
-const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'docs');
 const bridge = path.join(docs, 'storybook', 'tw-bridge.css');
 /* Both roots, in the same order build-storybook.mjs writes the digest in.
  * A component moving between them changes no bytes, so a digest over one

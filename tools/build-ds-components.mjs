@@ -44,7 +44,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'docs');
 const repo = path.join(docs, '..');
 const BUNDLE = path.join(repo, 'ds-bundle');
 const OUT = path.join(BUNDLE, 'components', 'Components');

@@ -53,7 +53,7 @@ import crypto from 'node:crypto';
 import { sourceDigest, DIGEST_PREFIX } from './source-digest.mjs';
 import { SITE_ALIAS_PATTERN, sitePath, unalias, usesAlias } from './import-aliases.mjs';
 
-const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'docs');
 const siteDir = path.resolve(process.argv[2] ?? path.join(docs, '..', '..', 'codecave.pro'));
 if (!fs.existsSync(path.join(siteDir, 'node_modules'))) {
   console.error(`codecave.pro checkout with node_modules not found at ${siteDir}`);

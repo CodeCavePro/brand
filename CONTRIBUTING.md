@@ -83,11 +83,11 @@ shipped file cannot have two origins, and the directory name is the claim.
 
 `ds-bundle/` is split, and the split is not visible from the file names:
 
-- **Derived and gitignored** — regenerate with `sh docs/tools/build-ds-bundle.sh`.
+- **Derived and gitignored** — regenerate with `sh tools/build-ds-bundle.sh`.
 - **Authored and tracked** — `README.md`, `styles.css`, `guidelines/brand.md`,
   and the **Foundations** cards. These have no upstream in `docs/`. Edit them here.
 - **Generated and gitignored** — the **Components** cards, written by
-  `node docs/tools/build-ds-components.mjs` from the `STORIES` table inside it.
+  `node tools/build-ds-components.mjs` from the `STORIES` table inside it.
   That table is the tracked source; the cards are output, like `dist/`.
 
 The two card directories look alike and are opposite. A Foundations card is a
@@ -102,7 +102,7 @@ nothing would say so.
 Both halves run in one order, and the second fails loudly if you skip the first:
 
 ```bash
-sh docs/tools/build-ds-bundle.sh && node docs/tools/build-ds-components.mjs
+sh tools/build-ds-bundle.sh && node tools/build-ds-components.mjs
 ```
 
 One exception worth knowing: `ds-bundle/README.md` is tracked and authored, but
@@ -131,7 +131,7 @@ on you.
    ```
 6. Regenerate the bundle if the CSS moved:
    ```bash
-   sh docs/tools/build-ds-bundle.sh
+   sh tools/build-ds-bundle.sh
    ```
 
 ### Changing a rule rather than a value
@@ -147,7 +147,7 @@ first. The short version: a captured component that depends on something the
 static build cannot carry gets an **interface and an adapter**, never a stub.
 
 - The interface goes in `docs/storybook/ports/ports.d.ts`, the adapter beside it,
-  and the wiring in the `PORTS` table in `docs/tools/build-storybook.mjs`.
+  and the wiring in the `PORTS` table in `tools/build-storybook.mjs`.
 - **An adapter substitutes the environment, never the behaviour.** `SanitizerPort`
   is real `dompurify` with only the `jsdom` half dropped, because a docs page is
   only ever a browser. It shipped as an identity function for a day, and that
@@ -204,7 +204,7 @@ static build cannot carry gets an **interface and an adapter**, never a stub.
   moved neither: a note marked fixed upstream lost its `is-warn`, turning a
   defect into an observation while 55 stayed 55. It also fails when one of
   those three sentences is **reworded**, since the patterns are literal — that
-  is the point. Fix the pattern in `docs/tools/check-findings.mjs` so the claim
+  is the point. Fix the pattern in `tools/check-findings.mjs` so the claim
   stays covered; a check that has quietly stopped covering anything reads
   exactly like one that passes.
 
@@ -237,7 +237,7 @@ through the `exports` map into a second, separately installed copy of the very
 package doing the importing. All are rewritten to relative form on the way into
 `dist/`. Those captures match their origin *once the alias is resolved*, and the
 check prints the two counts separately so neither claim is doing the other's
-work. The rule is the table in `docs/tools/import-aliases.mjs`, shared with
+work. The rule is the table in `tools/import-aliases.mjs`, shared with
 `build-storybook.mjs` — which needs the same answer, because for those files
 identical bytes would mean the package was **not** built from that capture.
 
@@ -315,8 +315,16 @@ stays true-looking after the behaviour breaks.
 The site is built with Astro now ([CCWEB2-317](https://codecave.atlassian.net/browse/CCWEB2-317)).
 
 ```bash
-npm run docs:dev
+npm run dev
 ```
+
+**That builds and then previews; there is deliberately no `astro dev` script.**
+With `build.format: 'preserve'` a directory index is requested at `/kitchen-sink`
+in dev but emitted at `/kitchen-sink/index.html` by the build, and the menu links
+carry `.html` so that every page also opens from disk. So the dev server 404s on
+every top-level menu entry while serving the leaf pages perfectly — it looks like
+the navigation is broken rather than like the wrong server. `npm run dev` is a few
+seconds slower and shows the site the way it actually ships.
 
 `docs/` is still the origin and is still committed — the build reads from it and
 writes to `dist/`, which is not. **Nothing about the one rule changes:** if the
@@ -330,7 +338,7 @@ exception and always will be — see below.
 
 The half-migrated state is gone, but the machinery that made it survivable is
 not, and it is worth keeping: a page reaches `dist/` either by being rendered or
-by being copied, both silently, and `docs/tools/astro-passthrough.mjs` asserts
+by being copied, both silently, and `tools/astro-passthrough.mjs` asserts
 both every build. Adding a page back as plain `.html` still works.
 
 Four things to know if you write or move a page:
@@ -347,7 +355,7 @@ Four things to know if you write or move a page:
   `srcDir` are the same directory, and when both offer a path Astro keeps the
   copied file and skips the page — a `WARN` in a build that exits 0, leaving the
   new `.astro` as dead source. The build now fails instead: see
-  `docs/tools/astro-passthrough.mjs`.
+  `tools/astro-passthrough.mjs`.
 - **Diff the output against the page you replaced.** `compressHTML` is off, so a
   faithful port renders almost byte-identically and the diff is short enough to
   read. It is off for a better reason than that — on by default it collapsed a

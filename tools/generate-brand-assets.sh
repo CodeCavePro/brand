@@ -16,7 +16,7 @@
 
 set -euo pipefail
 
-root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 masters="$root/src/logos"
 out_logos="$root/docs/logos"
 out_icons="$root/docs/icons"

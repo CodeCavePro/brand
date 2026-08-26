@@ -57,7 +57,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'docs');
 const repo = path.resolve(docs, '..');
 const srcRoot = path.resolve(docs, '..', 'src');
 const captures = path.join(srcRoot, 'captured');
