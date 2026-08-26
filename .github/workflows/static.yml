@@ -1,7 +1,7 @@
 # Deploy docs/ to GitHub Pages, rebuilding the storybook first when it can.
 #
 # The storybook's compiled/*.js and tw-bridge.css are generated from
-# docs/authored/ and docs/source_examples/, but the generator needs the codecave.pro repo's
+# src/components/ and src/captured/, but the generator needs the codecave.pro repo's
 # toolchain (vue/compiler-sfc, esbuild, tailwindcss) — the SAME versions the
 # website builds with, which is the whole point. That means the rebuild can
 # only run where this workflow can reach that repo.
