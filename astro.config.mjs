@@ -1,8 +1,35 @@
 // @ts-check
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
 import vue from '@astrojs/vue';
 import starlight from '@astrojs/starlight'; // SPIKE CCWEB2-374
 import docsPassthrough from './docs/tools/astro-passthrough.mjs';
+import { SITE_ALIAS_PREFIXES, sitePath } from './docs/tools/import-aliases.mjs';
+
+/* codecave.pro's path aliases, pointed at the roots that hold those files.
+ *
+ * The components under docs/authored/ are written the way the site writes them,
+ * so four of them import `@helpers/...` — a tsconfig `paths` entry in THAT
+ * repo, which this one has never declared to Vite. Nothing here imports a
+ * component, so nothing broke; the only thing that noticed was Vite's
+ * dependency-scan, which reported them as missing npm packages and gave up on
+ * pre-bundling with a message about whether they were installed.
+ *
+ * The table is READ, never restated: docs/tools/import-aliases.mjs is the one
+ * place that knows what these prefixes mean, and build.mjs and
+ * build-storybook.mjs already read it. A prefix whose directory no root holds
+ * is skipped rather than guessed at — `@layouts` and `@styles` are in that
+ * table precisely because this package does not ship them. */
+const ROOTS = ['docs/authored', 'docs/source_examples'].map((d) =>
+  path.join(path.dirname(fileURLToPath(import.meta.url)), d),
+);
+const siteAliases = SITE_ALIAS_PREFIXES.flatMap((prefix) => {
+  const rel = sitePath(prefix);
+  const dir = ROOTS.map((r) => path.join(r, rel)).find((p) => fs.existsSync(p));
+  return dir ? [{ find: prefix.slice(0, -1), replacement: dir }] : [];
+});
 
 /* The docs site — CCWEB2-317, and phase 2 of CCWEB2-318.
  *
@@ -137,6 +164,8 @@ export default defineConfig({
   ],
 
   vite: {
+    resolve: { alias: siteAliases },
+
     optimizeDeps: {
       /* Tell Vite what the entrypoints are, because it guesses badly here.
        *

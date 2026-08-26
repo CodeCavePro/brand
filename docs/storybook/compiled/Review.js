@@ -1,6 +1,6 @@
 /* GENERATED from @codecavepro/brand/components/common/Review.vue by tools/build-storybook.mjs — do not edit. */
 
-// ../packages/brand/dist/src/components/common/Review.vue
+// ../packages/brand/dist/src/common/Review.vue
 import { defineComponent as _defineComponent2 } from "vue";
 import { openBlock as _openBlock4, createBlock as _createBlock, createCommentVNode as _createCommentVNode, toDisplayString as _toDisplayString, createElementVNode as _createElementVNode3, resolveDynamicComponent as _resolveDynamicComponent, createElementBlock as _createElementBlock4, createVNode as _createVNode, normalizeClass as _normalizeClass } from "vue";
 
@@ -78,7 +78,7 @@ var __sfc__2 = { render: render2 };
 __sfc__2.__file = "authored/assets/icons/verified-icon.vue";
 var verified_icon_default = __sfc__2;
 
-// ../packages/brand/dist/src/components/common/images/LazyImage.vue
+// ../packages/brand/dist/src/common/images/LazyImage.vue
 import { defineComponent as _defineComponent } from "vue";
 import { openBlock as _openBlock3, createElementBlock as _createElementBlock3 } from "vue";
 import { onMounted, onUnmounted, ref } from "vue";
@@ -143,7 +143,7 @@ var __sfc__3 = /* @__PURE__ */ _defineComponent({
 __sfc__3.__file = "authored/common/images/LazyImage.vue";
 var LazyImage_default = __sfc__3;
 
-// ../packages/brand/dist/src/components/common/Review.vue
+// ../packages/brand/dist/src/common/Review.vue
 var _hoisted_14 = { class: "flex flex-col lg:flex-row gap-5 lg:items-center" };
 var _hoisted_2 = { class: "flex items-center gap-2" };
 var _hoisted_3 = { class: "text-heading text-lg lg:text-xl" };

@@ -17,6 +17,7 @@
     "check:links": "node docs/tools/check-links.mjs",
     "check:ports": "tsc --noEmit --project docs/storybook/ports/tsconfig.json",
     "check:collisions": "node docs/tools/check-tw-collisions.mjs",
+    "dev": "npm run docs:build && npm run docs:preview",
     "docs:dev": "astro dev",
     "docs:build": "astro build",
     "docs:preview": "astro preview",

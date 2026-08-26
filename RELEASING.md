@@ -176,12 +176,11 @@ only `from "..."`, reported that everything resolved over a 1.6.0 tarball whose
 `Checkbox.vue` reached a `checked-icon.svg` that was not in it, and the bug
 shipped (CCWEB2-370). A background-image is a reference like any other.
 
-The reference walk is the assertion worth understanding. The captures flatten
-the site's `src/components/` level away while their imports still climb through
-it — `common/Checkbox.vue` reaches `../../assets/icons/asterisk-icon.vue` — so
-the package ships at the site's depth to keep those resolving. The storybook
-cannot catch a regression there, because `build-storybook.mjs` re-roots escaping
-imports with a resolver plugin and a consumer's `import` has no such plugin. A
+The reference walk is the assertion worth understanding. `dist/src/` mirrors
+the source tree one file to one file, so a relative import means the same thing
+in both — `common/Checkbox.vue` reaches `../assets/icons/asterisk-icon.vue`
+here and in the tarball. That is what lets this walk be a real test: it asks the
+*built* files, and the answer is not distorted by a layout the build invented. A
 dangling reference means the package is broken for every consumer while looking
 fine in this repo.
 

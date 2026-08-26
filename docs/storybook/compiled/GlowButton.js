@@ -1,6 +1,6 @@
 /* GENERATED from @codecavepro/brand/components/common/GlowButton.vue by tools/build-storybook.mjs — do not edit. */
 
-// ../packages/brand/dist/src/components/common/GlowButton.vue
+// ../packages/brand/dist/src/common/GlowButton.vue
 import { defineComponent as _defineComponent } from "vue";
 import { createElementVNode as _createElementVNode, toDisplayString as _toDisplayString, normalizeClass as _normalizeClass, openBlock as _openBlock, createElementBlock as _createElementBlock } from "vue";
 import { onMounted, ref } from "vue";

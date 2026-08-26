@@ -66,7 +66,9 @@ export const SELF_NAME = '@codecavepro/brand/';
  */
 const SITE_ALIASES = {
   '@assets/': 'src/assets/',
-  '@components/': 'src/components/',
+  /* `src/` and not `src/components/`: dist/ mirrors docs/authored/, where a
+     component sits at its own path rather than under a components/ level. */
+  '@components/': 'src/',
   '@helpers/': 'src/helpers/',
   '@lib/': 'src/lib/',
   '@layouts/': null,
@@ -74,7 +76,7 @@ const SITE_ALIASES = {
 };
 
 /* Which subpaths of the PACKAGE NAME map into dist/src/. Straight from the
- * exports map in package.json: "./components/*" -> "./dist/src/components/*",
+ * exports map in package.json: "./components/*" -> "./dist/src/*",
  * and the same for assets, helpers and lib. Anything else the package exports
  * — tokens.css, theme.css, the root entry — is NOT under src/, so it is left
  * alone deliberately: a wrong path here would resolve to nothing quietly,
@@ -106,7 +108,10 @@ export const aliasTarget = (spec) => {
   }
   if (spec.startsWith(SELF_NAME)) {
     const rest = spec.slice(SELF_NAME.length);
-    return SELF_SUBPATHS.includes(rest.split('/')[0]) ? `src/${rest}` : null;
+    const [top, ...tail] = rest.split('/');
+    if (!SELF_SUBPATHS.includes(top)) return null;
+    /* `components` is a name in the export map, not a directory in dist/. */
+    return top === 'components' ? `src/${tail.join('/')}` : `src/${rest}`;
   }
   return null;
 };

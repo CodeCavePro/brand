@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import AsteriskIcon from "../../assets/icons/asterisk-icon.vue";
+import AsteriskIcon from "../assets/icons/asterisk-icon.vue";
 
 const props = withDefaults(
   defineProps<{
@@ -101,7 +101,7 @@ input::before {
   content: '';
   transform: scale(0);
   transition: var(--duration-control) transform ease-in-out;
-  background-image: url("../../assets/images/checked-icon.svg");
+  background-image: url("../assets/images/checked-icon.svg");
   background-repeat: no-repeat;
   background-position: center center;
 }

@@ -28,7 +28,7 @@
     "./tokens.css": "./dist/tokens.css",
     "./theme.css": "./dist/theme.css",
     "./fonts.css": "./dist/fonts.css",
-    "./components/*": "./dist/src/components/*",
+    "./components/*": "./dist/src/*",
     "./assets/*": "./dist/src/assets/*",
     "./helpers/*": "./dist/src/helpers/*",
     "./lib/*": "./dist/src/lib/*",

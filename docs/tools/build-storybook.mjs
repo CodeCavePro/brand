@@ -141,7 +141,7 @@ if (!fs.existsSync(PKG)) {
  * it, identical bytes would mean the package was NOT built from this capture.
  * Both sides read the rule from import-aliases.mjs rather than restating it. */
 function rootOf(entry) {
-  const shipped = path.join(PKG, 'components', entry);
+  const shipped = path.join(PKG, entry);
   if (!fs.existsSync(shipped)) {
     const root = rootHolding(entry) ?? AUTHORED;
     return { file: path.join(root, entry), root, label: 'sources' };
@@ -149,7 +149,7 @@ function rootOf(entry) {
   const capture = inRoots(entry);
   const captured = fs.readFileSync(capture, 'utf8');
   const expected = usesAlias(captured)
-    ? unalias(captured, `src/components/${entry}`)
+    ? unalias(captured, `src/${entry}`)
     : captured;
   if (fs.readFileSync(shipped, 'utf8') !== expected) {
     console.error(`the package's ${entry} is not the capture it was copied from.`);
@@ -189,14 +189,14 @@ function compileSFC(file) {
    * must name the component rather than the directory it happened to be
    * resolved through -- otherwise moving a component into the package (or out
    * of it) rewrites every data-v- attribute in its bundle for no reason anyone
-   * could act on. dist/src/components/ IS the source tree with the site's depth
-   * restored, so stripping that prefix recovers the path exactly -- and because
-   * the identity is relative to whichever ROOT held the file, moving a component
-   * between authored/ and source_examples/ does not touch a scoped id either. */
+   * could act on. dist/src/ MIRRORS docs/authored/, so the path relative to
+   * either base is already the identity -- and because it is relative to
+   * whichever ROOT held the file, moving a component between authored/ and
+   * source_examples/ does not touch a scoped id either. */
   const underPkg = !path.relative(PKG, file).startsWith('..');
   const base = underPkg ? PKG : (rootUnder(file) ?? AUTHORED);
   const rel = path.relative(base, file).replace(/\\/g, '/');
-  const filename = underPkg ? rel.replace(/^components\//, '') : rel;
+  const filename = rel;
   const id = crypto.createHash('sha1').update(filename).digest('hex').slice(0, 8);
   const { descriptor, errors } = compiler.parse(source, { filename });
   if (errors.length) throw new Error(`${filename}: ${errors[0].message}`);
@@ -254,16 +254,6 @@ if (typeof document !== 'undefined' && !document.getElementById(${JSON.stringify
   }
   code += `\nexport default __sfc__;`;
   return code;
-}
-
-/* The site nests SFCs under src/components/<group>/, so its relative imports
- * climb out of components/ ("../../assets/…"). The roots flatten that one
- * level; when a climb overshoots, re-root it at whichever root holds it. */
-function tryFile(p) {
-  for (const c of [p, `${p}.ts`, `${p}.js`]) {
-    if (fs.existsSync(c) && fs.statSync(c).isFile()) return c;
-  }
-  return null;
 }
 
 /* ---- ports: the storybook's outside world -------------------------------
@@ -352,11 +342,6 @@ const vuePlugin = {
       const hit = PORTS.find((p) => p.specifier.test(bare));
       if (hit) exercised.get(hit.port).add(currentEntry);
       return hit ? { path: path.join(PORTS_DIR, hit.adapter) } : null;
-    });
-    build.onResolve({ filter: /^\.\.\// }, (args) => {
-      if (tryFile(path.resolve(args.resolveDir, args.path))) return null; // esbuild handles it
-      const rerooted = tryFile(inRoots(args.path.replace(/^(\.\.\/)+/, '')));
-      return rerooted ? { path: rerooted } : null;
     });
     build.onLoad({ filter: /\.vue$/ }, (args) => ({
       contents: compileSFC(args.path),

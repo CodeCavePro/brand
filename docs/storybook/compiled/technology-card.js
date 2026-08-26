@@ -1,10 +1,10 @@
 /* GENERATED from @codecavepro/brand/components/homepage/technology-card.vue by tools/build-storybook.mjs — do not edit. */
 
-// ../packages/brand/dist/src/components/homepage/technology-card.vue
+// ../packages/brand/dist/src/homepage/technology-card.vue
 import { defineComponent as _defineComponent2 } from "vue";
 import { toDisplayString as _toDisplayString2, createElementVNode as _createElementVNode2, normalizeClass as _normalizeClass2, createVNode as _createVNode, openBlock as _openBlock2, createElementBlock as _createElementBlock2 } from "vue";
 
-// ../packages/brand/dist/src/components/common/Button.vue
+// ../packages/brand/dist/src/common/Button.vue
 import { defineComponent as _defineComponent } from "vue";
 import { toDisplayString as _toDisplayString, createElementVNode as _createElementVNode, renderSlot as _renderSlot, normalizeClass as _normalizeClass, openBlock as _openBlock, createElementBlock as _createElementBlock, createTextVNode as _createTextVNode } from "vue";
 import { computed } from "vue";
@@ -81,7 +81,7 @@ w-fit max-w-full min-w-12 min-h-12 rounded-full text-body-primary font-bold tran
 __sfc__.__file = "authored/common/Button.vue";
 var Button_default = __sfc__;
 
-// ../packages/brand/dist/src/components/homepage/technology-card.vue
+// ../packages/brand/dist/src/homepage/technology-card.vue
 var _hoisted_12 = { class: "card flex flex-col items-center justify-around" };
 var _hoisted_2 = { class: "max-w-[8rem] text-center text-xl font-bold text-heading text-balance" };
 var __sfc__2 = /* @__PURE__ */ _defineComponent2({

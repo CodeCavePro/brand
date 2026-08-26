@@ -5,15 +5,15 @@ import Checkbox from "../Checkbox.vue";
 import Radio from "../Radio.vue";
 import TextField from "../TextField.vue";
 import { computed, ref, watch } from "vue";
-import SuccessIcon from "../../../assets/icons/success-icon.vue";
-import CloseIcon from "../../../assets/icons/close-icon.vue";
+import SuccessIcon from "../../assets/icons/success-icon.vue";
+import CloseIcon from "../../assets/icons/close-icon.vue";
 import gsap from "gsap";
 import type {
   ContactFormDefinition,
   ContactFormValues,
   CrmSubmitResult,
   ICrmFormClient,
-} from "../../../lib/crm/types";
+} from "../../lib/crm/types";
 import { isCorrectEmailFormat, isCorrectLinkedInFormat } from "@helpers/form-validator.ts";
 
 /* This component knows nothing about HubSpot, or about any other CRM. It is

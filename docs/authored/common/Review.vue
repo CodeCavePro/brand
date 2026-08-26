@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import LinkedinIcon from "../../assets/icons/linkedin-icon.vue";
-import VerifiedIcon from "../../assets/icons/verified-icon.vue";
+import LinkedinIcon from "../assets/icons/linkedin-icon.vue";
+import VerifiedIcon from "../assets/icons/verified-icon.vue";
 import LazyImage from "./images/LazyImage.vue"
 
 /* See ArticlePreview.vue: the fields read here, not the generated Strapi

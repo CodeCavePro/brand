@@ -332,10 +332,20 @@ one excused difference, and the exception carries its reason in `build.mjs`.
 
 **The component list is computed, never written down.** `build.mjs` takes every
 non-excluded `.vue` under either root as a root and follows everything it
-*reaches* transitively — *in the layout the package ships*, which is why
-`dist/src/` restores the site's `src/components/…` depth rather than keeping the
-captures' flattened one. A reference that lands outside the package fails the
-build and names itself. So a component is added by capturing it, and the only
+*reaches* transitively — *in the layout the package ships*, and **that layout is
+now a mirror of the source**: `dist/src/common/Button.vue` for
+`docs/authored/common/Button.vue`, one file to one file. A reference that lands
+outside the package fails the build and names itself.
+
+**It ships as a mirror because it did not, and that cost a day.** `dist/src/`
+used to re-insert codecave.pro's `src/components/` level, so a component under
+`docs/authored/common/` imported `../../assets/…` — a path correct only *after*
+the build re-rooted it. The sources were therefore unimportable by anything
+without that resolver: Vite could not resolve them, and `astro dev` reported
+them as missing npm packages. Mirroring makes `../assets/…` right in **both**
+places, and `exports` absorbs the change — `./components/*` maps to `./dist/src/*`,
+so `@codecavepro/brand/components/common/Button.vue` still resolves for a
+consumer. `components` is a name in the export map now, not a directory. So a component is added by capturing it, and the only
 hand-written thing is `NOT_SHIPPED`, where each exclusion carries its reason as
 a string.
 

@@ -81,19 +81,23 @@ const ROOT_VERBATIM = [[path.join(repo, 'LICENSE'), 'LICENSE']];
  * a specimen in the storybook and a component in a consumer's node_modules are
  * provably the same bytes as the site's.
  *
- * WHY THE LAYOUT CHANGES SHAPE. The captures flatten the site's
- * `src/components/` away — `common/Checkbox.vue` on disk is
- * `src/components/common/Checkbox.vue` on the site. Its imports did not
- * flatten with it: it still climbs `../../assets/icons/asterisk-icon.vue`,
- * which from the source tree lands OUTSIDE the root entirely. Every file with
- * a two-level climb is in that position, and it has never been noticed because
- * build-storybook.mjs carries a resolver that re-roots an overshooting climb
- * back at the root. A bundler plugin can do that; `import` in a
- * consumer's app cannot.
+ * WHY THE LAYOUT MIRRORS THE SOURCE. dist/src/ is docs/authored/ at the same
+ * depth: `common/Checkbox.vue` here is `dist/src/common/Checkbox.vue` there, and
+ * `../assets/icons/asterisk-icon.vue` resolves identically in both.
  *
- * So the package restores the depth the capture removed. dist/src/ IS the
- * site's src/ — components/, assets/, helpers/, lib/ — and every relative
- * import resolves by ordinary path arithmetic, with not one byte edited.
+ * It used to restore the site's `src/components/` level instead, because the
+ * captures had flattened it away while their imports still climbed through it.
+ * That worked for the tarball and left the SOURCE unimportable: an import in
+ * docs/authored/ landed outside the root, so anything reading those files
+ * needed a resolver to re-root the climb. build-storybook.mjs had one; Astro's
+ * dependency scanner did not, and reported six unresolvable imports on a tree
+ * where nothing was actually wrong. A layout only a bundler plugin can follow
+ * is a layout that will keep costing someone an afternoon.
+ *
+ * The export map absorbs the change, so no consumer sees it:
+ * `@codecavepro/brand/components/common/Button.vue` still resolves, because
+ * `./components/*` now points at `./dist/src/*`. `components` is a name in the
+ * export map, not a directory.
  *
  * WHAT IS NOT SHIPPED, and why each one is out. This list is short on purpose:
  * an exclusion is a component people cannot use, so it needs a reason that
@@ -130,12 +134,10 @@ function assertExclusionsExist() {
   process.exit(1);
 }
 
-/** A capture's path inside dist/, restoring the site's own directory depth. */
+/** A source file's path inside dist/. The layout mirrors the source exactly, so
+ *  this is only the `src/` prefix the export map points into. */
 function shippedAs(rel) {
-  const top = rel.split('/')[0];
-  return ['assets', 'helpers', 'lib'].includes(top)
-    ? `src/${rel}`
-    : `src/components/${rel}`;
+  return `src/${rel}`;
 }
 
 /**
@@ -514,11 +516,9 @@ function shippable() {
   return [...seen].sort();
 }
 
-/** Undo shippedAs: assets/, helpers/ and lib/ never live under components/. */
+/** Undo shippedAs. */
 function captureOf(shipped) {
-  return shipped.startsWith('src/components/')
-    ? shipped.slice('src/components/'.length)
-    : shipped.slice('src/'.length);
+  return shipped.slice('src/'.length);
 }
 
 /** Every verbatim copy, as [source, absolute-destination]. */
@@ -967,9 +967,15 @@ if (fs.existsSync(readme)) {
    * otherwise leave the sentence quietly wrong on the npm page. */
   const counts = /(\d+) components and (\d+) icons/.exec(fs.readFileSync(readme, 'utf8'));
   if (counts) {
-    const under = (sub, suffix) =>
-      shipped.filter((rel) => rel.startsWith(sub) && rel.endsWith(suffix)).length;
-    const real = [under('src/components/', '.vue'), under('src/assets/icons/', '.vue')];
+    /* A component is any shipped .vue that is not an icon. There is no
+     * components/ directory to count any more — dist/src/ mirrors the source,
+     * where a component sits at common/, footer/, header/ and so on. */
+    const isIcon = (rel) => rel.startsWith('src/assets/');
+    const vue = shipped.filter((rel) => rel.endsWith('.vue'));
+    const real = [
+      vue.filter((rel) => !isIcon(rel)).length,
+      vue.filter((rel) => rel.startsWith('src/assets/icons/')).length,
+    ];
     if (Number(counts[1]) !== real[0] || Number(counts[2]) !== real[1]) {
       console.error(
         `build failed — README.md says ${counts[1]} components and ${counts[2]} icons; ` +

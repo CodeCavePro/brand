@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AsteriskIcon from "../../assets/icons/asterisk-icon.vue";
+import AsteriskIcon from "../assets/icons/asterisk-icon.vue";
 
 defineProps<{
   id: string
