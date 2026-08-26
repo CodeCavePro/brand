@@ -9,11 +9,14 @@
  * JavaScript parser reading raw text. Verified after the port: the page's
  * window.__ppXss is still [] once it settles, so nothing in the payload ran. */
 import DocPage from '../../layouts/DocPage.astro';
+/* Imported, not linked: Vite has to COMPILE this one. A raw href would be
+   copied through as-is with its @import "tailwindcss/..." unresolved. */
+import '../../tailwind.css';
 ---
 <DocPage
   title="PainPointsItem — CODECAVE storybook"
   nav="kitchen-sink"
-  stylesheets={['../storybook/tw-bridge.css','storybook.css']}
+  stylesheets={['storybook.css']}
 >
 <div class="sb">
   <a class="sb-back" href="index.html">&larr; All components</a>

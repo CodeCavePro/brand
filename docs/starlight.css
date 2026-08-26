@@ -31,10 +31,41 @@
    * budgets for a third row and this does not.) */
   --sl-nav-height: calc(2 * var(--ds-bar));
 
-  /* No sidebar, so no inset. See the override that empties it. */
-  --sl-sidebar-width: 0rem;
-  --sl-content-inline-start: 0rem;
+  /* Starlight spends --sl-sidebar-width on BOTH sidebars, and this used to be
+   * 0rem on the reasoning that the left one renders nothing. It does render
+   * nothing -- Sidebar.astro is overridden to be empty -- but the same variable
+   * is read in four places, and two of them belong to the RIGHT column, the "On
+   * this page" table of contents, which renders plenty:
+   *
+   *   .sidebar-pane        width: var(--sl-sidebar-width)              (left)
+   *   [data-has-sidebar]   --sl-content-inline-start: var(--sl-sidebar-width)
+   *   .right-sidebar-container  width: max(var(--sl-sidebar-width), ...)
+   *   .sl-container        width: calc(var(--sl-sidebar-width) - 2 * pad)
+   *
+   * That last one is what made it visible. At 0rem it computes negative, clamps
+   * to zero, and every heading in the table of contents wraps to ONE CHARACTER
+   * PER LINE -- a full-height column of stacked letters down the right edge of
+   * all four guides. The container above it collapsed to 73px at the same time,
+   * so the strip had nowhere to go either.
+   *
+   * So the variable carries the width the TOC needs, and the left pane is
+   * emptied directly instead of by starving a number it shares. */
+  --sl-sidebar-width: 16rem;
 }
+
+/* Page.astro re-derives the content inset from the sidebar width inside
+ * `@media (min-width: 50em) { [data-has-sidebar] { ... } }`, and PageFrame
+ * turns it into .main-frame's padding-inline-start. A plain :root declaration
+ * ties on specificity and loses on order, so the content would sit 16rem to the
+ * right of a sidebar that is not there. :root[data-has-sidebar] outranks it.
+ *
+ * This was previously true by accident: both values came from the same 0rem, so
+ * nothing had to win. */
+:root[data-has-sidebar] { --sl-content-inline-start: 0rem; }
+
+/* The left pane, emptied for real. Sidebar.astro renders nothing into it, so
+ * without this it is a 16rem column of background and a hairline border. */
+.sidebar-pane { display: none; }
 
 /* --- the header is a container, not a bar -------------------------------- */
 

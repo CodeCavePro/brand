@@ -4,6 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
 import vue from '@astrojs/vue';
+import tailwindcss from '@tailwindcss/vite';
 import starlight from '@astrojs/starlight'; // SPIKE CCWEB2-374
 import docsPassthrough from './tools/astro-passthrough.mjs';
 import { aliasTarget } from './tools/import-aliases.mjs';
@@ -197,7 +198,11 @@ export default defineConfig({
   ],
 
   vite: {
-    plugins: [authoredSources()],
+    /* Tailwind compiles docs/tailwind.css, which is what the mounted specimens
+       resolve their classes against now that Vite compiles the components. See
+       that file: it imports theme+utilities only, narrows the scan to the two
+       component roots, and takes its @theme from src/styles/theme.css. */
+    plugins: [tailwindcss(), authoredSources()],
 
     optimizeDeps: {
       /* Tell Vite what the entrypoints are, because it guesses badly here.

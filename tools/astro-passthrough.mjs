@@ -38,6 +38,9 @@ import { fileURLToPath } from 'node:url';
 
 /** Paths at the top of docs/ that belong to Astro, not to the payload.
  *
+ * `tailwind.css` is there for a different reason from the rest: not because
+ * Astro owns the directory, but because VITE owns the file. See the entry.
+ *
  * SPIKE (CCWEB2-374): `content.config.ts` and `starlight-overrides` are
  * Starlight's. Without them here, publicDir copies this site's own SOURCE into
  * dist/ and serves it — the collection config and the header override. Entries
@@ -51,7 +54,15 @@ import { fileURLToPath } from 'node:url';
  * it would be an exclusion for nothing — the same dead-entry problem GONE and
  * EXCEPTIONS are checked for elsewhere.
  */
-const OWNED = ['pages', 'layouts', 'components', 'content.config.ts', 'starlight-overrides'];
+const OWNED = [
+  'pages', 'layouts', 'components', 'content.config.ts', 'starlight-overrides',
+  /* Vite's, not payload. tailwind.css is IMPORTED by the specimen pages so
+   * Tailwind compiles it into a hashed stylesheet under _astro/; copying the
+   * source through as well would publish a second tailwind.css at the site root
+   * whose `@import "tailwindcss/theme.css"` no browser can resolve. It would
+   * load, apply nothing, and look like the real one. */
+  'tailwind.css',
+];
 
 /** Authored files that are ALSO deliverables, and the URL each one keeps.
  *

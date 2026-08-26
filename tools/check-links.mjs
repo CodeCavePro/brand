@@ -384,25 +384,29 @@ for (const file of walk(pages)) {
     );
   }
 
-  /* And a page that mounts a compiled component needs tw-bridge.css, which is
-     the site's Tailwind theme compiled against the utilities those components
-     actually use. Without it they mount perfectly and render as raw HTML — a
-     browser-default button, a bare input — because every class on them resolves
-     to nothing. The hub did exactly that: it DESCRIBES tw-bridge.css in its own
-     prose, two hundred lines below a stylesheet list that did not include it.
+  /* And a page that mounts a component needs the utilities those components
+     are written in. Without them it mounts perfectly and renders as raw HTML,
+     every class resolving to nothing -- which does not look like a failure at
+     all, it looks like a component with no styling of its own. The hub did
+     exactly that once: it DESCRIBED the stylesheet in its own prose, two
+     hundred lines below a list that did not include it.
 
-     Matched inside the <DocPage> tag rather than anywhere in the body, or that
-     prose would satisfy the check that the prose is wrong about. */
+     This is now docs/tailwind.css, IMPORTED above the fence rather than listed
+     as a raw href, because Vite has to compile it -- a plain <link> would ship
+     the file with its `@import "tailwindcss/..."` unresolved. So the test is on
+     the FRONTMATTER, not the body; matching anywhere in the file would let the
+     prose about the stylesheet satisfy the check that the prose is wrong. */
+  const frontmatter = fence === -1 ? '' : src.slice(0, fence);
   const mountsCompiled = /from\s*['"][^'"]*\.vue['"]/.test(viteBody);
-  const linksBridge = !!docPageTag && /tw-bridge\.css/.test(docPageTag[1]);
+  const linksBridge = /import\s+['"][^'"]*\/tailwind\.css['"]/.test(frontmatter);
 
   if (mountsCompiled && !linksBridge) {
     mapMismatch.push(
-      `  ${relPage}\n      mounts a component but does not link tw-bridge.css — it will render unstyled`,
+      `  ${relPage}\n      mounts a component but does not import tailwind.css — it will render unstyled`,
     );
   } else if (linksBridge && !mountsCompiled) {
     mapMismatch.push(
-      `  ${relPage}\n      links tw-bridge.css but mounts no component`,
+      `  ${relPage}\n      imports tailwind.css but mounts no component`,
     );
   }
 
@@ -458,13 +462,13 @@ if (mapMismatch.length) {
     `${mapMismatch.length} page(s) mount a component without what it needs to run:\n` +
       mapMismatch.join('\n') +
       '\n\nMounting a component takes something the page has to ask for, and\n' +
-      "DocPage supplies it by default to nobody. TW-BRIDGE.CSS is the site's\n" +
-      'Tailwind theme compiled against the utilities those components use;\n' +
-      'without it they mount and render as raw HTML, every class resolving to\n' +
-      'nothing. That fails in the browser and nowhere else, and it does not even\n' +
-      'look like a failure -- it looks like a component with no styling of its\n' +
-      'own. Asked in both directions, because a stylesheet requested and unused\n' +
-      'is a claim that has stopped being true.',
+      'DocPage supplies it by default to nobody. docs/tailwind.css carries the\n' +
+      'utilities those components are written in, compiled by Vite against the\n' +
+      'two component roots; without it they mount and render as raw HTML, every\n' +
+      'class resolving to nothing. That fails in the browser and nowhere else,\n' +
+      'and it does not even look like a failure -- it looks like a component\n' +
+      'with no styling of its own. Asked in both directions, because a\n' +
+      'stylesheet imported and unused is a claim that has stopped being true.',
   );
   process.exit(1);
 }

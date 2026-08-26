@@ -3,11 +3,14 @@
  *
  * Shell extraction. Mounting pattern and why it is not an island: button.astro. */
 import DocPage from '../../layouts/DocPage.astro';
+/* Imported, not linked: Vite has to COMPILE this one. A raw href would be
+   copied through as-is with its @import "tailwindcss/..." unresolved. */
+import '../../tailwind.css';
 ---
 <DocPage
   title="GlowButton — CODECAVE storybook"
   nav="kitchen-sink"
-  stylesheets={['../storybook/tw-bridge.css','storybook.css']}
+  stylesheets={['storybook.css']}
 >
 <div class="sb">
   <a class="sb-back" href="index.html">&larr; All components</a>

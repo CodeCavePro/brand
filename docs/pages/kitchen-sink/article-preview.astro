@@ -7,11 +7,14 @@
  * placeholders.js rather than a literal src, which is the trap recorded in
  * that file's header — assigning .src loses a race with the observer. */
 import DocPage from '../../layouts/DocPage.astro';
+/* Imported, not linked: Vite has to COMPILE this one. A raw href would be
+   copied through as-is with its @import "tailwindcss/..." unresolved. */
+import '../../tailwind.css';
 ---
 <DocPage
   title="ArticlePreview — CODECAVE storybook"
   nav="kitchen-sink"
-  stylesheets={['../storybook/tw-bridge.css','storybook.css']}
+  stylesheets={['storybook.css']}
 >
 <div class="sb">
   <a class="sb-back" href="index.html">&larr; All components</a>

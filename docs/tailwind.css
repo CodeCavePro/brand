@@ -1,0 +1,88 @@
+/* Tailwind for the docs site — the utilities the specimens are written in.
+ *
+ * The kitchen-sink specimens import their .vue sources and Vite compiles them,
+ * so the classes on a mounted component have to resolve HERE. They used to
+ * resolve from storybook/tw-bridge.css, a pre-generated file that reproduced
+ * codecave.pro's cascade because the site's palette had moved past this
+ * package's and a specimen resolved against the docs tokens would have shown a
+ * component that existed nowhere.
+ *
+ * THAT DIVERGENCE IS GONE, and it is what makes this file safe rather than a
+ * shortcut. codecave.pro/src/styles/global.css declares no properties of its
+ * own any more: it imports @codecavepro/brand/tokens.css and theme.css from
+ * this package and adds nothing but @font-face rules. The site's theme IS this
+ * repository's theme, so compiling the utilities here against src/styles/ is
+ * not an approximation of production -- it is the same input.
+ *
+ * TWO THINGS ARE DELIBERATE AND BOTH WOULD BREAK THE SITE IF UNDONE:
+ *
+ *   NO PREFLIGHT AT THE TOP LEVEL. `@import "tailwindcss"` would pull in the
+ *   full preflight and reset this site's own chrome -- the nav, the prose, the
+ *   specimen furniture -- none of which is written in Tailwind. Only theme and
+ *   utilities are imported; the preflight the components actually rely on is
+ *   reproduced below, scoped to the canvases, exactly as tw-bridge did it.
+ *
+ *   source(none) PLUS EXPLICIT @source. Tailwind 4 otherwise scans every file
+ *   the repo tracks and takes anything word-shaped as a class candidate --
+ *   prose included. This repository is full of prose ABOUT utility names, and
+ *   a bare utility written in a comment ships its rule site-wide (CCWEB2-353
+ *   on the site side). The scan is narrowed to the two component roots, which
+ *   is the only place a class can reach a rendered specimen.
+ */
+@layer base, theme, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities) source(none);
+
+/* The two roots build.mjs and build-storybook.mjs also treat as the component
+   tree. A path present in both fails the package build, so there is no
+   ambiguity about which one supplies a class. */
+@source "../src/components/**/*.vue";
+@source "../src/captured/**/*.vue";
+
+@layer base {
+  /* Preflight-equivalent, canvas-scoped. The site imports full Tailwind
+   * preflight; the bridge imports only theme+utilities, so without this the
+   * UA stylesheet leaks into mounted components — ButtonFace fills on
+   * buttons, white textareas, 2px inset input borders, 1em <p> margins —
+   * none of which exist in production. This reproduces the preflight rules
+   * the mounted components actually rely on, scoped to the canvases.
+   * Utilities still win — base is a lower layer. */
+  :is(.sb-canvas, .sb-mount) *,
+  :is(.sb-canvas, .sb-mount) ::before,
+  :is(.sb-canvas, .sb-mount) ::after {
+    box-sizing: border-box; margin: 0; padding: 0; border: 0 solid;
+  }
+  .sb-canvas a, .sb-mount a { color: inherit; text-decoration: inherit; }
+  :is(.sb-canvas, .sb-mount) :is(h1, h2, h3, h4, h5, h6) {
+    font-size: inherit; font-weight: inherit;
+  }
+  :is(.sb-canvas, .sb-mount) :is(ol, ul, menu) { list-style: none; }
+  :is(.sb-canvas, .sb-mount) :is(img, svg, video, canvas, audio, iframe, embed, object) {
+    display: block; vertical-align: middle;
+  }
+  :is(.sb-canvas, .sb-mount) :is(img, video) { max-width: 100%; height: auto; }
+  :is(.sb-canvas, .sb-mount) :is(button, input, select, optgroup, textarea) {
+    font: inherit; font-feature-settings: inherit; font-variation-settings: inherit;
+    letter-spacing: inherit; color: inherit; border-radius: 0;
+    background-color: transparent; opacity: 1;
+  }
+  :is(.sb-canvas, .sb-mount) :is(button, input:where([type='button'], [type='reset'], [type='submit'])) {
+    appearance: button;
+  }
+  :is(.sb-canvas, .sb-mount) ::placeholder {
+    opacity: 1; color: color-mix(in oklab, currentColor 50%, transparent);
+  }
+  :is(.sb-canvas, .sb-mount) textarea { resize: vertical; }
+  :is(.sb-canvas, .sb-mount) :is(b, strong) { font-weight: bolder; }
+  :is(.sb-canvas, .sb-mount) small { font-size: 80%; }
+  :is(.sb-canvas, .sb-mount) table {
+    text-indent: 0; border-color: inherit; border-collapse: collapse;
+  }
+}
+
+/* The @theme names, from the file the package ships. tokens.css supplies the
+   VALUES and DocPage links it already as colors_and_type.css -- unlayered, so
+   its :root out-cascades @layer theme, which is what makes theme.css's
+   deliberate self-references (--x: var(--x)) resolve. Import order between the
+   two does not matter; the layering does. */
+@import "../src/styles/theme.css";

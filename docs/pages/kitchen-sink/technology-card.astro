@@ -9,11 +9,14 @@
  * would stop matching the markup below. Its @media braces are inside a <style>
  * and are left alone; the ones in the story args are prose and are guarded. */
 import DocPage from '../../layouts/DocPage.astro';
+/* Imported, not linked: Vite has to COMPILE this one. A raw href would be
+   copied through as-is with its @import "tailwindcss/..." unresolved. */
+import '../../tailwind.css';
 ---
 <DocPage
   title="TechnologyCard — CODECAVE storybook"
   nav="kitchen-sink"
-  stylesheets={['../storybook/tw-bridge.css','storybook.css']}
+  stylesheets={['storybook.css']}
 >
 <style slot="head" is:inline>
   /* Story-only. The card positions itself absolutely from its six-slot table,
