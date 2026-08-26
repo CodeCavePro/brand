@@ -114,29 +114,37 @@ jobs:
           console.log(`node ${process.versions.node}, npm ${npmv} — both above the OIDC floor.`);
           EOF
 
-      # A tag that does not match the manifest is the one mistake here that
-      # would otherwise succeed quietly: tagging 2.1.5 while the manifest still
-      # says 2.1.4 republishes 2.1.4 under a tag claiming otherwise, and the
-      # version number is burned either way. npm never sees the tag, so nothing
-      # downstream would ever notice.
-      - name: Assert the tag names the version being published
+      # THE TAG IS THE VERSION. packages/brand/package.json is committed as
+      # 0.0.0 and stamped from this value further down, so there is no second
+      # place to bump and nothing to forget. This step only reads the ref; it
+      # writes nothing, because the manifest must not be touched before
+      # `npm ci` has checked it against the lockfile.
+      #
+      # What this replaces: an assertion that the tag equalled the manifest,
+      # which a human kept in step with a hand-run `npm version`. The first
+      # release nobody ran it for was refused by its own guard — tag 2.3.0,
+      # manifest 2.2.0 — which is the safe failure but still a failure, and the
+      # guard could never have been anything else: it compared the tag against
+      # a number that nothing moved.
+      - name: Read the version from the tag
         id: version
         run: |
           set -euo pipefail
-          VERSION="$(node -p "require('./packages/brand/package.json').version")"
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-
           if [ "${{ github.ref_type }}" != "tag" ]; then
             echo "::error title=Not a tag::This job publishes from a version tag. Re-run it with the tag selected in \"Use workflow from\", so that every published version has a tag."
             exit 1
           fi
 
-          TAG="${{ github.ref_name }}"
-          if [ "$TAG" != "$VERSION" ]; then
-            echo "::error title=Tag does not match the manifest::Tag $TAG, packages/brand/package.json $VERSION. Delete the tag, fix one of the two, and tag again — a published version number can never be reissued."
+          VERSION="${{ github.ref_name }}"
+          # Belt and braces on the `tags:` filter above: workflow_dispatch can
+          # select any ref, and that route does not go through it.
+          if ! printf '%s' "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error title=Not a version tag::\"$VERSION\" is not a bare version. Tags in this repo are the version and nothing else — 2.3.0, not v2.3.0."
             exit 1
           fi
-          echo "Tag $TAG matches packages/brand/package.json."
+
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Publishing $VERSION, named by the tag."
 
       # Asked before the build rather than after, because npm's own refusal
       # arrives three minutes later and the answer never changes in between.
@@ -156,6 +164,21 @@ jobs:
 
       - name: Install
         run: npm ci
+
+      # After `npm ci`, because a manifest stamped before it would disagree
+      # with package-lock.json and npm ci refuses that. Before the build,
+      # because `npm pack` names the tarball from this file and the smoke step
+      # installs that name.
+      #
+      # Not a `prepack` hook, which is where this belongs by shape and is wrong
+      # by behaviour: npm resolves the tarball's NAME before prepack runs and
+      # packs the manifest as prepack left it, so a prepack stamp yields
+      # codecavepro-brand-0.0.0.tgz whose package.json says 2.3.0. Which of
+      # those two the registry would believe is not worth finding out — a
+      # version number cannot be reissued. tools/stamp-version.mjs has the
+      # measurement.
+      - name: Stamp the version into the package manifest
+        run: node tools/stamp-version.mjs
 
       # Creates dist/, which `npm run check` needs — check reads the built
       # package, so it cannot run against a fresh checkout. The build also runs

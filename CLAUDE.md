@@ -459,14 +459,31 @@ and then publishes as an npm **trusted publisher** — OIDC, so there is no toke
 in this repository, no `NPM_TOKEN` secret and no OTP. Two consequences worth
 holding: **the workflow's FILENAME is part of the credential** (npmjs.com matches
 org + repo + `release.yml`, so renaming the file revokes publishing and npm
-reports it as a 404 on the PUT, which reads like a missing package), and the tag
-must equal `packages/brand/package.json`'s version — the workflow asserts it,
-because tagging one version while the manifest says another republishes the
-manifest's, and npm never sees the tag.
+reports it as a 404 on the PUT, which reads like a missing package), and **the
+tag IS the version**.
+
+`packages/brand/package.json` is committed as `0.0.0` and stays there.
+`tools/stamp-version.mjs` writes the tag into it during the release — as its own
+workflow step after `npm ci`, and again in `release:package` — so there is no
+second place to bump and nothing to forget. **It is not a `prepack` hook,**
+which is where it belongs by shape and is wrong by behaviour: npm resolves the
+tarball's FILENAME from the manifest before prepack runs and packs the manifest
+as prepack left it, so a prepack stamp yields `codecavepro-brand-0.0.0.tgz`
+whose `package.json` says `2.3.0`. Which of the two the registry would believe
+is not a thing to learn by burning a version number. The script carries the
+measurement.
+
+This replaced an assertion that the tag equalled the manifest, which a human
+kept true with a hand-run `npm version`. It could only ever be a tripwire on a
+step people forget, and 2.3.0 is where it caught one — tag 2.3.0, manifest
+2.2.0, release refused. A manifest at `0.0.0` also means **a local build is
+unpublishable by construction**, which is the right default for the one command
+that cannot be undone.
 
 The workflow reruns every check plus one that only makes sense against the
 artifact: `tools/smoke-tarball.mjs` installs the packed tarball and asks it
-seventeen questions. That is not duplication of `npm run check` — `files`,
+eighteen questions — the last being that the stamped version reached the
+artifact. That is not duplication of `npm run check` — `files`,
 `exports` and npm's by-name pickup of `LICENSE`/`README.md` are all invisible to a
 check that walks `dist/` in place, so a package can be correct on disk and broken
 for everyone who installs it. Its reference walk **mirrors `referencesOf()` in

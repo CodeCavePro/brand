@@ -96,23 +96,28 @@ deserves to opt into a colour change rather than receive it. Removing a token is
 a major for the same reason it is in any library: somebody's `var()` goes
 undefined and nothing tells them.
 
+**Deciding it is the whole of step 1. There is nothing to run.**
+`packages/brand/package.json` says `0.0.0` in the repository and is meant to:
+the version lives in the tag, and `tools/stamp-version.mjs` writes it into the
+manifest during the release. So there is no bump to commit, no
+`package-lock.json` to keep in step, and no way to tag one number while the
+manifest says another.
+
+That is the inverse of what this step used to ask for — a hand-run
+`npm version --workspace @codecavepro/brand minor --no-git-tag-version` before
+tagging. It failed the first time someone skipped it: the tag said `2.3.0`, the
+manifest still said `2.2.0`, and the release refused itself. Safe, but a guard
+comparing the tag against a number that nothing moves can only ever be a
+tripwire on a step people forget.
+
+If you want to see what will be stamped before you tag anything:
+
 ```bash
-npm version --workspace @codecavepro/brand minor --no-git-tag-version
+node tools/stamp-version.mjs --version 2.3.0 --check
 ```
 
-(`minor` is the common case — a token value moved. Substitute `patch` or
-`major` per the table.)
-
-`--no-git-tag-version` is deliberate: npm tags as `v1.0.1`, and this repo tags
-as `1.0.1`. Letting npm do it also commits on your behalf. Tag by hand in
-step 4 — and note that the tag is now the thing that publishes, so it is not a
-step to run early.
-
-Use the command rather than editing `package.json`, because it also writes the
-new version into `package-lock.json`. Editing by hand leaves the two
-disagreeing, and `npm ci` — which is what CI runs — refuses to install a
-workspace in that state. If you did edit by hand, `npm install
---package-lock-only` fixes it.
+`--check` writes nothing. Without `--version` it reads the tag on `HEAD`, or
+`GITHUB_REF_NAME` in CI.
 
 ### 2. Build from a clean tree and verify the derivation
 
@@ -146,8 +151,11 @@ npm pack --workspace @codecavepro/brand
 
 This runs `prepack`, so the full build (including the README value assertions)
 runs again and cannot be skipped. It writes
-`codecavepro-brand-<version>.tgz` — **the exact bytes npm would publish.**
-Install it somewhere real, then ask it the questions a consumer asks first:
+`codecavepro-brand-0.0.0.tgz` — **the exact bytes npm would publish**, under
+the placeholder name, because nothing has stamped a version into an untagged
+working tree. That is the rehearsal working as intended: the contents are what
+ships and only the number is pending. Install it somewhere real, then ask it the
+questions a consumer asks first:
 
 ```bash
 mkdir -p /tmp/brand-smoke && (cd /tmp/brand-smoke && npm init -y && npm i "$OLDPWD"/codecavepro-brand-*.tgz --legacy-peer-deps)
@@ -157,8 +165,10 @@ mkdir -p /tmp/brand-smoke && (cd /tmp/brand-smoke && npm init -y && npm i "$OLDP
 node tools/smoke-tarball.mjs /tmp/brand-smoke/node_modules/@codecavepro/brand
 ```
 
-That prints seventeen assertions and exits 0, or names what is broken and exits
-1. `--legacy-peer-deps` skips auto-installing the five peers; nothing the script
+That prints eighteen assertions and exits 0, or names what is broken and exits
+1. The last of them is the version, and locally it reports `0.0.0 — unstamped,
+as an untagged rehearsal should be`; in CI, where `VERSION` carries the tag, it
+asserts the stamp reached the tarball. `--legacy-peer-deps` skips auto-installing the five peers; nothing the script
 checks imports them, and `vue` is a large download to prove nothing with.
 
 **Why the tarball and not the tree.** `files: ["dist"]` decides what ships,
@@ -228,21 +238,28 @@ triggers on `[0-9]+.[0-9]+.[0-9]+` and refuses to run from a branch.
 Tags are annotated (`git tag -a`), not lightweight, so each carries its tagger,
 date and a message saying what was in it.
 
-**The tag must equal `packages/brand/package.json`'s version.** The workflow
-asserts it and stops if they disagree, because that is the one mistake here that
-would otherwise succeed quietly: tagging `1.0.2` while the manifest still says
-`1.0.1` republishes `1.0.1` under a tag claiming otherwise, and npm never sees
-the tag, so nothing downstream would ever notice. If you get it wrong, delete
-the tag (`git tag -d` and `git push origin :1.0.2`), fix one of the two, and tag
-again.
+**The tag IS the version — there is nothing for it to agree with.** The
+workflow reads it off the ref, `tools/stamp-version.mjs` writes it into
+`packages/brand/package.json` after `npm ci`, and the tarball smoke test asserts
+it survived that far. So the mistake this step used to warn about — tagging
+`1.0.2` while the manifest still said `1.0.1`, republishing `1.0.1` under a tag
+claiming otherwise — is not a mistake you can make any more. What is left is
+tagging the *wrong number*, which the already-published guard catches when it
+has been used before and nothing catches when it has not. Read the tag before
+you push it.
+
+If you push a tag you did not mean, delete it (`git tag -d 1.0.2` and
+`git push origin :1.0.2`) and tag again — but only if the run has not reached
+the publish step. After that the number is burned; see "If something went
+wrong".
 
 ### 5. Watch the run
 
 [Actions → Publish `@codecavepro/brand` to npm](https://github.com/CodeCavePro/brand/actions/workflows/release.yml).
 
-It runs the toolchain floor, the tag/manifest guard, an already-published guard,
-`npm ci`, the build, `npm run check`, the captures check when it can reach
-codecave.pro, and the tarball smoke test — and only then publishes. A red run
+It runs the toolchain floor, reads the version off the tag, an already-published
+guard, `npm ci`, the stamp, the build, `npm run check`, and the tarball smoke
+test — and only then publishes. A red run
 before the publish step has cost nothing.
 
 Two things in the summary are worth reading rather than skimming:

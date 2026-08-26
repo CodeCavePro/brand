@@ -469,6 +469,14 @@ does** — `git push origin 2.2.0` starts
 and then publishes as a trusted publisher. There is no npm token in this
 repository and no OTP to type; the tag is the deliberate act, so treat it as one.
 
+**The tag is also where the version number lives.**
+`packages/brand/package.json` says `0.0.0` in the repository and is supposed to
+— there is nothing to bump before you tag, and a version you see in the working
+tree after a release is a stamped file to discard, not a change to commit. That
+also means a build made from an untagged checkout is unpublishable by
+construction, which is the right default for the one command here that cannot be
+undone.
+
 See [RELEASING.md](/RELEASING.md), and read its rollback section before your
 first release rather than after: npm's unpublish window is 72 hours and a version
 number, once used, can never be reissued.

@@ -23,7 +23,7 @@
     "check:findings": "node tools/check-findings.mjs",
     "check:examples": "node tools/check-examples.mjs",
     "check:links": "node tools/check-links.mjs",
-    "release:package": "npm publish --workspace @codecavepro/brand --access public"
+    "release:package": "node tools/stamp-version.mjs --require-tag && npm publish --workspace @codecavepro/brand --access public"
   },
   "engines": {
     "node": ">=22"

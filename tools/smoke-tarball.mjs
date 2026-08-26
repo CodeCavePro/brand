@@ -114,6 +114,40 @@ function assertCssIdentical() {
 }
 
 /**
+ * The version in the tarball is the version being released.
+ *
+ * packages/brand/package.json is committed as 0.0.0 and stamped from the tag by
+ * tools/stamp-version.mjs, so this is the only place that can say the stamp
+ * survived into the artifact — and npm makes that a real question rather than a
+ * formality, because it resolves the tarball's FILENAME from the manifest
+ * before `prepack` runs and packs the manifest as prepack left it. A stamp
+ * applied at the wrong moment produces exactly the split this asks about.
+ *
+ * VERSION is what release.yml derived from the tag. Unset means a local
+ * rehearsal, where an unstamped 0.0.0 is a legitimate thing to smoke-test.
+ */
+function assertVersionStamped() {
+  const manifest = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
+  const expected = process.env.VERSION;
+  if (!expected) {
+    if (manifest.version === '0.0.0') {
+      ok('version is 0.0.0 — unstamped, as an untagged rehearsal should be');
+    } else {
+      ok(`version is ${manifest.version} (no VERSION to check it against)`);
+    }
+    return;
+  }
+  if (manifest.version === expected) {
+    ok(`version is ${expected}, the version named by the tag`);
+  } else {
+    fail(
+      `the installed package says ${manifest.version}, the tag says ${expected}`,
+      'the stamp did not reach the tarball, and publishing would burn the wrong number',
+    );
+  }
+}
+
+/**
  * Every subpath export resolves to a file that exists. A wildcard export maps a
  * shape rather than a file, so `./components/*` is satisfied by the pattern and
  * says nothing about whether any component is in there.
@@ -219,6 +253,7 @@ await assertModuleResolves();
 assertCssIdentical();
 assertExportsResolve();
 assertReferencesResolve();
+assertVersionStamped();
 
 const manifest = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
 
