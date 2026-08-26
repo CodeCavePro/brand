@@ -44,19 +44,13 @@ if (!fs.existsSync(bridge)) {
   process.exit(1);
 }
 
-/* A runnable line, not a usage synopsis. `[path-to-codecave.pro]` was neither:
- * pasted verbatim it resolves to a literal directory named after the
- * placeholder and exits 1, and the brackets hid that the argument is genuinely
- * optional when the checkout sits beside this repo, which is the documented
- * layout. */
+/* A runnable line, not a usage synopsis. It used to name a
+ * `[path-to-codecave.pro]` argument, which was neither: pasted verbatim the
+ * placeholder resolves to a literal directory and exits 1. The generator needs
+ * no argument at all now. */
 const REGENERATE =
   'Regenerate the storybook:\n' +
-  '  node docs/tools/build-storybook.mjs\n' +
-  '\n' +
-  'It needs a codecave.pro checkout for its TOOLCHAIN — vue/compiler-sfc,\n' +
-  'esbuild and tailwindcss at the versions the site builds with, which is the\n' +
-  'whole point of compiling there rather than here. It looks beside this repo;\n' +
-  'pass a path if yours is somewhere else.';
+  '  npm run build:storybook';
 
 /**
  * Which files moved since the bridge was last written. The digest is over the

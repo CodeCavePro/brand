@@ -3,11 +3,11 @@
  *
  * The storybook used to demo hand-copied HTML+CSS miniatures (.cc-* classes)
  * that drifted from the components they imitated. This script removes the
- * copy: it takes the verbatim SFCs in docs/authored/ and compiles
- * them to plain ES modules in docs/storybook/compiled/, using the SAME
- * toolchain versions the website builds with — everything here is resolved
- * from the codecave.pro repo's node_modules (vue/compiler-sfc, esbuild,
- * tailwindcss v4). Nothing is downloaded.
+ * copy: it takes the verbatim SFCs under src/ and compiles them to plain ES
+ * modules in docs/storybook/compiled/, using THIS repository's toolchain --
+ * vue/compiler-sfc, esbuild and tailwindcss v4, all declared here and pinned to
+ * the versions the site resolves. Nothing is downloaded, and no second checkout
+ * is needed; see the note beside the resolver for why that changed.
  *
  * It also generates docs/storybook/tw-bridge.css: the site's Tailwind theme
  * (the captured global.css @theme) compiled against exactly the
@@ -34,8 +34,9 @@
  * tw-bridge.css records a digest of everything under both roots so
  * check-tw-bridge.mjs can prove the two are in step; see source-digest.mjs.
  *
- * Run:  node docs/tools/build-storybook.mjs [path-to-codecave.pro]
- *       (default sibling checkout: ../codecave.pro relative to the repo)
+ * Run:  npm run build:storybook
+ *       An optional path to a codecave.pro checkout enables one extra
+ *       assertion -- that the sanitizer port's dompurify matches the site's.
  *
  * Output modules keep 'vue' and 'gsap' as bare imports; the storybook pages
  * map them to docs/vendor/ via an import map. Everything else — helpers, icon
@@ -55,20 +56,34 @@ import { sourceDigest, DIGEST_PREFIX } from './source-digest.mjs';
 import { SITE_ALIAS_PATTERN, sitePath, unalias, usesAlias } from './import-aliases.mjs';
 
 const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'docs');
-const siteDir = path.resolve(process.argv[2] ?? path.join(docs, '..', '..', 'codecave.pro'));
-if (!fs.existsSync(path.join(siteDir, 'node_modules'))) {
-  console.error(`codecave.pro checkout with node_modules not found at ${siteDir}`);
-  console.error('');
-  console.error('It is needed for its TOOLCHAIN, not its source: vue/compiler-sfc, esbuild');
-  console.error('and tailwindcss at the versions the site builds with. Install it there, or');
-  console.error('pass a path:');
-  console.error('  node docs/tools/build-storybook.mjs ../path/to/codecave.pro');
-  process.exit(1);
-}
-
-const req = createRequire(path.join(siteDir, 'package.json'));
+/* THE TOOLCHAIN IS THIS REPOSITORY'S, and that is a reversal worth stating.
+ *
+ * Every module below used to be resolved from a codecave.pro checkout, on the
+ * argument that a specimen must be built with the SAME versions the website
+ * builds with. That held while this repository was downstream. It has not been
+ * since 2026-08-25: the components are authored here, the package is built
+ * here, and the site installs the package -- so "the versions the site builds
+ * with" is a claim about a consumer, not about the origin.
+ *
+ * Everything needed is already declared here and pinned to mirror the site:
+ * vue/compiler-sfc 3.5.41, tailwindcss 4.3.3, @tailwindcss/oxide 4.3.3, plus
+ * marked, gsap and dompurify for the bare imports the specimens carry. esbuild
+ * is declared explicitly rather than taken transitively, because a transitive
+ * bump would silently rewrite every bundle.
+ *
+ * The practical half: this script, check-tw-bridge.mjs and the Pages workflow
+ * all needed a second private repository to be reachable. It was not -- CI's
+ * token has been returning 403 -- so the rebuild step had never once run.
+ */
+const repoRoot = path.resolve(docs, '..');
+const req = createRequire(path.join(repoRoot, 'package.json'));
 const compiler = req('vue/compiler-sfc');
 const esbuild = req('esbuild');
+
+/* The site checkout is now OPTIONAL and has exactly one reader left: the
+ * dompurify cross-check below, which already degraded to a warning when it was
+ * absent. Pass a path to enable it. */
+const siteDir = path.resolve(process.argv[2] ?? path.join(repoRoot, '..', 'codecave.pro'));
 
 /* The two roots a component's source can come from, in resolution order.
  *
@@ -305,12 +320,15 @@ function siteDomPurifyVersion() {
 }
 
 const ours = JSON.parse(fs.readFileSync(
-  path.join(docs, '..', 'node_modules', 'dompurify', 'package.json'), 'utf8')).version;
+  path.join(repoRoot, 'node_modules', 'dompurify', 'package.json'), 'utf8')).version;
 const theirs = siteDomPurifyVersion();
 if (theirs === null) {
-  console.warn(`! cannot read the site's dompurify — is ${path.basename(siteDir)} installed?`);
-  console.warn(`  (it uses pnpm: \`pnpm install\` there, not npm)`);
-  console.warn(`  building anyway; the sanitizer port is unverified against production.`);
+  /* Not a warning any more. The site checkout is optional, so its absence is
+     the ordinary case rather than a degraded one -- and a warning printed on
+     every build is a warning nobody reads. The pin is asserted when a checkout
+     is passed; otherwise dompurify's exact version in package.json is the
+     claim, alongside tailwindcss and vue, which are pinned the same way and for
+     the same reason. */
 } else if (theirs !== ours) {
   console.error(`SanitizerPort would sanitize with dompurify ${ours}, but the site ships ${theirs}.`);
   console.error(`Fix: npm i -D --save-exact dompurify@${theirs}`);
@@ -390,9 +408,10 @@ for (const entry of ENTRIES) {
     // absolute, so this only affects the annotations.
     absWorkingDir: docs,
     external: ['vue', 'gsap', 'gsap/*'],
-    // Bare imports (e.g. pain-points-item's `marked`) resolve from the SITE's
-    // node_modules — the component sources live in the brand repo, which has none.
-    nodePaths: [path.join(siteDir, 'node_modules')],
+    // Bare imports (e.g. pain-points-item's `marked`) resolve from this repo,
+    // which declares every one of them as a devDependency pinned to the version
+    // the site resolves. They used to come from the site's node_modules.
+    nodePaths: [path.join(repoRoot, 'node_modules')],
     plugins: [siteAliases, vuePlugin],
     banner: {
       js: `/* GENERATED from ${from} by tools/build-storybook.mjs — do not edit. */`,
@@ -511,7 +530,10 @@ const input = `@layer base, theme, utilities;
 ${themeBlock[0]}`;
 
 const twCompiler = await twNode.compile(input, {
-  base: siteDir,
+  /* Where `@import "tailwindcss/..."` is resolved from. This repo declares
+     tailwindcss at the same version, so the emitted theme and utilities are
+     identical to what the site's copy produced. */
+  base: repoRoot,
   onDependency: () => {},
 });
 const scanner = new oxide.Scanner({

@@ -34,6 +34,16 @@ they have always had. `tools/astro-passthrough.mjs` holds that map in
 **read** the same map rather than restating it, because both broke the day the
 files moved and both were wrong about correct deliverables.
 
+**Nothing here needs a codecave.pro checkout.** `build-storybook.mjs` borrowed
+that repo's node_modules for its toolchain until 2026-08-26, on the argument
+that a specimen must be built with the versions the *website* builds with — an
+argument that died with the inversion, since the site is the consumer now. Every
+module is declared here and pinned to match, and the switch was byte-neutral:
+all twelve bundles and `tw-bridge.css` came out identical. Two optional reads
+remain, both of which say when they are skipped — `check:collisions` sweeping
+the site's SFCs, and the sanitizer port's dompurify pin. CI no longer checks that
+repo out, and `CODECAVE_PRO_TOKEN` is unused.
+
 `npm run build:assets` needs Inkscape and ImageMagick and will not run on a
 stock Windows checkout. That is why the rendered ramps are tracked: they are the
 record of the last run.
@@ -422,8 +432,9 @@ taught to `referencesOf()`, which both the walk and the backstop now call.**
 **What a component imports from npm is checked against the manifest.** The
 relative-import walk proves every `../` resolves inside the package; it proves
 nothing about `import { Carousel } from 'vue3-carousel'`. An undeclared one
-resolves here anyway — the site checkout next door has it installed — and fails
-in the consumer's build, the one place nobody would look. So `build.mjs`
+resolves here anyway — this repo declares every one of them as a devDependency
+so the storybook can compile — and fails in the consumer's build, the one place
+nobody would look. So `build.mjs`
 collects every bare specifier the shipped files import and fails unless
 `peerDependencies` names exactly that set, in **both** directions: an import
 nothing declares, and a declared peer nothing imports any more.

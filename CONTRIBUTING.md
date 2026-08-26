@@ -270,8 +270,14 @@ theme comes from a devDependency pinned to the version the site resolves — so 
 runs in CI. It also sweeps the full site checkout for undeclared properties when
 one is beside this repo, and says which it did.
 
-That is the one place a site checkout is still read for an *answer* rather than
-for its toolchain, and it survived the removal of `check:captures` because it
+That is now the ONLY place a site checkout is read at all. It used to be the
+only one read for an *answer* rather than for a toolchain, and the distinction
+has stopped mattering: `build-storybook.mjs` resolved vue/compiler-sfc, esbuild
+and tailwindcss from a codecave.pro checkout until 2026-08-26 and resolves them
+from this repository now, so nothing borrows that repo's node_modules any more.
+Both remaining reads — this sweep and the sanitizer port's dompurify pin — are
+optional and say so when they are skipped. It survived the removal of
+`check:captures` because it
 asks a different question. The captures check asserted this repo had not moved
 ahead of the site. This one asks whether a token would collide in the
 **consumer's** app — and the consumer is the site, so the Tailwind pin is
