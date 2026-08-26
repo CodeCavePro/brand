@@ -6,6 +6,38 @@ editable, what is derived, what to run) and [RELEASING.md](/RELEASING.md)
 (publishing the npm package). When a rule here changes, check whether one of
 those states it too.
 
+## Where everything is — one rule
+
+**`src/` is authored; everything else is produced from it.** That was not true
+until 2026-08-26, and the shape it replaced is why this section exists: the
+components were in `docs/authored/`, the tokens in `docs/`, the SVG masters in a
+root `src/` that held nothing else, the rendered logos in three places at once,
+and the build scripts inside the directory that publishes the website.
+
+| Directory | Holds | Edit? |
+|---|---|---|
+| `src/logos/` | the three SVG masters — every raster is rendered from them | yes |
+| `src/styles/` | `colors_and_type.css` (the deliverable) and `theme.css` | yes |
+| `src/tokens/` | the same tokens as typed TS modules, hand-mirrored | yes |
+| `src/fonts/` | six Satoshi cuts and `fonts.css` | the CSS only |
+| `src/components/` | every component, helper and icon the system ships | yes |
+| `src/captured/` | the eight files copied from codecave.pro | **never** |
+| `docs/` | the website, and the published brand kit | pages, yes |
+| `tools/` | every build and check script | yes |
+| `packages/brand/` | the npm package — a pure derivative | **never** |
+| `dist/` | the built website, gitignored | never |
+
+Three of the paths a consumer links — `colors_and_type.css`, `tokens/` and
+`fonts/` — are authored under `src/` and *published* into `dist/` at the URLs
+they have always had. `tools/astro-passthrough.mjs` holds that map in
+`PUBLISHED` and asserts the copy arrived; `check:links` and `check:examples`
+**read** the same map rather than restating it, because both broke the day the
+files moved and both were wrong about correct deliverables.
+
+`npm run assets:generate` needs Inkscape and ImageMagick and will not run on a
+stock Windows checkout. That is why the rendered ramps are tracked: they are the
+record of the last run.
+
 ## Where open work lives — read this before assuming there is none
 
 **Jira is the only list.** This repo used to keep a `TODO.md`; it was deleted on
@@ -220,14 +252,15 @@ rather than a rule spanning the whole component tree.
 
 ### The package, in one paragraph
 
-`packages/brand/` is a **pure derivative of `docs/`** — it copies
-`colors_and_type.css` and `fonts.css` byte-for-byte, copies the root `LICENSE`,
-copies the components out of `src/components/`, extracts `tokens.css` from
-`colors_and_type.css` and `theme.css` from `src/styles/theme.css`, and compiles
-`src/tokens/*.ts`. No *design content* under `packages/` is authored; the only
-tracked files are its manifest, build script and `README.md`, and `npm run
-check` asserts the byte-identity of every copy. **`docs/` remains the single
-origin; edit there, never in `packages/`.**
+`packages/brand/` is a **pure derivative of `src/`** — it copies
+`src/styles/colors_and_type.css` and `src/fonts/fonts.css` byte-for-byte, copies
+the root `LICENSE`, copies the components out of `src/components/` and
+`src/captured/`, extracts `tokens.css` from `colors_and_type.css` and
+`theme.css` from `src/styles/theme.css`, and compiles `src/tokens/*.ts`. No
+*design content* under `packages/` is authored; the only tracked files are its
+manifest, build script and `README.md`, and `npm run check` asserts the
+byte-identity of every copy. **`src/` is the single origin; edit there, never in
+`packages/` and never in `docs/`.**
 
 **The package ships no brand marks, and that is now a decision rather than an
 accident.** `logo.svg` was only ever in the tarball because a menu imported it,

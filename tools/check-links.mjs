@@ -21,6 +21,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { execFileSync } from 'node:child_process';
 import { PUBLISHED } from './astro-passthrough.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -581,9 +582,46 @@ if (staleGone.length) {
   process.exit(1);
 }
 
+/* ---- repo-relative markdown links point at files that exist ---------------
+ *
+ * A link like [logos/](/docs/logos) is resolved by GitHub against the
+ * repository, not by the site, so nothing above sees it and nothing at build
+ * time does either. Moving a directory is what breaks them: README.md was
+ * still offering [logos](/logos) and embedding thirteen PNGs from /logos/ and
+ * /icons/ after both moved under docs/ -- fifteen dead links on the front page
+ * of the repository, every check green.
+ *
+ * Only absolute (repository-rooted) links are checked. A relative one resolves
+ * against the file's own directory and is a different question; an http(s) one
+ * is somebody else's. */
+const repoLinks = [];
+const markdown = execFileSync('git', ['ls-files', '*.md'], { encoding: 'utf8' })
+  .split(/\r?\n/)
+  .filter(Boolean);
+
+for (const file of markdown) {
+  const abs = path.join(root, file);
+  if (!fs.existsSync(abs)) continue;
+  const text = fs.readFileSync(abs, 'utf8');
+  for (const m of text.matchAll(/\]\((\/[^)#\s]+)/g)) {
+    const target = m[1].replace(/^\//, '');
+    if (!fs.existsSync(path.join(root, target))) repoLinks.push(`  ${file}  →  /${target}`);
+  }
+}
+
+if (repoLinks.length) {
+  console.error(`${repoLinks.length} repo-relative link(s) point at a path this repository does not have:`);
+  for (const l of repoLinks) console.error(l);
+  console.error('');
+  console.error('These are resolved by GitHub against the checkout, so they fail for a');
+  console.error('reader and nowhere else. Moving a directory is what breaks them.');
+  process.exit(1);
+}
+
 console.log(
   `${runtimeOk} runtime reference(s) from pages resolve; ` +
     `${live} documentation link(s) resolve across ${SCAN.length} file(s), ` +
     `against ${routes.size} route(s) derived from docs/ ` +
-    `(${GONE.length} deliberately-dead name(s) recorded).`,
+    `(${GONE.length} deliberately-dead name(s) recorded); ` +
+    `every repo-relative markdown link resolves on disk.`,
 );

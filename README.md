@@ -1,6 +1,6 @@
 # CODECAVE Brand
 
-This repository contains resources for the **CODECAVE** brand such as [logos](/logos), [icons](/icons), [color palettes](#color-palettes), [fonts](#fonts) and other media.
+This repository contains resources for the **CODECAVE** brand such as [logos](/docs/logos), [icons](/docs/icons), [color palettes](#color-palettes), [fonts](#fonts) and other media.
 
 > **This repository is the source of truth for the CODECAVE brand.** The design system is published
 > at **<https://brand.codecave.pro/>** from [docs/](/docs) and documented in
@@ -22,6 +22,36 @@ This repository contains resources for the **CODECAVE** brand such as [logos](/l
 > 2026-08-25; this criterion is
 > [CCWEB2-316](https://codecave.atlassian.net/browse/CCWEB2-316).
 
+## Where things are
+
+**One rule: `src/` is authored, everything else is produced from it.**
+
+| Directory | What it holds | Edit? |
+|---|---|---|
+| [src/logos/](/src/logos) | The three SVG masters. Every raster in the repository is rendered from these. | yes |
+| [src/styles/](/src/styles) | `colors_and_type.css` — **the deliverable** — and `theme.css`. | yes |
+| [src/tokens/](/src/tokens) | The same tokens as typed TS modules, hand-mirrored from the CSS. | yes |
+| [src/fonts/](/src/fonts) | Six Satoshi cuts (woff2 + woff) and `fonts.css`. | the CSS |
+| [src/components/](/src/components) | Every Vue component, helper and icon the system ships. | yes |
+| [src/captured/](/src/captured) | The eight files copied from codecave.pro. | **never** |
+| [docs/](/docs) | The website — pages, layouts, and the published brand kit. | pages, yes |
+| [tools/](/tools) | Every build and check script in the repository. | yes |
+| [packages/brand/](/packages/brand) | The npm package. A pure derivative — only its manifest, build script and README are authored. | **never** |
+| `dist/` | The built website. Gitignored, rebuilt from a clean checkout on every deploy. | never |
+
+What produces what:
+
+| Run | Reads | Writes |
+|---|---|---|
+| `npm run build` | `src/` | `packages/brand/dist/` |
+| `npm run docs:build` | `docs/` + the published half of `src/` | `dist/` |
+| `npm run storybook:build` | `src/components/`, `src/captured/` | `docs/storybook/compiled/` |
+| `npm run assets:generate` | `src/logos/` | `docs/logos/`, `docs/icons/`, `docs/favicons/` |
+| `npm run check` | all of it | nothing — it asserts |
+
+`npm run dev` builds the site and previews it. There is deliberately no `astro dev`
+script; [CONTRIBUTING.md](/CONTRIBUTING.md) says why.
+
 ## Design System
 
 Everything published lives under [docs/](/docs). Start at the front door and read down:
@@ -30,9 +60,9 @@ Everything published lives under [docs/](/docs). Start at the front door and rea
 |---|---|---|
 | 1 | **The rules** — foundations, the 26-step ramp, components, motion, anti-patterns, known divergences | [docs/DESIGN.md](/docs/DESIGN.md) |
 | 2 | **The tokens** — every value as a CSS custom property, semantic layer over raw ramp | [src/styles/colors_and_type.css](/src/styles/colors_and_type.css) |
-| 3 | **The brand kit** — lockups, clear space, palette, type scale, the glow CTA | [docs/index.html](/docs/index.html) |
-| 4 | **The specimens** — 12 review cards, one concern each | [docs/preview/](/docs/preview/) |
-| 5 | **The storybook** — 13 components with real prop signatures and variant matrices | [docs/storybook/](/docs/storybook/) |
+| 3 | **The front door** — lockups, clear space, palette, type scale, the glow CTA | [docs/pages/index.astro](/docs/pages/index.astro) |
+| 4 | **The specimens** — 25 review cards, one concern each | [docs/pages/kitchen-sink/](/docs/pages/kitchen-sink) |
+| 5 | **The compositions** — six whole deliverables | [docs/examples/raw/](/docs/examples/raw) |
 
 Link one stylesheet and the whole system is live on `:root` — no build step, no provider, no theme
 object:
@@ -41,12 +71,7 @@ object:
 <link rel="stylesheet" href="colors_and_type.css">
 ```
 
-Also in `docs/`: [tokens/](/src/tokens) (the same tokens as typed TS modules, for consumers that
-cannot read a stylesheet), [fonts/](/src/fonts) (six real Satoshi cuts), [assets/](/docs/assets)
-and [build/](/docs/build) (marks, icons and favicons), [imagery/](/docs/imagery) (the decorative
-line-and-glow layer), [artifacts/](/docs/artifacts) (deck, email, newsletter, form, poster and
-landing templates), and [src/components/](/src/components) (the component sources the
-rules were read out of).
+Also published: [assets/](/docs/assets) (UI icons and the checkbox tick), [logos/](/docs/logos), [icons/](/docs/icons) and [favicons/](/docs/favicons) (the rendered brand marks), [imagery/](/docs/imagery) (the decorative line-and-glow layer), and [docs/examples/raw/](/docs/examples/raw) (deck, email, newsletter, form, poster and landing templates).
 
 `docs/README.md` is the package guide; `docs/SKILL.md` is the agent-facing entry point.
 
@@ -61,31 +86,31 @@ derived copy goes stale.
 
 | Version | Preview |
 |---|---|
-| Inverse | ![Inverse](/logos/codecave-wide-256-text-white.png) |
-| Default | ![Default](/logos/codecave-wide-256-text-black.png) |
-| B/W White | ![Default](/logos/codecave-wide-256-all-white.png) |
-| B/W Black | ![Default](/logos/codecave-wide-256-all-black.png) |
+| Inverse | ![Inverse](/docs/logos/codecave-wide-256-text-white.png) |
+| Default | ![Default](/docs/logos/codecave-wide-256-text-black.png) |
+| B/W White | ![Default](/docs/logos/codecave-wide-256-all-white.png) |
+| B/W Black | ![Default](/docs/logos/codecave-wide-256-all-black.png) |
 
 ### Tall version
 
 | Version | Preview |
 |---|---|
-| Inverse | ![Inverse](/logos/codecave-tall-128-text-white.png) |
-| Default | ![Default](/logos/codecave-tall-128-text-black.png) |
-| B/W White | ![Default](/logos/codecave-tall-128-all-white.png) |
-| B/W Black | ![Default](/logos/codecave-tall-128-all-black.png) |
+| Inverse | ![Inverse](/docs/logos/codecave-tall-128-text-white.png) |
+| Default | ![Default](/docs/logos/codecave-tall-128-text-black.png) |
+| B/W White | ![Default](/docs/logos/codecave-tall-128-all-white.png) |
+| B/W Black | ![Default](/docs/logos/codecave-tall-128-all-black.png) |
 
 ## Icons
 
 | Version | Preview |
 |---|---|
-| 256px (png) | ![Icon 256](/icons/256x256.png "Icon 256")  |
-| 128px (png) | ![Icon 128](/icons/128x128.png "Icon 128")  |
-| 64px (png) | ![Icon 64](/icons/64x64.png "Icon 64")  |
-| 32px (png) | ![Icon 32](/icons/32x32.png "Icon 32")  |
-| 16px (png) | ![Icon 16](/icons/16x16.png "Icon 16")  |
+| 256px (png) | ![Icon 256](/docs/icons/256x256.png "Icon 256")  |
+| 128px (png) | ![Icon 128](/docs/icons/128x128.png "Icon 128")  |
+| 64px (png) | ![Icon 64](/docs/icons/64x64.png "Icon 64")  |
+| 32px (png) | ![Icon 32](/docs/icons/32x32.png "Icon 32")  |
+| 16px (png) | ![Icon 16](/docs/icons/16x16.png "Icon 16")  |
 
-[View more sizes](/icons)
+[View more sizes](/docs/icons)
 
 ## Color Palettes
 
@@ -131,7 +156,7 @@ The design system ships **six real cuts** — Light, Regular, Italic, Medium, Bo
 > without changing the design. See [docs/DESIGN.md §10.3](/docs/DESIGN.md#103-synthesized-vs-real-font-weights).
 >
 > **The logo artwork predates Satoshi.** The wordmarks in [src/](/src) are outlined paths drawn in
-> Montserrat Bold, so the PNGs in [logos/](/logos) are still Montserrat-shaped. This is carried
+> Montserrat Bold, so the PNGs in [logos/](/docs/logos) are still Montserrat-shaped. This is carried
 > forward deliberately — re-typing the wordmark without a new master would produce a mark that
 > matches nothing in circulation.
 
