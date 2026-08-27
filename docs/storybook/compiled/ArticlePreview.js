@@ -48,7 +48,7 @@ var __sfc__ = /* @__PURE__ */ _defineComponent({
             loading: "lazy",
             class: "sm:w-[132px] sm:h-[132px] rounded-xl object-cover",
             src: imageUrl(__props.article.cover.url),
-            alt: __props.article.cover.name,
+            alt: __props.article.title,
             width: 100,
             height: 100
           }, null, 8, _hoisted_3),

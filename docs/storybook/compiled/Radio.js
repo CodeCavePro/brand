@@ -14,34 +14,36 @@ var __sfc__ = /* @__PURE__ */ _defineComponent({
     id: { type: String, required: true },
     label: { type: String, required: true },
     name: { type: String, required: true },
-    isChecked: { type: Boolean, required: false },
     modelValue: { type: String, required: false },
     variant: { type: String, required: false }
   },
   emits: ["update:modelValue"],
-  setup(__props) {
+  setup(__props, { emit: __emit }) {
     const props = __props;
+    const emit = __emit;
     const labelClass = computed(() => {
       switch (props.variant) {
         case "secondary":
-          return `${baseLabelClass} gap-3 p-3 pr-4 bg-surface-primary-transparent rounded-custom border-2 border-surface-quaternary group-hover:bg-surface-tertiary`;
+          return `${baseLabelClass} gap-3 p-3 pr-4 bg-surface-primary-transparent rounded-custom border-2 border-surface-quaternary hover:bg-surface-tertiary`;
         default:
           return `${baseLabelClass} gap-2 py-2 px-3 bg-surface-secondary rounded-lg`;
       }
     });
+    const value = computed(() => props.id);
+    const isChecked = computed(() => props.modelValue === value.value);
     return (_ctx, _cache) => {
       return _openBlock(), _createElementBlock("label", {
         for: __props.id,
         class: _normalizeClass([labelClass.value])
       }, [
         _createElementVNode("input", {
-          type: "radio",
           id: __props.id,
+          type: "radio",
           name: __props.name,
-          value: __props.id,
+          value: value.value,
           class: "bg-transparent border-[2px] border-surface-quaternary checked:border-action rounded-full hover:border-action",
-          checked: __props.isChecked,
-          onChange: _cache[0] || (_cache[0] = ($event) => _ctx.$emit("update:modelValue", __props.id))
+          checked: isChecked.value,
+          onChange: _cache[0] || (_cache[0] = ($event) => emit("update:modelValue", value.value))
         }, null, 40, _hoisted_2),
         _createElementVNode(
           "span",

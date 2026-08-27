@@ -41,7 +41,7 @@ w-fit max-w-full min-w-12 min-h-12 rounded-full text-body-primary font-bold tran
         case "link":
           return `${linkBaseClass} text-hovered underline`;
         default:
-          return `${buttonBaseClass} bg-primary-500 hover:bg-primary-700 active:bg-primary-900`;
+          return `${buttonBaseClass} px-6 py-1 bg-primary-500 hover:bg-primary-700 active:bg-primary-900`;
       }
     });
     return (_ctx, _cache) => {
@@ -82,6 +82,7 @@ __sfc__.__file = "components/common/Button.vue";
 var Button_default = __sfc__;
 
 // ../packages/brand/dist/src/homepage/technology-card.vue
+import { computed as computed2 } from "vue";
 var _hoisted_12 = { class: "card flex flex-col items-center justify-around" };
 var _hoisted_2 = { class: "max-w-[8rem] text-center text-xl font-bold text-heading text-balance" };
 var __sfc__2 = /* @__PURE__ */ _defineComponent2({
@@ -94,6 +95,7 @@ var __sfc__2 = /* @__PURE__ */ _defineComponent2({
     index: { type: Number, required: false }
   },
   setup(__props) {
+    const props = __props;
     const rotate = [
       "-rotate-4 left-2 top-10",
       "-rotate-1 left-1/4 top-20",
@@ -110,12 +112,24 @@ var __sfc__2 = /* @__PURE__ */ _defineComponent2({
       "xl:-translate-y-1/2",
       "xl:-translate-y-1/2"
     ];
+    const cardClass = computed2(() => [
+      "rounded-3xl",
+      "card-wrapper",
+      "cursor-pointer",
+      "select-none",
+      "absolute",
+      "transform",
+      "transition-transform",
+      "duration-500",
+      props.index !== void 0 ? rotate[props.index] : "",
+      props.index !== void 0 && props.active ? translate[props.index] : "",
+      props.className
+    ]);
     return (_ctx, _cache) => {
       return _openBlock2(), _createElementBlock2(
         "div",
         {
-          class: _normalizeClass2(`rounded-3xl card-wrapper cursor-pointer select-none absolute transform transition-transform duration-500
-  ${rotate[__props.index]} ${__props.active ? `${translate[__props.index]}` : ""} ${__props.className || ""}`)
+          class: _normalizeClass2(cardClass.value)
         },
         [
           _createElementVNode2("div", _hoisted_12, [
