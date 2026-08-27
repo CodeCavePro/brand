@@ -5,21 +5,25 @@ const props = defineProps<{
   id: string
   label: string
   name: string
-  isChecked?: boolean
   modelValue?: string
   variant?: 'primary' | 'secondary'
 }>()
+
+const emit = defineEmits<{'update:modelValue': [value: string]}>()
+
 const baseLabelClass = 'w-fit flex items-center cursor-pointer text-body-primary transition-colors'
+
 const labelClass = computed(() => {
   switch (props.variant) {
     case 'secondary':
-      return `${baseLabelClass} gap-3 p-3 pr-4 bg-surface-primary-transparent rounded-custom border-2 border-surface-quaternary group-hover:bg-surface-tertiary`
+      return `${baseLabelClass} gap-3 p-3 pr-4 bg-surface-primary-transparent rounded-custom border-2 border-surface-quaternary hover:bg-surface-tertiary`
     default:
       return `${baseLabelClass} gap-2 py-2 px-3 bg-surface-secondary rounded-lg`
   }
 })
 
-defineEmits(['update:modelValue'])
+const value = computed(() => props.id)
+const isChecked = computed(() => props.modelValue === value.value)
 </script>
 
 <template>
@@ -28,13 +32,13 @@ defineEmits(['update:modelValue'])
       :class="[labelClass]"
   >
     <input
-        type="radio"
-        :id="id"
-        :name="name"
-        :value="id"
-        class="bg-transparent border-[2px] border-surface-quaternary checked:border-action rounded-full hover:border-action"
-        :checked="isChecked"
-        @change="$emit('update:modelValue', id)"
+      :id="id"
+      type="radio"
+      :name="name"
+      :value="value"
+      class="bg-transparent border-[2px] border-surface-quaternary checked:border-action rounded-full hover:border-action"
+      :checked="isChecked"
+      @change="emit('update:modelValue', value)"
     />
     <span class="text-xs whitespace-nowrap">
       {{ label }}

@@ -29,7 +29,7 @@ const variantClass = computed(() => {
     case 'link':
       return `${linkBaseClass} text-hovered underline`
     default:
-      return `${buttonBaseClass} bg-primary-500 hover:bg-primary-700 active:bg-primary-900`
+      return `${buttonBaseClass} px-6 py-1 bg-primary-500 hover:bg-primary-700 active:bg-primary-900`
   }
 })
 </script>

@@ -1,13 +1,10 @@
 <script setup lang="ts">
 import Button from "@codecavepro/brand/components/common/Button.vue";
+import { computed } from 'vue'
 
-defineProps<{
+const props = defineProps<{
   active: boolean
   name: string
-  /* Where "Explore service" goes. The card used to switch on `name` over this
-   * site's six service routes; that map is now @helpers/service-links.ts and
-   * the caller passes the result, so the card reaches no route table. An empty
-   * string renders the button inert, exactly as the switch's default did. */
   href?: string
   className?: string
   index?: number
@@ -30,11 +27,24 @@ const translate = [
   'xl:-translate-y-1/2',
   'xl:-translate-y-1/2',
 ]
+
+const cardClass = computed(() => [
+  'rounded-3xl',
+  'card-wrapper',
+  'cursor-pointer',
+  'select-none',
+  'absolute',
+  'transform',
+  'transition-transform',
+  'duration-500',
+  props.index !== undefined ? rotate[props.index] : '',
+  props.index !== undefined && props.active ? translate[props.index] : '',
+  props.className,
+])
 </script>
 
 <template>
-  <div :class="`rounded-3xl card-wrapper cursor-pointer select-none absolute transform transition-transform duration-500
-  ${rotate[index]} ${active ? `${translate[index]}` : ''} ${className || ''}`">
+  <div :class="cardClass">
     <div class="card flex flex-col items-center justify-around">
       <h3 class="max-w-[8rem] text-center text-xl font-bold text-heading text-balance">
         {{ name }}

@@ -229,7 +229,7 @@ withDefaults(defineProps<{
   visibility: hidden;
   border-radius: 1rem;
   padding: 1.25rem;
-  background: var(--color-surface-primary-transparent);
+  background: var(--color-surface-primary);
   -webkit-backdrop-filter: blur(24px);
   backdrop-filter: blur(24px);
   transition: opacity 0.2s ease, visibility 0.2s;
