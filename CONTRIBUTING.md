@@ -37,7 +37,7 @@ places you change it. Knowing which category a file is in is most of the job:
 | **Artwork** | SVGs under `src/logos/` (masters), `docs/logos/`, `docs/favicons/`, `docs/assets/`, `docs/imagery/` | Edit the hex literally — SVG has no cascade to inherit a token from. |
 | **Swatch captions** | `docs/index.html`, `docs/index.html`, `docs/pages/preview/colors-*.astro` | Edit the literal. Here the hex *is the content* — a `var()` would render nothing. On the ported page the literals are a data array at the top of the file; that is still a literal. |
 | **Email** | `docs/examples/raw/email.html`, `newsletter.html` | Edit the literal. Email clients do not support custom properties; this is not a shortcut. |
-| **Prose** | `docs/DESIGN.md`, `README.md`, `docs/README.md`, `docs/SKILL.md` | Update the ones that state the value. `DESIGN.md` is the rulebook and always states it. |
+| **Prose** | `DESIGN.md`, `README.md`, `docs/README.md`, `docs/SKILL.md` | Update the ones that state the value. `DESIGN.md` is the rulebook and always states it. |
 
 Everything else consumes `var(--color-*)` and needs no edit at all — which is the
 point of the token layer. **Never hard-code a hex in a file that could use a
@@ -121,7 +121,7 @@ on you.
    once turned up two latent bugs nothing in `docs/` consumed: an extensionless
    ESM import, and an interpolation of `brand[660]`, a ramp step that has never
    existed.
-3. Update `docs/DESIGN.md` where it states the value, and the palette table in
+3. Update `DESIGN.md` where it states the value, and the palette table in
    the root [README.md](/README.md) if the change is to one of the eight colours
    listed there.
 4. Grep for the old value and triage every hit against the table above.
@@ -136,7 +136,7 @@ on you.
 
 ### Changing a rule rather than a value
 
-`docs/DESIGN.md` is the rulebook and is authored directly. If the rule has a
+`DESIGN.md` is the rulebook and is authored directly. If the rule has a
 machine-readable half — an anti-pattern that a specimen demonstrates, a
 divergence in §10 — move both, and say in the commit which specimen proves it.
 

@@ -1,15 +1,22 @@
 /* The prose collection: four files that already exist, rendered as pages.
  *
  * THE FILES ARE NOT MOVED AND NOT EDITED, and that is the whole design of this
- * loader rather than a convenience. `docs/DESIGN.md`, `README.md`, `SKILL.md`
- * and `guide.md` are payload — they ship to dist/ and are cited by path from
- * eight other files — so they cannot become collection entries under
- * `src/content/`. And two of them already carry frontmatter that belongs to
- * somebody else:
+ * loader rather than a convenience. `DESIGN.md`, `docs/README.md`,
+ * `docs/SKILL.md` and `docs/guide.md` are payload — they ship to dist/ and are
+ * cited by path from a dozen other files — so they cannot become collection
+ * entries under `src/content/`.
+ *
+ * PATHS HERE ARE REPO-RELATIVE, because the four no longer share a directory:
+ * DESIGN.md moved to the repository root on 2026-08-27 to match the DESIGN.md
+ * format spec, and tools/astro-passthrough.mjs publishes it back to /DESIGN.md,
+ * the URL the front door has always linked.
+ *
+ * Two of them carry frontmatter that belongs to somebody else:
  *
  *   docs/SKILL.md   name / description / user-invocable  — Claude Skill metadata.
  *                   `user-invocable: true` is what makes it a slash command.
- *   docs/DESIGN.md  name / category / surface / colors   — a token manifest.
+ *   DESIGN.md       the DESIGN.md spec's token schema — colors, typography,
+ *                   rounded, spacing, components. Stitch's linter reads it.
  *
  * Starlight's docsSchema() requires a `title`, so writing one into those blocks
  * would mean editing metadata two other systems read, to satisfy a third. The
@@ -42,31 +49,33 @@ import path from 'node:path';
 /** The four, in reading order — shortest orientation first, reference last.
  *
  *  `order` drives the page order. Left to itself Starlight sorts entries
- *  alphabetically, which puts the 948-line rules document first and the 28-line
+ *  alphabetically, which puts the 1060-line rules document first and the 28-line
  *  orientation third: correct as a filename sort, useless as a path through the
  *  material. */
 const GUIDES = [
   {
-    file: 'guide.md',
+    file: 'docs/guide.md',
     slug: 'brand-guide',
     title: 'Brand guide',
     description: 'The whole system in a page: colours, type, voice and the four messaging pillars.',
   },
   {
+    // The repository root, not docs/ — the one guide whose source sits outside
+    // this directory. tools/astro-passthrough.mjs publishes it to /DESIGN.md.
     file: 'DESIGN.md',
     slug: 'design-rules',
     title: 'Design rules',
     description:
-      'The canonical rules document — colour, typography, spacing, motion, voice, and the twelve anti-patterns.',
+      'The canonical rules document — colour, typography, spacing, motion, voice, and the thirteen “Don’t” rules.',
   },
   {
-    file: 'README.md',
+    file: 'docs/README.md',
     slug: 'using-the-kit',
     title: 'Using the kit',
     description: 'What the package contains, where each value came from, and how to consume it.',
   },
   {
-    file: 'SKILL.md',
+    file: 'docs/SKILL.md',
     slug: 'skill-definition',
     title: 'Skill definition',
     description: 'The map: what is inside, when to reach for it, and what it must not be used for.',
@@ -86,7 +95,7 @@ export const collections = {
       name: 'codecave-prose-loader',
       load: async ({ store, renderMarkdown, parseData, logger }) => {
         store.clear();
-        const root = path.join(process.cwd(), 'docs');
+        const root = process.cwd();
 
         for (const [i, guide] of GUIDES.entries()) {
           const full = path.join(root, guide.file);
@@ -96,14 +105,14 @@ export const collections = {
              looks like a shorter bar. */
           if (!fs.existsSync(full)) {
             throw new Error(
-              `content.config.ts: docs/${guide.file} does not exist.\n` +
+              `content.config.ts: ${guide.file} does not exist.\n` +
                 `The prose collection names it explicitly; a rename has to be made here too.`,
             );
           }
 
           const body = stripFrontmatter(fs.readFileSync(full, 'utf8'));
           const id = `guides/${guide.slug}`;
-          const filePath = `docs/${guide.file}`;
+          const filePath = guide.file;
 
           store.set({
             id,

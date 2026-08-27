@@ -364,10 +364,10 @@ all six artifacts now carry the company address.
    `.card`, `.card-article`, `.card-feature`, `.field`, `.checkbox`, `.chip`,
    `.eyebrow`, `.lead`, `.eyebrow-lead`, `.stat`, `.divider`, `.page-container`,
    `.section-container`. These are the public API.
-5. **Read `DESIGN.md` §9 before shipping.** The twelve anti-patterns are the
+5. **Read `DESIGN.md`'s Do's and Don'ts before shipping.** The thirteen Don'ts are the
    fastest way to catch work that has drifted off-system — a downward shadow, a
    small radius, a second glow button, a purple wash, or a light theme.
-6. **Check §10, Known divergences.** Two rules here intentionally differ from
+6. **Check Known divergences.** Two rules here intentionally differ from
    what `codecave.pro` ships today (error text contrast, real vs. synthesized
    font weights). Each is documented with the production value if you need to
    match live exactly. **Buttons are not among them:** the `.btn*` layer is a
@@ -388,7 +388,8 @@ all six artifacts now carry the company address.
 site's README rather than from source. That palette was wrong — it mapped
 `#aaccee` to the page background and `#5F20FE` to body text; `#aaccee` appears in
 no first-party file, and `#5F20FE` is the action color and is never body text.
-`DESIGN.md` §1 documents the correction in full.
+`DESIGN.md`, under Colors → The 2026 palette rebuild, documents the correction
+in full.
 
 `brand.json` was then corrected to the source-backed values (`#5F20FE` action,
 near-black canvas, near-white ink, 24px radius — re-seeded again after the

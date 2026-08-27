@@ -26,10 +26,14 @@ and the build scripts inside the directory that publishes the website.
 | `tools/` | every build and check script | yes |
 | `packages/brand/` | the npm package — a pure derivative | **never** |
 | `dist/` | the built website, gitignored | never |
+| `DESIGN.md` | the rules document, at the **repository root** | yes |
 
 Three of the paths a consumer links — `colors_and_type.css`, `tokens/` and
 `fonts/` — are authored under `src/` and *published* into `dist/` at the URLs
-they have always had. `tools/astro-passthrough.mjs` holds that map in
+they have always had. `DESIGN.md` is the fourth entry in the same map and the
+only one reaching **upward**: it moved out of `docs/` on 2026-08-27 to conform
+to the DESIGN.md format spec, which places it at the project root, and the
+passthrough copies it back down to `/DESIGN.md` so the URL never moved. `tools/astro-passthrough.mjs` holds that map in
 `PUBLISHED` and asserts the copy arrived; `check:links` and `check:examples`
 **read** the same map rather than restating it, because both broke the day the
 files moved and both were wrong about correct deliverables.
@@ -150,7 +154,7 @@ files, which nothing else here would ever have noticed.
 when this runs, does the file it reaches for exist?** Every relative `src`,
 `href`, `url()` and module specifier below the frontmatter fence, resolved
 against the page's OUTPUT location and matched against the union of what the
-build renders and what it copies -- 152 of them. Frontmatter is excluded
+build renders and what it copies -- 123 of them. Frontmatter is excluded
 deliberately: imports above the fence are Astro's, resolved at build time against
 the *source* tree, so judging both by one rule reports every layout import as a
 dead file. Separately, a page importing a bare specifier must pass `importmap` to
@@ -167,7 +171,9 @@ loader or the overrides: **every fault this integration hit was silent**, and
 four of them had to be found by measuring the rendered page rather than by
 reading a build log. That is the standing cost of running a shell this repo does
 not own. `docs/content.config.ts` renders `DESIGN.md`, `README.md`,
-`SKILL.md` and `guide.md` **where they already sit** — they are payload, cited by
+`SKILL.md` and `guide.md` **where they already sit** — which since 2026-08-27
+means one of the four sits *above* `docs/`, so the loader and `check:links`
+both resolve `file` against the repository root rather than against `docs/` — they are payload, cited by
 path from eight files, and two of them carry frontmatter belonging to other
 systems (`SKILL.md`'s is Claude Skill metadata, `DESIGN.md`'s is a token
 manifest). So the loader synthesizes the title and never touches a file. Two
@@ -545,7 +551,7 @@ would fail every real release.
 The README is authored because npm renders it as the package page and there is
 nowhere else for that page to come from — it is manifest-adjacent, the same
 category as `package.json`. It explains how to install and consume, and links
-rather than restates: the rules live in `docs/DESIGN.md`.
+rather than restates: the rules live in `DESIGN.md`.
 
 Its usage example does quote real token values, which is a second home for
 them, so **they are asserted, not trusted.** Any README line shaped
@@ -572,7 +578,7 @@ repository's to fix and reaches the site at its next bump. Only remarks about
 files the site still owns are the site's.
 
 **Its section numbers must not be renumbered.** They are cited by number from
-the shipped `src/styles/colors_and_type.css` and from `docs/DESIGN.md`; the list
+the shipped `src/styles/colors_and_type.css` and from `DESIGN.md`; the list
 starting at section 2 is deliberate, because section 1's only finding was
 fixed and deleted.
 

@@ -12,7 +12,7 @@ user-invocable: true
 |---|---|
 | `colors_and_type.css` | **The deliverable.** Six `@font-face` bindings, the 26-step brand ramp, the semantic token layer, the type scale, radii, spacing, shadows, and a component class layer (`.btn*`, `.card*`, `.field`, `.checkbox`, `.chip`, `.eyebrow`, `.lead`, `.eyebrow-lead`, `.stat`, `.divider`, `.page-container`, `.section-container`). Link it and the system is live. |
 | `tokens/` | The same tokens as typed TS modules — `colors.ts`, `layout.ts`, `typography.ts` — for consumers that cannot read a stylesheet. Mirrors the CSS; the CSS wins if they ever disagree. |
-| `DESIGN.md` | The rules: product context, visual foundations, color, typography, spacing/radius/layout, components, motion, voice, twelve anti-patterns, known divergences, provenance. |
+| `DESIGN.md` | The rules, under the eight canonical headings: overview, colors, typography, layout, elevation & depth, shapes, components, do's and don'ts — then motion, voice, known divergences and provenance. |
 | `README.md` | Package guide, source references, the Preview Manifest, and the reuse workflow. |
 | `preview/` | Eleven focused review cards plus a launcher. Static HTML, live tokens, no screenshots. |
 | `imagery/` | The decorative line-and-glow art — seven stroke-only section backgrounds on their required `#050505` ground, with the byte-for-byte originals in `imagery/source/`. This is the brand's only non-photographic image system. |
@@ -59,11 +59,11 @@ Use it when the work is CODECAVE-branded and visual:
 
 - Building or reviewing a page, screen, component, email or deck for CODECAVE.
 - Choosing a color, radius, type step, shadow or spacing value in that context.
-- Auditing existing work for drift — `DESIGN.md` §9 lists the twelve failure
-  modes explicitly.
+- Auditing existing work for drift — `DESIGN.md`'s Don'ts list the thirteen
+  failure modes explicitly.
 - Placing a logo, favicon or app icon. Take the file from `logos/`, `icons/` or `favicons/`;
   never redraw or re-type the wordmark.
-- Writing UI copy: `DESIGN.md` §8 covers the voice.
+- Writing UI copy: `DESIGN.md`'s Voice section covers it.
 
 Do **not** use it to derive a light theme. There is not one, and
 `kitchen-sink/colors-theme-light.html` explains why the three light surfaces that
@@ -88,7 +88,7 @@ exist cannot be generalized into one.
    `examples/index.html` when it is a whole surface. The storybook mounts the
    genuine `.vue` files; the artifacts show the system at real page density.
 7. **Take assets from `logos/`, `icons/` or `favicons/`.** Copy them; do not regenerate them.
-8. **Check `DESIGN.md` §10** before matching production pixel-for-pixel — a
+8. **Check `DESIGN.md`'s Known divergences** before matching production pixel-for-pixel — a
    few rules here intentionally improve on what the live site ships, and one
    former divergence (§10.1) is retired back to production behavior.
 

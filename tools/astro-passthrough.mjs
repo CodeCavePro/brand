@@ -80,6 +80,12 @@ const OWNED = [
  * this whole file exists: a copy that quietly stops happening produces a build
  * that succeeds and a site with no styling at all. */
 export const PUBLISHED = [
+  /* The canonical rules document. It lives at the REPOSITORY ROOT because the
+   * DESIGN.md format spec puts it there, and it is published back to the URL it
+   * has always had -- docs/pages/index.astro links `DESIGN.md` from the front
+   * door, and that link predates the move. Same bargain as the four below:
+   * authored where it belongs, served where it was. */
+  ['../DESIGN.md', 'DESIGN.md'],
   ['styles/colors_and_type.css', 'colors_and_type.css'],
   ['styles/theme.css', 'theme.css'],
   ['styles/fonts', 'fonts'],

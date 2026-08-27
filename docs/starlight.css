@@ -99,7 +99,7 @@
  * anyone tries to switch it back on: `autogenerate` filters routes by
  * `entry.filePath` relative to the collection directory, not by `entry.id`
  * (utils/navigation.ts). These entries have ids under `guides/` and filePaths
- * of `docs/DESIGN.md` — the real files, which is the whole point of the loader —
+ * of `DESIGN.md` — the real files, which is the whole point of the loader —
  * so every one of them is filtered out and the group renders with a label and
  * no links. No warning; the sidebar simply comes out empty.
  *

@@ -150,7 +150,11 @@ for (const [from, to] of PUBLISHED) {
 /* ---- the prose collection ------------------------------------------------
  * Four routes exist that have no .astro under pages/: Starlight renders them
  * from the collection in docs/content.config.ts, out of DESIGN.md, README.md,
- * SKILL.md and guide.md where those already sit.
+ * SKILL.md and guide.md where those already sit -- which since 2026-08-27 means
+ * one of them sits above docs/. The loader resolves `file` against the
+ * REPOSITORY ROOT for exactly that reason, so this check has to as well; a
+ * docs-relative join reads DESIGN.md as docs/DESIGN.md and fails on a file that
+ * is right where it belongs.
  *
  * A route set derived from pages/ alone cannot see them, and the failure that
  * causes is silent in the worst way -- every link to a guide would be reported
@@ -177,9 +181,9 @@ if (guides.length < 4) {
 for (const g of guides) {
   /* The loader throws on a missing file at build time. This says so without a
      build, which is the only reason check:links runs in CI at all. */
-  if (!fs.existsSync(path.join(docs, g.file))) {
+  if (!fs.existsSync(path.join(root, g.file))) {
     console.error(
-      `docs/content.config.ts names docs/${g.file}, which does not exist.\n` +
+      `docs/content.config.ts names ${g.file}, which does not exist.\n` +
         `The prose collection renders the shipped files in place; a rename has to be made there too.`,
     );
     process.exit(1);
@@ -509,8 +513,8 @@ const SCAN = [
   'RELEASING.md',
   'CLAUDE.md',
   'WEBSITE-REVIEW.md',
+  'DESIGN.md',
   'docs/README.md',
-  'docs/DESIGN.md',
   'docs/SKILL.md',
   'docs/guide.md',
   'src/styles/colors_and_type.css',

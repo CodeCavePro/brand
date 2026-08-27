@@ -4,7 +4,7 @@ This repository contains resources for the **CODECAVE** brand such as [logos](/d
 
 > **This repository is the source of truth for the CODECAVE brand.** The design system is published
 > at **<https://brand.codecave.pro/>** from [docs/](/docs) and documented in
-> [docs/DESIGN.md](/docs/DESIGN.md). Implementations — including <https://codecave.gay> — conform
+> [DESIGN.md](/DESIGN.md). Implementations — including <https://codecave.gay> — conform
 > to it, not the reverse.
 >
 > **That is the target state, and we are not there yet.** `docs/` began highly divergent from the
@@ -67,7 +67,7 @@ Everything published lives under [docs/](/docs). Start at the front door and rea
 
 | | What | Where |
 |---|---|---|
-| 1 | **The rules** — foundations, the 26-step ramp, components, motion, anti-patterns, known divergences | [docs/DESIGN.md](/docs/DESIGN.md) |
+| 1 | **The rules** — foundations, the 26-step ramp, components, motion, anti-patterns, known divergences | [DESIGN.md](/DESIGN.md) |
 | 2 | **The tokens** — every value as a CSS custom property, semantic layer over raw ramp | [src/styles/colors_and_type.css](/src/styles/colors_and_type.css) |
 | 3 | **The front door** — lockups, clear space, palette, type scale, the glow CTA | [docs/pages/index.astro](/docs/pages/index.astro) |
 | 4 | **The specimens** — 25 review cards, one concern each | [docs/pages/kitchen-sink/](/docs/pages/kitchen-sink) |
@@ -137,7 +137,7 @@ derived copy goes stale.
 | Muted        | ![#9595BB](https://www.singlecolorimage.com/get/9595BB/32x32) | `#9595BB` | `--color-body-secondary` |
 
 The full ramps — 12 violet brand steps and 13 grays, verbatim from the site's 2026 palette
-rebuild — are in [docs/DESIGN.md → Colors](/docs/DESIGN.md#3-color). Two measured art literals
+rebuild — are in [DESIGN.md → Colors](/DESIGN.md#colors). Two measured art literals
 (`#391398` and `#4C4759`) are imagery-only and must never be used for UI or text.
 
 Violet is rationed: `#5F20FE` edges, links and marks, and never fills a large area. When a purple
@@ -162,7 +162,7 @@ The design system ships **six real cuts** — Light, Regular, Italic, Medium, Bo
 > **The live site has not caught up.** `codecave.pro` still self-hosts a single
 > `Satoshi-Regular.ttf` declared with no `font-weight`, so 300 and 700 are synthesized by the
 > browser there rather than being real cuts. Shipping the files from `src/styles/fonts/` fixes that
-> without changing the design. See [docs/DESIGN.md §10.3](/docs/DESIGN.md#103-synthesized-vs-real-font-weights).
+> without changing the design. See [DESIGN.md §10.3](/DESIGN.md#103-synthesized-vs-real-font-weights).
 >
 > **The logo artwork predates Satoshi.** The wordmarks in [src/](/src) are outlined paths drawn in
 > Montserrat Bold, so the PNGs in [logos/](/docs/logos) are still Montserrat-shaped. This is carried

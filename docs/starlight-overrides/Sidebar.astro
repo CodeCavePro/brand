@@ -11,7 +11,7 @@
  * like a config mistake and is not one. `autogenerate` filters routes on
  * `entry.filePath` relative to the collection directory rather than on
  * `entry.id` (utils/navigation.ts). Our entries have ids under `guides/` and
- * filePaths of `docs/DESIGN.md` — the actual shipped files, which is the entire
+ * filePaths of `DESIGN.md` — the actual shipped files, which is the entire
  * point of the loader — so every entry is filtered out and the group renders
  * with its label and no links, silently. Making it work would mean giving each
  * entry a filePath that does not exist.

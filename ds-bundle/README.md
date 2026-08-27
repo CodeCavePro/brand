@@ -66,7 +66,7 @@ serves one TTF and lags behind. Design to 300/400/700 and do not reach for 500, 
 
 ## Where the truth lives
 
-- `docs/DESIGN.md` — the canonical rules: foundations, the full ramp, components, motion, voice,
+- `DESIGN.md` — the canonical rules: foundations, the full ramp, components, motion, voice,
   logo usage, anti-patterns and the known divergences. Read this first.
 - `src/styles/colors_and_type.css` — every token with comments on intended use, then the component
   layer. Each block names the source file it was transcribed from.

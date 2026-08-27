@@ -97,7 +97,7 @@ Get the cuts from [Fontshare](https://www.fontshare.com/fonts/satoshi) — 300, 
 700 and 900, each upright and italic, which is the ten faces these stylesheets declare.
 Bind each with a real `font-weight` descriptor rather than letting the browser
 synthesize; the design system documents why in
-[DESIGN.md §10.3](https://github.com/CodeCavePro/brand/blob/development/docs/DESIGN.md#103-synthesized-vs-real-font-weights).
+[DESIGN.md §10.3](https://github.com/CodeCavePro/brand/blob/development/DESIGN.md#103-synthesized-vs-real-font-weights).
 
 **Do not use the `stylesheet.css` that comes in the Fontshare download.** It declares
 Bold and Black _both_ as `font-weight: bold`, and their italics likewise, so four cuts
@@ -308,7 +308,7 @@ the rules, the reasoning, the anti-patterns — is documented separately:
 
 - **[brand.codecave.pro](https://brand.codecave.pro/)** — the published design system:
   brand kit, foundation specimens, and a storybook of real components.
-- **[DESIGN.md](https://github.com/CodeCavePro/brand/blob/development/docs/DESIGN.md)** —
+- **[DESIGN.md](https://github.com/CodeCavePro/brand/blob/development/DESIGN.md)** —
   the rules in full: the 26-step ramp, components, motion, anti-patterns, known
   divergences from what the site ships today.
 - **[CodeCavePro/brand](https://github.com/CodeCavePro/brand)** — the repository.

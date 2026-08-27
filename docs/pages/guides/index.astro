@@ -27,7 +27,7 @@ const BLURB: Record<string, string> = {
   'brand-guide':
     'The whole system in a page — colour roles, type, the four messaging pillars. Start here if you have five minutes.',
   'design-rules':
-    'The canonical rules document. Product context, visual foundations, colour, typography, spacing and radius, components, motion, voice, twelve anti-patterns, known divergences, provenance.',
+    'The canonical rules document. Product context, visual foundations, colour, typography, spacing and radius, components, motion, voice, the thirteen “Don’t” rules, known divergences, provenance.',
   'using-the-kit':
     'What the package contains, where every value came from, and the workflow for consuming it in another project.',
   'skill-definition':
@@ -36,7 +36,7 @@ const BLURB: Record<string, string> = {
 
 const SOURCE: Record<string, string> = {
   'brand-guide': 'docs/guide.md',
-  'design-rules': 'docs/DESIGN.md',
+  'design-rules': 'DESIGN.md',
   'using-the-kit': 'docs/README.md',
   'skill-definition': 'docs/SKILL.md',
 };
@@ -52,7 +52,7 @@ const SOURCE: Record<string, string> = {
   <p class="lead">Every other surface here shows you something. These four say <em>why</em> —
      and until now they were downloadable files rather than pages, which is a strange
      shape for the most carefully written material in the repository. They are rendered
-     from exactly the files that ship: <code>docs/DESIGN.md</code>,
+     from exactly the files that ship: <code>DESIGN.md</code>,
      <code>docs/README.md</code>, <code>docs/SKILL.md</code> and <code>docs/guide.md</code>,
      unmoved and unedited.</p>
 
@@ -68,7 +68,7 @@ const SOURCE: Record<string, string> = {
 
   <p class="note">
     <strong>These pages are rendered from the shipped files, not from copies.</strong>
-    <code>docs/DESIGN.md</code> and <code>docs/SKILL.md</code> both carry frontmatter that
+    <code>DESIGN.md</code> and <code>docs/SKILL.md</code> both carry frontmatter that
     belongs to something else — a token manifest and Claude Skill metadata, where
     <code>user-invocable: true</code> is what makes it a slash command. Neither block was
     touched to make these pages exist; the page title is synthesized at load time instead.
