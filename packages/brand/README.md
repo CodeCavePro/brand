@@ -155,7 +155,7 @@ Two things to know about it:
 
 ## The components
 
-20 components and 13 icons — the buttons, the form controls and the forms
+21 components and 13 icons — the buttons, the form controls and the forms
 themselves, the nav bar, the footer link group, the article and technology
 cards, the review card and the typing effect codecave.pro renders — ship as
 **source**, byte-for-byte the files the site builds from. Not a reimplementation
