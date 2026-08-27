@@ -12,38 +12,41 @@
 # workflow_dispatch from a branch, which used to publish that branch.
 #
 # The storybook's compiled/*.js and tw-bridge.css are generated from
-# src/components/ and src/captured/ using this repository's own toolchain. That
-# is recent: it used to need a codecave.pro checkout, which meant the rebuild
-# ran only where a second private repo was reachable -- and it was not, so it
-# never ran at all. See the step for why that dependency is gone.
+# src/components/ and src/captured/ using this repository's own toolchain, and
+# they are GITIGNORED -- produced here on every run, like packages/brand/dist/
+# and dist/ itself. Nothing about them is committed, so nothing can be stale.
 #
-# So the job is in two parts, and the order matters:
+# That is new as of 2026-08-27, and it removed a step rather than adding one.
+# They used to be tracked and guarded by check-tw-bridge.mjs, which compared a
+# sha256 of both component roots against a digest recorded in the tw-bridge.css
+# header. The arrangement made sense only while the generator needed a
+# codecave.pro checkout and therefore could not run everywhere -- a node-only
+# checker stood in for a build nobody could perform. The decoupling on
+# 2026-08-26 ended that, and left the check doing something worse than nothing:
+# this job ALREADY rebuilt the storybook and published the fresh output, so a
+# red check was failing the build over files the same run then discarded. It
+# cost the 2.4.1 release and a red development branch before it went.
 #
-#   1. A verification that ALWAYS runs. check-tw-bridge.mjs needs nothing but
-#      node, and it proves the committed storybook is in step with the sources
-#      beside it. This is the real guarantee — a stale bridge compiles and
-#      loads and silently documents an older site, so nothing else catches it.
+# So the order that matters now is just the dependency order:
 #
-#   1b. A typecheck of storybook/ports/ against the interfaces in ports.d.ts.
-#      Needs typescript, so it follows step 1 rather than joining it — step 1
-#      keeps its "nothing but node" property.
+#   1. The checks that need nothing but node -- findings, deliverables, routes.
+#      Front-loaded so a broken install still gives feedback.
 #
-#   1c. The package built and checked against src/. Needs the install, and
-#      must precede the rebuild below, which compiles each specimen from
-#      packages/brand/dist/ and refuses to run without it. Together 1, 1b and
-#      1c are exactly what `npm run check` runs -- all eight assertions.
+#   2. The install, then the typecheck of storybook/ports/ and the token-layer
+#      collision check.
 #
-#   2. The storybook rebuilt, then the site built over it. Both unconditional
-#      now. The rebuild writes into docs/storybook/, so building before it would
-#      publish the previous run's output.
+#   3. The package built and checked against src/. Must precede the rebuild,
+#      which compiles each specimen out of packages/brand/dist/ and refuses to
+#      run without it. (`npm run build:storybook` builds the package itself, so
+#      this step is belt and braces rather than a prerequisite.)
 #
-# If the rebuild produces something different from what is committed, the FRESH
-# output is what deploys — it is strictly the more correct artifact — and the
-# difference is reported in the job summary rather than failing the run.
+#   4. The storybook rebuilt, the import map checked against the bundles it
+#      just produced, and the site built over the result. The rebuild writes
+#      into docs/storybook/, so building the site before it would publish
+#      nothing at all now that the directory starts empty.
 #
-# Rebuild prerequisites: CodeCavePro/codecave.pro must be readable. If it is
-# private, add a repo-scoped PAT as the CODECAVE_PRO_TOKEN secret; the default
-# GITHUB_TOKEN cannot read another repository.
+# No codecave.pro checkout is needed anywhere in this file. CODECAVE_PRO_TOKEN
+# is unused by this repository and can be deleted.
 name: Verify, and deploy Pages from development
 
 on:
@@ -84,21 +87,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '24'
-
-      # Runs unconditionally and depends on nothing. If this fails, the
-      # committed storybook does not match the component sources, so whatever
-      # we publish would be documenting an earlier state of them.
-      - name: Verify the storybook matches its sources
-        run: node tools/check-tw-bridge.mjs
-
-      # Same category, and the same reason it is not folded into the step
-      # above: both its inputs are committed, so it needs no site checkout and
-      # no install. An import map that has stopped resolving what the bundles
-      # import takes every specimen on the page down without an error anyone
-      # sees — the page still renders, it is just empty where the component
-      # was.
-      - name: Check the storybook import map
-        run: node tools/check-importmap.mjs
 
       # Third of the dependency-free three, and the one that guards prose
       # rather than code. Three files quote how many findings the story pages
@@ -190,44 +178,16 @@ jobs:
       - name: Rebuild the storybook
         run: npm run build:storybook
 
-      # The generator pins esbuild's absWorkingDir, so unchanged sources
-      # reproduce byte-identical output regardless of where it ran. Anything
-      # reported here is a real difference between the committed storybook and a
-      # fresh build -- which now means a stale commit rather than a toolchain
-      # that moved underneath it.
-      - name: Report any rebuild drift
-        run: |
-          if git diff --quiet -- docs/storybook; then
-            echo "Rebuilt storybook is identical to the committed output." >> "$GITHUB_STEP_SUMMARY"
-          else
-            {
-              echo "### Storybook rebuild differs from the committed output"
-              echo ""
-              echo "The freshly built files are what this run publishes. Regenerate and commit to clear this:"
-              echo ""
-              echo '```'
-              echo "npm run build:storybook"
-              echo '```'
-              echo ""
-              echo '```diff'
-              git diff --stat -- docs/storybook
-              echo '```'
-            } >> "$GITHUB_STEP_SUMMARY"
-          fi
-
-      # ---- build the site --------------------------------------------------
-      # LAST, deliberately. The storybook rebuild above writes into
-      # docs/storybook/, so building before it would publish the previous run's
-      # output. Everything this step needs is in this checkout — see
-      # astro.config.mjs — so an unreachable codecave.pro cannot reach it, and
-      # the safety property in this file's header survives the migration: a
-      # neighbouring repo going private must never take this site down.
+      # Has to follow the rebuild: compiled/*.js is generated and gitignored, so
+      # this reads build output rather than tracked files. It used to sit in the
+      # dependency-free block above, back when both its inputs were committed.
       #
-      # The build fails if dist/ is not a superset of docs/. That matters more
-      # than usual while the migration is half-done, because most pages reach
-      # the site by being COPIED and only a few by being rendered — so a
-      # passthrough that silently stopped would deploy a site missing almost
-      # every page, with a green tick. See tools/astro-passthrough.mjs.
+      # An import map that has stopped resolving what the bundles import takes
+      # every specimen down without an error anyone sees — the page still
+      # renders, it is just empty where the component was.
+      - name: Check the storybook import map
+        run: node tools/check-importmap.mjs
+
       - name: Build the docs site
         run: npm run build
 

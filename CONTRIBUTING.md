@@ -33,7 +33,7 @@ places you change it. Knowing which category a file is in is most of the job:
 | **Origin** | `src/styles/colors_and_type.css`, `src/tokens/*.ts` | **Edit these.** Both, together — the `.ts` is a hand-maintained mirror, not a compilation. |
 | **Component sources** | `src/components/**` | **Edit these.** This is where a component changes. |
 | **Provenance captures** | `src/captured/**` | **Never edit.** These are copies of files another repository owns. |
-| **Generated** | `packages/brand/dist/`, the derived half of `ds-bundle/` (including its Components cards), `docs/storybook/compiled/`, `docs/storybook/tw-bridge.css` | Never edit. Rebuild. |
+| **Generated** | `packages/brand/dist/`, the derived half of `ds-bundle/` (including its Components cards), `docs/storybook/compiled/`, `docs/storybook/tw-bridge.css` | Never edit. Rebuild. All gitignored. |
 | **Artwork** | SVGs under `src/logos/` (masters), `docs/logos/`, `docs/favicons/`, `docs/assets/`, `docs/imagery/` | Edit the hex literally — SVG has no cascade to inherit a token from. |
 | **Swatch captions** | `docs/index.html`, `docs/index.html`, `docs/pages/preview/colors-*.astro` | Edit the literal. Here the hex *is the content* — a `var()` would render nothing. On the ported page the literals are a data array at the top of the file; that is still a literal. |
 | **Email** | `docs/examples/raw/email.html`, `newsletter.html` | Edit the literal. Email clients do not support custom properties; this is not a shortcut. |
@@ -286,18 +286,20 @@ for being ahead.
 
 ### Line endings are content, so leave `.gitattributes` alone
 
-`* text=auto eol=lf`, and it is load-bearing rather than tidiness. Three things
-here are digests or byte-for-byte copies of files in `docs/`, and all three
-read the **working tree**, not the git blob:
+`* text=auto eol=lf`, and it is load-bearing rather than tidiness. Two
+derivations read the **working tree**, not the git blob:
 
-- `check-tw-bridge.mjs` compares a sha256 of `src/components/` and
-  `src/captured/` against the value recorded in the generated
-  `tw-bridge.css` header. Both roots, so that MOVING a file between them —
-  which changes no bytes — still moves the digest.
 - `npm run check` asserts `packages/brand/dist/colors_and_type.css` and
   `fonts.css` are byte-identical to their origins, and `npm pack` runs it.
 - `build-storybook.mjs` compiles `.vue` SFCs with esbuild, which reproduces only
   if its inputs do.
+
+A third reason stood here and was the sharpest: `tw-bridge.css` recorded a
+sha256 of the component roots, so a CRLF clone and an LF clone of the same
+commit disagreed and the check could pass only on the machine that generated
+it — 36 consecutive red Pages deploys in August 2026, green locally every time.
+That digest is gone (those files are generated and gitignored as of
+2026-08-27), but the two reasons above are not.
 
 A CRLF checkout and an LF checkout of the same commit disagree on every one of
 them. That is not a hypothetical: without this file, `core.autocrlf=true` on

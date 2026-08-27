@@ -34,6 +34,15 @@ srcs="$root/src"
 dst="$root/ds-bundle"
 
 [ -d "$src" ] || { echo "no docs/ at $src" >&2; exit 1; }
+
+# tw-bridge.css and compiled/*.js are generated and gitignored as of
+# 2026-08-27, so a fresh checkout has neither. Build them rather than failing
+# on a missing file three lines into the copy loop.
+if [ ! -f "$src/storybook/tw-bridge.css" ] || [ ! -d "$src/storybook/compiled" ]; then
+  echo "storybook output missing — generating it first"
+  ( cd "$root" && npm run build:storybook ) || {
+    echo "npm run build:storybook failed; ds-bundle cannot be materialized" >&2; exit 1; }
+fi
 [ -d "$dst" ] || { echo "no ds-bundle/ at $dst — this script refreshes it, it does not create it" >&2; exit 1; }
 
 mkdir -p "$dst/tokens" "$dst/fonts" "$dst/vendor/gsap" "$dst/compiled"

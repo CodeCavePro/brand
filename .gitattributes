@@ -1,32 +1,26 @@
-# Line endings are CONTENT here, because two generated things are digests of it.
+# Line endings are CONTENT here, because two of this repository's derivations
+# are byte-for-byte copies and one is a compiler's input.
 #
-# docs/storybook/tw-bridge.css records a sha256 of everything under the two
-# component roots — src/components/ and src/captured/ — and
-# tools/check-tw-bridge.mjs re-computes that
-# digest from the WORKING TREE and refuses to deploy when the two disagree.
-# With no attributes file, a Windows clone under the common `core.autocrlf=true`
-# checks those sources out with CRLF while Linux CI checks them out with LF —
-# so the same commit hashes to two different values and the check can only pass
-# on the machine the storybook was last generated on.
+# packages/brand copies src/styles/colors_and_type.css and
+# src/styles/fonts/fonts.css byte-for-byte and ASSERTS the identity, and
+# `npm pack` runs that build — so without this, a tarball published from
+# Windows and one published from CI are different bytes for the same version.
+# And build-storybook.mjs compiles the .vue sources with esbuild, which is only
+# reproducible if its inputs are.
 #
-# That is not hypothetical: it failed the Pages deploy 36 times in a row
-# between 2026-08-20 and 2026-08-21 while passing locally every time, so the
-# site quietly served a two-day-old build behind a green-looking repository.
-# The recorded digest was the CRLF one; CI computed the LF one; the error
-# message sent you to regenerate the storybook, which on Windows re-recorded
-# the CRLF digest and failed again.
+# `eol=lf` — not `text=auto` alone — is what makes that hold. `text=auto`
+# normalises what is COMMITTED and leaves the checkout platform-native, which is
+# exactly the state that produces identical blobs with different bytes on disk.
 #
-# `eol=lf` — not `text=auto` alone — is what fixes it. `text=auto` normalises
-# what is COMMITTED and leaves the checkout platform-native, which is exactly
-# the state that produced the bug: identical blobs, different bytes on disk,
-# different digest.
-#
-# The same reasoning covers the other two derivations. packages/brand copies
-# docs/colors_and_type.css and docs/fonts/fonts.css byte-for-byte and asserts
-# the identity, and `npm pack` runs that build — so without this, a tarball
-# published from Windows and one published from CI are different bytes for the
-# same version. And build-storybook.mjs compiles the .vue sources with
-# esbuild, which is only reproducible if its inputs are.
+# A third reason stood here until 2026-08-27 and was the sharpest of the three:
+# docs/storybook/tw-bridge.css recorded a sha256 of the component roots, read
+# from the WORKING TREE, so a CRLF clone and an LF clone of the same commit
+# disagreed and the check could only pass on the machine that last generated
+# it. That failed the Pages deploy 36 times in a row between 2026-08-20 and
+# 2026-08-21 while passing locally every time. The digest is gone — those files
+# are generated and gitignored now — but the two reasons above are not, so this
+# file stays.
+
 * text=auto eol=lf
 
 # Binaries: never touched. `text=auto` already detects these, but the four

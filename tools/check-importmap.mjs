@@ -29,9 +29,13 @@
  * The map moved out of layouts/DocPage.astro when the kitchen-sink specimens
  * stopped mounting bundles and began importing the .vue sources through Vite.
  * Its consumer now is ds-bundle/, whose Design-project cards cannot run a
- * bundler; tools/storybook-vendor.mjs says the rest. Neither input needs the
- * codecave.pro checkout -- compiled/ and vendor/ are both committed -- so this
- * runs wherever node does.
+ * bundler; tools/storybook-vendor.mjs says the rest.
+ *
+ * REQUIRES A BUILD. vendor/ is committed, but compiled/ is generated and
+ * gitignored, so this reads output rather than tracked files: run
+ * `npm run build:storybook` first. `npm run check` assumes the same thing
+ * already -- it reads packages/brand/dist/ -- so this adds no new
+ * precondition, only a second reason for the existing one.
  */
 import fs from 'node:fs';
 import path from 'node:path';

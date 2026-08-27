@@ -45,7 +45,7 @@ What produces what:
 |---|---|---|
 | `npm run build` | `docs/` + the published half of `src/` | `dist/` |
 | `npm run build:package` | `src/` | `packages/brand/dist/` |
-| `npm run build:storybook` | `src/components/`, `src/captured/` | `docs/storybook/compiled/`, `docs/storybook/tw-bridge.css` |
+| `npm run build:storybook` | `src/components/`, `src/captured/` (builds the package first) | `docs/storybook/compiled/`, `docs/storybook/tw-bridge.css` — both gitignored |
 | `npm run build:assets` | `src/logos/` | `docs/logos/`, `docs/icons/`, `docs/favicons/` |
 | `npm run preview` | builds, then serves `dist/` | nothing |
 | `npm run check` | all of it | nothing — it asserts |
@@ -192,31 +192,23 @@ single origin — fixes go there, never to `packages/`.**
 
 ## Other Things To Know
 
-### Edit a component, regenerate the storybook
+### Developing a component
 
-`npm run build:storybook` writes twelve compiled component bundles **and**
-`docs/storybook/tw-bridge.css` — the Tailwind utilities the component templates
-use, pre-compiled for a consumer that cannot run a bundler. That bridge records
-a SHA-256 of every file under `src/components/` and `src/captured/` in its own
-header, and `npm run check` recomputes it.
+Edit the `.vue` under [src/components/](/src/components) and commit. There is no
+regeneration step: `docs/storybook/compiled/` and `docs/storybook/tw-bridge.css`
+are generated and gitignored, on the same rule as `packages/brand/dist/` and
+`dist/`.
 
-So **editing a component without regenerating fails the build**, with
-`tw-bridge.css is STALE`. That is the point: a stale derivation compiles, loads
-and silently renders an older version of the component, and nothing else would
-catch it. The fix is one command:
+To see the change, run the dev server — the kitchen-sink specimens import the
+`.vue` sources directly and hot-reload:
 
 ```bash
-npm run build:storybook
+npm run dev
 ```
 
-Commit the regenerated files alongside the component change — all thirteen are
-tracked, and splitting them leaves a commit that fails its own check. It needs
-no `codecave.pro` checkout, and running it when nothing changed is a safe no-op.
-
-One exception worth knowing: if the check reports a **line-ending** difference,
-do not regenerate — that records your machine's convention and fails on the
-other one. Fix the checkout instead; `.gitattributes` pins every text file to
-LF for exactly this reason.
+`npm run build:storybook` produces the compiled bundles when something needs
+them (`ds-bundle/`, and `check:importmap`). It builds the package first, since
+it compiles each specimen out of the package.
 
 [CONTRIBUTING.md](/CONTRIBUTING.md) has the rest.
 

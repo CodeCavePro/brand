@@ -54,6 +54,17 @@ ds-bundle/components/assets/
 # derivation still holds; package-lock.json IS tracked, because a lockfile is
 # the only thing making the build reproducible.
 node_modules/
+
+# Produced by `npm run build:storybook` from src/components/ and src/captured/,
+# on the same rule as packages/*/dist/ and /dist/: src/ is authored, everything
+# else is generated. They were tracked until 2026-08-27, guarded by a sha256 of
+# the component roots recorded in the tw-bridge.css header -- an arrangement
+# that existed only because the generator once needed a codecave.pro checkout
+# and so could not run everywhere. It runs anywhere now, and CI already
+# rebuilt these and published the fresh output rather than the committed one,
+# so the check was failing builds over files the same run discarded.
+docs/storybook/compiled/
+docs/storybook/tw-bridge.css
 packages/*/dist/
 packages/*/.tmp/
 

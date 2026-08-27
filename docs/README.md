@@ -412,78 +412,52 @@ This package — `colors_and_type.css`, `DESIGN.md`, `tokens/`, `preview/`,
 
 ## Verifying the package
 
-One check, and it needs nothing but node. Run it from the repository root:
-
 ```bash
-node tools/check-tw-bridge.mjs
+npm run build:storybook && npm run check
 ```
 
-It proves `storybook/tw-bridge.css` is still in step with both component roots,
-comparing a SHA-256 recorded in the generated header against the sources on
-disk. A stale bridge does not announce itself: it compiles, it loads, and the
-storybook goes on documenting an older site than the sources sitting beside it.
-The same check runs on every push in `.github/workflows/static.yml`, ahead of
-the deploy, and it is the one guarantee that always runs.
+The build first, because `check` reads output as well as sources: the package's
+`dist/`, and the compiled storybook bundles that `check:importmap` resolves
+against the vendored runtime map. Then eight assertions — the package against
+its origin, the port adapters against their interfaces, the token layer against
+Tailwind's, the import map, the findings counts, the deliverables, and every
+cited documentation route.
 
-That check proves the bridge matches the sources. **Nothing proves those sources
-match codecave.pro, and as of 2026-08-25 nothing tries.** `check:captures` did,
-and was removed: the site installs this package and pins it with
-`--frozen-lockfile`, so it lags between releases by design. Components are
-developed here, tried in the storybook here, published, and the site bumps
-afterwards — a check demanding the two be equal was red for exactly the changes
-it existed to protect.
+**Nothing here compares this repository to codecave.pro, and as of 2026-08-25
+nothing tries.** `check:captures` did, and was removed: the site installs this
+package and pins it with `--frozen-lockfile`, so it lags between releases by
+design. Components are developed here, tried in the storybook here, published,
+and the site bumps afterwards — a check demanding the two be equal was red for
+exactly the changes it existed to protect.
 
 The reading that goes with it: a specimen on this site is a record of what **this
 repository** ships, which is what codecave.pro will get at its next bump, not
 necessarily what it renders today. Treat any claim of the form "production does
 X" about a component with that in mind.
 
-### When the check fails: what it means, and what to do
+### Developing a component
 
-The message is `tw-bridge.css is STALE`, and it means one thing: something under
-`src/components/` or `src/captured/` changed after the storybook was last
-generated, so the twelve compiled bundles and the bridge beside them were built
-from an earlier state of those files. It is not a warning about codecave.pro —
-nothing here compares the two repositories any more, and the site is *supposed*
-to lag between releases because it installs this package at a pinned version.
+Edit the `.vue` under `src/components/` (or `src/captured/`, though nothing
+there is authored) and commit. **There is no regeneration step.**
+`storybook/compiled/*.js` and `storybook/tw-bridge.css` are generated and
+gitignored, on the same rule as `packages/brand/dist/` and `dist/`.
 
-Regenerating is the other half, and **it no longer needs a `codecave.pro`
-checkout.** Every module the generator uses — `vue/compiler-sfc`, `esbuild`,
-`tailwindcss` — is declared in this repository and pinned to the version the
-site resolves. Switching it over produced byte-identical output, all twelve
-bundles and the bridge:
+To see the change, run `npm run dev` — the kitchen-sink specimens import the
+`.vue` sources through Vite and hot-reload, so the compiled bundles are not in
+that loop at all. They exist for `ds-bundle/`, whose Design-project cards cannot
+run a bundler; `tools/build-ds-bundle.sh` generates them if they are missing.
 
-```bash
-npm run build:storybook
-```
+`npm run build:storybook` builds the package first, because it compiles each
+specimen out of `packages/brand/dist/src` and cannot run without it.
 
-So the routine is two commands and one habit:
-
-1. Edit under `src/components/` or `src/captured/`.
-2. Run `npm run build:storybook`.
-3. **Commit the regenerated files in the same commit as the component change.**
-   All thirteen are tracked; splitting them leaves a commit that fails its own
-   check.
-4. `npm run check` before pushing — `check:tw-bridge` is part of it.
-
-Running the generator when nothing has changed is a safe no-op.
-
-Three things about the digest catch people out, and all three are deliberate:
-
-- **It hashes bytes on disk, not tracked content.** A stray untracked or ignored
-  file under either root moves it. The failure says so, because its git-based
-  "what changed" hint reports *no change* in exactly that case.
-- **It covers both roots, keyed by name.** Moving a file between
-  `src/components/` and `src/captured/` changes no bytes and still moves the
-  digest — on purpose, since that move is a claim about whether the file is
-  authored.
-- **Line endings are content.** The same commit checked out with CRLF and with
-  LF hashes to two different values, which is what `.gitattributes` is for. If
-  the check reports a line-ending difference, **do not regenerate** — that
-  records your machine's convention and fails on the other one. It cost 36
-  consecutive Pages deploys on 2026-08-20/21, every one green locally, and the
-  check now detects the case and tells you to fix the checkout instead.
-
+**This is a deletion, not a convenience.** Until 2026-08-27 those thirteen files
+were committed and guarded by `check-tw-bridge.mjs`, which compared a sha256 of
+both component roots against a digest in the `tw-bridge.css` header — so editing
+a component and committing it failed the build until you regenerated. That guard
+existed only because the generator once needed a codecave.pro checkout and could
+not run everywhere. Once it could, the check was failing builds over files CI
+already rebuilt and replaced before publishing. It took the 2.4.1 release with
+it on the way out.
 
 ### Ports — what a component depends on outside itself
 
