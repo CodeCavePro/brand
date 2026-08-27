@@ -16,7 +16,7 @@ const baseLabelClass = 'w-fit flex items-center cursor-pointer text-body-primary
 const labelClass = computed(() => {
   switch (props.variant) {
     case 'secondary':
-      return `${baseLabelClass} gap-3 p-3 pr-4 bg-surface-primary-transparent rounded-custom border-2 border-surface-quaternary hover:bg-surface-tertiary`
+      return `${baseLabelClass} gap-3 p-3 pr-4 bg-surface-primary-transparent rounded-custom border-2 border-surface-quaternary group-hover:bg-surface-tertiary`
     default:
       return `${baseLabelClass} gap-2 py-2 px-3 bg-surface-secondary rounded-lg`
   }

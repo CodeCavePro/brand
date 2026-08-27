@@ -35,7 +35,8 @@
   /* ---- Error ramp ---- */
   --color-error-100: #FE9A9A;
   --color-error-200: #FE2020;
-  --color-error-300: #B42318;
+  /* --color-error-300: #B42318; */
+  --color-error-300: #FF6E14;
   --color-error-400: #CA1400;
 
   /* ---- Semantic layer — use these ---- */
