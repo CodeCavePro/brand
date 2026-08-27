@@ -32,7 +32,7 @@ const imageUrl = (url: string) => props.resolveImage?.(url) ?? url
 
 <template>
   <a :href="`${basePath ?? ''}${article.slug}/`" :class="`mx-1 lg:mx-2 w-full h-full self-start sm:self-auto p-6 flex flex-col gap-5 sm:gap-8
-      rounded-[2.25rem] bg-surface-secondary hover:bg-surface-secondary transition-colors cursor-pointer border-surface-tertiary border
+      rounded-[2.25rem] bg-surface-secondary hover:bg-surface-tertiary transition-colors cursor-pointer border-surface-tertiary border
       ${className ?? ''}`">
     <div class="flex flex-col sm:flex-row gap-5 sm:gap-8 h-fit">
       <img loading="lazy" class="sm:w-[132px] sm:h-[132px] rounded-xl object-cover" 
