@@ -180,12 +180,21 @@ jobs:
       - name: Stamp the version into the package manifest
         run: node tools/stamp-version.mjs --require-tag
 
-      # Creates dist/, which `npm run check` needs — check reads the built
-      # package, so it cannot run against a fresh checkout. The build also runs
-      # the README value assertions, so a palette change that left the package
-      # page behind stops here.
-      - name: Build the package
-        run: npm run build:package
+      # Creates BOTH of the things `npm run check` reads and a fresh checkout
+      # does not have: packages/brand/dist/, and the compiled storybook bundles
+      # that check:importmap resolves against the vendored runtime map. Neither
+      # is committed — the storybook output stopped being tracked on
+      # 2026-08-27 — so running check straight after a checkout exits 1 on
+      # "no compiled specimens", which is a missing build and reads like a
+      # broken package.
+      #
+      # `build:storybook` rather than `build:package`: it chains the package
+      # build itself, because it compiles each specimen out of
+      # packages/brand/dist/src. The package build also runs the README value
+      # assertions, so a palette change that left the package page behind still
+      # stops here.
+      - name: Build the package and the storybook
+        run: npm run build:storybook
 
       # The same suite CI already runs on every push to development, plus the
       # package's own byte-identity check against docs/.
