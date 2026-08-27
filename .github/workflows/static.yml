@@ -27,23 +27,22 @@
 # red check was failing the build over files the same run then discarded. It
 # cost the 2.4.1 release and a red development branch before it went.
 #
-# So the order that matters now is just the dependency order:
+# So the whole job is four steps, in dependency order:
 #
-#   1. The checks that need nothing but node -- findings, deliverables, routes.
-#      Front-loaded so a broken install still gives feedback.
+#   1. npm ci.
+#   2. `npm run build:storybook`, which chains the package build -- together
+#      they produce everything `npm run check` reads and a checkout does not
+#      carry.
+#   3. `npm run check` -- the SCRIPT, not its seven checks restated as seven
+#      steps, which is what stood here until 2026-08-27. Restating the chain
+#      meant a check added to package.json was a check CI silently skipped.
+#   4. The site built over the result.
 #
-#   2. The install, then the typecheck of storybook/ports/ and the token-layer
-#      collision check.
-#
-#   3. The package built and checked against src/. Must precede the rebuild,
-#      which compiles each specimen out of packages/brand/dist/ and refuses to
-#      run without it. (`npm run build:storybook` builds the package itself, so
-#      this step is belt and braces rather than a prerequisite.)
-#
-#   4. The storybook rebuilt, the import map checked against the bundles it
-#      just produced, and the site built over the result. The rebuild writes
-#      into docs/storybook/, so building the site before it would publish
-#      nothing at all now that the directory starts empty.
+# Step 3 losing the old "run the node-only checks before the install" property
+# is deliberate. It bought early feedback on three prose checks when npm ci
+# broke, and it cost the guarantee that CI runs what `npm run check` runs --
+# and check:importmap now reads build output anyway, so the property was
+# already half gone.
 #
 # No codecave.pro checkout is needed anywhere in this file. CODECAVE_PRO_TOKEN
 # is unused by this repository and can be deleted.
@@ -88,105 +87,60 @@ jobs:
         with:
           node-version: '24'
 
-      # Third of the dependency-free three, and the one that guards prose
-      # rather than code. Three files quote how many findings the story pages
-      # carry; all three are hand-typed, and the split has already drifted
-      # without the total moving — a note marked fixed upstream lost its
-      # is-warn, turning a defect into an observation while 55 stayed 55. That
-      # is invisible to a reader and to every other check here.
-      - name: Check the findings counts against the story pages
-        run: node tools/check-findings.mjs
-
-      # The six files under docs/examples/raw/ are the only things here that are
-      # not pages: standalone documents a client is handed, which Astro never
-      # renders and nothing else looks at. Moving them one directory deeper broke
-      # the wordmark and the Satoshi @font-face rules in four of the six, and every
-      # check in the repo stayed green -- including the wrapper pages that embed
-      # them, because an <iframe> reports nothing about what happens inside it.
-      - name: Check the deliverables’ references still resolve
-        run: node tools/check-examples.mjs
-
-      # Collapsing five documentation surfaces into two moved most of this
-      # site’s URLs, and the dozens of places that CITE them are prose. A
-      # markdown link to a page that no longer exists fails nowhere — not the
-      # build, not any other check — except for a reader. The route set is
-      # derived from committed source rather than dist/, so this needs no build.
-      - name: Check every cited documentation route exists
-        run: node tools/check-links.mjs
-
-      # The ports typecheck needs typescript, so it cannot go in the
-      # dependency-free check above — it goes after it. An adapter that has
-      # drifted from the interface its component imports compiles perfectly and
-      # fails as an undefined in a reader's browser, which is the one place a
-      # specimen must not fail. That is the whole reason ports are typechecked
-      # rather than left as stubs, and leaving the check off CI would give the
-      # rot back.
       - name: Install the brand toolchain
         run: npm ci
 
-      - name: Typecheck the storybook ports
-        run: npm run check:ports
-
-      # Both inputs are in this checkout — the component sources are committed, and
-      # Tailwind's default theme comes from a devDependency pinned to the
-      # version the site resolves — so this needs no site checkout and belongs
-      # in CI. It catches a token that would silently redefine a Tailwind
-      # default in every consumer's app, which nothing about the docs build or
-      # the package build would ever notice.
-      - name: Check the token layer against Tailwind
-        run: npm run check:collisions
-
-      # The package is a pure derivative of src/, and this asserts it: every
-      # copied file byte-identical to its origin, theme.css agreeing with the
-      # tokens, the README's quoted values matching the compiled module. It was
-      # only ever run by release.yml, which means a change that broke the
-      # package stayed green here and surfaced at publish time.
+      # Produces BOTH things `npm run check` reads that a checkout does not
+      # have: packages/brand/dist/, and the compiled storybook bundles that
+      # check:importmap resolves against the vendored runtime map. Neither is
+      # committed -- the storybook output stopped being tracked on 2026-08-27.
+      # `build:storybook` chains the package build itself, since it compiles
+      # each specimen out of packages/brand/dist/src.
       #
-      # It also has to happen BEFORE the rebuild below, which is the bug this
-      # step fixes rather than merely covers: build-storybook.mjs compiles each
-      # specimen from packages/brand/dist/ and refuses to run without it. CI
-      # never built the package, so the rebuild step would have failed with
-      # "The package is not built" -- invisibly, because it only runs when
-      # CODECAVE_PRO_TOKEN can reach codecave.pro, which it currently cannot.
-      - name: Build the package
-        run: npm run build:package
-
-      - name: Check the package against its origin
-        run: npm run check --workspace @codecavepro/brand
-
-      # ---- rebuild the storybook -------------------------------------------
-      # This used to be an OPTIONAL half: check out CodeCavePro/codecave.pro for
-      # its node_modules, install it with pnpm, and skip the rebuild without
-      # failing when the repo was unreachable -- because build-storybook.mjs
-      # resolved vue/compiler-sfc, esbuild and tailwindcss from there, on the
-      # argument that a specimen must be built with the versions the WEBSITE
-      # builds with.
-      #
-      # That argument died with the inversion. The components are authored in
-      # this repository, the package is built here, and the site installs it --
-      # so those are a consumer's versions, not the origin's. Everything the
-      # generator needs is declared here and pinned to match, and switching it
-      # over produced BYTE-IDENTICAL output: all twelve bundles and
-      # tw-bridge.css unchanged.
-      #
-      # Worth knowing what this removes, because it was never visible: the
-      # checkout had been returning 403 for want of a working
-      # CODECAVE_PRO_TOKEN, so the rebuild step had never run here even once.
-      # Roughly seventy lines of skip-diagnosis prose went with it, along with
-      # the pnpm install and the secret. That secret is now unused by this
-      # repository and can be deleted.
-      - name: Rebuild the storybook
+      # It also has to precede the site build, which copies docs/storybook/
+      # through to dist/.
+      - name: Build the package and the storybook
         run: npm run build:storybook
 
-      # Has to follow the rebuild: compiled/*.js is generated and gitignored, so
-      # this reads build output rather than tracked files. It used to sit in the
-      # dependency-free block above, back when both its inputs were committed.
+      # ---- verify ----------------------------------------------------------
+      # One step running `npm run check`, rather than its seven checks written
+      # out as seven steps, which is what stood here. Those steps ran the same
+      # chain RESTATED -- so a check added to package.json was a check CI
+      # silently did not run, and nothing but care kept the two equal. The
+      # script is the list now.
       #
-      # An import map that has stopped resolving what the bundles import takes
-      # every specimen down without an error anyone sees — the page still
-      # renders, it is just empty where the component was.
-      - name: Check the storybook import map
-        run: node tools/check-importmap.mjs
+      # What it covers, and why none of it is optional:
+      #
+      #   check (workspace)  the package is a pure derivative of src/: every
+      #                      copied file byte-identical to its origin,
+      #                      theme.css agreeing with the tokens, the README's
+      #                      quoted values matching the compiled module.
+      #   check:ports        an adapter that has drifted from the interface its
+      #                      component imports compiles perfectly and fails as
+      #                      an undefined in a reader's browser -- the one
+      #                      place a specimen must not fail.
+      #   check:collisions   a token that would silently redefine a Tailwind
+      #                      default in every consumer's app. Invisible to both
+      #                      the docs build and the package build.
+      #   check:importmap    an import map that has stopped resolving what the
+      #                      bundles import takes every specimen down with no
+      #                      error anyone sees: the page renders, it is simply
+      #                      empty where the component was.
+      #   check:findings     three files quote how many findings the story
+      #                      pages carry, all hand-typed. The split has drifted
+      #                      before without the total moving, which is
+      #                      invisible to a reader and to every other check.
+      #   check:examples     the six files under docs/examples/raw/ are
+      #                      standalone documents Astro never renders. Moving
+      #                      them one directory deeper broke the wordmark in
+      #                      four of the six and every check stayed green --
+      #                      an <iframe> reports nothing about what is inside it.
+      #   check:links        collapsing five documentation surfaces into two
+      #                      moved most of this site's URLs, and the places
+      #                      that cite them are prose. A dead markdown link
+      #                      fails nowhere at all except for a reader.
+      - name: Check
+        run: npm run check
 
       - name: Build the docs site
         run: npm run build
