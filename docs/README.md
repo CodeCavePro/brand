@@ -438,25 +438,52 @@ repository** ships, which is what codecave.pro will get at its next bump, not
 necessarily what it renders today. Treat any claim of the form "production does
 X" about a component with that in mind.
 
-Regenerating the bridge is the other half, and it needs the `codecave.pro`
-checkout — the storybook compiles the real components with the same
-vue/esbuild/tailwind versions the site builds with, which is the whole point:
+### When the check fails: what it means, and what to do
+
+The message is `tw-bridge.css is STALE`, and it means one thing: something under
+`src/components/` or `src/captured/` changed after the storybook was last
+generated, so the twelve compiled bundles and the bridge beside them were built
+from an earlier state of those files. It is not a warning about codecave.pro —
+nothing here compares the two repositories any more, and the site is *supposed*
+to lag between releases because it installs this package at a pinned version.
+
+Regenerating is the other half, and **it no longer needs a `codecave.pro`
+checkout.** Every module the generator uses — `vue/compiler-sfc`, `esbuild`,
+`tailwindcss` — is declared in this repository and pinned to the version the
+site resolves. Switching it over produced byte-identical output, all twelve
+bundles and the bridge:
 
 ```bash
-node tools/build-storybook.mjs ../codecave.pro
+npm run build:storybook
 ```
 
-That checkout must have its dependencies installed, and **it uses pnpm** — its
-lockfile is `pnpm-lock.yaml` and there is no `package-lock.json`:
+So the routine is two commands and one habit:
 
-```bash
-pnpm install --frozen-lockfile
-```
+1. Edit under `src/components/` or `src/captured/`.
+2. Run `npm run build:storybook`.
+3. **Commit the regenerated files in the same commit as the component change.**
+   All thirteen are tracked; splitting them leaves a commit that fails its own
+   check.
+4. `npm run check` before pushing — `check:tw-bridge` is part of it.
 
-Reaching for `npm install` there instead produces an ERESOLVE failure on an
-unrelated peer conflict, which looks like a broken dependency graph and is
-really just the wrong package manager. `--frozen-lockfile` is what keeps a build
-of this package from quietly rewriting the site's lockfile.
+Running the generator when nothing has changed is a safe no-op.
+
+Three things about the digest catch people out, and all three are deliberate:
+
+- **It hashes bytes on disk, not tracked content.** A stray untracked or ignored
+  file under either root moves it. The failure says so, because its git-based
+  "what changed" hint reports *no change* in exactly that case.
+- **It covers both roots, keyed by name.** Moving a file between
+  `src/components/` and `src/captured/` changes no bytes and still moves the
+  digest — on purpose, since that move is a claim about whether the file is
+  authored.
+- **Line endings are content.** The same commit checked out with CRLF and with
+  LF hashes to two different values, which is what `.gitattributes` is for. If
+  the check reports a line-ending difference, **do not regenerate** — that
+  records your machine's convention and fails on the other one. It cost 36
+  consecutive Pages deploys on 2026-08-20/21, every one green locally, and the
+  check now detects the case and tells you to fix the checkout instead.
+
 
 ### Ports — what a component depends on outside itself
 

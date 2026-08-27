@@ -255,6 +255,72 @@ separates an index from a leaf. `DocPage.astro` asks `import.meta.glob` which
 pages are `index.astro` instead; Vite resolves that at transform time, so it is
 the same static list in both modes.
 
+### `tw-bridge.css`, and why a component edit fails the build
+
+**`docs/storybook/tw-bridge.css` is generated, and it carries a fingerprint of
+the component sources in its own header.** Change anything under
+`src/components/` or `src/captured/` without regenerating it and
+`npm run check` fails, CI fails, and the Pages deploy stops. That is the whole
+mechanic; the rest of this section is why it is worth the friction.
+
+**What the file is.** `tools/build-storybook.mjs` writes it beside the twelve
+`storybook/compiled/*.js` bundles: the site's Tailwind v4 theme compiled
+against *exactly* the utility classes the component templates use, plus the
+site's `:root` and `@theme` tokens scoped to `.sb-canvas, .sb-mount`. It is a
+**derivation of the components**, never an input to them.
+
+**What still reads it, and what no longer does.** `ds-bundle/` does — a Design
+project that cannot run a bundler, so it needs the utilities pre-compiled.
+**The docs site does not**: its specimens are Vite-compiled from source against
+`docs/tailwind.css` since the reversal described above. So the bridge now
+serves one consumer, and the digest guards it and the twelve bundles together.
+
+**The digest.** Line 10 of the file is `source-digest: sha256:<64 hex>` — a
+sha256 over every byte of every file under **both** roots, with path names and
+each root's own name folded in. `tools/check-tw-bridge.mjs` recomputes it from
+the working tree. `check:tw-bridge` is in `npm run check`, and it is also the
+**first step of `static.yml`**, unconditional and depending on nothing but node.
+
+**Why a digest instead of trusting people to rebuild.** A stale derivation does
+not announce itself. It compiles, it loads, and the specimen goes on rendering
+an earlier version of the component sitting beside it on the same page. Nothing
+else in this repository would ever catch that.
+
+Three properties surprise people, and each is a real trap:
+
+-   **It hashes bytes on disk, not tracked content.** An untracked or ignored
+    file under either root moves it. The failure says so explicitly, because the
+    git-based "what changed" hint reports *no change* in exactly that case.
+-   **It covers both roots, keyed by name.** MOVING a file between
+    `src/components/` and `src/captured/` changes no bytes and still moves the
+    digest — deliberately, because that move is a claim about whether the file
+    is authored, and **the directory name is the claim**.
+-   **Line endings are content.** The same commit checked out CRLF and LF hashes
+    to two different values, which is what `.gitattributes` (`* text=auto
+    eol=lf`) exists for. **When the check reports a line-ending difference, do
+    NOT regenerate** — that records your machine's convention and fails on the
+    other one. It cost 36 consecutive Pages deploys on 2026-08-20/21, every one
+    of them green locally. The check detects the case and says to fix the
+    checkout instead of sending you to the generator.
+
+**What a stale bridge does NOT mean: anything about codecave.pro.** The site
+installs this package at a pinned version and is *supposed* to lag between
+releases. The message used to blame an "older site" and that stopped being fair
+when the direction of truth flipped.
+
+**The workflow — two commands and one habit:**
+
+1.  Edit under `src/components/` or `src/captured/`.
+2.  `npm run build:storybook`. It rewrites the twelve bundles and the bridge,
+    new digest included, and needs **no codecave.pro checkout**.
+3.  **Commit the regenerated output in the same commit as the component
+    change.** All thirteen files are tracked; splitting them leaves a commit
+    that fails its own check.
+4.  `npm run check` before pushing.
+
+Running the generator when nothing has changed is a safe no-op — the output is
+byte-identical, which is how the codecave.pro decoupling was proved.
+
 ### Ports, not stubs
 
 Where a captured component depends on something the docs build cannot carry (a

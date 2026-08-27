@@ -117,7 +117,7 @@ import '../../tailwind.css';
       and <code>--default-transition-duration</code> appears nowhere in the
       project's own code. It resolves anyway — to 150ms from Tailwind's default
       theme, which the build emits because <code>transition-colors</code> is in
-      use. So inside the site (and here, via <code>tw-bridge.css</code>) the tick
+      use. So inside the site (and here, via <code>tailwind.css</code>) the tick
       animates; lift the component out of a Tailwind build and the shorthand
       collapses, snapping the tick from scale(0) to scale(1). A self-contained fix
       would name a real duration — the system ships

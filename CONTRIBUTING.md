@@ -412,7 +412,9 @@ The fourth applies only to the specimens, and it used to say the opposite:
   Two things did not change. `npm run build:storybook` still writes
   `compiled/*.js` and `tw-bridge.css`; `ds-bundle/` consumes them for a Design
   project that cannot run a bundler, and its cards still mount them through an
-  import map. And a page still has to link `tw-bridge.css` — without it a
+  import map. And a specimen page still has to bring its own utilities — for an
+  Astro page that is a frontmatter `import '../../tailwind.css'`, not
+  `tw-bridge.css`, which nothing under `pages/` links any more. Without it a
   component mounts perfectly and renders as raw HTML, every class resolving to
   nothing, which does not look like a failure at all. `check:links` asks in both
   directions.
