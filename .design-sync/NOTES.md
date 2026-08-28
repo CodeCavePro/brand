@@ -50,7 +50,7 @@ Consequences:
 ### Before every push
 
 ```sh
-sh tools/build-ds-bundle.sh && node tools/build-ds-components.mjs
+npm run build:storybook && npm run check:design-sync
 ```
 
 The first refreshes the derived half and proves every pair byte-identical; the second regenerates

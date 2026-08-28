@@ -79,11 +79,14 @@ here reaches the site when someone bumps it, not before.
 `build.mjs` fails the build if the same path exists under both roots. One
 shipped file cannot have two origins, and the directory name is the claim.
 
-### The derived half of `ds-bundle/`
+### The two halves of `ds-bundle/`
 
-`ds-bundle/` is split, and the split is not visible from the file names:
+`ds-bundle/` used to be an upload staging directory holding 46 gitignored
+copies of files that already existed under `src/` and `docs/`. It is not one
+any more, and nothing replaced the copies: `tools/design-sync-map.mjs` pairs
+each project path with the authored file that answers it, and DesignSync
+uploads from there. What is left is two halves:
 
-- **Derived and gitignored** — regenerate with `sh tools/build-ds-bundle.sh`.
 - **Authored and tracked** — `README.md`, `styles.css`, `guidelines/brand.md`,
   and the **Foundations** cards. These have no upstream in `docs/`. Edit them here.
 - **Generated and gitignored** — the **Components** cards, written by
@@ -99,11 +102,14 @@ the whole reason components could join the bundle at all — hand-written HTML
 that *looked like* Button would be wrong the first time Button changed, and
 nothing would say so.
 
-Both halves run in one order, and the second fails loudly if you skip the first:
-
-```bash
-sh tools/build-ds-bundle.sh && node tools/build-ds-components.mjs
-```
+There is no longer an order to get right. The cards are built as the last step
+of `npm run build:storybook`, because they mount its bundles and cannot exist
+without them — the same chained prerequisite that makes `build:storybook`
+build the package first. `npm run check:design-sync` then asks the question the
+copy step never could: does every reference a card makes resolve to a path the
+push actually writes? It found one that did not. The checkbox tick has been
+404 in the Design project because the old copy placed it one directory above
+where any card could ask for it.
 
 One exception worth knowing: `ds-bundle/README.md` is tracked and authored, but
 its header is a verbatim copy of `.design-sync/conventions.md`. Change the
@@ -129,10 +135,9 @@ on you.
    ```bash
    npm run build:package && npm run check
    ```
-6. Regenerate the bundle if the CSS moved:
-   ```bash
-   sh tools/build-ds-bundle.sh
-   ```
+6. Nothing else. The Design project reads `src/styles/colors_and_type.css`
+   directly through the upload map, so a token change reaches it on the next
+   push with no regeneration step to forget.
 
 ### Changing a rule rather than a value
 

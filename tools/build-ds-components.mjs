@@ -33,12 +33,14 @@
  * three levels deep and the same string lands somewhere that does not exist.
  * Checkbox's tick was 404ing here for exactly that reason — the third time this
  * repo has been bitten by treating "what a component reaches for" as imports
- * only (CCWEB2-370 was the first, in the package build). So copyAssets() reads
- * the url() targets back out of the bundles rather than trusting a list, places
- * each one where the card will ask for it, and fails the build if docs/ has no
- * such file. Never hand-edit a bundle to fix a path: the bundle is the record.
+ * only (CCWEB2-370 was the first, in the package build). So assetsFor() reads
+ * the url() targets back out of the bundles rather than trusting a list and
+ * says where the card will ask for each one, failing the build if no authored
+ * file answers it. Never hand-edit a bundle to fix a path: the bundle is the
+ * record. It no longer COPIES: tools/design-sync-map.mjs takes the mapping and
+ * DesignSync uploads the authored file straight to that project path.
  *
- * Run: node docs/tools/build-ds-components.mjs
+ * Run: node tools/build-ds-components.mjs
  * ======================================================================== */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -47,6 +49,12 @@ import { fileURLToPath } from 'node:url';
 const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'docs');
 const repo = path.join(docs, '..');
 const BUNDLE = path.join(repo, 'ds-bundle');
+/* The compiled bundles are read from the storybook output DIRECTLY. They used
+ * to be read from ds-bundle/compiled/, which build-ds-bundle.sh copied there
+ * first -- a staging mirror that existed only because the upload was treated
+ * as a directory to sync. DesignSync's write_files takes the project path and
+ * the local path as independent arguments, so it never needed one. */
+const COMPILED = path.join(repo, 'docs', 'storybook', 'compiled');
 const OUT = path.join(BUNDLE, 'components', 'Components');
 
 /* Only components whose props are plain data belong here. ArticlePreview,
@@ -54,7 +62,7 @@ const OUT = path.join(BUNDLE, 'components', 'Components');
  * shaped object or injected port, and a card carrying invented article copy
  * would be documenting the fixture rather than the component — the storybook
  * pages, which have room to explain the fixture, remain the right home. */
-const STORIES = [
+export const STORIES = [
   {
     name: 'Button',
     title: 'Button',
@@ -216,17 +224,27 @@ ${table}
 `;
 }
 
-/* Every url() a bundle carries, placed where the CARD will ask for it.
+/* Every url() a bundle carries, MAPPED to where the CARD will ask for it.
  *
  * The specifier is relative and was written for the storybook's page depth, so
  * the leading ../ segments carry no information — what identifies the file is
- * the remainder, which is a path under docs/. Resolve the specifier against the
- * card's own directory to learn where it must LAND, and take the remainder to
- * learn what to COPY. A specifier docs/ cannot satisfy fails the build: that is
- * a component reaching outside what this bundle can carry, and it must be
- * answered rather than 404'd in a reader's browser. */
-function copyAssets(name) {
-  const src = fs.readFileSync(path.join(BUNDLE, 'compiled', `${name}.js`), 'utf8');
+ * the remainder. Resolve the specifier against the card's own directory to
+ * learn where it must LAND in the Design project, and take the remainder to
+ * learn which authored file ANSWERS it. A specifier neither root can satisfy
+ * fails the build: that is a component reaching outside what this bundle can
+ * carry, and it must be answered rather than 404'd in a reader's browser.
+ *
+ * The resolution base is the card's DIRECTORY, because the bundle injects its
+ * scoped CSS as a <style> element and a relative url() there resolves against
+ * the DOCUMENT, not against the module that wrote it. The cards sit three
+ * levels deep, so `../assets/…` lands under components/Components/ — which is
+ * why the copy this replaced put a stale one at components/assets/ that no
+ * card could ever reach.
+ *
+ * This returns the mapping instead of performing a copy. Nothing is written to
+ * disk: DesignSync uploads the authored file straight to the project path. */
+export function assetsFor(name) {
+  const src = fs.readFileSync(path.join(COMPILED, `${name}.js`), 'utf8');
   const cardDir = path.posix.join('components', 'Components', name);
   const placed = [];
 
@@ -235,46 +253,53 @@ function copyAssets(name) {
     if (/^(data:|https?:|\/\/|#)/.test(spec)) continue;
 
     const bare = spec.replace(/^\.\//, '').replace(/^(\.\.\/)+/, '');
-    const from = path.join(docs, bare);
-    if (!fs.existsSync(from)) {
+    /* src/ is authored and docs/ is payload, so ask src/ first. Both carry the
+       checkbox tick today, byte-identical; only one of them is the origin. */
+    const roots = [path.join(repo, 'src', 'components'), docs];
+    const from = roots.map((r) => path.join(r, bare)).find((f) => fs.existsSync(f));
+    if (!from) {
       console.error(
-        `${name}.js reaches url(${spec}) — no docs/${bare} to satisfy it.\n` +
-          `Add the asset under docs/, or the card will 404 silently.`,
+        `${name}.js reaches url(${spec}) — neither src/components/${bare} nor ` +
+          `docs/${bare} exists.\nAdd the asset, or the card will 404 silently.`,
       );
       process.exit(1);
     }
 
-    const to = path.resolve(path.join(BUNDLE, cardDir), spec);
-    fs.mkdirSync(path.dirname(to), { recursive: true });
-    fs.copyFileSync(from, to);
-    if (!fs.readFileSync(to).equals(fs.readFileSync(from))) {
-      console.error(`copy of docs/${bare} did not land intact`);
-      process.exit(1);
-    }
-    placed.push(path.relative(BUNDLE, to).split(path.sep).join('/'));
+    placed.push({
+      path: path.posix.normalize(path.posix.join(cardDir, spec)),
+      localPath: path.relative(repo, from).split(path.sep).join('/'),
+    });
   }
   return placed;
 }
 
+/* Importing this module must not WRITE anything. design-sync-map.mjs imports
+ * STORIES and assetsFor() to build the upload map, and a top-level write loop
+ * would mean `npm run check` silently regenerated the cards as a side effect of
+ * checking them -- a check that repairs what it is measuring measures nothing. */
+const invokedDirectly = process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
+
 let written = 0;
 const assets = [];
-for (const c of STORIES) {
-  const bundle = path.join(BUNDLE, 'compiled', `${c.name}.js`);
+for (const c of invokedDirectly ? STORIES : []) {
+  const bundle = path.join(COMPILED, `${c.name}.js`);
   if (!fs.existsSync(bundle)) {
-    console.error(`no compiled bundle for ${c.name} — run build-ds-bundle.sh first`);
+    console.error(`no compiled bundle for ${c.name} — run \`npm run build:storybook\` first`);
     process.exit(1);
   }
   const dir = path.join(OUT, c.name);
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(path.join(dir, `${c.name}.html`), card(c));
-  assets.push(...copyAssets(c.name));
+  assets.push(...assetsFor(c.name));
   written += 1;
 }
+if (invokedDirectly) {
 console.log(
   `ds-bundle component cards: ${written} written (${STORIES.map((c) => c.name).join(', ')})`,
 );
 console.log(
   assets.length
-    ? `  + ${assets.length} bundle asset(s) placed: ${[...new Set(assets)].join(', ')}`
+    ? `  + ${assets.length} bundle asset(s) mapped: ${[...new Set(assets.map((a) => a.path))].join(', ')}`
     : '  no bundle reached for an asset — if a component has a background-image, that is a bug',
 );
+}

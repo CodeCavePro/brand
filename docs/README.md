@@ -446,7 +446,7 @@ gitignored, on the same rule as `packages/brand/dist/` and `dist/`.
 To see the change, run `npm run dev` — the kitchen-sink specimens import the
 `.vue` sources through Vite and hot-reload, so the compiled bundles are not in
 that loop at all. They exist for `ds-bundle/`, whose Design-project cards cannot
-run a bundler; `tools/build-ds-bundle.sh` generates them if they are missing.
+run a bundler; they are read where `npm run build:storybook` writes them.
 
 `npm run build:storybook` builds the package first, because it compiles each
 specimen out of `packages/brand/dist/src` and cannot run without it.

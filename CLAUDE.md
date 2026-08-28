@@ -278,13 +278,48 @@ that loop at all.
 ES modules; `tw-bridge.css` is the site's Tailwind theme compiled against
 exactly the utility classes the component templates use, scoped to
 `.sb-canvas, .sb-mount`. Their one consumer is `ds-bundle/`, whose Design-project
-cards cannot run a bundler. `tools/build-ds-bundle.sh` generates them if they
-are missing, so that path needs no separate step either.
+cards cannot run a bundler, and they are read where they are written —
+`tools/design-sync-map.mjs` pairs each Design-project path with the authored
+file that answers it, so nothing is staged or copied first.
 
 **`build:storybook` builds the package first**, because it compiles each
-specimen out of `packages/brand/dist/src` and cannot run without it. That is a
-chained prerequisite in the script rather than an error telling you to go run it
-yourself.
+specimen out of `packages/brand/dist/src` and cannot run without it, and it
+writes the Design-project component cards last, because those mount the bundles
+it just produced. Both are chained prerequisites in the script rather than
+errors telling you to go run something yourself.
+
+### The Design project is a map, not a mirror
+
+**`ds-bundle/` stopped being a staging directory on 2026-08-27, and what it
+stopped doing is the point.** It held 46 gitignored byte-for-byte copies of
+files that already existed under `src/` and `docs/`, materialized before every
+push by `tools/build-ds-bundle.sh` and then verified against their originals by
+40 lines of that same script. All of it was work to keep a copy honest, and the
+dishonesty was real: on 2026-08-20 the mirrored `colors_and_type.css` sat two
+shape fixes behind its source for weeks, because **a stale copy uploads exactly
+as cleanly as a fresh one.**
+
+None of it was ever required. `DesignSync`'s `write_files` takes the project
+path and the local path as **independent arguments**, so an upload is a list of
+source-to-destination pairs rather than a directory to mirror.
+`tools/design-sync-map.mjs` is that list. `ds-bundle/` is now 76K of seven
+tracked authored files with no upstream anywhere — `README.md`, `styles.css`,
+`guidelines/brand.md` and the four Foundations cards — plus the seven generated
+Components cards. **The project-side layout did not change**; only the local
+staging disappeared.
+
+**`check:design-sync` asks the question the copy step never could**, and the
+answer was no. A card's references are the *browser's*, resolved at request time
+against the **project** tree — so the check reads the map's destination paths,
+never its local ones. A compiled bundle injects its scoped CSS as a `<style>`
+element, where a relative `url()` resolves against the **document**; the cards
+sit three levels deep, so `Checkbox.js`'s `url(../assets/images/checked-icon.svg)`
+asks for `components/Components/assets/…`. The old copy put it at
+`components/assets/…`, one level up, where no card could ever reach it. **The
+checkbox tick has been 404 on the remote ever since, and every check in both
+repositories stayed green** — the same shape as CCWEB2-370, one system over. The
+map carries the correct path and `STALE` names the dead one for deletion; both
+land on the next push.
 
 **One check reads the output rather than the tree**: `check:importmap` resolves
 the bare specifiers in `compiled/*.js` against `tools/storybook-vendor.mjs`, so
