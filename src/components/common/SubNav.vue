@@ -22,8 +22,7 @@ const props = defineProps<Props>();
         >
           <a
             class="btn btn-ghost"
-            :href="`${up}${item.href}`"
-            :aria-current="item.name === current ? 'true' : undefined"
+            :href="`${item.href}`"
           >
             {{ item.label }}
           </a>
