@@ -1,0 +1,566 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-27T13:17:39+03:00",
+  "title": "Design System: CODECAVE",
+  "extensions": {
+    "colorMeta": {
+      "surface-primary": {
+        "role": "neutral",
+        "displayName": "Cave Floor",
+        "tonalRamp": [
+          "#050505",
+          "#0F0F15",
+          "#1C1C27",
+          "#2B2848",
+          "#6B6699",
+          "#9595BB",
+          "#C7C7DB",
+          "#F4F4F6"
+        ],
+        "purpose": "The page. Near-black, never pure black."
+      },
+      "surface-secondary": {
+        "role": "neutral",
+        "displayName": "Card Rise",
+        "tonalRamp": [
+          "#050505",
+          "#0F0F15",
+          "#1C1C27",
+          "#2B2848",
+          "#6B6699",
+          "#9595BB",
+          "#C7C7DB",
+          "#F4F4F6"
+        ],
+        "purpose": "One barely-perceptible step above the page. The default card fill."
+      },
+      "surface-tertiary": {
+        "role": "neutral",
+        "displayName": "Card Hover",
+        "tonalRamp": [
+          "#050505",
+          "#0F0F15",
+          "#1C1C27",
+          "#2B2848",
+          "#6B6699",
+          "#9595BB",
+          "#C7C7DB",
+          "#F4F4F6"
+        ],
+        "purpose": "Card hover fill, and the article card's hairline at rest."
+      },
+      "surface-quaternary": {
+        "role": "neutral",
+        "displayName": "Progress Track",
+        "tonalRamp": [
+          "#050505",
+          "#0F0F15",
+          "#1C1C27",
+          "#2B2848",
+          "#6B6699",
+          "#9595BB",
+          "#C7C7DB",
+          "#F4F4F6"
+        ],
+        "purpose": "Checkbox chip outline and the unfilled progress track."
+      },
+      "surface-primary-hover": {
+        "role": "neutral",
+        "displayName": "Surface Hover",
+        "tonalRamp": [
+          "#050505",
+          "#0F0F15",
+          "#1C1C27",
+          "#2B2848",
+          "#6B6699",
+          "#9595BB",
+          "#C7C7DB",
+          "#F4F4F6"
+        ]
+      },
+      "heading": {
+        "role": "neutral",
+        "displayName": "Signal White",
+        "tonalRamp": [
+          "#050505",
+          "#0F0F15",
+          "#1C1C27",
+          "#2B2848",
+          "#6B6699",
+          "#9595BB",
+          "#C7C7DB",
+          "#F4F4F6"
+        ],
+        "purpose": "Headings and every button label."
+      },
+      "body-primary": {
+        "role": "neutral",
+        "displayName": "Signal White",
+        "tonalRamp": [
+          "#050505",
+          "#0F0F15",
+          "#1C1C27",
+          "#2B2848",
+          "#6B6699",
+          "#9595BB",
+          "#C7C7DB",
+          "#F4F4F6"
+        ]
+      },
+      "text-body-primary": {
+        "role": "neutral",
+        "displayName": "Read Gray",
+        "tonalRamp": [
+          "#050505",
+          "#0F0F15",
+          "#1C1C27",
+          "#2B2848",
+          "#6B6699",
+          "#9595BB",
+          "#C7C7DB",
+          "#F4F4F6"
+        ],
+        "purpose": "Long-form body copy."
+      },
+      "body-secondary-lighter": {
+        "role": "neutral",
+        "displayName": "Muted Gray",
+        "tonalRamp": [
+          "#050505",
+          "#0F0F15",
+          "#1C1C27",
+          "#2B2848",
+          "#6B6699",
+          "#9595BB",
+          "#C7C7DB",
+          "#F4F4F6"
+        ],
+        "purpose": "The `text` button variant at rest."
+      },
+      "body-secondary": {
+        "role": "neutral",
+        "displayName": "Quiet Gray",
+        "tonalRamp": [
+          "#050505",
+          "#0F0F15",
+          "#1C1C27",
+          "#2B2848",
+          "#6B6699",
+          "#9595BB",
+          "#C7C7DB",
+          "#F4F4F6"
+        ],
+        "purpose": "Placeholders and de-emphasised metadata."
+      },
+      "neutral": {
+        "role": "neutral",
+        "displayName": "Dim Gray",
+        "tonalRamp": [
+          "#050505",
+          "#0F0F15",
+          "#1C1C27",
+          "#2B2848",
+          "#6B6699",
+          "#9595BB",
+          "#C7C7DB",
+          "#F4F4F6"
+        ],
+        "purpose": "The floor of the readable ramp; below this nothing is body copy."
+      },
+      "default-transparent": {
+        "role": "neutral",
+        "displayName": "Pale Gray",
+        "tonalRamp": [
+          "#050505",
+          "#0F0F15",
+          "#1C1C27",
+          "#2B2848",
+          "#6B6699",
+          "#9595BB",
+          "#C7C7DB",
+          "#F4F4F6"
+        ]
+      },
+      "failureproof-0": {
+        "role": "neutral",
+        "displayName": "True Black",
+        "tonalRamp": [
+          "#050505",
+          "#0F0F15",
+          "#1C1C27",
+          "#2B2848",
+          "#6B6699",
+          "#9595BB",
+          "#C7C7DB",
+          "#F4F4F6"
+        ],
+        "purpose": "Fallback under imagery; not a surface."
+      },
+      "action": {
+        "role": "primary",
+        "displayName": "Rationed Violet",
+        "tonalRamp": [
+          "#0A0A0B",
+          "#1E113B",
+          "#1B0D4E",
+          "#4004AF",
+          "#4705ED",
+          "#5F20FE",
+          "#B19AFE",
+          "#E8E6F0"
+        ],
+        "purpose": "Edges, links and marks. Never a large fill."
+      },
+      "action-hover": {
+        "role": "primary",
+        "displayName": "Violet Deep",
+        "tonalRamp": [
+          "#0A0A0B",
+          "#1E113B",
+          "#1B0D4E",
+          "#4004AF",
+          "#4705ED",
+          "#5F20FE",
+          "#B19AFE",
+          "#E8E6F0"
+        ],
+        "purpose": "Primary button hover; also the tertiary border's downward hover (§10.1)."
+      },
+      "action-active": {
+        "role": "primary",
+        "displayName": "Violet Ink",
+        "tonalRamp": [
+          "#0A0A0B",
+          "#1E113B",
+          "#1B0D4E",
+          "#4004AF",
+          "#4705ED",
+          "#5F20FE",
+          "#B19AFE",
+          "#E8E6F0"
+        ],
+        "purpose": "Pressed primary, and the secondary button's rest fill."
+      },
+      "hovered": {
+        "role": "primary",
+        "displayName": "Readable Violet",
+        "tonalRamp": [
+          "#0A0A0B",
+          "#1E113B",
+          "#1B0D4E",
+          "#4004AF",
+          "#4705ED",
+          "#5F20FE",
+          "#B19AFE",
+          "#E8E6F0"
+        ],
+        "purpose": "8.41:1. Any violet that has to be *read*."
+      },
+      "glow-25": {
+        "role": "primary",
+        "displayName": "Glow Lilac",
+        "tonalRamp": [
+          "#0A0A0B",
+          "#1E113B",
+          "#1B0D4E",
+          "#4004AF",
+          "#4705ED",
+          "#5F20FE",
+          "#B19AFE",
+          "#E8E6F0"
+        ],
+        "purpose": "The glow button's fill — the system's one purple *field*."
+      },
+      "outline-primary-hover": {
+        "role": "primary",
+        "displayName": "Glow Ink",
+        "tonalRamp": [
+          "#0A0A0B",
+          "#1E113B",
+          "#1B0D4E",
+          "#4004AF",
+          "#4705ED",
+          "#5F20FE",
+          "#B19AFE",
+          "#E8E6F0"
+        ],
+        "purpose": "The only dark-on-light text in the system, on the glow button."
+      },
+      "error": {
+        "role": "semantic",
+        "displayName": "Error Red",
+        "tonalRamp": [
+          "#B42318",
+          "#CA1400",
+          "#FE2020",
+          "#FE9A9A"
+        ],
+        "purpose": "Error state. Fails contrast on dark as shipped (§10.2)."
+      },
+      "error-100": {
+        "role": "semantic",
+        "displayName": "Error Light",
+        "tonalRamp": [
+          "#B42318",
+          "#CA1400",
+          "#FE2020",
+          "#FE9A9A"
+        ],
+        "purpose": "The accessible error tone; the ramp step error text should reach for."
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Hero headlines only. 56px/130%, bold."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section openers, including the eyebrow pair. 44px/115%."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Card and sub-section titles. 32px/110%."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Long-form copy and button labels. 16px/24px."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Floating field labels, metadata, captions. 14px/20px."
+      }
+    },
+    "shadows": [
+      {
+        "name": "shadow-section",
+        "value": "0 -64px 64px 0 hsl(from #281470 h s l / 0.20), 0 -10px 24px 0 hsl(from #281470 h s l / 0.10), 0 -6px 6px 0 hsl(from #281470 h s l / 0.08)",
+        "purpose": "The only structural shadow in the system. All three offsets are negative on Y: violet light cast upward from a source under the panel edge."
+      },
+      {
+        "name": "focus-halo",
+        "value": "0 0 16px 0 hsl(from #5F20FE h s l / 0.5), 0 0 4px 0 hsl(from #5F20FE h s l / 0.6)",
+        "purpose": "Text-input focus. The system draws a violet halo instead of an outline."
+      },
+      {
+        "name": "glow-button-halo",
+        "value": "0 0 32px 0 hsl(from #9980FF h s l / 0.45)",
+        "purpose": "The glow button's resting halo, swept by a cursor-tracked highlight on hover."
+      }
+    ],
+    "motion": [
+      {
+        "name": "transition-colors",
+        "value": "150ms cubic-bezier(0.4, 0, 0.2, 1)",
+        "purpose": "Anything that changes a color, border or fill. Buttons move color, background-color and border-color together so a hover can never land half-applied."
+      },
+      {
+        "name": "transition-base",
+        "value": "200ms ease",
+        "purpose": "Surfaces, shadows and the focus halo."
+      },
+      {
+        "name": "transition-slow",
+        "value": "500ms ease",
+        "purpose": "Transform only. Nothing in the system animates opacity and transform on different clocks."
+      },
+      {
+        "name": "entrance",
+        "value": "1–1.2s circ.out, 0.1s stagger",
+        "purpose": "GSAP + ScrollTrigger entrances: translate from 100% with opacity 0, triggered top bottom → bottom center."
+      },
+      {
+        "name": "pointer-follow",
+        "value": "0.5s power2.out",
+        "purpose": "The glow button tracks the cursor with gsap.quickTo — compositor-only transforms, never animated left/top."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "animation-duration: 0.01ms; transition-duration: 0.01ms; scroll-behavior: auto",
+        "purpose": "The global collapse. The scroll-behavior declaration is load-bearing: it is what disables the Lenis smooth scroll."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "457px",
+        "purpose": "A Tailwind config value, not a layout break. Nothing keys off it, and it must stay a literal — Tailwind bakes it into a media query at build time, where a var() would be invalid CSS."
+      },
+      {
+        "name": "md",
+        "value": "768px",
+        "purpose": "The one structural break. Section-panel radius flips 64px → 120px, gutters 8px → 16px, and the stat and service rails switch from stacked to justify-evenly."
+      },
+      {
+        "name": "xl",
+        "value": "1280px",
+        "purpose": "Widens gutters to 32px against the fixed max-width: 1280px container. No new layout appears."
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Glow Button",
+      "kind": "button",
+      "refersTo": "button-glow",
+      "description": "The one true CTA. Never place two in one viewport.",
+      "html": "<button class=\"ds-btn-glow\">Book a consultation</button>",
+      "css": ".ds-btn-glow { min-width: 48px; min-height: 48px; padding: 4px 24px; border-radius: 9999px; font-family: Satoshi, sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; border: none; background: #9980FF; color: #1B0D4E; box-shadow: 0 0 32px 0 hsl(from #9980FF h s l / 0.45); transition: background-color 150ms cubic-bezier(0.4,0,0.2,1), box-shadow 200ms ease, transform 500ms ease; } .ds-btn-glow:hover { box-shadow: 0 0 44px 0 hsl(from #9980FF h s l / 0.65); } .ds-btn-glow:focus-visible { outline: none; box-shadow: 0 0 16px 0 hsl(from #5F20FE h s l / 0.5), 0 0 4px 0 hsl(from #5F20FE h s l / 0.6); } .ds-btn-glow:active { transform: scale(0.98); }"
+    },
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Rationed violet as a fill — the one place the accent is allowed to cover a box.",
+      "html": "<button class=\"ds-btn-primary\">Get started</button>",
+      "css": ".ds-btn-primary { min-width: 48px; min-height: 48px; padding: 4px 24px; border-radius: 9999px; font-family: Satoshi, sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; border: none; background: #5F20FE; color: #F4F4F6; transition: color 150ms cubic-bezier(0.4,0,0.2,1), background-color 150ms cubic-bezier(0.4,0,0.2,1), border-color 150ms cubic-bezier(0.4,0,0.2,1); } .ds-btn-primary:hover { background: #4004AF; } .ds-btn-primary:focus-visible { outline: none; box-shadow: 0 0 16px 0 hsl(from #5F20FE h s l / 0.5), 0 0 4px 0 hsl(from #5F20FE h s l / 0.6); } .ds-btn-primary:active { background: #1E113B; } .ds-btn-primary:disabled { opacity: 0.2; cursor: not-allowed; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Violet ink fill. Reads as a control without spending the accent.",
+      "html": "<button class=\"ds-btn-secondary\">View pricing</button>",
+      "css": ".ds-btn-secondary { min-width: 48px; min-height: 48px; padding: 4px 24px; border-radius: 9999px; font-family: Satoshi, sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; border: none; background: #1E113B; color: #F4F4F6; transition: background-color 150ms cubic-bezier(0.4,0,0.2,1); } .ds-btn-secondary:hover { background: #1C1C27; } .ds-btn-secondary:focus-visible { outline: none; box-shadow: 0 0 16px 0 hsl(from #5F20FE h s l / 0.5), 0 0 4px 0 hsl(from #5F20FE h s l / 0.6); }"
+    },
+    {
+      "name": "Tertiary Button",
+      "kind": "button",
+      "refersTo": "button-tertiary",
+      "description": "The repeated secondary entry point — the homepage's many “Learn more”s. Its border hovers *down* in contrast, which is shipped and documented (§10.1), not endorsed.",
+      "html": "<button class=\"ds-btn-tertiary\">Learn more</button>",
+      "css": ".ds-btn-tertiary { min-width: 48px; min-height: 48px; padding: 4px 24px; border-radius: 9999px; font-family: Satoshi, sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; border: 1px solid #5F20FE; background: transparent; color: #F4F4F6; transition: border-color 150ms cubic-bezier(0.4,0,0.2,1); } .ds-btn-tertiary:hover { border-color: #4004AF; } .ds-btn-tertiary:focus-visible { outline: none; box-shadow: 0 0 16px 0 hsl(from #5F20FE h s l / 0.5), 0 0 4px 0 hsl(from #5F20FE h s l / 0.6); }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input-text",
+      "description": "64px tall with a floating label. Focus draws a violet halo, never an outline.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">Work email</span><input class=\"ds-field-input\" type=\"email\" placeholder=\"you@company.com\"></label>",
+      "css": ".ds-field { position: relative; display: block; width: 320px; } .ds-field-label { position: absolute; top: 0; left: 0; padding: 12px 0 0 12px; font-family: Satoshi, sans-serif; font-size: 14px; font-weight: 700; line-height: 20px; color: #F4F4F6; pointer-events: none; } .ds-field-input { width: 100%; height: 64px; padding: 28px 12px 12px; border: none; border-radius: 8px; background: #0F0F15; color: #F4F4F6; font-family: Satoshi, sans-serif; font-size: 16px; line-height: 24px; transition: background-color 200ms ease, box-shadow 200ms ease; } .ds-field-input::placeholder { font-size: 12px; color: #9595BB; } .ds-field-input:hover { background: #1C1C27; } .ds-field-input:focus { outline: none; box-shadow: 0 0 16px 0 hsl(from #5F20FE h s l / 0.5), 0 0 4px 0 hsl(from #5F20FE h s l / 0.6); }"
+    },
+    {
+      "name": "Checkbox",
+      "kind": "custom",
+      "refersTo": "input-text",
+      "description": "24px box on the 8px control corner — the same radius as every other input. The tick scales 0 → 1 on check.",
+      "html": "<label class=\"ds-check\"><input class=\"ds-check-input\" type=\"checkbox\" checked><span class=\"ds-check-box\"><svg viewBox=\"0 0 16 16\" width=\"14\" height=\"14\" aria-hidden=\"true\"><path d=\"M3 8.5 6.2 11.7 13 5\" fill=\"none\" stroke=\"#F4F4F6\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></span><span class=\"ds-check-label\">Send me the quarterly brief</span></label>",
+      "css": ".ds-check { display: inline-flex; align-items: center; gap: 12px; font-family: Satoshi, sans-serif; font-size: 16px; line-height: 24px; color: #D5D5DD; cursor: pointer; } .ds-check-input { position: absolute; opacity: 0; width: 0; height: 0; } .ds-check-box { display: grid; place-items: center; width: 24px; height: 24px; flex: none; border: 2px solid #1B0D4E; border-radius: 8px; transition: border-color 150ms cubic-bezier(0.4,0,0.2,1), background-color 150ms cubic-bezier(0.4,0,0.2,1); } .ds-check-box svg { transform: scale(0); transition: transform 150ms cubic-bezier(0.4,0,0.2,1); } .ds-check:hover .ds-check-box { border-color: #5F20FE; } .ds-check-input:checked + .ds-check-box { background: #5F20FE; border-color: #5F20FE; } .ds-check-input:checked + .ds-check-box svg { transform: scale(1); } .ds-check-input:focus-visible + .ds-check-box { box-shadow: 0 0 16px 0 hsl(from #5F20FE h s l / 0.5), 0 0 4px 0 hsl(from #5F20FE h s l / 0.6); }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card-default",
+      "description": "The default 24px card. It rises one barely-perceptible tonal step above the page — never lighten it further to make it read.",
+      "html": "<article class=\"ds-card\"><h3 class=\"ds-card-title\">Cloud &amp; DevOps</h3><p class=\"ds-card-body\">Ship faster with pipelines your team can actually own.</p></article>",
+      "css": ".ds-card { width: 320px; padding: 32px 32px 48px; border-radius: 24px; background: #0F0F15; color: #F4F4F6; font-family: Satoshi, sans-serif; transition: background-color 150ms cubic-bezier(0.4,0,0.2,1); } .ds-card:hover { background: #1C1C27; } .ds-card-title { margin: 0 0 16px; font-size: 32px; font-weight: 700; line-height: 110%; color: #F4F4F6; } .ds-card-body { margin: 0; font-size: 16px; line-height: 24px; color: #D5D5DD; }"
+    },
+    {
+      "name": "Section Panel",
+      "kind": "custom",
+      "refersTo": "section-panel",
+      "description": "The system's signature. Violet light cast *upward* from under the panel edge — every Y offset is negative, and a positive one destroys the most recognizable thing here.",
+      "html": "<section class=\"ds-section\"><p class=\"ds-section-note\">Light from below</p></section>",
+      "css": ".ds-section { width: 360px; padding: 48px 32px; border-radius: 64px; background: #0A0A0B; box-shadow: 0 -64px 64px 0 hsl(from #281470 h s l / 0.20), 0 -10px 24px 0 hsl(from #281470 h s l / 0.10), 0 -6px 6px 0 hsl(from #281470 h s l / 0.08); } .ds-section-note { margin: 0; font-family: Satoshi, sans-serif; font-size: 16px; line-height: 24px; color: #9595BB; text-align: center; } @media (min-width: 768px) { .ds-section { border-radius: 120px; } }"
+    },
+    {
+      "name": "Navigation",
+      "kind": "nav",
+      "refersTo": "button-tertiary",
+      "description": "Ghost links either side of a centred wordmark. It takes its items and active state as props and reads no route table, which is what lets one bar serve both the marketing site and this documentation site.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-link\" href=\"#\">Services</a><a class=\"ds-nav-link\" href=\"#\">Work</a><span class=\"ds-nav-mark\">CODECAVE</span><a class=\"ds-nav-link\" href=\"#\">About</a><a class=\"ds-nav-link ds-nav-link--alert\" href=\"#\">Contact us</a></nav>",
+      "css": ".ds-nav { display: flex; align-items: center; gap: 24px; padding: 12px 24px; border-radius: 9999px; background: #0F0F15; font-family: Satoshi, sans-serif; } .ds-nav-mark { font-size: 16px; font-weight: 900; letter-spacing: 0.08em; color: #F4F4F6; } .ds-nav-link { position: relative; min-height: 48px; display: inline-flex; align-items: center; font-size: 16px; font-weight: 700; color: #F4F4F6; text-decoration: none; transition: color 150ms cubic-bezier(0.4,0,0.2,1); } .ds-nav-link:hover, .ds-nav-link:focus-visible { color: #B19AFE; outline: none; } .ds-nav-link--alert::after { content: ''; position: absolute; top: 10px; right: -10px; width: 6px; height: 6px; border-radius: 9999px; background: #CA1400; animation: ds-nav-pulse 2s ease-in-out infinite; } @keyframes ds-nav-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } } @media (prefers-reduced-motion: reduce) { .ds-nav-link--alert::after { animation: none; } }"
+    },
+    {
+      "name": "Gradient Rule",
+      "kind": "custom",
+      "refersTo": "section-panel",
+      "description": "The brand gradient's one permitted *field*. 4px tall, capped at 320px — thicker and it becomes a violet field, wider and the four stops spread until it flattens into a pale wash.",
+      "html": "<hr class=\"ds-rule\">",
+      "css": ".ds-rule { height: 4px; max-width: 320px; width: 100%; margin: 0; border: none; border-radius: 9999px; background: linear-gradient(to right, #5F20FE 0%, #8252FC 60%, #B19AFE 75%, #E8E6F0 100%); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Light From Below",
+    "overview": "CODECAVE is dark, round, and violet — in that order of importance. The page is near-black and never pure black; the corners are enormous; the violet is rationed to edges, links and marks. The system's signature is a physical impossibility: section panels cast violet light *upward*, from a source sitting under the panel edge. It is wrong the way stage lighting is wrong, and it is instantly recognizable.\n\nThe voice underneath it is a small senior team talking straight to a decision-maker — reassurance rather than excitement, outcome before technology. The visual system is built to match: utilitarian and data-dense by charter standards, with one type family and one typographic flourish. That austerity is the brand's own, not an oversight. Depth is never bought with contrast, and expression is never bought with a second accent.\n\nThe surface this system describes is one responsive marketing and lead generation website — Astro 7 + Vue 3 + Tailwind 4, zero React. Six services are the information spine, and each is titled by the outcome it produces rather than the stack it uses: Cloud & DevOps, E-Commerce, Autodesk plugins, Automation & AI, HubSpot, AR & VR.",
+    "keyCharacteristics": [
+      "Depth is not built from contrast. The page is #0A0A0B; cards rise one barely-perceptible step to #0F0F15. If you find yourself lightening a card to make it read, you have made a layout mistake, not a color mistake.",
+      "Corners are enormous. 24px is the *default* card. Feature cards run 44px, article cards 36px, section panels 64–120px. Buttons are fully round.",
+      "The light comes from below. Never replace the inverted glow with a conventional drop shadow.",
+      "Violet is rationed. It edges, links and marks; it never fills a large area. A genuine purple *field* switches to the lighter #9980FF with near-black text — the only dark-on-light text in the entire system.",
+      "One family, two weights, one flourish. Satoshi at 400 and 700, and the eyebrow pair.",
+      "Dark-first, with no light theme. Three light-surface exceptions exist and they are the complete set."
+    ],
+    "rules": [
+      {
+        "name": "The Rationed Violet Rule",
+        "section": "colors",
+        "body": "#5F20FE edges, links and marks; it never fills a large area. When a genuine purple *field* is needed it switches to #9980FF and flips to #1B0D4E text — the only dark-on-light text in the system."
+      },
+      {
+        "name": "The Gradient-As-Line Rule",
+        "section": "colors",
+        "body": "The brand gradient is permitted as a *field* in exactly one component — the rule and progress line — and nowhere else. Everywhere else it clips to text."
+      },
+      {
+        "name": "The No Light Theme Rule",
+        "section": "colors",
+        "body": "The system is dark-first and ships no light mode. Three light-surface exceptions exist and they are the complete set: the primary button field #9980FF with #1B0D4E text; the near-white type ramp on dark; and the codecave-*-text-black wordmark variants, for print and genuinely light third-party surfaces only. Do not invent a light theme."
+      },
+      {
+        "name": "The One Flourish Rule",
+        "section": "typography",
+        "body": "The eyebrow is the entire typographic vocabulary: a bold violet line stacked over a larger light lead line, opening nearly every section. Do not add a second. The pair is *one* sentence broken across two colors — never two separate sentences."
+      },
+      {
+        "name": "The Upward Light Rule",
+        "section": "elevation",
+        "body": "Positive Y offsets on a section panel destroy the single most recognizable thing in the system. The light comes from below."
+      },
+      {
+        "name": "The Tonal Depth Rule",
+        "section": "elevation",
+        "body": "Depth is never bought with contrast. #0F0F15 against #0A0A0B is the point. Reach for radius, border and the glow instead."
+      },
+      {
+        "name": "The Big Corner Rule",
+        "section": "shapes",
+        "body": "Anything under 8px is off-brand; 2–4px reads as generic admin UI."
+      },
+      {
+        "name": "The Size-Forced Corner Rule",
+        "section": "shapes",
+        "body": "The 16px checkbox box takes --radius-control-sm (4px) and the corner cannot be size-independent: half of 16 is 8, so applying the 8px control corner renders a perfect circle — a radio button for a pick-any control."
+      },
+      {
+        "name": "The One Border Rule",
+        "section": "shapes",
+        "body": "Nothing else in the system outlines a card. Adding a second bordered card would turn a signature into a pattern."
+      }
+    ],
+    "dos": [
+      "Do consume the semantic layer (--color-action, --color-surface-secondary) and never hard-code a hex.",
+      "Do use --color-hovered #B19AFE (8.41:1) for any violet that has to be *read*. --color-action is for edges, links and marks.",
+      "Do treat 48px as the floor for any control a finger has to land on.",
+      "Do reach for radius, border and the inverted glow when something needs to separate from the page.",
+      "Do keep the eyebrow pair as one sentence broken across two colors.",
+      "Do cap the gradient rule at 4px tall and 320px wide.",
+      "Do ship the prefers-reduced-motion collapse. It is part of the system, not boilerplate."
+    ],
+    "donts": [
+      "Don't put a conventional drop shadow on a section panel. The glow is inverted; positive Y offsets destroy the single most recognizable thing in the system.",
+      "Don't use small radii. Anything under 8px; 2–4px reads as generic admin UI.",
+      "Don't lighten cards to create depth. #0F0F15 against #0A0A0B is the point.",
+      "Don't use #5F20FE as a large fill. It edges, links and marks. Purple *fields* are #9980FF with #1B0D4E text.",
+      "Don't use cyan as a UI color. #20EFFE lives only in the decorative orb art; the token layer's sole cyan is the technology-wash #077689 at 0.1 alpha.",
+      "Don't place a second glow button in one viewport. One action, one primary; secondary entry points are the bordered tertiary variant.",
+      "Don't write hover states that dim. Never move a foreground toward --color-body-secondary on hover. Every hover in source gains contrast or saturation — except the tertiary border (§10.1), which is documented, not endorsed.",
+      "Don't derive a light theme. None exists.",
+      "Don't add a second typographic flourish. The eyebrow is the whole vocabulary.",
+      "Don't invent metrics. 15+ years and 4.8 average rating are real and sourced. Do not add unattributed figures, and do not fabricate client names.",
+      "Don't ignore prefers-reduced-motion.",
+      "Don't use emoji as functional icons, purple gradient washes on every layer, or icons beside every heading — none of these appear in source.",
+      "Don't thicken or full-width the gradient rule. Past 4px it becomes a violet field; past 320px the gradient flattens into a pale wash."
+    ]
+  }
+}
