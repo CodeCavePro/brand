@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { type MenuItem } from './menu';
+import { type MenuItem } from '../lib/menus/menuTypes';
 
 interface Props {
   /** The MAIN item name this page sits under. */
