@@ -86,6 +86,48 @@ moment it is fixed; Jira keeps the history, so nothing here is a record:
 
 The version mechanic stays true and is the thing to remember — CI installs with `pnpm install --frozen-lockfile`, so the site runs whatever its lockfile pins and nothing moves it on its own. A token change here reaches the site only when someone raises the range and regenerates the lockfile. pnpm's `minimumReleaseAge` guard used to add a day on top of that, and no longer does: codecave.pro's `pnpm-workspace.yaml` exempts this package as a whole, with an entry naming no version at all. Every *wildcard* spelling is still rejected — `@codecavepro/brand@*`, `@x`, `@>=0.0.0` — which is why both repos said for a while that a whole-package exemption was unavailable. It is the wildcards that are unavailable; an entry with no version predicate is a different thing and pnpm accepts it.
 
+**There is one way around all of that, and it is for development only.**
+codecave.pro's `astro.config.mjs` aliases `@codecavepro/brand` at
+`../brand/packages/brand/dist` whenever that path exists — no flag to remember,
+and CI cannot satisfy it, because both of its workflows check out that repo
+alone. So a component edited here appears on that site with no publish, no
+version bump and no lockfile. **`npm run watch:package` is the other half**: it
+rebuilds `dist/` on every save under `src/`, and `astro dev` reloads the page
+about two seconds later.
+
+**That watcher is why the package build stopped being `rm -rf dist` and a full
+rewrite.** The two rules that replaced it are load-bearing, and both exist for
+the same reason: a consumer's dev server is reading these files, and our write
+is what woke it up.
+
+-   **`dist/` is updated, never rebuilt.** Every output is compared before it is
+    written and skipped when the bytes already match; `dist/` is then swept for
+    anything the run did not produce. Editing one component moves exactly one
+    mtime. Rewriting all 58 would invalidate the consumer's whole module graph
+    on every save, and clearing `dist/` first would 404 whatever it asked for
+    meanwhile.
+-   **A write is a rename wherever Windows allows one.** `writeFileSync`
+    truncates before it writes, and polling six shipped outputs through six full
+    rewrites caught them at **zero bytes 15 times** — which a dev server reports
+    as `Cannot find module '@codecavepro/brand/components/…'`, naming a
+    different component every time. Renaming a temp file over the target closes
+    that window and **cannot replace a file another process holds open**: on its
+    own it failed five times in eight rebuilds, every one on `BrandNav.vue`,
+    which every page of that site imports. So the build renames, waits out a
+    reader for half a second, and only then writes in place.
+
+**And only one build may run at a time.** `.tmp` is a fixed path — `tsconfig.json`
+names it in both `include` and `rootDir` — so two builds share a scratch
+directory, and the second one's `rm -rf .tmp` lands inside the first one's window
+between running `tsc` and reading what `tsc` emitted. The old shape raced in the
+same place and was worse about it: it cleared `dist/` up front, so the loser
+shipped a `dist/` missing whatever the winner had not yet rewritten, and exited
+0. A watcher makes that collision ordinary rather than exotic, because
+`npm run build:storybook` begins with a package build and its whole point is to
+run while you are editing. So the second build **waits**, and a crashed build's
+lock is stolen rather than waited on. `npm run check` is unaffected: `--check`
+returns before either `.tmp` or `dist/` is touched.
+
 `check-captures.mjs` was deleted on 2026-08-25, along with its npm script and
 its release gate. The reason is the version mechanic above: the site installs
 this package and pins it, so it lags by design. Components are developed

@@ -80,3 +80,9 @@ packages/*/LICENSE
 # real command, and a stale tarball committed to the tree is something someone
 # would eventually reach for.
 *.tgz
+
+# The package build takes this while it holds .tmp and dist/. It exists
+# because a watcher makes two concurrent builds ordinary rather than exotic --
+# see the lock in packages/brand/scripts/build.mjs. Removed on exit, stolen if
+# the process that wrote it is gone.
+packages/*/.build.lock

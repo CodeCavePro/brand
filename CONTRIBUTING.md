@@ -447,6 +447,42 @@ claiming to be the nav while not being it. Its route did not move:
 `build.format: 'preserve'` emits it to `examples/index.html`, the href every
 nav already carries. Nothing else under `examples/` will follow it.
 
+## Trying a change on codecave.pro before it is published
+
+The site normally runs whatever version its lockfile pins, so a change here
+reaches it only after a release and a bump. For development there is a way
+round that, and it needs no flag and no configuration on your part.
+
+codecave.pro's `astro.config.mjs` resolves `@codecavepro/brand` from
+`../brand/packages/brand/dist` **whenever that directory exists**. Clone this
+repo beside it, build the package once, and its `astro dev` is running your
+working tree:
+
+```bash
+npm run build:package        # in this repo — creates packages/brand/dist
+npm run watch:package        # leave running: rebuilds dist/ on every save under src/
+```
+
+Edit anything under `src/`, and about two seconds later the page reloads with
+the change on it. `USE_LOCAL_BUILD=false` over there forces the published
+package back, which is how you find out whether a bug is yours or the
+package's.
+
+Two things to know, because both were arrived at by measurement rather than by
+taste:
+
+-   **The build updates `dist/`, it does not rebuild it.** An output whose bytes
+    have not changed is not written, so editing one component moves one mtime
+    rather than all 58. It also writes through a temp file and a rename where
+    Windows permits one — a dev server reading a file mid-write sees an empty
+    module and reports it as `Cannot find module '@codecavepro/brand/…'`,
+    naming a different component each time.
+-   **Only one build runs at a time.** `npm run build:storybook` starts with a
+    package build, so running it while the watcher is up used to have two builds
+    sharing one scratch directory; the loser shipped an incomplete `dist/` and
+    exited 0. The second one now waits. `npm run check` is unaffected and can be
+    run whenever.
+
 ## Where open work is tracked
 
 **Jira is the only list.** This repo had a `TODO.md`; it was deleted on

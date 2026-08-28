@@ -891,6 +891,76 @@ if (checkOnly) {
   process.exit(0);
 }
 
+/* ---- one build at a time -------------------------------------------------
+ * Two builds cannot run at once, and until --watch existed nobody was ever in
+ * a position to try. They share a scratch directory -- .tmp is a fixed path
+ * because tsconfig.json's `include` and `rootDir` name it literally -- so the
+ * second build's `rm -rf .tmp` lands inside the first one's window between
+ * running tsc and reading what tsc emitted.
+ *
+ * Measured, not theorised: two `node build.mjs` at the same moment, and one of
+ * them dies on ENOENT reading .tmp/out. The old shape raced in the same place
+ * and was WORSE about it -- it also cleared dist/ up front, so the loser
+ * shipped a dist/ missing whatever the winner had not yet rewritten, and
+ * exited 0.
+ *
+ * A watcher makes the collision ordinary rather than exotic: `npm run
+ * build:storybook` starts with a package build, and its whole point is to run
+ * while you are editing components. So the second build WAITS rather than
+ * failing. A crashed build's lock is stolen rather than waited on, which is the
+ * difference between a lock and a booby trap.
+ *
+ * --check never reaches this line -- it exits above, having touched neither
+ * .tmp nor dist -- so `npm run check` still runs freely while a watcher is up.
+ */
+const lock = path.join(pkg, '.build.lock');
+const heldBy = () => Number(fs.readFileSync(lock, 'utf8').trim()) || 0;
+const sleep = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+const running = (pid) => {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (e) {
+    return e.code === 'EPERM'; // exists, owned by someone else
+  }
+};
+
+for (let waited = 0; ; waited += 100) {
+  try {
+    fs.writeFileSync(lock, String(process.pid), { flag: 'wx' });
+    break;
+  } catch (e) {
+    if (e.code !== 'EEXIST') throw e;
+    let holder = 0;
+    try {
+      holder = heldBy();
+    } catch { /* being written this instant; treat as held and re-read */ }
+    if (holder && !running(holder)) {
+      console.log(`@codecavepro/brand: clearing the lock of build ${holder}, which is gone.`);
+      fs.rmSync(lock, { force: true });
+      continue;
+    }
+    if (waited === 0) {
+      console.log(`@codecavepro/brand: waiting for the build already running${holder ? ` (pid ${holder})` : ''}…`);
+    }
+    if (waited >= 120_000) {
+      console.error(`build failed — build ${holder} has held the lock for two minutes.`);
+      console.error(`If nothing is running, delete ${path.relative(repo, lock)}.`);
+      process.exit(1);
+    }
+    sleep(100);
+  }
+}
+
+/* Covers process.exit() and an uncaught throw alike, which is why the release
+ * is here and not at the bottom of the file: every assertion in this build
+ * leaves by process.exit(1). */
+process.on('exit', () => {
+  try {
+    if (heldBy() === process.pid) fs.rmSync(lock, { force: true });
+  } catch { /* already gone */ }
+});
+
 /* ---- dist/ is UPDATED, not rebuilt ---------------------------------------
  * The obvious shape here is `rm -rf dist` and write everything back, and it was
  * exactly that until --watch existed. It cannot be any more, for two reasons
@@ -913,8 +983,45 @@ function place(target, bytes) {
   const buf = Buffer.isBuffer(bytes) ? bytes : Buffer.from(bytes);
   if (fs.existsSync(target) && fs.readFileSync(target).equals(buf)) return false;
   fs.mkdirSync(path.dirname(target), { recursive: true });
-  fs.writeFileSync(target, buf);
-  return true;
+  /* Atomic where Windows permits it, in place where it does not. Both halves
+   * are measured, because each one alone is broken in its own direction.
+   *
+   * writeFileSync truncates before it writes, and the consumer's dev server is
+   * reading this exact file at this exact moment -- our write is what woke it
+   * up. That window is real: polling six shipped outputs through six full
+   * rewrites caught them at zero bytes 15 times. An empty .vue is what a dev
+   * server reports as `Cannot find module '@codecavepro/brand/components/…'`,
+   * naming a different component every time, which is the symptom this exists
+   * to remove.
+   *
+   * Writing beside the target and renaming over it closes that window -- zero
+   * empty reads across 600k samples -- but MoveFileEx cannot replace a file
+   * another process holds open, so it FAILED five times in eight rebuilds,
+   * every one of them on BrandNav.vue, which every page of that site imports.
+   * A hard build failure is worse than a microsecond of empty file.
+   *
+   * So: rename, wait out a reader that is holding the destination, and if it
+   * will not let go, write in place and accept the window. The fallback is
+   * exactly the old behaviour, so the worst case is no worse than before. */
+  const swap = `${target}.${process.pid}.swap`;
+  fs.writeFileSync(swap, buf);
+  for (let tries = 0; ; tries++) {
+    try {
+      fs.renameSync(swap, target);
+      return true;
+    } catch (e) {
+      if (!['EPERM', 'EBUSY', 'EACCES'].includes(e.code)) {
+        fs.rmSync(swap, { force: true });
+        throw e;
+      }
+      if (tries === 25) {
+        fs.writeFileSync(target, buf);
+        fs.rmSync(swap, { force: true });
+        return true;
+      }
+      sleep(20);
+    }
+  }
 }
 
 /** Every file under `dir`, as paths relative to it. */
