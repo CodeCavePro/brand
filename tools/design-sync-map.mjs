@@ -50,17 +50,15 @@ const listing = (dir, re) =>
         .sort()
     : [];
 
-/* Paths the project holds that this map no longer writes. They are deleted on
- * the next push rather than left to rot: components/assets/images/checked-icon.svg
- * is the stale one that made this worth checking -- the cards ask for it at
- * components/Components/assets/…, three levels deep, so the copy sitting one
- * level up was never reachable and the checkbox tick has been 404 on the remote.
- * A path leaves this list once a push has actually removed it. */
-export const STALE = [
-  'components/assets/images/checked-icon.svg',
-  'components/assets/images',
-  'components/assets',
-];
+/* Paths the project holds that this map no longer writes, deleted on the next
+ * push rather than left to rot. A path leaves this list once a push has actually
+ * removed it, which is why the list is empty: the 2026-08-27 sync deleted the
+ * one entry it ever had. That entry was components/assets/images/checked-icon.svg
+ * -- the cards ask for the tick at components/Components/assets/…, three levels
+ * deep, so the copy sitting one level up was never reachable and the checkbox
+ * would not tick in the Design pane. Empty is the steady state; add a path here
+ * only when the map stops writing something the project still holds. */
+export const STALE = [];
 
 export function projectFiles() {
   const files = [];

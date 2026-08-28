@@ -60,3 +60,25 @@ theoretical risk: at the 2026-08-20 sync the bundle stylesheet was two real decl
 fixes — because a plain copy going stale breaks nothing and uploads cleanly. A stale
 `compiled/*.js` fails the same silent way, one layer further in: the card renders an old
 component, correctly, and says nothing.
+
+## 2026-08-27 — the staging mirror is gone, and the tick is fixed
+
+`ds-bundle/` stopped being an upload staging directory. It had held 46 gitignored copies of files
+that already lived under `src/` and `docs/`; `tools/design-sync-map.mjs` now pairs each project
+path with the authored file that answers it, and `write_files` uploads from there. The copies, and
+the 109-line script that made and verified them, are deleted. `ds-bundle/` is 76K of seven tracked
+authored files plus the seven generated Components cards.
+
+**What that surfaced.** A compiled bundle injects its scoped CSS as a `<style>` element, so a
+relative `url()` in it resolves against the DOCUMENT. The cards sit three levels deep, so
+`Checkbox.js`'s `url(../assets/images/checked-icon.svg)` asks for
+`components/Components/assets/images/checked-icon.svg`. The old copy step placed it at
+`components/assets/images/checked-icon.svg`, one level up, where no card could reach it — so the
+checkbox tick had been 404 in the Design pane, the card rendered anyway, and every check in both
+repositories stayed green. `npm run check:design-sync` is what asks now: every reference a card
+makes has to resolve to a path the push writes. This sync uploaded the reachable path and deleted
+the dead one; the remote now matches the map exactly, 53 files plus the two the app generates.
+
+**No `_ds_sync.json` anchor is written.** The `foundations` shape has no hash recipe, and a sidecar
+here would vouch for a verification it did not perform. `check:design-sync` runs inside
+`npm run check`, so the guarantee lives in CI instead of in a remote file.
