@@ -71,7 +71,16 @@ const carouselLocker = carouselGestureLocker()
           ${hideSelected ? 'pt-8' : 'flex flex-col pt-4 md:pt-14 pb-20 xl:pb-0 swipe-over'}`">
     <div v-if="!hideSelected" class="flex flex-col items-center text-center">
       <div class="space-y-3">
-        <HeaderBrows/>
+        <div class="flex justify-center gap-6 font-bold text-xl">
+          <div class="space-x-1">
+            <span class="font-bold text-body-primary">15+</span>
+            <span class="text-body-secondary">Years of experience</span>
+          </div>
+          <div class="space-x-1">
+            <span class="font-bold text-body-primary">4.7</span>
+            <span class="text-body-secondary">Average rating</span>
+          </div>
+        </div>
         <TypingEffect
             :text1="selectedTechnology.title1"
             :text2="selectedTechnology.title2"
