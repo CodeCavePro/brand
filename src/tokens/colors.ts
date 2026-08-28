@@ -66,7 +66,7 @@ export const technologyGradient = {
 export const error = {
   100: '#FE9A9A', // error value + message text (9.71:1 on the page)
   200: '#FE2020', // error halo
-  300: '#B42318', // --color-error: icons and rules, NOT body text (3.01:1)
+  300: '#FF6E14', // --color-error: error value + message text (7.06:1 on the page)
   400: '#CA1400', // the pulsing navigation dot
 } as const;
 

@@ -74,7 +74,7 @@ while working on the site itself. **These are the site's to fix, not the
 package's** — do not "correct" them in `docs/`. A bug leaves this list the
 moment it is fixed; Jira keeps the history, so nothing here is a record:
 
--   [CCWEB2-320](https://codecave.atlassian.net/browse/CCWEB2-320) — `TextField.vue`'s error message renders at 2.91:1. Accessibility, and a colour decision, so it is **assigned to Maria Shaban**.
+-   [CCWEB2-320](https://codecave.atlassian.net/browse/CCWEB2-320) — `TextField.vue` draws its inner focus halo at alpha **0.8** where `InputText.vue` and `--shadow-input-focus` use **0.6**. Same halo, two alphas, visible only on a focused textarea. **The ticket's other half is fixed**: production moved `error-300` off `#B42318` on 2026-08-27, so the 2.91:1 error text is gone. Assigned to **Maria Shaban**.
 
 ### What the package ships, and what a consumer must do
 

@@ -84,15 +84,16 @@ import DocPage from '../../layouts/DocPage.astro';
   <section class="pv-block">
     <h2>A note on error text</h2>
     <p class="pv-note">
-      <code>--color-error</code> (<code>#B42318</code>) reaches only <strong>3.2:1</strong> on the
-      near-black page, which is below the 4.5:1 requirement for normal text. The package therefore
-      renders error <em>messages</em> in <code>--color-error-100</code> (<code>#FE9A9A</code>,
-      <strong>8.4:1</strong>) and keeps <code>#B42318</code> for icons and rules. This is a
-      deliberate divergence from production — see DESIGN.md &rarr; Known divergences.
+      <code>--color-error</code> was <code>#B42318</code> and reached only <strong>3.01:1</strong>
+      on the near-black page, below the 4.5:1 requirement for normal text. Production moved it to
+      <code>#FF6E14</code> on 2026-08-27 (<strong>7.06:1</strong>), so that failure is gone. The
+      package still renders error <em>messages</em> in <code>--color-error-100</code>
+      (<code>#FE9A9A</code>, <strong>9.71:1</strong>) — now a preference between two accessible
+      reds rather than a correction. See DESIGN.md &rarr; Known divergences.
     </p>
     <div class="pv-row">
-      <span style="color:var(--color-error);font-weight:700">#B42318 — production error text (3.2:1)</span>
-      <span style="color:var(--color-error-100);font-weight:700">#FE9A9A — package error text (8.4:1)</span>
+      <span style="color:var(--color-error);font-weight:700">#FF6E14 — production error text (7.06:1)</span>
+      <span style="color:var(--color-error-100);font-weight:700">#FE9A9A — package error text (9.71:1)</span>
     </div>
   </section>
 </div>

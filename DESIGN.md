@@ -21,7 +21,7 @@ colors:
   outline-primary-hover: "#1B0D4E"
   default-transparent: "#DCDCE5"
   failureproof-0: "#050505"
-  error: "#B42318"
+  error: "#FF6E14"
   error-100: "#FE9A9A"
 typography:
   display:
@@ -252,7 +252,7 @@ that is exactly how production consumes them.
 **Technology-card wash:** `technology-gradient-0` `#077689` · `-25` `#1A0452` ·
 `-50` `#070312` — always at 0.1 alpha, and the only cyan left in the token layer.
 
-**Error:** `-100` `#FE9A9A` · `-200` `#FE2020` · `-300` `#B42318` · `-400`
+**Error:** `-100` `#FE9A9A` · `-200` `#FE2020` · `-300` `#FF6E14` · `-400`
 `#CA1400`
 
 Two quirks are this package's own, and are recorded rather than fixed
@@ -883,21 +883,36 @@ hover lands upstream, this package follows it.
 
 ### 10.2 Error text color
 
-`--color-error` is `#B42318` (`error-300`), which measures **3.01:1** on `#0A0A0B`
-— below the 4.5:1 floor for body text. The production site uses it for form error
-messaging.
-
-The 2026-08-20 resync gave that sentence a name: `common/TextField.vue` gained an
-`isError` / `errorMessage` state and styles both the invalid value and the 12px
-message with `text-error`. On the field's own `--color-surface-secondary`
-(`#0F0F15`) that measures **2.91:1**, against **9.37:1** for the `error-100` that
-`InputText.vue` uses for the same job. Filed as
+**The failure this section recorded is fixed, and what is left is a preference.**
+`error-300` was `#B42318` — **3.01:1** on `#0A0A0B` and **2.91:1** on the field's
+own `#0F0F15`, both under the 4.5:1 floor, on exactly the text a user most needs
+to read. `InputText.vue` and `TextField.vue` both render the message with
+`text-error`, so both inherited it. It was filed as the first half of
 [CCWEB2-320](https://codecave.atlassian.net/browse/CCWEB2-320).
 
-This package keeps `#B42318` for icons, rules and non-text marks, and renders error
-*messages* in `--color-error-100` `#FE9A9A` (**9.71:1**). The error halo still uses
-`error-200`/`error-100` exactly as `InputText.vue` defines it, so the field itself
-is unchanged.
+On 2026-08-27 production moved `error-300` to **`#FF6E14`**: **7.06:1** on the page
+and **6.81:1** on the field. That clears AA everywhere the token is used as text
+and AAA on the page, and it fixes both components at once — the defect was in the
+ramp step, never in either component, which is why one token edit settled it. Note
+the ticket proposed a different fix, `text-error-100` on both; production changed
+the step instead, which reaches every other consumer of `--color-error` too.
+
+**CCWEB2-320 is not closed.** Its second half is untouched by any of this:
+`TextField.vue`'s `.focus-area:focus-within` draws its inner focus layer at alpha
+**0.8**, where `InputText.vue` and `--shadow-input-focus` both use **0.6**. Same
+halo, two alphas, and only a focused textarea shows it.
+
+What remains is a **smaller and non-corrective divergence.** The package's own class
+layer renders `.field .error-message` in `--color-error-100` `#FE9A9A` (**9.71:1**),
+which is a lighter tone than the components now use. Until 2026-08-27 that was a
+correction of a failing value; today both pass, so it is a choice between two
+accessible reds and belongs to Maria Shaban rather than to this document. The error
+halo still uses `error-200`/`error-100` exactly as `InputText.vue` defines it, so
+the field itself is unchanged.
+
+`#B42318` is left commented out beside its replacement in `colors_and_type.css`.
+**It is not a token any more** — nothing may read it, and the ramp above lists the
+shipped value.
 
 ### 10.3 Synthesized vs. real font weights
 

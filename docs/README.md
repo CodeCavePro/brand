@@ -275,7 +275,7 @@ written on the story page rather than silently papered over.
 | Compositions | `LinkGroup` |
 
 Each story page carries the real `defineProps` signature, a variant/state
-matrix rendered live, and a findings section. **55 findings are recorded — 29
+matrix rendered live, and a findings section. **54 findings are recorded — 28
 flagged as defects, 26 as design observations.** The ones that change runtime
 behavior:
 

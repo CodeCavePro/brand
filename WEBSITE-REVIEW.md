@@ -53,10 +53,11 @@ consider a less drastic disabled treatment than 20% opacity.
 - The error message renders in a plain `<span>`: no `role="alert"`, no
   `aria-live`, no `aria-describedby` tying it to the input, and the input never
   gets `aria-invalid`. Screen readers get no signal at all.
-- The error color is `--color-error` = error-300 `#B42318`: **3.01:1** on the
-  page ground at 12px — far below the 4.5:1 floor, on exactly the text a user
-  most needs to read. In-palette fixes: error-100 `#FE9A9A` (9.71:1) or
-  error-200 `#FE2020` (5.13:1).
+- ~~The error color is `--color-error` = error-300 `#B42318`: **3.01:1** on the
+  page ground at 12px.~~ **Fixed 2026-08-27**: `error-300` is now `#FF6E14`,
+  **7.06:1** on the page and **6.81:1** on the field. One ramp edit fixed both
+  `InputText.vue` and `TextField.vue`, which share `text-error`. The screen-reader
+  half of this finding above still stands.
 
 ### 2.4 Action violet used as small text (`common/Review.vue` and eyebrows)
 `#5F20FE` measures **2.94:1** on `#0A0A0B` (2.84:1 on cards) — that is under
@@ -191,7 +192,7 @@ Computed WCAG 2.1 ratios; page = `#0A0A0B`, card = `#0F0F15`.
 | error-200 `#FE2020` on page | 5.13:1 | pass (borderline for 12px) |
 | neutral `#6B6699` on page | 3.76:1 | large text only |
 | **action `#5F20FE` as text** | **2.94:1** | **fail < 4.5:1** |
-| **error-300 `#B42318` as text** | **3.01:1** | **fail < 4.5:1** |
+| error-300 `#FF6E14` as text | 7.06:1 | pass (was `#B42318`, 3.01:1) |
 | **tertiary hover border `#4004AF`** | **1.75:1** | **fail < 3:1 (UI)** |
 | **disabled button (opacity .2), label vs fill** | **1.55:1** | **fail** |
 

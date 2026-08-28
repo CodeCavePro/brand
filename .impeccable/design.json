@@ -288,25 +288,25 @@
       },
       "error": {
         "role": "semantic",
-        "displayName": "Error Red",
+        "displayName": "Signal Orange",
         "tonalRamp": [
-          "#B42318",
           "#CA1400",
           "#FE2020",
+          "#FF6E14",
           "#FE9A9A"
         ],
-        "purpose": "Error state. Fails contrast on dark as shipped (§10.2)."
+        "purpose": "Error state. 7.06:1 on the page — accessible as of 2026-08-27, when error-300 moved off #B42318 (3.01:1)."
       },
       "error-100": {
         "role": "semantic",
         "displayName": "Error Light",
         "tonalRamp": [
-          "#B42318",
           "#CA1400",
           "#FE2020",
+          "#FF6E14",
           "#FE9A9A"
         ],
-        "purpose": "The accessible error tone; the ramp step error text should reach for."
+        "purpose": "The lighter error tone the package's own .field .error-message uses (9.71:1)."
       }
     },
     "typographyMeta": {
