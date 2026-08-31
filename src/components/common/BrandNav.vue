@@ -198,8 +198,22 @@ withDefaults(defineProps<{
   height: 10px;
   border-radius: 50%;
   background: var(--color-error-400);
-  box-shadow: 0 0 12px 0 var(--color-error-400),
-              0 0 4px 0 hsl(from var(--color-error-400) h s l / 0.5);
+  box-shadow:
+    0 0 12px 0 var(--color-error-400),
+    0 0 4px 0 hsl(from var(--color-error-400) h s l / 0.5);
+
+  animation: pulse-opacity 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-opacity {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.3;
+  }
 }
 
 .brand-nav-logo {
@@ -223,12 +237,13 @@ withDefaults(defineProps<{
   position: absolute;
   top: 100%;
   left: 0;
-  margin-top: 14px;
+  margin-top: 13px;
   width: max-content;
   opacity: 0;
   visibility: hidden;
   border-radius: 1rem;
   padding: 1.25rem;
+   z-index: 100;
   background: var(--color-surface-primary);
   -webkit-backdrop-filter: blur(24px);
   backdrop-filter: blur(24px);

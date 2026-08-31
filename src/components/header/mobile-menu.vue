@@ -75,7 +75,7 @@ const handleCloseMenu = () => {
 
 <template>
   <div>
-    <div :class="`fixed z-50 top-0 w-full bg-surface-primary-transparent backdrop-blur-3xl ${isMenuOpen ? 'rounded-b-3xl' : 'rounded-none'}`">
+    <div :class="`fixed z-50 top-0 w-full bg-surface-primary-transparent backdrop-blur-3xl border-b border-surface-quaternary`">
       <div :class="`h-full px-5 ${isMenuOpen ? 'pb-5' : 'pb-0'} flex flex-col gap-2 transition-all`">
         <div class="flex justify-between items-center py-1.5">
           <a :href="homeHref" class="px-1.5 hover:opacity-80 transition-opacity">
@@ -85,12 +85,12 @@ const handleCloseMenu = () => {
             <span></span>
           </button>
         </div>
-        <nav v-if="isMenuOpen" class="h-full text-sm">
+        <nav v-if="isMenuOpen" class="h-full text-sm overflow-y-auto">
           <div v-if="isServicesOpen">
             <h2 class="text-center font-bold text-body-primary py-2.5">
               {{ servicesItem?.submenuTitle }}
             </h2>
-            <ServicesList :items="servicesItem?.submenu ?? []" />
+            <slot name="services" />
             <button class="pt-4" @click="isServicesOpen = false">
               <component class="w-11 h-11 text-action" :is="BackIcon" />
             </button>
