@@ -223,7 +223,7 @@ withDefaults(defineProps<{
   position: absolute;
   top: 100%;
   left: 0;
-  margin-top: 12px;
+  margin-top: 14px;
   width: max-content;
   opacity: 0;
   visibility: hidden;

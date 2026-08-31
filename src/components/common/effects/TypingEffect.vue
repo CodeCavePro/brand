@@ -29,7 +29,7 @@ watch(() => [props.text1, props.text2],
 </script>
 
 <template>
-  <div class="flex flex-col items-center leading-[130%] text-heading-sm lg:text-heading-lg font-bold">
+  <div class="flex flex-col items-center leading-[130%] text-heading-md md:text-heading-lg font-bold">
     <h2 :key="text1" class="split-text">
       <span class="block text-heading">{{ text1 }}</span>
       <span class="block text-action">{{ text2 }}</span>

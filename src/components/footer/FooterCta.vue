@@ -7,7 +7,7 @@ import Button from "@codecavepro/brand/components/common/Button.vue";
   class="p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-12 md:gap-7 rounded-3xl bg-primary-800"
 >
   <div class="flex-1">
-    <h3 class="text-heading font-bold text-[32px]">
+    <h3 class="text-heading font-bold xl:text-[32px] text-2xl">
       Grab our AI trends research!
     </h3>
 
