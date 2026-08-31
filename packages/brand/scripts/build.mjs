@@ -55,6 +55,56 @@ const tmp = (...p) => path.join(pkg, '.tmp', ...p);
 
 const checkOnly = process.argv.includes('--check');
 
+/* ==========================================================================
+ * --watch: rebuild dist/ whenever src/ changes.
+ *
+ * This exists for one consumer arrangement, and it is worth naming because
+ * nothing in this repository would otherwise explain it. codecave.pro aliases
+ * @codecavepro/brand at packages/brand/dist whenever this checkout sits beside
+ * it, so a component edited here reaches that site without a publish and
+ * without a version bump. `astro dev` hot-reloads it -- but only if something
+ * rebuilds dist/ when src/ changes, and only if that rebuild leaves the files
+ * it did not change alone. This flag is the first half; place() is the second.
+ *
+ * Each rebuild is a fresh child process rather than a re-entry into this
+ * module. The build is a single top-level pass that exits on the first failed
+ * assertion, and a failed assertion must not take the watcher down with it: the
+ * whole point of watching is that you fix the file and save again.
+ * ====================================================================== */
+if (process.argv.includes('--watch')) {
+  const self = fileURLToPath(import.meta.url);
+
+  const rebuild = () => {
+    const started = Date.now();
+    const r = spawnSync(process.execPath, [self], { stdio: 'inherit' });
+    console.log(
+      r.status === 0
+        ? `[brand] rebuilt in ${Date.now() - started}ms`
+        : `[brand] build FAILED (exit ${r.status}) — fix the above and save again`,
+    );
+  };
+
+  rebuild();
+
+  /* Coalesced, because one save is never one event: Windows reports the write
+   * and the attribute change separately, and an editor that saves through a
+   * temp file adds a create and a rename on top. Rebuilding per event runs the
+   * build over itself. */
+  let pending = null;
+  fs.watch(srcDir(), { recursive: true }, (_event, file) => {
+    /* Editor swap files -- .goutputstream-xxxx, foo.vue~, .#foo.vue. They are
+     * gone by the time a build would read them. */
+    if (file && /^\.|~$/.test(path.basename(file))) return;
+    clearTimeout(pending);
+    pending = setTimeout(rebuild, 120);
+  });
+
+  console.log(`[brand] watching ${path.relative(repo, srcDir())}/ — Ctrl-C to stop`);
+  /* Top-level await in an ES module suspends the module body, so nothing below
+   * this point runs. The fs.watch handle is what keeps the process alive. */
+  await new Promise(() => {});
+}
+
 /** Files copied verbatim: [source, destination-inside-dist]. */
 const VERBATIM = [
   [srcDir('styles', 'colors_and_type.css'), 'colors_and_type.css'],
@@ -841,25 +891,185 @@ if (checkOnly) {
   process.exit(0);
 }
 
-fs.rmSync(out(), { recursive: true, force: true });
+/* ---- one build at a time -------------------------------------------------
+ * Two builds cannot run at once, and until --watch existed nobody was ever in
+ * a position to try. They share a scratch directory -- .tmp is a fixed path
+ * because tsconfig.json's `include` and `rootDir` name it literally -- so the
+ * second build's `rm -rf .tmp` lands inside the first one's window between
+ * running tsc and reading what tsc emitted.
+ *
+ * Measured, not theorised: two `node build.mjs` at the same moment, and one of
+ * them dies on ENOENT reading .tmp/out. The old shape raced in the same place
+ * and was WORSE about it -- it also cleared dist/ up front, so the loser
+ * shipped a dist/ missing whatever the winner had not yet rewritten, and
+ * exited 0.
+ *
+ * A watcher makes the collision ordinary rather than exotic: `npm run
+ * build:storybook` starts with a package build, and its whole point is to run
+ * while you are editing components. So the second build WAITS rather than
+ * failing. A crashed build's lock is stolen rather than waited on, which is the
+ * difference between a lock and a booby trap.
+ *
+ * --check never reaches this line -- it exits above, having touched neither
+ * .tmp nor dist -- so `npm run check` still runs freely while a watcher is up.
+ */
+const lock = path.join(pkg, '.build.lock');
+const heldBy = () => Number(fs.readFileSync(lock, 'utf8').trim()) || 0;
+const sleep = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+const running = (pid) => {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (e) {
+    return e.code === 'EPERM'; // exists, owned by someone else
+  }
+};
+
+for (let waited = 0; ; waited += 100) {
+  try {
+    fs.writeFileSync(lock, String(process.pid), { flag: 'wx' });
+    break;
+  } catch (e) {
+    if (e.code !== 'EEXIST') throw e;
+    let holder = 0;
+    try {
+      holder = heldBy();
+    } catch { /* being written this instant; treat as held and re-read */ }
+    if (holder && !running(holder)) {
+      console.log(`@codecavepro/brand: clearing the lock of build ${holder}, which is gone.`);
+      fs.rmSync(lock, { force: true });
+      continue;
+    }
+    if (waited === 0) {
+      console.log(`@codecavepro/brand: waiting for the build already running${holder ? ` (pid ${holder})` : ''}…`);
+    }
+    if (waited >= 120_000) {
+      console.error(`build failed — build ${holder} has held the lock for two minutes.`);
+      console.error(`If nothing is running, delete ${path.relative(repo, lock)}.`);
+      process.exit(1);
+    }
+    sleep(100);
+  }
+}
+
+/* Covers process.exit() and an uncaught throw alike, which is why the release
+ * is here and not at the bottom of the file: every assertion in this build
+ * leaves by process.exit(1). */
+process.on('exit', () => {
+  try {
+    if (heldBy() === process.pid) fs.rmSync(lock, { force: true });
+  } catch { /* already gone */ }
+});
+
+/* ---- dist/ is UPDATED, not rebuilt ---------------------------------------
+ * The obvious shape here is `rm -rf dist` and write everything back, and it was
+ * exactly that until --watch existed. It cannot be any more, for two reasons
+ * that are really one reason: a consumer's dev server is watching these files.
+ *
+ * A file rewritten with identical bytes is still a change to everything
+ * watching it, so a full rewrite invalidates every module in that consumer's
+ * graph on every save -- one component edited, the whole page reloaded. The rm
+ * is worse than the rewrite: a request landing inside that window gets a 404
+ * for a file that is about to exist again.
+ *
+ * So every output is compared before it is written, and dist/ is swept at the
+ * end for anything this run did not produce. Editing one component then moves
+ * exactly one mtime.
+ */
+const placed = new Set();
+
+function place(target, bytes) {
+  placed.add(path.resolve(target));
+  const buf = Buffer.isBuffer(bytes) ? bytes : Buffer.from(bytes);
+  if (fs.existsSync(target) && fs.readFileSync(target).equals(buf)) return false;
+  fs.mkdirSync(path.dirname(target), { recursive: true });
+  /* Atomic where Windows permits it, in place where it does not. Both halves
+   * are measured, because each one alone is broken in its own direction.
+   *
+   * writeFileSync truncates before it writes, and the consumer's dev server is
+   * reading this exact file at this exact moment -- our write is what woke it
+   * up. That window is real: polling six shipped outputs through six full
+   * rewrites caught them at zero bytes 15 times. An empty .vue is what a dev
+   * server reports as `Cannot find module '@codecavepro/brand/components/…'`,
+   * naming a different component every time, which is the symptom this exists
+   * to remove.
+   *
+   * Writing beside the target and renaming over it closes that window -- zero
+   * empty reads across 600k samples -- but MoveFileEx cannot replace a file
+   * another process holds open, so it FAILED five times in eight rebuilds,
+   * every one of them on BrandNav.vue, which every page of that site imports.
+   * A hard build failure is worse than a microsecond of empty file.
+   *
+   * So: rename, wait out a reader that is holding the destination, and if it
+   * will not let go, write in place and accept the window. The fallback is
+   * exactly the old behaviour, so the worst case is no worse than before. */
+  const swap = `${target}.${process.pid}.swap`;
+  fs.writeFileSync(swap, buf);
+  for (let tries = 0; ; tries++) {
+    try {
+      fs.renameSync(swap, target);
+      return true;
+    } catch (e) {
+      if (!['EPERM', 'EBUSY', 'EACCES'].includes(e.code)) {
+        fs.rmSync(swap, { force: true });
+        throw e;
+      }
+      if (tries === 25) {
+        fs.writeFileSync(target, buf);
+        fs.rmSync(swap, { force: true });
+        return true;
+      }
+      sleep(20);
+    }
+  }
+}
+
+/** Every file under `dir`, as paths relative to it. */
+function walk(dir, base = dir) {
+  return fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
+    e.isDirectory()
+      ? walk(path.join(dir, e.name), base)
+      : [path.relative(base, path.join(dir, e.name))],
+  );
+}
+
+/* Whatever dist/ still holds that this run did not place: a component that
+ * stopped shipping, a token module that was renamed, an icon nothing reaches
+ * for any more. The rm above was the only thing removing those before. */
+function sweep(dir) {
+  let removed = 0;
+  for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+    const p = path.join(dir, e.name);
+    if (e.isDirectory()) {
+      removed += sweep(p);
+      if (!fs.readdirSync(p).length) fs.rmdirSync(p);
+    } else if (!placed.has(path.resolve(p))) {
+      fs.rmSync(p);
+      removed++;
+    }
+  }
+  return removed;
+}
+
 fs.rmSync(tmp(), { recursive: true, force: true });
 fs.mkdirSync(out(), { recursive: true });
 fs.mkdirSync(tmp('tokens'), { recursive: true });
 
 for (const [src, target, , rel] of COPIES) {
-  fs.mkdirSync(path.dirname(target), { recursive: true });
   /* Byte-for-byte unless the capture uses the @helpers alias, which cannot
    * survive into a consumer's node_modules. Deciding per file keeps the
    * guarantee for everything else literally true rather than nearly true. */
-  if (rel && isAliased(rel)) fs.writeFileSync(target, unalias(fs.readFileSync(src, 'utf8'), rel));
-  else fs.copyFileSync(src, target);
+  place(
+    target,
+    rel && isAliased(rel) ? unalias(fs.readFileSync(src, 'utf8'), rel) : fs.readFileSync(src),
+  );
 }
 
 assertExclusionsExist();
 assertDistResolves();
 
 for (const [produce, dest] of DERIVED) {
-  fs.writeFileSync(out(dest), derive(produce, dest));
+  place(out(dest), derive(produce, dest));
 }
 
 themeAgrees();
@@ -891,15 +1101,24 @@ if (!fs.existsSync(tsc)) {
   process.exit(1);
 }
 
-const result = spawnSync(process.execPath, [tsc, '--project', path.join(pkg, 'tsconfig.json')], {
-  stdio: 'inherit',
-  cwd: pkg,
-});
+// --outDir overrides tsconfig.json's, which still names dist/ so that a
+// hand-run `tsc -p` behaves as the file says. tsc writes unconditionally, and
+// dist/index.js is what a consumer's `import { colors }` resolves to -- letting
+// it write there directly would move that module's mtime on every rebuild and
+// reload the consumer's page for an edit to an unrelated component. So its
+// output lands in .tmp and goes through place() like everything else.
+const result = spawnSync(
+  process.execPath,
+  [tsc, '--project', path.join(pkg, 'tsconfig.json'), '--outDir', tmp('out')],
+  { stdio: 'inherit', cwd: pkg },
+);
 if (result.error) {
   console.error(`build failed — could not run tsc: ${result.error.message}`);
   process.exit(1);
 }
 if (result.status !== 0) process.exit(result.status ?? 1);
+
+for (const rel of walk(tmp('out'))) place(out(rel), fs.readFileSync(tmp('out', rel)));
 
 fs.rmSync(tmp(), { recursive: true, force: true });
 
@@ -1016,5 +1235,9 @@ if (fs.existsSync(readme)) {
   console.log(`@codecavepro/brand: ${asserted} README example value(s) verified.`);
 }
 
+const swept = sweep(out());
 const emitted = fs.readdirSync(out()).sort();
-console.log(`@codecavepro/brand built: ${emitted.join(', ')}`);
+console.log(
+  `@codecavepro/brand built: ${emitted.join(', ')}` +
+    (swept ? ` — ${swept} stale file(s) removed` : ''),
+);
