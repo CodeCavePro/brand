@@ -74,11 +74,11 @@ const carouselLocker = carouselGestureLocker()
         <div class="flex justify-center gap-6 text-xl">
           <div class="space-x-1">
             <span class="font-bold text-body-primary">15+</span>
-            <span class="text-body-secondary">Years of experience</span>
+            <span class="text-body-secondary-lighter">Years of experience</span>
           </div>
           <div class="space-x-1">
             <span class="font-bold text-body-primary">4.7</span>
-            <span class="text-body-secondary">Average rating</span>
+            <span class="text-body-secondary-lighter">Average rating</span>
           </div>
         </div>
         <TypingEffect

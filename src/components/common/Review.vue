@@ -44,13 +44,13 @@ const imageUrl = (url: string) => props.resolveImage?.(url) ?? url
             />
           </a>
         </div>
-        <p class="text-sm text-body-secondary">{{ item.position }}</p>
+        <p class="text-sm text-hovered">{{ item.position }}</p>
       </div>
     </div>
     <p class="text-sm text-body-secondary-lighter whitespace-pre-wrap">
       {{ item.review }}
     </p>
-    <div v-if="item.verification" class="flex items-center gap-1 text-action">
+    <div v-if="item.verification" class="flex items-center gap-1 text-hovered">
       <VerifiedIcon />
       <span>{{ item.verification }}</span>
     </div>
