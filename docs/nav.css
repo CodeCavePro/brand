@@ -97,15 +97,20 @@
   scroll-margin-top: calc(2 * var(--ds-bar) + var(--ds-bar-wrapped-row));
 }
 
-@media (max-width: 767px) {
-  /* Below the drawer breakpoint the two bars stop being one block: the main bar
-     collapses to a drawer and sticking a wrapper around both would pin the
-     sub-bar over the content it is meant to navigate. `display: contents`
-     dissolves the wrapper so each bar lays out on its own. */
-  .ds-nav-stack {
-    display: contents;
-  }
+@media (max-width: 768px) {
   .ds-subnav-inner {
-    flex-wrap: wrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .ds-subnav ul {
+    flex-wrap: nowrap;
+    width: max-content;
+    min-width: 100%;
+  }
+
+  .ds-subnav a {
+    white-space: nowrap;
   }
 }

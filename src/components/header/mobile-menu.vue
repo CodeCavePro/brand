@@ -85,7 +85,7 @@ const handleCloseMenu = () => {
             <span></span>
           </button>
         </div>
-        <nav v-if="isMenuOpen" class="h-full text-sm overflow-y-auto">
+        <nav v-if="isMenuOpen" class="h-full text-sm flex-1 overflow-y-auto min-h-0">
           <div v-if="isServicesOpen">
             <h2 class="text-center font-bold text-body-primary py-2.5">
               {{ servicesItem?.submenuTitle }}
