@@ -135,7 +135,7 @@ const currentValues = (): ContactFormValues => ({
 })
 
 const isSubmitting = ref(false)
-
+const isFormSubmitted = ref(false)
 const submitContactsForm = async () => {
   if (isSubmitting.value || !validateForm()) {
     return
@@ -149,12 +149,10 @@ const submitContactsForm = async () => {
     const result = await props.client.submit(values)
 
     if (result.ok) {
+      isFormSubmitted.value = true
       resetForm()
       showAlert('success')
     } else {
-      /* The previous code logged the failure and showed nothing, so a visitor
-       * whose enquiry never sent had no way to know. The wording below is a
-       * placeholder for a writer -- see CCWEB2-325. */
       showAlert('error')
     }
 
@@ -189,6 +187,41 @@ watch(isAlertVisible, () => {
     })
 })
 
+const validateField = (field) => {
+  if (isFormSubmitted.value) {
+    field.error = ''
+    return
+  }
+
+  if (field.required && !field.value) {
+    field.error = 'This field is required'
+    return
+  }
+
+  field.error = ''
+}
+
+const fields = [
+  'email',
+  'firstName',
+  'companyName',
+  'linkedinCompanyPage',
+  'privacyPolicy'
+]
+
+fields.forEach((key) => {
+  watch(
+    () => formData.value[key].value,
+    (value) => {
+      if (isFormSubmitted.value && value) {
+        isFormSubmitted.value = false
+      }
+
+      validateField(formData.value[key])
+    }
+  )
+})
+
 </script>
 
 <template>
@@ -220,18 +253,18 @@ watch(isAlertVisible, () => {
       </div>
     </div>
     <GlowButton @click="submitContactsForm" title="Leave consultation request" class="self-center lg:self-start" />
-    <div v-show="isAlertVisible" class="border border-action group absolute bottom-19.25 md:fixed z-50 left-1/2 -translate-x-1/2 md:top-24 form-alert flex gap-2 md:gap-8 items-center justify-between w-full h-fit max-w-139 bg-surface-secondary p-4 md:px-6 md:py-2.5 rounded-3xl">
+  </form>
+  <div v-show="isAlertVisible" class="border border-action group absolute bottom-19.25 md:fixed z-350 left-1/2 -translate-x-1/2 md:top-40 form-alert flex gap-2 md:gap-8 items-center justify-between w-full h-fit max-w-139 bg-surface-secondary p-4 md:px-6 md:py-2.5 rounded-3xl">
       <div v-if="alertKind === 'success'" class="w-8 h-8">
         <component :is="SuccessIcon" class="w-8 h-8" />
       </div>
-      <p class="text-sm md:text-lg font-bold text-heading md:max-w-sm">
+      <p class="text-sm md:text-lg font-bold text-heading md:max-w-sm ">
         {{ alertKind ? ALERT_TEXT[alertKind] : '' }}
       </p>
       <button @click="alertKind = null" class="group-hover:text-action text-heading transition-colors cursor-pointer">
         <component :is="CloseIcon" />
       </button>
     </div>
-  </form>
 </template>
 
 <style scoped>
