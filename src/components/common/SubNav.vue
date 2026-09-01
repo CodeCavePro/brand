@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { type MenuItem } from '../lib/menuTypes.ts';
+import { type MenuItem } from '../lib/menus/menuTypes.ts';
 
 interface Props {
   section?: string;
