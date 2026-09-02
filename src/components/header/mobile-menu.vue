@@ -75,9 +75,9 @@ const handleCloseMenu = () => {
 
 <template>
   <div>
-    <div :class="`fixed z-50 top-0 w-full bg-surface-primary-transparent backdrop-blur-3xl border-b border-surface-quaternary`">
-      <div :class="`h-full px-5 ${isMenuOpen ? 'pb-5' : 'pb-0'} flex flex-col gap-2 transition-all`">
-        <div class="flex justify-between items-center py-1.5">
+    <div class="fixed z-50 top-0 w-full bg-surface-primary-transparent backdrop-blur-3xl border-b border-surface-quaternary">
+      <div :class="`px-5 ${isMenuOpen ? 'pb-5' : 'pb-0'} flex flex-col gap-2 transition-all max-h-screen`">
+        <div class="flex justify-between items-center py-1.5 shrink-0">
           <a :href="homeHref" class="px-1.5 hover:opacity-80 transition-opacity">
             <img :src="logo" alt="CODECAVE" />
           </a>
@@ -85,25 +85,28 @@ const handleCloseMenu = () => {
             <span></span>
           </button>
         </div>
-        <nav v-if="isMenuOpen" class="h-full text-sm flex-1 overflow-y-auto min-h-0">
-          <div v-if="isServicesOpen">
-            <h2 class="text-center font-bold text-body-primary py-2.5">
+        <nav v-if="isMenuOpen" class="flex-1 min-h-0 overflow-y-auto text-sm">
+          <div v-if="isServicesOpen" class="h-full flex flex-col min-h-0">
+            <h2 class="text-center font-bold text-body-primary py-2.5 shrink-0">
               {{ servicesItem?.submenuTitle }}
             </h2>
-            <slot name="services" />
-            <button class="pt-4" @click="isServicesOpen = false">
-              <component class="w-11 h-11 text-action" :is="BackIcon" />
+            <div class="flex-1 min-h-0 overflow-y-auto">
+              <slot name="services" />
+            </div>
+
+            <button class="pt-4 shrink-0" @click="isServicesOpen = false">
+              <component :is="BackIcon" class="w-11 h-11 text-action" />
             </button>
           </div>
-          <ul v-else class="h-full flex flex-col items-center gap-3 justify-around px-4 pt-2">
+          <ul v-else class="flex flex-col items-center gap-3 px-4 pt-2 overflow-y-auto">
             <li v-for="(item, index) in items" :key="index">
               <div v-if="item.submenu?.length">
-                <Button :title="item.name" variant="ghost" @click="isServicesOpen = true" class="transition-transform duration-150 pr-1">
-                  <Shevron class="rotate-270 ml-1" />
+                <Button :title="item.name" variant="ghost" class="pr-1 transition-transform duration-150" @click="isServicesOpen = true">
+                  <Shevron class="ml-1 rotate-270" />
                 </Button>
               </div>
               <Button v-else-if="item.emphasis" as="link" :href="item.link" :title="item.mobileTitle ?? item.name" variant="tertiary" @click="handleCloseMenu" />
-              <Button v-else as="link" variant="ghost" :title="item.mobileTitle ?? item.name" :href="item.link" />
+              <Button v-else as="link" variant="ghost" :title="item.mobileTitle ?? item.name" :href="item.link" @click="handleCloseMenu" />
             </li>
           </ul>
         </nav>

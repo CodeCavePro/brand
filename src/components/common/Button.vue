@@ -21,7 +21,7 @@ const variantClass = computed(() => {
     case 'tertiary':
       return `${buttonBaseClass} px-6 py-1 border border-primary-500 hover:border-hovered`
     case 'icon':
-      return `${buttonBaseClass} p-5 border border-primary-500 hover:border-primary-700`
+      return `${buttonBaseClass} p-5 border border-primary-500 hover:border-hovered`
     case 'ghost':
       return `${linkBaseClass} text-body-primary hover:text-primary-200 active:text-primary-200 font-bold px-6 py-2`
     case 'text':
