@@ -25,7 +25,7 @@ const imageUrl = (url: string) => props.resolveImage?.(url) ?? url
 </script>
 
 <template>
-  <div :class="`mx-1 lg:mx-2 testimonial rounded-custom space-y-2 lg:space-y-3 py-10 px-6 lg:px-11 ${className}`">
+  <div :class="`mx-1 lg:mx-2 testimonial space-y-2 lg:space-y-3 py-10 px-6 lg:px-11 ${className}`">
     <div class="flex flex-col lg:flex-row gap-5 lg:items-center">
       <LazyImage v-if="item.photo.name !== 'no-image.svg'" 
             class="w-12 lg:w-16 h-12 lg:h-16" :src="imageUrl(item.photo.url)"
@@ -56,9 +56,3 @@ const imageUrl = (url: string) => props.resolveImage?.(url) ?? url
     </div>
   </div>
 </template>
-
-<style scoped>
-.testimonial {
-  backdrop-filter: blur(32px);
-}
-</style>

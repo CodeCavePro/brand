@@ -24,7 +24,7 @@ defineEmits(['update:modelValue'])
 
 <template>
   <div class="w-full relative">
-    <div :class="`focus-area flex flex-col min-h-[7.5rem] p-3 rounded-lg bg-surface-secondary hover:bg-surface-tertiary transition-colors text-heading 
+    <div :class="`focus-area flex flex-col min-h-[7.5rem] p-3 rounded-lg bg-surface-secondary border border-surface-tertiary hover:bg-surface-tertiary transition-colors text-heading 
       ${isError ? 'input-error' : ''}`">
       <label :for="id" class="font-bold text-sm select-none">
         {{ label }}

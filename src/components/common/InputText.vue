@@ -25,7 +25,7 @@ defineEmits(['update:modelValue'])
     <input :id="id" :type="type" :autocomplete="autocomplete" :placeholder="placeholder" :required="isRequired" :value="modelValue" @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)" 
     :class="`
         w-full p-3 pt-7 bg-surface-secondary rounded-lg placeholder:text-xs placeholder:text-body-secondary
-        focus:outline-none transition-colors
+        focus:outline-none transition-colors border border-surface-tertiary
         hover:bg-surface-tertiary
         ${isError ? 'text-error input-error focus:text-error' : 'text-hovered focus:text-hovered'}
        `" />
