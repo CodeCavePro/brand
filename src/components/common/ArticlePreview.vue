@@ -35,11 +35,13 @@ const imageUrl = (url: string) => props.resolveImage?.(url) ?? url
       rounded-[2.25rem] bg-surface-secondary hover:bg-surface-tertiary transition-colors cursor-pointer border-surface-tertiary border
       ${className ?? ''}`">
     <div class="flex flex-col sm:flex-row gap-5 sm:gap-8 h-fit">
-      <img loading="lazy" class="sm:w-[132px] sm:h-[132px] rounded-xl object-cover" 
+      <div class="w-full h-full p-1">
+         <img loading="lazy" class="sm:w-[132px] sm:h-[132px] rounded-xl object-scale-down" 
         :src="imageUrl(article.cover.url)" 
         :alt="article.title" 
         :width="100" 
         :height="100"/>
+      </div>
       <div class="space-y-2 sm:space-y-3">
         <time class="text-body-secondary text-xs sm:text-sm" :datetime="article.date?.toString()">
           {{ formattedDate(article.locale, article.date) }}
