@@ -8,17 +8,20 @@ const props = withDefaults(
     label: string
     isRequired?: boolean
     isError?: boolean
-    variant?: 'primary' | 'secondary'
     size?: 'small' | 'medium'
     modelValue?: boolean
   }>(),
   {
     isRequired: false,
     isError: false,
-    variant: 'primary',
-    size: 'medium'
+    size: 'medium',
+    modelValue: false
   }
 )
+
+const emit = defineEmits<{
+  'update:modelValue': [value: boolean]
+}>()
 
 const checkboxSize = computed(() => {
   switch (props.size) {
@@ -28,6 +31,7 @@ const checkboxSize = computed(() => {
       return 'w-6 h-6 before:w-[0.75em] before:h-[0.75em]'
   }
 })
+
 const labelSize = computed(() => {
   switch (props.size) {
     case 'small':
@@ -36,45 +40,50 @@ const labelSize = computed(() => {
       return 'text-sm'
   }
 })
-const labelBaseClass = 'flex items-center w-fit text-body-primary cursor-pointer'
-const labelVariantClass = computed(() => {
-  switch (props.variant) {
-    case 'secondary':
-      return `${labelBaseClass} ${labelSize.value} gap-2 py-2 px-3 bg-surface-secondary rounded-lg`
-    default:
-      return `${labelBaseClass} ${labelSize.value} gap-3`
-  }
-})
-const inputBaseClass = 'cursor-pointer transition-colors'
-const borderClass = computed(() => {
-  return props.isError ? 'border-error checkbox-error' : 'border-outline-primary-hover hover:border-action'
-});
 
-const inputVariantClass = computed(() => {
-  switch (props.variant) {
-    case 'secondary':
-      return `${inputBaseClass} ${checkboxSize.value} outline-2 outline-surface-quaternary checked:bg-action checked:outline-none hover:outline-action`
-    default:
-       return `${inputBaseClass} ${checkboxSize.value} border-2 ${borderClass.value}`
-  }
-})
+const borderClass = computed(() =>
+  props.isError
+    ? 'border-error checkbox-error'
+    : 'border-outline-primary-hover hover:border-action'
+)
 
-defineEmits(['update:modelValue'])
+const labelClass = computed(
+  () => `flex items-center w-full ${labelSize.value} text-body-primary cursor-pointer gap-3`
+)
+
+const inputClass = computed(
+  () =>
+    `cursor-pointer transition-colors ${checkboxSize.value} border-2 ${borderClass.value}`
+)
+
+const handleChange = (event: Event) => {
+  emit(
+    'update:modelValue',
+    (event.target as HTMLInputElement).checked
+  )
+}
 </script>
 
 <template>
-  <label :for="id" :class="labelVariantClass">
-    <input 
-      :id="id" 
-      type="checkbox" 
-      :autocomplete="id" 
-      :class="inputVariantClass"
+  <label :for="id" :class="labelClass">
+    <input
+      :id="id"
+      type="checkbox"
+      :autocomplete="id"
+      :class="`${inputClass} shrink-0`"
       :data-size="size"
       :checked="modelValue"
-      @change="$emit('update:modelValue', ($event.target as HTMLInputElement).checked)"/>
-    <span class="flex items-center">
-      {{ label }}
-      <AsteriskIcon v-if="isRequired" class="mx-1"/>
+      @change="handleChange"
+    />
+
+    <span class="flex min-w-0 items-start">
+      <span class="min-w-0 break-words">
+        {{ label }}
+      </span>
+      <AsteriskIcon
+        v-if="isRequired"
+        class="mx-1 shrink-0"
+      />
     </span>
   </label>
 </template>

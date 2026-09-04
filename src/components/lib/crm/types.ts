@@ -30,7 +30,9 @@ export type ContactFormFieldName =
   | 'companyName'
   | 'linkedinCompanyPage'
   | 'services'
-  | 'description';
+  | 'description'
+  | 'consentToProcess'
+  | 'communicationConsent';
 
 /** Labels, placeholders and options for the contact form, CRM-neutral. */
 export type ContactFormDefinition = Record<ContactFormFieldName, CrmFormFieldSpec>;
@@ -44,7 +46,8 @@ export interface ContactFormValues {
   linkedinCompanyPage: string;
   services: string;
   description: string;
-  privacyPolicyAccepted: boolean;
+  consentToProcess: boolean;
+  communicationConsent: boolean;
 }
 
 /* A result rather than a thrown error, deliberately.

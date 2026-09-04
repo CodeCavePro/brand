@@ -59,12 +59,20 @@ const formData = ref({
   linkedinCompanyPage: createFormField('linkedinCompanyPage', ''),
   services: createFormField('services', ''),
   description: createFormField('description', ''),
-  privacyPolicy: {
-    value: false,
-    error: '',
-    label: 'I agree with the privacy policy',
-    required: true
-  }
+  
+ consentToProcess: {
+  value: false,
+  error: '',
+  label: props.definition.consentToProcess.label,
+  required: props.definition.consentToProcess.required,
+},
+
+communicationConsent: {
+  value: false,
+  error: '',
+  label: props.definition.communicationConsent.label,
+  required: props.definition.communicationConsent.required,
+},
 })
 
 const services = computed(() => props.definition.services.options ?? [])
@@ -120,7 +128,9 @@ const resetForm = () => {
   formData.value.linkedinCompanyPage.value = '';
   formData.value.description.value = '';
   formData.value.services.value = '';
-  formData.value.privacyPolicy.value = false;
+
+  formData.value.consentToProcess.value = false;
+  formData.value.communicationConsent.value = false;
 }
 
 const currentValues = (): ContactFormValues => ({
@@ -131,7 +141,8 @@ const currentValues = (): ContactFormValues => ({
   linkedinCompanyPage: formData.value.linkedinCompanyPage.value,
   services: formData.value.services.value,
   description: formData.value.description.value,
-  privacyPolicyAccepted: formData.value.privacyPolicy.value,
+  consentToProcess: formData.value.consentToProcess.value,
+  communicationConsent: formData.value.communicationConsent.value,
 })
 
 const isSubmitting = ref(false)
@@ -206,7 +217,7 @@ const fields = [
   'firstName',
   'companyName',
   'linkedinCompanyPage',
-  'privacyPolicy'
+  'consentToProcess'
 ]
 
 fields.forEach((key) => {
@@ -248,8 +259,8 @@ fields.forEach((key) => {
         <TextField id="project" v-model="formData.description.value" :isRequired=formData.description.required :label=formData.description.label :isError="!!formData.description.error" :errorMessage="formData.description.error" :placeholder="formData.description.placeholder ?? ''" />
       </fieldset>
       <div class="space-y-2">
-        <Checkbox id="privacy" v-model="formData.privacyPolicy.value" :label="formData.privacyPolicy.label" :isRequired="formData.privacyPolicy.required" :isError="!!formData.privacyPolicy.error" />
-        <Checkbox id="promotions" label="I agree to receive promotional materials" />
+        <Checkbox id="privacy" v-model="formData.consentToProcess.value" :label="formData.consentToProcess.label" :isRequired="formData.consentToProcess.required" :isError="!!formData.consentToProcess.error" />
+        <Checkbox id="promotions" v-model="formData.communicationConsent.value" :label="formData.communicationConsent.label" :isRequired="formData.communicationConsent.required" :isError="!!formData.communicationConsent.error"  />
       </div>
     </div>
     <GlowButton @click="submitContactsForm" title="Leave consultation request" class="self-center lg:self-start" />
