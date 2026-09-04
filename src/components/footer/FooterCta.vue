@@ -18,9 +18,7 @@ import Button from "@codecavepro/brand/components/common/Button.vue";
     </p>
   </div>
 
-  <Button
-    title="Grab Research"
-    class="px-6"
-  />
+  <slot />
+
 </section>
 </template>
