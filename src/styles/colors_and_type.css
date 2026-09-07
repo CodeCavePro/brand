@@ -619,7 +619,7 @@ a:hover { color: var(--color-hovered); }
 
 /* ---------------------------------------------------------------------------
  * Cards — sources: homepage/projects.astro, common/ArticlePreview.vue,
- *                  homepage/technology-card.vue
+ *                  common/technology-card.vue
  * Depth is never built from surface contrast: the card sits ONE narrow step
  * off the page (#0F0F15 on #0A0A0B). Radius and border carry the separation.
  * ------------------------------------------------------------------------ */
@@ -636,7 +636,7 @@ a:hover { color: var(--color-hovered); }
 .card-article { border-radius: var(--radius-article); }
 
 /* Feature card — gradient hairline drawn with mask-composite, blurred
- * backdrop, no fill. Source: homepage/technology-card.vue.
+ * backdrop, no fill. Source: common/technology-card.vue.
  * Since the rebuild brand-400 is violet (#5F3ABD), so the ring reads violet
  * end to end; cyan survives only in the wash tokens above. */
 .card-feature {

@@ -50,13 +50,13 @@
  * and not another fails as a bare-specifier error in a reader's browser, which
  * is precisely the failure the ports exist to make impossible.
  * ======================================================================== */
-import { PORTS, portFor } from './storybook-ports.mjs';
-import { createRequire } from 'node:module';
-import { fileURLToPath } from 'node:url';
-import path from 'node:path';
-import fs from 'node:fs';
 import crypto from 'node:crypto';
+import fs from 'node:fs';
+import { createRequire } from 'node:module';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { SITE_ALIAS_PATTERN, sitePath, unalias, usesAlias } from './import-aliases.mjs';
+import { PORTS, portFor } from './storybook-ports.mjs';
 
 const docs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'docs');
 /* THE TOOLCHAIN IS THIS REPOSITORY'S, and that is a reversal worth stating.
@@ -198,7 +198,7 @@ const ENTRIES = [
   'common/effects/TypingEffect.vue',
   'common/Review.vue',
   'common/ArticlePreview.vue',
-  'homepage/technology-card.vue',
+  'common/technology-card.vue',
   'footer/link-group.vue',
   'project/pain-points-item.vue',
 ];

@@ -133,7 +133,7 @@ than guessing.
 CODECAVE is **dark, round, and violet — in that order of importance.** The page
 is near-black and never pure black; the corners are enormous; the violet is
 rationed to edges, links and marks. The system's signature is a physical
-impossibility: section panels cast violet light *upward*, from a source sitting
+impossibility: section panels cast violet light _upward_, from a source sitting
 under the panel edge. It is wrong the way stage lighting is wrong, and it is
 instantly recognizable.
 
@@ -155,12 +155,12 @@ than the stack it uses: Cloud & DevOps, E-Commerce, Autodesk plugins, Automation
 - **Depth is not built from contrast.** The page is `#0A0A0B`; cards rise one
   barely-perceptible step to `#0F0F15`. If you find yourself lightening a card to
   make it read, you have made a layout mistake, not a color mistake.
-- **Corners are enormous.** 24px is the *default* card. Feature cards run 44px,
+- **Corners are enormous.** 24px is the _default_ card. Feature cards run 44px,
   article cards 36px, section panels 64–120px. Buttons are fully round.
 - **The light comes from below.** Never replace the inverted glow with a
   conventional drop shadow.
 - **Violet is rationed.** It edges, links and marks; it never fills a large area.
-  A genuine purple *field* switches to the lighter `#9980FF` with near-black
+  A genuine purple _field_ switches to the lighter `#9980FF` with near-black
   text — the only dark-on-light text in the entire system.
 - **One family, two weights, one flourish.** Satoshi at 400 and 700, and the
   eyebrow pair.
@@ -184,7 +184,7 @@ below.
 - **Lifted Violet** (`--color-hovered`): hover foreground and focus ring, 8.41:1.
   The system's usable foreground accent, and what chrome should reach for when it
   wants violet type.
-- **Glow Lilac** (`--color-glow-25`): the one purple *field*, used for the glow
+- **Glow Lilac** (`--color-glow-25`): the one purple _field_, used for the glow
   button and paired with **Ink Indigo** (`--color-outline-primary-hover`) text at
   5.67:1.
 
@@ -210,25 +210,25 @@ below.
 
 ### Semantic token map
 
-| Token | Use |
-|---|---|
-| `--color-surface-primary` | the page |
-| `--color-surface-secondary` | cards |
-| `--color-surface-tertiary` | raised / hovered card, icon tiles |
-| `--color-surface-quaternary` | borders, dividers, checkbox outline |
-| `--color-surface-primary-hover` | surface hover |
-| `--color-surface-primary-transparent` | backdrop-blur dropdown (page color at 30%) |
-| `--color-heading` | headings |
-| `--color-body-primary` | body text |
-| `--color-text-body-primary` | long-form article copy |
-| `--color-body-secondary-lighter` | descriptions, secondary copy |
-| `--color-body-secondary` | metadata, timestamps, placeholders |
-| `--color-neutral` | muted metadata — large text only |
-| `--color-action` | links, eyebrows, borders, focus glow — **not for text** (§10.5) |
-| `--color-hovered` | hover foreground, focus ring |
-| `--color-outline-primary-hover` | checkbox resting border; text on `#9980FF` |
-| `--color-default-transparent` | resting icon color on dark |
-| `--color-error` | error marks |
+| Token                                 | Use                                                             |
+| ------------------------------------- | --------------------------------------------------------------- |
+| `--color-surface-primary`             | the page                                                        |
+| `--color-surface-secondary`           | cards                                                           |
+| `--color-surface-tertiary`            | raised / hovered card, icon tiles                               |
+| `--color-surface-quaternary`          | borders, dividers, checkbox outline                             |
+| `--color-surface-primary-hover`       | surface hover                                                   |
+| `--color-surface-primary-transparent` | backdrop-blur dropdown (page color at 30%)                      |
+| `--color-heading`                     | headings                                                        |
+| `--color-body-primary`                | body text                                                       |
+| `--color-text-body-primary`           | long-form article copy                                          |
+| `--color-body-secondary-lighter`      | descriptions, secondary copy                                    |
+| `--color-body-secondary`              | metadata, timestamps, placeholders                              |
+| `--color-neutral`                     | muted metadata — large text only                                |
+| `--color-action`                      | links, eyebrows, borders, focus glow — **not for text** (§10.5) |
+| `--color-hovered`                     | hover foreground, focus ring                                    |
+| `--color-outline-primary-hover`       | checkbox resting border; text on `#9980FF`                      |
+| `--color-default-transparent`         | resting icon color on dark                                      |
+| `--color-error`                       | error marks                                                     |
 
 ### Raw ramps
 
@@ -257,7 +257,7 @@ that is exactly how production consumes them.
 
 Two quirks are this package's own, and are recorded rather than fixed
 (WEBSITE-REVIEW.md §5): the gray ramp is **non-monotonic past 950** — `gray-1100`
-`#0F0F15`, the card surface, is *lighter* than `gray-1000` `#050505` — and
+`#0F0F15`, the card surface, is _lighter_ than `gray-1000` `#050505` — and
 `brand-500` is lighter than `brand-400`. The semantic layer hides both, which is
 one more reason never to consume the ramps raw.
 
@@ -273,15 +273,20 @@ Bright cyan `#20EFFE` survives only in the decorative orb SVGs. The 2026 rebuild
 removed it from the ramp entirely: the technology card's border gradient still
 blends `brand-500 → brand-400 → brand-500` at low alpha, but `brand-400` is now
 the violet `#5F3ABD`, so the ring reads violet end to end. The only cyan in the
-token layer is the deep `#077689` inside the technology-card *wash*, at 0.1
+token layer is the deep `#077689` inside the technology-card _wash_, at 0.1
 alpha. **Never use cyan for photographic grading, body text, a CTA, or a large
 field.** It is a light effect in the art, not a UI color.
 
 ### The brand gradient
 
 ```css
---gradient-brand: linear-gradient(to right,
-  #5F20FE 0%, #8252FC 60%, #B19AFE 75%, #E8E6F0 100%);
+--gradient-brand: linear-gradient(
+  to right,
+  #5f20fe 0%,
+  #8252fc 60%,
+  #b19afe 75%,
+  #e8e6f0 100%
+);
 ```
 
 Left-to-right violet resolving into near-white. The mid stop is the once-used
@@ -292,10 +297,10 @@ not as a page wash.
 ### Named Rules
 
 **The Rationed Violet Rule.** `#5F20FE` edges, links and marks; it never fills a
-large area. When a genuine purple *field* is needed it switches to `#9980FF` and
+large area. When a genuine purple _field_ is needed it switches to `#9980FF` and
 flips to `#1B0D4E` text — the only dark-on-light text in the system.
 
-**The Gradient-As-Line Rule.** The brand gradient is permitted as a *field* in
+**The Gradient-As-Line Rule.** The brand gradient is permitted as a _field_ in
 exactly one component — the rule and progress line — and nowhere else. Everywhere
 else it clips to text.
 
@@ -375,7 +380,7 @@ section. Do not add a second.
 ```
 
 Both spans are `block`-level inside a single heading, light line first, violet
-line second, both bold. The pair is *one* sentence broken across two colors —
+line second, both bold. The pair is _one_ sentence broken across two colors —
 never two separate sentences.
 
 ---
@@ -422,9 +427,9 @@ rise of a card above the page, and from the inverted glow.
 
 ```css
 --shadow-section:
-  0 -64px 64px 0 hsl(from #281470 h s l / 0.20),
-  0 -10px 24px 0 hsl(from #281470 h s l / 0.10),
-  0 -6px   6px 0 hsl(from #281470 h s l / 0.08);
+  0 -64px 64px 0 hsl(from #281470 h s l / 0.2),
+  0 -10px 24px 0 hsl(from #281470 h s l / 0.1),
+  0 -6px 6px 0 hsl(from #281470 h s l / 0.08);
 ```
 
 All three offsets are **negative on Y**. This is the inverted glow: violet light
@@ -449,17 +454,17 @@ single most recognizable thing in the system. The light comes from below.
 The form language is **large radii, fully-round controls, and almost no borders.**
 Corner size is the loudest brand signal in the system.
 
-| Token | Value | Applies to |
-|---|---|---|
-| `--radius-control-sm` | 4px | the 16px checkbox box, and nothing else |
-| `--radius-control` | 8px | inputs, small chips |
-| `--radius-tile` | 12px | inline chips, icon tiles |
-| `--radius-card` | 24px | **default card, dominant sitewide** |
-| `--radius-article` | 36px | article / insight cards |
-| `--radius-custom` | 44px | feature and testimonial cards |
-| `--radius-section` | 64px | section panel, `<768px` |
-| `--radius-section-md` | 120px | section panel, `>=768px` |
-| `--radius-pill` | 9999px | buttons, pills, avatars |
+| Token                 | Value  | Applies to                              |
+| --------------------- | ------ | --------------------------------------- |
+| `--radius-control-sm` | 4px    | the 16px checkbox box, and nothing else |
+| `--radius-control`    | 8px    | inputs, small chips                     |
+| `--radius-tile`       | 12px   | inline chips, icon tiles                |
+| `--radius-card`       | 24px   | **default card, dominant sitewide**     |
+| `--radius-article`    | 36px   | article / insight cards                 |
+| `--radius-custom`     | 44px   | feature and testimonial cards           |
+| `--radius-section`    | 64px   | section panel, `<768px`                 |
+| `--radius-section-md` | 120px  | section panel, `>=768px`                |
+| `--radius-pill`       | 9999px | buttons, pills, avatars                 |
 
 Measured radius census on the homepage: 24px on 42 blocks, 12px on 9, 44px on 8,
 8px on 7, 120px on 2. The 4px step renders nowhere on the homepage — it exists
@@ -467,7 +472,7 @@ only for the small checkbox box, which the homepage does not use.
 
 **Every name in that table describes what it wraps, and that is load-bearing.**
 The two that were `--radius-sm` and `--radius-md` are also Tailwind default theme
-names, at *different* values — 0.25rem and 0.375rem against this system's 0.5rem
+names, at _different_ values — 0.25rem and 0.375rem against this system's 0.5rem
 and 0.75rem. The site emits Tailwind's defaults, so any markup that named
 `--radius-sm` got 8px here and 4px there with nothing to notice: no error, no
 warning, just a different shape. Renamed 2026-08-20 so the collision is
@@ -519,23 +524,23 @@ one of them is 48px tall and the `h-11` is dead. That dead declaration is the
 site's to remove, filed as
 [CCWEB2-319](https://codecave.atlassian.net/browse/CCWEB2-319).
 
-| Variant | Rest | Hover | Active |
-|---|---|---|---|
-| `glow` (the one true CTA) | fill `#9980FF`, text `#1B0D4E`, halo | cursor-tracked white glow sweep | `scale(0.98)` |
-| `primary` | fill `#5F20FE`, text `#F4F4F6` | fill `#4004AF` | fill `#1E113B` |
-| `secondary` | fill `#1E113B`, text `#F4F4F6` | fill `#1C1C27` | — |
-| `tertiary` | 1px border `#5F20FE`, transparent | border `#4004AF` | — |
-| `ghost` | text `#F4F4F6`, no box | text `#B19AFE` | text `#B19AFE` |
-| `text` | text `#C7C7DB` | text `#B19AFE` | text `#B19AFE` |
-| `link` | text `#B19AFE`, underlined | — | — |
-| disabled | `opacity: 0.2`, `cursor: not-allowed` | none | none |
+| Variant                   | Rest                                  | Hover                           | Active         |
+| ------------------------- | ------------------------------------- | ------------------------------- | -------------- |
+| `glow` (the one true CTA) | fill `#9980FF`, text `#1B0D4E`, halo  | cursor-tracked white glow sweep | `scale(0.98)`  |
+| `primary`                 | fill `#5F20FE`, text `#F4F4F6`        | fill `#4004AF`                  | fill `#1E113B` |
+| `secondary`               | fill `#1E113B`, text `#F4F4F6`        | fill `#1C1C27`                  | —              |
+| `tertiary`                | 1px border `#5F20FE`, transparent     | border `#4004AF`                | —              |
+| `ghost`                   | text `#F4F4F6`, no box                | text `#B19AFE`                  | text `#B19AFE` |
+| `text`                    | text `#C7C7DB`                        | text `#B19AFE`                  | text `#B19AFE` |
+| `link`                    | text `#B19AFE`, underlined            | —                               | —              |
+| disabled                  | `opacity: 0.2`, `cursor: not-allowed` | none                            | none           |
 
-Every hover moves *toward* more contrast or more saturation — with one shipped
-exception: the `tertiary` border hovers *down* to `#4004AF` (~1.75:1 on the page).
+Every hover moves _toward_ more contrast or more saturation — with one shipped
+exception: the `tertiary` border hovers _down_ to `#4004AF` (~1.75:1 on the page).
 This package reproduces it faithfully (§10.1) and WEBSITE-REVIEW.md §4 flags the
 direction for a designer decision.
 
-**One action, one primary.** The homepage repeats *"Learn more"* as the bordered
+**One action, one primary.** The homepage repeats _"Learn more"_ as the bordered
 `tertiary` variant many times and reserves the glow button for the single
 consultation CTA. Never place two glow buttons in one viewport.
 
@@ -554,8 +559,9 @@ Focus does not draw an outline — it draws a violet **halo**:
 ```css
 input:focus {
   outline: none;
-  box-shadow: 0 0 16px 0 hsl(from #5F20FE h s l / 0.5),
-              0 0 4px  0 hsl(from #5F20FE h s l / 0.6);
+  box-shadow:
+    0 0 16px 0 hsl(from #5f20fe h s l / 0.5),
+    0 0 4px 0 hsl(from #5f20fe h s l / 0.6);
 }
 ```
 
@@ -591,16 +597,16 @@ in source; see WEBSITE-REVIEW.md §4.
 
 ### Cards / Containers
 
-| Card | Radius | Fill | Hover | Source |
-|---|---|---|---|---|
-| Default | 24px | `#0F0F15` | `#1C1C27` | sitewide |
-| Article | 36px | `#0F0F15` + 1px `#1C1C27` hairline | `#1C1C27` | `common/ArticlePreview.vue` |
-| Testimonial | 44px | transparent + `blur(32px)` | — | `common/Review.vue` |
-| Technology | 24px | transparent + `blur(14px)`, 1px gradient border | rotates upright | `homepage/technology-card.vue` |
+| Card        | Radius | Fill                                            | Hover           | Source                       |
+| ----------- | ------ | ----------------------------------------------- | --------------- | ---------------------------- |
+| Default     | 24px   | `#0F0F15`                                       | `#1C1C27`       | sitewide                     |
+| Article     | 36px   | `#0F0F15` + 1px `#1C1C27` hairline              | `#1C1C27`       | `common/ArticlePreview.vue`  |
+| Testimonial | 44px   | transparent + `blur(32px)`                      | —               | `common/Review.vue`          |
+| Technology  | 24px   | transparent + `blur(14px)`, 1px gradient border | rotates upright | `common/technology-card.vue` |
 
 The article card is the only one that carries a border. It gained
 `border-surface-tertiary border` on 2026-08-20 — the same `#1C1C27` the other
-cards use as their *hover* fill, so at rest the hairline reads as the edge of
+cards use as their _hover_ fill, so at rest the hairline reads as the edge of
 where the hover state will go. It is a 1px separator, not a frame.
 
 The technology card is the system's one piece of showmanship: cards sit at
@@ -635,13 +641,24 @@ The one element the previously published brand site had which this package did
 not, and it is kept.
 
 ```css
-.rule     { height: 4px; max-width: 320px; border-radius: 9999px;
-            background: var(--gradient-brand); }
-.progress { height: 4px; max-width: 320px; border-radius: 9999px;
-            background: var(--color-surface-quaternary); overflow: hidden; }
-.progress > .progress-value { width: var(--progress, 0%);
-            background: var(--gradient-brand);
-            background-size: var(--progress-track-width, 320px) 100%; }
+.rule {
+  height: 4px;
+  max-width: 320px;
+  border-radius: 9999px;
+  background: var(--gradient-brand);
+}
+.progress {
+  height: 4px;
+  max-width: 320px;
+  border-radius: 9999px;
+  background: var(--color-surface-quaternary);
+  overflow: hidden;
+}
+.progress > .progress-value {
+  width: var(--progress, 0%);
+  background: var(--gradient-brand);
+  background-size: var(--progress-track-width, 320px) 100%;
+}
 ```
 
 Three rules govern it, and each has a visible failure mode — all three are shown
@@ -655,7 +672,7 @@ side by side on the progress specimen:
 - **The gradient is sized to the track, not to the fill.** Sizing it to the fill
   paints near-white at 5% progress, so an almost-empty bar reads as finished.
   `background-size: var(--progress-track-width) 100%` anchors violet at 0% and
-  keeps near-white meaning *done*.
+  keeps near-white meaning _done_.
 
 `.rule` carries no value — use `<hr class="rule">` so it is a separator in the
 accessibility tree. `.progress` is decorative markup rather than a native
@@ -675,7 +692,7 @@ the variant falls back to a filled track at 0.6 opacity.
 - **Do** consume the semantic layer (`--color-action`, `--color-surface-secondary`)
   and never hard-code a hex.
 - **Do** use `--color-hovered` `#B19AFE` (8.41:1) for any violet that has to be
-  *read*. `--color-action` is for edges, links and marks.
+  _read_. `--color-action` is for edges, links and marks.
 - **Do** treat **48px** as the floor for any control a finger has to land on.
 - **Do** reach for radius, border and the inverted glow when something needs to
   separate from the page.
@@ -695,7 +712,7 @@ Ship-blocking, in rough order of how often they get attempted.
 - **Don't** lighten cards to create depth. `#0F0F15` against `#0A0A0B` is the
   point.
 - **Don't** use `#5F20FE` as a large fill. It edges, links and marks. Purple
-  *fields* are `#9980FF` with `#1B0D4E` text.
+  _fields_ are `#9980FF` with `#1B0D4E` text.
 - **Don't** use cyan as a UI color. `#20EFFE` lives only in the decorative orb
   art; the token layer's sole cyan is the technology-wash `#077689` at 0.1 alpha.
 - **Don't** place a second glow button in one viewport. One action, one primary;
@@ -707,7 +724,7 @@ Ship-blocking, in rough order of how often they get attempted.
 - **Don't** derive a light theme. None exists.
 - **Don't** add a second typographic flourish. The eyebrow is the whole
   vocabulary.
-- **Don't** invent metrics. *15+ years* and *4.8 average rating* are real and
+- **Don't** invent metrics. _15+ years_ and _4.8 average rating_ are real and
   sourced. Do not add unattributed figures, and do not fabricate client names.
 - **Don't** ignore `prefers-reduced-motion`.
 - **Don't** use emoji as functional icons, purple gradient washes on every layer,
@@ -738,8 +755,8 @@ GSAP owns entrances. **CSS owns state changes**, and it uses three tokens only:
 
 ```css
 --transition-colors: 150ms cubic-bezier(0.4, 0, 0.2, 1); /* Tailwind's curve */
---transition-base:   200ms ease;   /* surfaces, shadows, focus halo */
---transition-slow:   500ms ease;   /* transform only */
+--transition-base: 200ms ease; /* surfaces, shadows, focus halo */
+--transition-slow: 500ms ease; /* transform only */
 ```
 
 The split is worth stating because it is easy to get wrong: **anything that
@@ -766,17 +783,17 @@ stylistic fork.
 
 Speaks as a small senior team talking straight to a decision-maker: first-person
 plural, present tense, short declaratives. Leads with the business outcome, then
-names the technology. Confident without superlatives — *"My consultation is free.
-No strings attached."*, not *"world-class"*. Risk, cost and ownership are addressed
-head-on: *"We are ready to sign an NDA to protect your intellectual property. Your
-idea stays yours."* Reassurance, not excitement, is what the audience is buying.
+names the technology. Confident without superlatives — _"My consultation is free.
+No strings attached."_, not _"world-class"_. Risk, cost and ownership are addressed
+head-on: _"We are ready to sign an NDA to protect your intellectual property. Your
+idea stays yours."_ Reassurance, not excitement, is what the audience is buying.
 
 **Use:** Discuss project for free · Get a free consultation · Discuss partnership ·
 Learn more · Tell us about your project · Optimize costs · payback · scope,
 milestones and outcomes upfront · Your idea stays yours.
 
 **Avoid:** world-class · best-in-class · cutting-edge · industry-leading ·
-revolutionary · game-changing · synergy · leverage *as a noun* · paradigm ·
+revolutionary · game-changing · synergy · leverage _as a noun_ · paradigm ·
 ecosystem-speak · exclamation marks outside a single lead-magnet CTA · hard-sell
 urgency · **unattributed statistics or invented metrics** — every figure on the
 site carries a named source.
@@ -810,7 +827,7 @@ byte-identical to the production files and are the ones to ship.
 The `work-process-img-*.jpg` set was deliberately **not** taken as brand imagery.
 Eleven of the thirteen are 400×400 squares, which by rendered size and role are
 thumbnails or avatars, and the brand bars avatars as brand imagery. No raster
-tooling was available in this environment, so their ground color is *unmeasured* —
+tooling was available in this environment, so their ground color is _unmeasured_ —
 the honest statement is that they were excluded on role, not cleared on contrast.
 
 ### Logo
@@ -827,18 +844,18 @@ never hand-exported — by the asset build, which renders the three vectors in
 `src/logos/` through Inkscape and ImageMagick at 96, 128, 256, 300, 350, 500, 600
 and 1024px:
 
-| Lockup | Vector | Raster name |
-|---|---|---|
-| Square glyph | `src/logos/codecave.svg` | `codecave-{size}x{size}.png` |
-| Horizontal | `src/logos/codecave-wide.svg` | `codecave-wide-{size}-{finish}.png` |
-| Stacked | `src/logos/codecave-tall.svg` | `codecave-tall-{size}-{finish}.png` |
+| Lockup       | Vector                        | Raster name                         |
+| ------------ | ----------------------------- | ----------------------------------- |
+| Square glyph | `src/logos/codecave.svg`      | `codecave-{size}x{size}.png`        |
+| Horizontal   | `src/logos/codecave-wide.svg` | `codecave-wide-{size}-{finish}.png` |
+| Stacked      | `src/logos/codecave-tall.svg` | `codecave-tall-{size}-{finish}.png` |
 
-| Finish | Composition | Use |
-|---|---|---|
-| `text-white` | white wordmark, violet chevron | **default** — the dark canvas |
+| Finish       | Composition                    | Use                                  |
+| ------------ | ------------------------------ | ------------------------------------ |
+| `text-white` | white wordmark, violet chevron | **default** — the dark canvas        |
 | `text-black` | black wordmark, violet chevron | genuinely light third-party surfaces |
-| `all-white` | flattened to white | one-ink reverse printing |
-| `all-black` | flattened to black | one-ink positive printing |
+| `all-white`  | flattened to white             | one-ink reverse printing             |
+| `all-black`  | flattened to black             | one-ink positive printing            |
 
 App and web icons are the glyph, never the wordmark: `icons/` carries 16, 32, 64,
 96, 128, 256 and 512px squares, and `favicons/` carries the installable web set —
@@ -872,7 +889,7 @@ closed on 2026-08-25, and
 ### 10.1 `.btn-tertiary` hover
 
 **Retired divergence.** An earlier revision of this package brightened the tertiary border on hover to
-`--color-hovered`, against production's hover-*down*. Under the standing policy —
+`--color-hovered`, against production's hover-_down_. Under the standing policy —
 **the package matches the live site; site-side problems go to the designer
 report** — that fork is retired. `.btn-tertiary:hover` now ships exactly what
 `Button.vue` does: the border drops to `brand-700` `#4004AF`, ~1.75:1 on the page,
@@ -927,7 +944,7 @@ It declares the faces and a consumer supplies the files. That is a redistributio
 question, recorded in `packages/brand/scripts/build.mjs`, and no release changes it.
 
 **Do not "simplify" the declarations by adopting the vendor's stylesheet.** The
-Fontshare download ships a `stylesheet.css` that declares Bold and Black *both* as
+Fontshare download ships a `stylesheet.css` that declares Bold and Black _both_ as
 `font-weight: bold`, and their italics likewise, so four cuts collide into two slots
 and whichever is declared last silently wins. Binding explicit numeric weights is
 what makes a 900 render as 900. It also uses `local()` lookups, which Fontshare's
@@ -951,12 +968,12 @@ by accident. The real mark is `favicons/favicon.svg`, rendered from
 
 `--color-action` `#5F20FE` measured **3.03:1** on the old `#050505` page — enough,
 barely, for large bold type. The 2026 rebuild lightened the page to `#0A0A0B`, and
-the same violet now measures **2.94:1** — a hair *under* the 3:1 large-text floor:
+the same violet now measures **2.94:1** — a hair _under_ the 3:1 large-text floor:
 
-| Usage | Size | Floor | Result |
-|---|---|---|---|
-| `.eyebrow-lead .eyebrow` — the signature pair | 32px bold | 3:1 (large) | **2.94:1 — fails, barely** |
-| `.eyebrow` at caption size | 14px bold | 4.5:1 (normal) | **2.94:1 — fails** |
+| Usage                                         | Size      | Floor          | Result                     |
+| --------------------------------------------- | --------- | -------------- | -------------------------- |
+| `.eyebrow-lead .eyebrow` — the signature pair | 32px bold | 3:1 (large)    | **2.94:1 — fails, barely** |
+| `.eyebrow` at caption size                    | 14px bold | 4.5:1 (normal) | **2.94:1 — fails**         |
 
 The signature pair used to be the one place violet-on-black was defensible; since
 the rebuild it no longer is, at any size. `.eyebrow` in `colors_and_type.css` is
@@ -980,7 +997,7 @@ package's own chrome, and write down which is which.
 attribute:
 
 ```html
-<td align="center" bgcolor="var(--brand-color-primary)">
+<td align="center" bgcolor="var(--brand-color-primary)"></td>
 ```
 
 `bgcolor` is a presentational attribute parsed with the HTML **legacy color rules**
@@ -1027,17 +1044,17 @@ meta tags declare the message already dark, which stops Outlook.com and Apple Ma
 from relighting it.
 
 The token values themselves were retuned first, because the generator's layer is an
-Ant-derived *approximation* of CODECAVE rather than CODECAVE:
+Ant-derived _approximation_ of CODECAVE rather than CODECAVE:
 
-| Token | Generated | Corrected | Why |
-|---|---|---|---|
-| `--brand-color-primary` | `#7040da` | `#9980FF` | duller and bluer than the brand violet, and only 3.18:1 as text |
-| `--brand-color-primary-bg` | `#0e0725` | `#0F0F15` | `#0e0725` belongs to no ramp step and reads as navy against the page |
-| `--brand-color-link` | `#7040da` | `#B19AFE` | brand-200, 8.41:1 |
-| `--brand-color-text` | `#c6c4cd` | `#F4F4F6` | gray-50 |
-| `--brand-color-text-secondary` | `#99979e` | `#C7C7DB` | gray-300 |
-| `--brand-color-text-tertiary` | `#6b6a6f` | `#9595BB` | gray-500, 6.87:1; the generated value was 3.62:1 — below AA |
-| `--brand-color-text-quaternary` | `#3e3d40` | `#9595BB` | was **1.9:1**, and it is the line carrying the postal address |
+| Token                           | Generated | Corrected | Why                                                                  |
+| ------------------------------- | --------- | --------- | -------------------------------------------------------------------- |
+| `--brand-color-primary`         | `#7040da` | `#9980FF` | duller and bluer than the brand violet, and only 3.18:1 as text      |
+| `--brand-color-primary-bg`      | `#0e0725` | `#0F0F15` | `#0e0725` belongs to no ramp step and reads as navy against the page |
+| `--brand-color-link`            | `#7040da` | `#B19AFE` | brand-200, 8.41:1                                                    |
+| `--brand-color-text`            | `#c6c4cd` | `#F4F4F6` | gray-50                                                              |
+| `--brand-color-text-secondary`  | `#99979e` | `#C7C7DB` | gray-300                                                             |
+| `--brand-color-text-tertiary`   | `#6b6a6f` | `#9595BB` | gray-500, 6.87:1; the generated value was 3.62:1 — below AA          |
+| `--brand-color-text-quaternary` | `#3e3d40` | `#9595BB` | was **1.9:1**, and it is the line carrying the postal address        |
 
 Every text-on-background pair in the corrected file was then measured against its
 true nesting context. All 9 distinct pairs pass AA; the lowest is the button itself
@@ -1047,27 +1064,27 @@ at 5.67:1.
 
 ## Provenance
 
-| Evidence | Read method |
-|---|---|
-| Brand repo — tokens, wordmarks, favicon | `git-clone` |
-| Brand repo binaries — `docs/logos/`, `docs/icons/`, `docs/favicons/` | `local-folder` |
-| Production site — components, theme, assets | `local-folder` |
-| Live production site — https://codecave.gay | the measurement source |
-| Figma design file | **linked but not decoded** — no snapshot captured, contributed nothing |
-| Decorative section art — 8 SVGs | `local-folder`, copied byte-for-byte |
+| Evidence                                                             | Read method                                                            |
+| -------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| Brand repo — tokens, wordmarks, favicon                              | `git-clone`                                                            |
+| Brand repo binaries — `docs/logos/`, `docs/icons/`, `docs/favicons/` | `local-folder`                                                         |
+| Production site — components, theme, assets                          | `local-folder`                                                         |
+| Live production site — https://codecave.gay                          | the measurement source                                                 |
+| Figma design file                                                    | **linked but not decoded** — no snapshot captured, contributed nothing |
+| Decorative section art — 8 SVGs                                      | `local-folder`, copied byte-for-byte                                   |
 
 **Uncertainties, stated rather than papered over.**
 
 - Section rhythm (200/120), card padding, control heights, and the type steps below
-  `--text-heading-sm` are *measured from the rendered site*, not read from a token
+  `--text-heading-sm` are _measured from the rendered site_, not read from a token
   file. They are accurate to the pixel but are not declared tokens upstream.
 - No Figma snapshot was decoded, so nothing here is Figma-derived.
-- The light-surface specimen documents light-surface *exceptions*; it is not a light
+- The light-surface specimen documents light-surface _exceptions_; it is not a light
   theme, because none exists.
 - The ground color of `work-process-img-*.jpg` is **unmeasured** — no raster decoder
   was available in this environment. Those files were excluded on semantic role, not
   on a contrast measurement.
-- `#4C4759` and `#391398` are *measured* from production SVGs. An earlier revision
+- `#4C4759` and `#391398` are _measured_ from production SVGs. An earlier revision
   carried them as inferred ramp steps; the rebuilt ramp has no place for them, so
   they are recorded as imagery literals only. Upstream still never named them.
 - The breakpoint census covers the captured source only. It is complete for what was
