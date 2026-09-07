@@ -1,5 +1,11 @@
 <script setup lang="ts">
 import Button from "@codecavepro/brand/components/common/Button.vue";
+
+const props = defineProps<{
+  header?: string;
+  description?: string;
+  subDescription?: string;
+}>()
 </script>
 
 <template>
@@ -8,13 +14,13 @@ import Button from "@codecavepro/brand/components/common/Button.vue";
 >
   <div class="flex-1">
     <h3 class="text-heading font-bold xl:text-[32px] text-2xl">
-      Grab our AI trends research!
+      {{ props.header }}
     </h3>
 
     <p class="md:mt-1 mt-4 text-body-secondary-lighter text-pretty">
-      We’ve researched current state of the AI in 3 industries so you don’t have to.
+      {{ props.description }}
       <br>
-      Check what we’ve found about yours.
+      {{ props.subDescription }}
     </p>
   </div>
 
