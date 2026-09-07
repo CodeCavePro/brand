@@ -212,8 +212,7 @@ surprises you.
 
 `vue` is the only required peer. Four more are optional, each wanted by one or two
 components; leave one out and only those are affected — `gsap` by `GlowButton.vue`,
-`effects/TypingEffect.vue` and `forms/ContactUsForm.vue`; `vue3-carousel` by
-`homepage/technologies.vue`; `marked` and `isomorphic-dompurify` by
+`effects/TypingEffect.vue` and `forms/ContactUsForm.vue`; `marked` and `isomorphic-dompurify` by
 `project/pain-points-item.vue`.
 
 ### Import the theme, not just the tokens

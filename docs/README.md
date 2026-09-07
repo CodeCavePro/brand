@@ -8,7 +8,7 @@ captured source, not inferred from a screenshot or a marketing page.
 Link one stylesheet and the system is live:
 
 ```html
-<link rel="stylesheet" href="colors_and_type.css">
+<link rel="stylesheet" href="colors_and_type.css" />
 ```
 
 There is no build step, no package to install, no theme provider and no
@@ -23,20 +23,20 @@ CODECAVE is a software delivery studio. The captured surface is its marketing an
 lead-generation site: a dark, high-contrast presentation whose entire job is to
 turn a visitor into one booked consultation.
 
-**Six services**, and the site titles every one of them by the *outcome* it
+**Six services**, and the site titles every one of them by the _outcome_ it
 produces rather than the technology it uses:
 
-| Service | Outcome line, verbatim |
-|---|---|
-| Cloud & DevOps | Optimize costs. Protect your Data |
-| E-Commerce | Maximize revenue, dominate Markets |
-| Autodesk plugins | 10x efficiency with custom Plugins |
-| Automation & AI | Leverage virtual Workforce |
-| HubSpot | Aggregate data from all your Tools |
-| AR & VR | Stunning visualisations for your business |
+| Service          | Outcome line, verbatim                    |
+| ---------------- | ----------------------------------------- |
+| Cloud & DevOps   | Optimize costs. Protect your Data         |
+| E-Commerce       | Maximize revenue, dominate Markets        |
+| Autodesk plugins | 10x efficiency with custom Plugins        |
+| Automation & AI  | Leverage virtual Workforce                |
+| HubSpot          | Aggregate data from all your Tools        |
+| AR & VR          | Stunning visualisations for your business |
 
 **Production stack.** Astro 7 + Vue 3 + Tailwind 4, GSAP 3.13 with ScrollTrigger,
-Lenis 1.3.11 smooth scroll, vue3-carousel, Strapi as the content backend. 61
+Lenis 1.3.11 smooth scroll, Strapi as the content backend. 61
 `.astro` files, 45 `.vue` components, zero React, no Storybook. The Tailwind 4
 `@theme` block in `src/styles/global.css` is the authoritative token source; the
 brand repository's `src/tokens/*.css` publish the same ramp independently.
@@ -44,22 +44,22 @@ brand repository's `src/tokens/*.css` publish the same ramp independently.
 **Conversion shape.** Exactly one primary action per page — a violet glow button
 reading "Get a free consultation" — supported by a consultation form that asks
 for one required field (e-mail) and treats everything else as optional. The
-voice is plain, specific and non-promotional: *"Scope, milestones and outcomes
-upfront."* / *"We are ready to sign an NDA — your idea stays yours."*
+voice is plain, specific and non-promotional: _"Scope, milestones and outcomes
+upfront."_ / _"We are ready to sign an NDA — your idea stays yours."_
 
 **What defines the visual system** (the long version is `DESIGN.md`):
 
 1. **Depth without contrast.** The page is `#0A0A0B` and a card is `#0F0F15` —
    one hair apart. Separation comes from radius and a 1px `#2B2848` border, never
    from a lighter fill.
-2. **Enormous radii.** 24px is the *default* card corner. Feature cards take
+2. **Enormous radii.** 24px is the _default_ card corner. Feature cards take
    44px; section panels reach 64px, and 120px above 768px. Nothing in the system
    has a small corner.
-3. **The inverted glow.** Section panels cast violet light *upward* — every Y
+3. **The inverted glow.** Section panels cast violet light _upward_ — every Y
    offset in `--shadow-section` is negative. It is physically wrong and instantly
    recognizable, and it is the single most important thing not to normalize.
 4. **Violet is rationed.** `#5F20FE` lives on edges, links and marks and never
-   fills a large area. When a violet *field* is genuinely needed the system
+   fills a large area. When a violet _field_ is genuinely needed the system
    switches to `#9980FF` with `#1B0D4E` text — the only dark-on-light text
    anywhere in the system.
 
@@ -67,15 +67,15 @@ upfront."* / *"We are ready to sign an NDA — your idea stays yours."*
 
 ## Source references
 
-| Source | Where the evidence lives | Read method |
-|---|---|---|
-| `CodeCavePro/brand` (GitHub, `main`) | `context/github/CodeCavePro-brand/` + `files/` snapshots | `git-clone` |
-| `CodeCavePro/brand` (GitHub, `development`) | `context/github/CodeCavePro-brand-development.md` — tokens, `DESIGN.md`, `ds-bundle/` | `git-clone` |
+| Source                                                                 | Where the evidence lives                                                                          | Read method    |
+| ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | -------------- |
+| `CodeCavePro/brand` (GitHub, `main`)                                   | `context/github/CodeCavePro-brand/` + `files/` snapshots                                          | `git-clone`    |
+| `CodeCavePro/brand` (GitHub, `development`)                            | `context/github/CodeCavePro-brand-development.md` — tokens, `DESIGN.md`, `ds-bundle/`             | `git-clone`    |
 | `CodeCavePro/brand` working clone — the binary logo/icon/favicon trees | `context/local-code/brand/` + `files/logos/`, `files/icons/`, `files/favicons/`, `files/build.sh` | `local-folder` |
-| `codecave.pro` production codebase | `context/local-code/codecave.pro/` + `files/` snapshots | `local-folder` |
-| https://codecavepro.github.io/brand | reviewed; structural confirmation only | fetched |
-| https://codecave.gay | live site, named in `.design-sync/config.json` as the measurement source | measured |
-| Figma design file | **linked but not decoded** — no snapshot captured, contributed nothing | — |
+| `codecave.pro` production codebase                                     | `context/local-code/codecave.pro/` + `files/` snapshots                                           | `local-folder` |
+| https://codecavepro.github.io/brand                                    | reviewed; structural confirmation only                                                            | fetched        |
+| https://codecave.gay                                                   | live site, named in `.design-sync/config.json` as the measurement source                          | measured       |
+| Figma design file                                                      | **linked but not decoded** — no snapshot captured, contributed nothing                            | —              |
 
 **The `context/` intake tree is not published in this repository.** It is the
 capture workspace's raw evidence — full snapshots of the `codecave.pro` and
@@ -144,7 +144,6 @@ published: the specimens mount the COMPILED bundles under `storybook/compiled/`,
 and the package is built from the sources directly. `src/logos/` holds the three
 vector masters the ramps above are rendered from.
 
-
 **There are two browsable surfaces, and they answer two different questions.**
 `kitchen-sink/` asks whether a **part** is right — a token, a specimen, a live
 component — and `examples/` asks whether the parts **compose** into something a
@@ -181,18 +180,18 @@ resolve — they pointed at `/icons/` and 404'd from the day it was captured.
 
 **`imagery/source/` is the same contract for the decorative art** — eight SVGs
 copied byte-for-byte out of `codecave.pro/src/assets/images/`. The seven files
-one level up in `imagery/` are the *presentation* copies: identical artwork
+one level up in `imagery/` are the _presentation_ copies: identical artwork
 with a single `#050505` ground rect added, because the originals are
 stroke-only on a transparent root and therefore do not render on a light
 canvas. Ship from `imagery/source/`; review from `imagery/`.
 
-| Group | Files | Source |
-|---|---|---|
-| Vectors | `logos/codecave-wide.svg`, `logos/codecave-tall.svg`, `logos/codecave.svg` | `src/logos/`, copied on render |
-| Site marks | `logos/logo.svg` | `codecave.pro` production |
-| Raster lockups | `logos/codecave-{wide,tall}-{size}-{finish}.png`, `logos/codecave-{size}x{size}.png` (8 sizes × 4 finishes × 3 lockups) | rendered from `src/logos/` |
-| Icon ramp | `icons/16x16.png` … `icons/512x512.png` (7 sizes) | rendered from `src/logos/codecave.svg` |
-| Web runtime | `favicons/favicon.ico`, `favicon.svg`, `favicon-96x96.png`, `apple-touch-icon.png`, `web-app-manifest-192x192.png`, `web-app-manifest-512x512.png`, and `site.webmanifest` at the site root | rendered from `src/logos/codecave.svg` |
+| Group          | Files                                                                                                                                                                                       | Source                                 |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
+| Vectors        | `logos/codecave-wide.svg`, `logos/codecave-tall.svg`, `logos/codecave.svg`                                                                                                                  | `src/logos/`, copied on render         |
+| Site marks     | `logos/logo.svg`                                                                                                                                                                            | `codecave.pro` production              |
+| Raster lockups | `logos/codecave-{wide,tall}-{size}-{finish}.png`, `logos/codecave-{size}x{size}.png` (8 sizes × 4 finishes × 3 lockups)                                                                     | rendered from `src/logos/`             |
+| Icon ramp      | `icons/16x16.png` … `icons/512x512.png` (7 sizes)                                                                                                                                           | rendered from `src/logos/codecave.svg` |
+| Web runtime    | `favicons/favicon.ico`, `favicon.svg`, `favicon-96x96.png`, `apple-touch-icon.png`, `web-app-manifest-192x192.png`, `web-app-manifest-512x512.png`, and `site.webmanifest` at the site root | rendered from `src/logos/codecave.svg` |
 
 **The production site's own `public/favicon.svg` is not shipped here.** As
 captured, `codecave.pro` still serves the Astro starter's default favicon — a
@@ -222,27 +221,27 @@ described in prose only.
 ## Preview Manifest
 
 Twelve cards, one concern each — the foundations half of the kitchen sink. Open
-`kitchen-sink/index.html` and work down from the *Tokens* and *CSS components*
+`kitchen-sink/index.html` and work down from the _Tokens_ and _CSS components_
 sections, or open any card directly. Every card links
 `../colors_and_type.css` and renders live tokens, live components and real
 preserved files: there are no screenshots and no redrawn marks anywhere in the
 set.
 
-| Card | What to inspect | What it demonstrates |
-|---|---|---|
-| `kitchen-sink/index.html` | The hub over both halves. Confirm every card and story opens, and that the lockup renders. | `logos/codecave.svg`, `.divider`, `.eyebrow` |
-| `kitchen-sink/colors-primary.html` | That `#5F20FE` never fills a large area, and that cyan appears nowhere as a UI color. | `--color-action`, `--color-hovered`, `--color-glow-25`, `--gradient-brand`, the 12-step brand ramp, the 13-step gray ramp, the single-use accents, the technology wash, the 4-step error ramp. Source: `src/captured/styles/global.css`, `tokens/colors.css` |
-| `kitchen-sink/colors-theme-dark.html` | Four surfaces one hair apart — check they still separate. Read the contrast ratios on the foreground ramp. | `--color-surface-primary/-secondary/-tertiary/-quaternary`, `--color-body-*`, `.card` in situ |
-| `kitchen-sink/colors-theme-light.html` | The three light surfaces that legitimately exist, and why no light theme may be derived from them. | `gray-50` as ink vs. as a field, inverse lockup usage, `error-100` rationale |
-| `kitchen-sink/typography-specimens.html` | Whether the six Satoshi cuts render distinctly. If they look identical, the `@font-face` binding is broken. | `fonts/Satoshi-*.woff2`, the nine-step scale at true size, `.eyebrow` / `.lead` / `.eyebrow-lead` with a counter-example. Source: `tokens/typography.css`, `homepage/expertise.astro` |
-| `kitchen-sink/spacing-tokens.html` | The asymmetric section rhythm (200px above, 120px below) and bottom-heavy card padding. | `--gutter-*`, `--section-padding-top/-bottom`, `--card-padding`, `--control-height`, `--input-height`. Source: `tokens/layout.css` |
-| `kitchen-sink/spacing-radius.html` | Eight radii at true size, the measured homepage census, and the same card at 4px and 0px for comparison. | `--radius-control` → `--radius-section-md`, `.card`, live `.section-container` across the 768px breakpoint |
-| `kitchen-sink/spacing-shadows.html` | The space **above** the panel — that is where the violet has to appear. Then the conventional-shadow counter-example beside it. | `--shadow-section` (three negative-Y layers), `--shadow-glow-button`, `--shadow-input-focus`, `--shadow-input-error` |
-| `kitchen-sink/components-buttons.html` | Rest, hover, active, focus and disabled shown together; tab through the focus row. | `.btn` + `-glow/-primary/-secondary/-tertiary/-ghost/-text/-link/:disabled`, and the one sanctioned CTA pairing. Source: `common/Button.vue`, `common/GlowButton.vue` |
-| `kitchen-sink/components-inputs.html` | Click into the fields. The floating label must never collide with the value, and focus must be a halo rather than an outline. | `.field`, `.field.is-error`, `.error-message`, `label .required`, `.checkbox`, `.chip`, radios, the assembled consultation form. Source: `common/InputText.vue`, `TextField.vue`, `Checkbox.vue`, `Radio.vue`, `common/forms/ContactUsForm.vue` |
-| `kitchen-sink/components-progress.html` | That the bar is violet at 15% and near-white only at 100%. If early progress reads near-white, the gradient is being sized to the fill instead of the track. | `.rule`, `.progress`, `.progress-value`, `.progress.is-indeterminate`, `--gradient-brand` as a field, and three counter-examples: stretched full width, gradient sized to the fill, thickened to 16px. Source: the brand repository's previously published `docs/index.html` |
-| `kitchen-sink/brand-imagery.html` | Every plate must show visible strokes. A plate that reads as flat near-black means the `#050505` ground rect is missing from that file, not that the art is subtle. | The seven harvested section backgrounds on their required ground, the `0.8 / 0.65 / 0.55 / 0.45` opacity ladder that produces the falloff, the three gradient stops, and the two imagery-only literals recovered in the deep pass (`#391398`, `#4C4759`). Source: `codecave.pro/src/assets/images/` |
-| `kitchen-sink/brand-assets.html` | Every frame must contain artwork. An empty frame means a missing file, not a styling bug. Check the 16px icon still reads as a chevron. | Real files from `logos/`, `icons/` and `favicons/` loaded via `<img>`, `<object>` and CSS `url(...)`: both lockups, the chevron, all four raster finishes at 256px, the seven-step `icons/` ramp at native size, the web runtime set (`favicon.ico`, `apple-touch-icon.png`, both PWA manifest icons), the production `logo.svg`, the 1024² app icon, and the six font specimens |
+| Card                                     | What to inspect                                                                                                                                                     | What it demonstrates                                                                                                                                                                                                                                                                                                                                                             |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `kitchen-sink/index.html`                | The hub over both halves. Confirm every card and story opens, and that the lockup renders.                                                                          | `logos/codecave.svg`, `.divider`, `.eyebrow`                                                                                                                                                                                                                                                                                                                                     |
+| `kitchen-sink/colors-primary.html`       | That `#5F20FE` never fills a large area, and that cyan appears nowhere as a UI color.                                                                               | `--color-action`, `--color-hovered`, `--color-glow-25`, `--gradient-brand`, the 12-step brand ramp, the 13-step gray ramp, the single-use accents, the technology wash, the 4-step error ramp. Source: `src/captured/styles/global.css`, `tokens/colors.css`                                                                                                                     |
+| `kitchen-sink/colors-theme-dark.html`    | Four surfaces one hair apart — check they still separate. Read the contrast ratios on the foreground ramp.                                                          | `--color-surface-primary/-secondary/-tertiary/-quaternary`, `--color-body-*`, `.card` in situ                                                                                                                                                                                                                                                                                    |
+| `kitchen-sink/colors-theme-light.html`   | The three light surfaces that legitimately exist, and why no light theme may be derived from them.                                                                  | `gray-50` as ink vs. as a field, inverse lockup usage, `error-100` rationale                                                                                                                                                                                                                                                                                                     |
+| `kitchen-sink/typography-specimens.html` | Whether the six Satoshi cuts render distinctly. If they look identical, the `@font-face` binding is broken.                                                         | `fonts/Satoshi-*.woff2`, the nine-step scale at true size, `.eyebrow` / `.lead` / `.eyebrow-lead` with a counter-example. Source: `tokens/typography.css`, `homepage/expertise.astro`                                                                                                                                                                                            |
+| `kitchen-sink/spacing-tokens.html`       | The asymmetric section rhythm (200px above, 120px below) and bottom-heavy card padding.                                                                             | `--gutter-*`, `--section-padding-top/-bottom`, `--card-padding`, `--control-height`, `--input-height`. Source: `tokens/layout.css`                                                                                                                                                                                                                                               |
+| `kitchen-sink/spacing-radius.html`       | Eight radii at true size, the measured homepage census, and the same card at 4px and 0px for comparison.                                                            | `--radius-control` → `--radius-section-md`, `.card`, live `.section-container` across the 768px breakpoint                                                                                                                                                                                                                                                                       |
+| `kitchen-sink/spacing-shadows.html`      | The space **above** the panel — that is where the violet has to appear. Then the conventional-shadow counter-example beside it.                                     | `--shadow-section` (three negative-Y layers), `--shadow-glow-button`, `--shadow-input-focus`, `--shadow-input-error`                                                                                                                                                                                                                                                             |
+| `kitchen-sink/components-buttons.html`   | Rest, hover, active, focus and disabled shown together; tab through the focus row.                                                                                  | `.btn` + `-glow/-primary/-secondary/-tertiary/-ghost/-text/-link/:disabled`, and the one sanctioned CTA pairing. Source: `common/Button.vue`, `common/GlowButton.vue`                                                                                                                                                                                                            |
+| `kitchen-sink/components-inputs.html`    | Click into the fields. The floating label must never collide with the value, and focus must be a halo rather than an outline.                                       | `.field`, `.field.is-error`, `.error-message`, `label .required`, `.checkbox`, `.chip`, radios, the assembled consultation form. Source: `common/InputText.vue`, `TextField.vue`, `Checkbox.vue`, `Radio.vue`, `common/forms/ContactUsForm.vue`                                                                                                                                  |
+| `kitchen-sink/components-progress.html`  | That the bar is violet at 15% and near-white only at 100%. If early progress reads near-white, the gradient is being sized to the fill instead of the track.        | `.rule`, `.progress`, `.progress-value`, `.progress.is-indeterminate`, `--gradient-brand` as a field, and three counter-examples: stretched full width, gradient sized to the fill, thickened to 16px. Source: the brand repository's previously published `docs/index.html`                                                                                                     |
+| `kitchen-sink/brand-imagery.html`        | Every plate must show visible strokes. A plate that reads as flat near-black means the `#050505` ground rect is missing from that file, not that the art is subtle. | The seven harvested section backgrounds on their required ground, the `0.8 / 0.65 / 0.55 / 0.45` opacity ladder that produces the falloff, the three gradient stops, and the two imagery-only literals recovered in the deep pass (`#391398`, `#4C4759`). Source: `codecave.pro/src/assets/images/`                                                                              |
+| `kitchen-sink/brand-assets.html`         | Every frame must contain artwork. An empty frame means a missing file, not a styling bug. Check the 16px icon still reads as a chevron.                             | Real files from `logos/`, `icons/` and `favicons/` loaded via `<img>`, `<object>` and CSS `url(...)`: both lockups, the chevron, all four raster finishes at 256px, the seven-step `icons/` ramp at native size, the web runtime set (`favicon.ico`, `apple-touch-icon.png`, both PWA manifest icons), the production `logo.svg`, the 1024² app icon, and the six font specimens |
 
 These cards no longer sit on a surface of their own. `kitchen-sink/index.html`
 gathers them and the component stories below on one page, and the main menu
@@ -254,7 +253,7 @@ carries the only other surface, `examples/index.html`.
 
 Thirteen components extracted from `codecave.pro` — twelve Vue islands and one
 Astro component. The components half of the same page: open
-`kitchen-sink/index.html` and read down to *Live components*.
+`kitchen-sink/index.html` and read down to _Live components_.
 
 The stories **mount the real components**: `tools/build-storybook.mjs`
 compiles each `.vue` source verbatim (vue/compiler-sfc + esbuild) into
@@ -268,11 +267,11 @@ deviates from production — Strapi-hosted images swapped for local
 placeholders, positioning stages for absolutely-positioned cards — the gap is
 written on the story page rather than silently papered over.
 
-| Group | Components |
-|---|---|
-| Primitives | `Button` (7 variants), `GlowButton`, `InputText`, `TextField`, `Checkbox` (2×2), `Radio` (2 variants) |
-| Content | `ArticlePreview`, `Review`, `TechnologyCard`, `ProjectChip`, `TypingEffect`, `PainPointsItem` |
-| Compositions | `LinkGroup` |
+| Group        | Components                                                                                            |
+| ------------ | ----------------------------------------------------------------------------------------------------- |
+| Primitives   | `Button` (7 variants), `GlowButton`, `InputText`, `TextField`, `Checkbox` (2×2), `Radio` (2 variants) |
+| Content      | `ArticlePreview`, `Review`, `TechnologyCard`, `ProjectChip`, `TypingEffect`, `PainPointsItem`         |
+| Compositions | `LinkGroup`                                                                                           |
 
 Each story page carries the real `defineProps` signature, a variant/state
 matrix rendered live, and a findings section. **54 findings are recorded — 28
@@ -302,7 +301,7 @@ written into that repo.
 is a single attribute:
 
 ```html
-<td align="center" bgcolor="var(--brand-color-primary)">
+<td align="center" bgcolor="var(--brand-color-primary)"></td>
 ```
 
 `bgcolor` is a presentational attribute, parsed with the HTML **legacy color
@@ -315,13 +314,13 @@ literal string is doing the choosing, not the token.
 Both CTAs in `email.html` and both in `newsletter.html` are now the glow button,
 written with literals end to end:
 
-| Property | Value | Why a literal |
-| --- | --- | --- |
-| `bgcolor` / `background` | `#9980FF` | The one violet field in the system. |
-| `color` | `#1B0D4E` | The only dark-on-light text in the system — 5.67:1. |
-| `border-radius` | `9999px` | Pill, per the radius rules. |
-| `box-shadow` | `0 0 64px 0 #7A58FFA8, 0 0 16px 0 #4F22FFA6, 0 0 4px 2px #5B34FA` | The halo, verbatim from `--shadow-glow-button`. |
-| `padding` / `font-size` | `16px 32px` / `18px` | Outlook's Word engine ignores `var()`; the button would collapse to zero padding. |
+| Property                 | Value                                                             | Why a literal                                                                     |
+| ------------------------ | ----------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `bgcolor` / `background` | `#9980FF`                                                         | The one violet field in the system.                                               |
+| `color`                  | `#1B0D4E`                                                         | The only dark-on-light text in the system — 5.67:1.                               |
+| `border-radius`          | `9999px`                                                          | Pill, per the radius rules.                                                       |
+| `box-shadow`             | `0 0 64px 0 #7A58FFA8, 0 0 16px 0 #4F22FFA6, 0 0 4px 2px #5B34FA` | The halo, verbatim from `--shadow-glow-button`.                                   |
+| `padding` / `font-size`  | `16px 32px` / `18px`                                              | Outlook's Word engine ignores `var()`; the button would collapse to zero padding. |
 
 **Never use `var()` inside `bgcolor`, and prefer literals over tokens anywhere
 in an email artifact.** Custom properties are unsupported in Outlook on Windows
