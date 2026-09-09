@@ -237,7 +237,7 @@ withDefaults(defineProps<{
   position: absolute;
   top: 100%;
   left: 0;
-  margin-top: 13px;
+  margin-top: 14px;
   width: max-content;
   opacity: 0;
   visibility: hidden;
@@ -245,6 +245,8 @@ withDefaults(defineProps<{
   padding: 1.25rem;
    z-index: 100;
   background: var(--color-surface-primary);
+  border: 1px solid var(--color-surface-quaternary);
+  border-top: 0px;
   -webkit-backdrop-filter: blur(24px);
   backdrop-filter: blur(24px);
   transition: opacity 0.2s ease, visibility 0.2s;

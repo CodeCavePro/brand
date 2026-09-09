@@ -3,5 +3,6 @@ export interface MenuItem {
   name: string;
   label: string;
   /** Relative to the docs root; the renderer prefixes `up`. */
-  href: string;
+  href?: string;
+  subMenu?: MenuItem[]
 }
