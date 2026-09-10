@@ -2,6 +2,7 @@
 import LinkedinIcon from "../assets/icons/linkedin-icon.vue";
 import VerifiedIcon from "../assets/icons/verified-icon.vue";
 import LazyImage from "./images/LazyImage.vue"
+import { isCorrectLinkedInFormat } from "../helpers/form-validator.ts";
 
 /* See ArticlePreview.vue: the fields read here, not the generated Strapi
  * `Testimonial`, which a caller may still pass unchanged. */
@@ -27,14 +28,14 @@ const imageUrl = (url: string) => props.resolveImage?.(url) ?? url
 <template>
   <div :class="`mx-1 lg:mx-2 testimonial space-y-2 lg:space-y-3 py-10 px-6 lg:px-11 ${className}`">
     <div class="flex flex-col lg:flex-row gap-5 lg:items-center">
-      <LazyImage v-if="item.photo.name !== 'no-image.svg'" 
+      <img v-if="item.photo.name !== ''" 
             class="w-12 lg:w-16 h-12 lg:h-16" :src="imageUrl(item.photo.url)"
            :alt=item.photo.name />
       <div>
         <div class="flex items-center gap-2">
           <p class="text-heading text-lg lg:text-xl">{{ item.name }}</p>
           <a
-              v-if="item.linkedinurl.length > 1"
+              v-if="isCorrectLinkedInFormat(item.linkedinurl)"
               target="_blank"
               rel='noopener noreferrer'
               class="text-default-transparent hover:text-action transition-colors"
