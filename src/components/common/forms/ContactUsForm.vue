@@ -54,6 +54,7 @@ const createFormField = <T,>(name: keyof ContactFormDefinition, value: T): FormF
 const formData = ref({
   email: createFormField('email', ''),
   firstName: createFormField('firstName', ''),
+  lastName: createFormField('lastName', ''),
   companyName: createFormField('companyName', ''),
   linkedinCompanyPage: createFormField('linkedinCompanyPage', ''),
   services: createFormField('services', ''),
@@ -122,6 +123,7 @@ const validateRequiredFields = () => {
 const resetForm = () => {
   formData.value.email.value = '';
   formData.value.firstName.value = '';
+  formData.value.lastName.value = '';
   formData.value.companyName.value = '';
   formData.value.linkedinCompanyPage.value = '';
   formData.value.description.value = '';
@@ -134,6 +136,7 @@ const resetForm = () => {
 const currentValues = (): ContactFormValues => ({
   email: formData.value.email.value,
   firstName: formData.value.firstName.value,
+  lastName: formData.value.lastName.value,
   companyName: formData.value.companyName.value,
   linkedinCompanyPage: formData.value.linkedinCompanyPage.value,
   services: formData.value.services.value,
@@ -231,14 +234,14 @@ fields.forEach((key) => {
 })
 
 const companyNamePattern = /[^\p{L}\p{N} &]/u;
-const firstNamePattern = /[^\p{L} ]/u;
+const namePattern = /[^\p{L} ]/u;
 
 const createSanitizer = (pattern) => {
   return (value) => value.replace(pattern, '');
 };
 
 const sanitizeCompanyName = createSanitizer(companyNamePattern);
-const sanitizeFirstName = createSanitizer(firstNamePattern);
+const sanitizeName = createSanitizer(namePattern);
 
 const preventInvalidInput = (event, pattern) => {
   if (event.data && pattern.test(event.data)) {
@@ -254,10 +257,11 @@ const preventInvalidInput = (event, pattern) => {
       <fieldset class="space-y-2">
         <InputText id="email" v-model="formData.email.value" :isRequired=formData.email.required :label=formData.email.label type="email" :isError="!!formData.email.error" :errorMessage="formData.email.error" :placeholder="formData.email.placeholder ?? ''" autocomplete="email" />
         <div class="flex flex-col xl:flex-row gap-2">
-          <InputText id="firstname" v-model="formData.firstName.value" @beforeinput="event => preventInvalidInput(event, firstNamePattern)" @update:model-value="value => { formData.firstName.value = sanitizeFirstName(value) }" :isRequired="formData.firstName.required" :label="formData.firstName.label" type="text" :isError="!!formData.firstName.error" :errorMessage="formData.firstName.error" :placeholder="formData.firstName.placeholder ?? ''" autocomplete="given-name" />
-          <InputText id="companyName" v-model="formData.companyName.value" @beforeinput="event => preventInvalidInput(event, companyNamePattern)" @update:model-value="value => { formData.companyName.value = sanitizeCompanyName(value) }" :isRequired="formData.companyName.required" :label="formData.companyName.label" type="text" :isError="!!formData.companyName.error" :errorMessage="formData.companyName.error" :placeholder="formData.companyName.placeholder ?? ''" />
+          <InputText id="firstname" v-model="formData.firstName.value" @beforeinput="event => preventInvalidInput(event, namePattern)" @update:model-value="value => { formData.firstName.value = sanitizeName(value) }" :isRequired="formData.firstName.required" :label="formData.firstName.label" type="text" :isError="!!formData.firstName.error" :errorMessage="formData.firstName.error" :placeholder="formData.firstName.placeholder ?? ''" autocomplete="given-name" />
+          <InputText id="lastname" v-model="formData.lastName.value" @beforeinput="event => preventInvalidInput(event, namePattern)" @update:model-value="value => { formData.lastName.value = sanitizeName(value) }" :isRequired="formData.lastName.required" :label="formData.lastName.label" type="text" :isError="!!formData.lastName.error" :errorMessage="formData.lastName.error" :placeholder="formData.lastName.placeholder ?? ''" autocomplete="family-name" />
         </div>
         <div class="flex flex-col xl:flex-row gap-2">
+          <InputText id="companyName" v-model="formData.companyName.value" @beforeinput="event => preventInvalidInput(event, companyNamePattern)" @update:model-value="value => { formData.companyName.value = sanitizeCompanyName(value) }" :isRequired="formData.companyName.required" :label="formData.companyName.label" type="text" :isError="!!formData.companyName.error" :errorMessage="formData.companyName.error" :placeholder="formData.companyName.placeholder ?? ''" />
           <InputText id="linkedinCompanyPage" v-model="formData.linkedinCompanyPage.value" :isRequired=formData.linkedinCompanyPage.required :label=formData.linkedinCompanyPage.label type="text" :isError="!!formData.linkedinCompanyPage.error" :errorMessage="formData.linkedinCompanyPage.error" :placeholder="formData.linkedinCompanyPage.placeholder ?? ''" />
         </div>
       </fieldset>

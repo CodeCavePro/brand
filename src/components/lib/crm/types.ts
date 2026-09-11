@@ -26,6 +26,7 @@ export interface CrmFormFieldSpec {
 export type ContactFormFieldName =
   | 'email'
   | 'firstName'
+  | 'lastName'
   | 'companyName'
   | 'linkedinCompanyPage'
   | 'services'
@@ -40,6 +41,7 @@ export type ContactFormDefinition = Record<ContactFormFieldName, CrmFormFieldSpe
 export interface ContactFormValues {
   email: string;
   firstName: string;
+  lastName: string;
   companyName: string;
   linkedinCompanyPage: string;
   services: string;
