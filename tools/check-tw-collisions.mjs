@@ -122,6 +122,15 @@ function references(css) {
   return new Set([...css.matchAll(/var\(\s*(--[\w-]+)/g)].map((m) => m[1]));
 }
 
+/** Every `--name` a file BINDS as an object key instead of declaring it in CSS:
+ * `:style="{ '--x': … }"` on an element, or a style object assembled in <script>
+ * and bound to one. Vue writes those onto the element's own style attribute,
+ * which is a declaration in every sense the cascade cares about — it is just not
+ * written in a stylesheet, so `declarations()` cannot see it. */
+function bindings(src) {
+  return new Set([...src.matchAll(/["'](--[\w-]+)["']\s*:/g)].map((m) => m[1]));
+}
+
 function walk(dir) {
   return fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
     const p = path.join(dir, e.name);
@@ -213,8 +222,17 @@ for (const [base, file] of scanned.sort((a, b) => a[1].localeCompare(b[1]))) {
    * which projects-carousel.vue declares inside its own scoped block -- and
    * every run needed a human to go and look at where the name was defined
    * before the result meant anything. A component-local custom property is not
-   * an undeclared dependency on the build. */
-  const own = new Set(declarations(src).keys());
+   * an undeclared dependency on the build.
+   *
+   * A BOUND property is the same thing in another syntax, and reading the CSS
+   * alone could not see it: the site's PartnersBadge.vue names all 16 of its
+   * colours as keys of a style object it binds with :style — defaults and all —
+   * and reads them with var() in its scoped block. All 16 were reported and all
+   * 16 were false. Those values come from that component's own props, so
+   * Tailwind emitting a default of the same name is not what makes them resolve,
+   * and a name Tailwind could be supplying is the only thing direction A is
+   * looking for. */
+  const own = new Set([...declarations(src).keys(), ...bindings(src)]);
   const rel = (sourceRoots.includes(base) ? '' : 'codecave.pro/src/') +
     path.relative(base, file).split(path.sep).join('/');
 
