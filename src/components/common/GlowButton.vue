@@ -24,6 +24,10 @@ const handleMouseMove = (e: MouseEvent) => {
   const y = e.clientY - rect.top
   const percentX = x / rect.width
 
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    return
+  }
+
   gsap.to(glow.value, {
     left: x,
     top: y,
