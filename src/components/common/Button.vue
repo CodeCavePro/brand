@@ -4,6 +4,7 @@ import { computed } from "vue";
 const props = withDefaults(defineProps<{
   isDisabled?: boolean
   title?: string
+  ariaLabel?: string
   as?: 'link'
   href?: string
   variant?: 'primary' | 'secondary' | 'tertiary' | 'ghost' | 'text' | 'link' | 'icon'
@@ -64,7 +65,7 @@ const preventDisabledLinkActivation = (event: Event) => {
     <slot />
   </a>
 
-  <button v-else :type="props.type" :disabled="props.isDisabled" :class="[variantClass, props.class ?? '']">
+  <button v-else :type="props.type" :disabled="props.isDisabled" :class="[variantClass, props.class ?? '']" :aria-label="props.ariaLabel">
     {{ title }}
     <slot />
   </button>
