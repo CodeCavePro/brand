@@ -18,19 +18,19 @@ defineProps<{
 </script>
 
 <template>
-  <div class="space-y-4">
-    <p class="text-body-secondary uppercase font-bold text-xs">
+  <nav :aria-labelledby="`${groupName}-label`" class="space-y-4">
+    <p :id="`${groupName}-label`" class="text-body-secondary uppercase font-bold text-xs" >
       {{ groupName }}
     </p>
-    <div class="space-y-3 xl:space-y-2 text-sm">
-      <div :key="index" v-for="(item, index) in items">
+    <ul class="space-y-3 xl:space-y-2 text-sm">
+      <li v-for="(item, index) in items" :key="index">
         <Button
             :title="item.name"
             as="link"
             :href="item.href"
             variant="text"
         />
-      </div>
-    </div>
-  </div>
+      </li>
+    </ul>
+  </nav>
 </template>

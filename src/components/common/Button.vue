@@ -1,19 +1,30 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   isDisabled?: boolean
   title?: string
+  ariaLabel?: string
   as?: 'link'
   href?: string
   variant?: 'primary' | 'secondary' | 'tertiary' | 'ghost' | 'text' | 'link' | 'icon'
-  type?: 'submit'
+  type?: 'button' | 'submit'
   class?: string
-}>()
+}>(), {
+  type: 'button',
+})
+
 const buttonBaseClass = `flex items-center justify-center
-${props.isDisabled ? 'cursor-not-allowed opacity-20' : 'cursor-pointer'}
+${props.isDisabled
+    ? 'cursor-not-allowed opacity-60'
+    : 'cursor-pointer'}
 w-fit max-w-full min-w-12 min-h-12 rounded-full text-body-primary font-bold transition-colors`
-const linkBaseClass = 'flex transition-colors'
+
+const linkBaseClass = `flex transition-colors
+${props.isDisabled
+    ? 'cursor-not-allowed opacity-60'
+    : 'cursor-pointer'}`
+
 const variantClass = computed(() => {
   switch (props.variant) {
     case 'secondary':
@@ -32,14 +43,29 @@ const variantClass = computed(() => {
       return `${buttonBaseClass} px-6 py-1 bg-primary-500 hover:bg-primary-700 active:bg-primary-900`
   }
 })
+
+const preventDisabledLinkActivation = (event: Event) => {
+  if (props.isDisabled) {
+    event.preventDefault()
+    event.stopPropagation()
+  }
+}
 </script>
 
 <template>
-  <a v-if="props.as === 'link'" :href="props.href" :class="[variantClass, props.class ?? '']">
+  <a v-if="props.as === 'link'" 
+    :href="props.isDisabled ? '' : props.href" 
+    :class="[variantClass, props.class ?? '']" 
+    :aria-disabled="props.isDisabled ? 'true' : undefined" 
+    :tabindex="props.isDisabled ? -1 : undefined" 
+    @click="preventDisabledLinkActivation" 
+    @keydown.enter="preventDisabledLinkActivation" 
+    @keydown.space.prevent="preventDisabledLinkActivation">
     <span>{{ title }}</span>
     <slot />
   </a>
-  <button v-else :class="[variantClass, props.class ?? '']">
+
+  <button v-else :type="props.type" :disabled="props.isDisabled" :class="[variantClass, props.class ?? '']" :aria-label="props.ariaLabel">
     {{ title }}
     <slot />
   </button>
