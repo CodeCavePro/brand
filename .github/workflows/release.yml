@@ -250,19 +250,63 @@ jobs:
 
       # The publish exiting 0 is npm's account of the publish. This is the
       # registry's.
+      #
+      # THE REGISTRY RECORDS A VERSION MINUTES AFTER THE PUBLISH EXITS. 3.2.1
+      # was served the second `npm publish` returned, and this step used to
+      # allow 30 seconds. From 3.2.2 on, the packument's own `time` entry is
+      # stamped 2m06s, 2m07s, 2m45s and once 6m09s after the Publish step
+      # finished, so that 30-second wait failed four releases running, each of
+      # them published correctly. The lag is on the registry's side, not ours:
+      # the version does not exist anywhere before that timestamp.
+      #
+      # So this polls for up to WAIT_SECONDS, and it reads the VERSION document
+      # (`/@scope%2fname/<version>`), not what `npm view` reads. That matters
+      # twice over. `npm view` fetches the whole packument, which the registry's
+      # CDN serves with `max-age=300` (a cache HIT when measured), and npm's own
+      # cache keeps the copy the "not already published" step fetched before
+      # the publish. Either can hide a version the registry has for five more
+      # minutes. The version document comes back `DYNAMIC`, uncached both when
+      # it exists and when it 404s, so this step sees the version as soon as
+      # the registry has it.
+      #
+      # A consumer's install reads the packument, so it can trail this step by
+      # up to those five minutes. That is expected, not a fault.
       - name: Confirm the registry agrees
+        timeout-minutes: 20
         env:
           VERSION: ${{ steps.version.outputs.version }}
+          WAIT_SECONDS: 900
+          POLL_SECONDS: 20
         run: |
-          set -euo pipefail
-          for i in 1 2 3 4 5; do
-            PUBLISHED="$(npm view "@codecavepro/brand@$VERSION" version 2>/dev/null || true)"
-            [ -n "$PUBLISHED" ] && break
-            echo "Not visible yet; retrying ($i/5)."
-            sleep 6
+          set -uo pipefail
+          URL="https://registry.npmjs.org/@codecavepro%2fbrand/$VERSION"
+          BODY="$RUNNER_TEMP/registry-version.json"
+          START=$(date +%s)
+          PUBLISHED=""
+          while :; do
+            ELAPSED=$(( $(date +%s) - START ))
+            CODE="$(curl -sS --max-time 20 -o "$BODY" -w '%{http_code}' "$URL" 2>/dev/null || echo 000)"
+            if [ "$CODE" = "200" ]; then
+              PUBLISHED="$(node -e 'try { process.stdout.write(String(JSON.parse(require("fs").readFileSync(process.argv[1], "utf8")).version ?? "")) } catch {}' "$BODY")"
+              [ -n "$PUBLISHED" ] && break
+            fi
+            # 404 is "not recorded yet"; anything else (000, 429, 5xx, or a
+            # 200 that is not a version document) is a failed read, and gets
+            # retried as well, because neither one says the publish failed.
+            if [ "$ELAPSED" -ge "$WAIT_SECONDS" ]; then
+              break
+            fi
+            echo "Registry answered $CODE for $VERSION after ${ELAPSED}s; asking again in ${POLL_SECONDS}s."
+            sleep "$POLL_SECONDS"
           done
-          if [ "${PUBLISHED:-}" != "$VERSION" ]; then
-            echo "::error title=Published version not visible::npm publish exited 0 but the registry does not serve $VERSION. Check https://www.npmjs.com/package/@codecavepro/brand before republishing anything — a version number can never be reissued."
+          ELAPSED=$(( $(date +%s) - START ))
+
+          if [ -z "$PUBLISHED" ]; then
+            echo "::error title=Published version not visible::npm publish exited 0, but after ${ELAPSED}s the registry still does not serve $VERSION (last answer: HTTP $CODE). It may still be processing it. Check https://www.npmjs.com/package/@codecavepro/brand/v/$VERSION before doing anything else. Do NOT re-run this workflow: once the version appears, a re-run stops at \"Assert this version is not already published\", and a version number can never be reissued."
+            exit 1
+          fi
+          if [ "$PUBLISHED" != "$VERSION" ]; then
+            echo "::error title=Registry disagrees::Asked the registry for $VERSION and it served a document for $PUBLISHED."
             exit 1
           fi
           {
@@ -270,6 +314,7 @@ jobs:
             echo ""
             echo "- <https://www.npmjs.com/package/@codecavepro/brand/v/$VERSION>"
             echo "- Provenance is attached automatically — this ran as a trusted publisher."
+            echo "- The registry served it ${ELAPSED}s after the publish step. An install can trail that by up to five minutes, while the registry CDN still holds the previous package listing."
             echo ""
             echo "**Still to do by hand:** comment the version and tag on"
             echo "[CCWEB2-318](https://codecave.atlassian.net/browse/CCWEB2-318). If this"
@@ -280,7 +325,7 @@ jobs:
             echo "\`pnpm install --frozen-lockfile\`, so it runs whatever its lockfile pins"
             echo "until someone raises the range and regenerates it."
           } >> "$GITHUB_STEP_SUMMARY"
-          echo "Registry serves $PUBLISHED."
+          echo "Registry serves $PUBLISHED, ${ELAPSED}s after the publish step."
 
 # If the publish is refused
 # -------------------------
