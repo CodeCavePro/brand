@@ -9,7 +9,7 @@ defineProps<{
   placeholder: string
   isRequired?: boolean
   isError?: boolean
-  errorMessage?: string,
+  errorMessage?: string
   modelValue?: string
 }>()
 
@@ -22,8 +22,17 @@ defineEmits(['update:modelValue'])
       <span>{{ label }}</span>
       <AsteriskIcon v-if="isRequired" />
     </label>
-    <input :id="id" :type="type" :autocomplete="autocomplete" :placeholder="placeholder" :required="isRequired" :value="modelValue" @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)" 
-    :class="`
+
+    <input
+      :id="id"
+      :type="type"
+      :autocomplete="autocomplete"
+      :placeholder="placeholder"
+      :required="isRequired"
+      :value="modelValue"
+      :aria-invalid="isError ? 'true' : undefined"
+      :aria-describedby="isError ? `${id}-error` : undefined"
+      :class="`
         w-full p-3 pt-7 bg-surface-secondary rounded-lg placeholder:text-xs placeholder:text-body-secondary
         focus:outline-none transition-colors border border-surface-tertiary
         hover:bg-surface-tertiary

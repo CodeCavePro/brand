@@ -36,7 +36,7 @@ const imageUrl = (url: string) => props.resolveImage?.(url) ?? url
       ${className ?? ''}`">
     <div class="flex flex-col sm:flex-row gap-5 sm:gap-8 h-fit">
       <div class="w-full h-full p-1">
-         <img loading="lazy" class="sm:w-[132px] sm:h-[132px] rounded-xl object-scale-down" 
+         <img loading="lazy" class="sm:w-[132px] sm:h-[132px] rounded-xl object-cover" 
         :src="imageUrl(article.cover.url)" 
         :alt="article.title" 
         :width="100" 
