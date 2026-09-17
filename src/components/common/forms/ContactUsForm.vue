@@ -15,6 +15,7 @@ import type {
   ICrmFormClient,
 } from "../../lib/crm/types";
 import { isCorrectEmailFormat, isCorrectLinkedInFormat } from "@helpers/form-validator.ts";
+import { formatMessage, useBrandMessages } from "../../lib/i18n/messages.ts";
 
 /* This component knows nothing about HubSpot, or about any other CRM. It is
  * handed the labels to render and something that can accept a submission; who
@@ -23,6 +24,8 @@ const props = defineProps<{
   definition: ContactFormDefinition
   client: ICrmFormClient
 }>()
+
+const messages = useBrandMessages()
 
 const emit = defineEmits<{
   (e: 'submit', values: ContactFormValues): void
@@ -86,15 +89,15 @@ const validateForm = () => {
   let linkedInPage = formData.value.linkedinCompanyPage;
 
   if (email.value !== '' && !isCorrectEmailFormat(email.value)) {
-    email.error = 'Please enter valid email'
+    email.error = messages.contactForm.invalidEmail
     isValid = false
   }
   if (linkedInPage.value !== '' && !isCorrectLinkedInFormat(linkedInPage.value)) {
-    linkedInPage.error = 'Please enter valid LinkedIn page link'
+    linkedInPage.error = messages.contactForm.invalidLinkedIn
     isValid = false
   }
   if (description.maxLength !== undefined && description.value.length > description.maxLength) {
-    description.error = `You faced characters limits. Max length is ${description.maxLength}`
+    description.error = formatMessage(messages.contactForm.tooLong, { max: description.maxLength })
     isValid = false
   }
 
@@ -110,7 +113,7 @@ const validateRequiredFields = () => {
     const isEmpty = field.value === '' || field.value === false
 
     if (field.required && isEmpty) {
-      field.error = 'This field is required'
+      field.error = messages.contactForm.required
       isValid = false
     } else {
       field.error = ''
@@ -177,8 +180,8 @@ const alertKind = ref<'success' | 'error' | null>(null)
 const isAlertVisible = computed(() => alertKind.value !== null)
 
 const ALERT_TEXT = {
-  success: 'Sent! We will contact you within next 1-3 business days.',
-  error: 'We could not send your request. Please try again, or email us at hello@codecave.pro.',
+  success: messages.contactForm.sent,
+  error: messages.contactForm.notSent,
 } as const
 
 const showAlert = (kind: 'success' | 'error') => {
@@ -205,7 +208,7 @@ const validateField = (field) => {
   }
 
   if (field.required && !field.value) {
-    field.error = 'This field is required'
+    field.error = messages.contactForm.required
     return
   }
 
@@ -233,8 +236,14 @@ fields.forEach((key) => {
   )
 })
 
-const companyNamePattern = /[^\p{L}\p{N} &]/u;
-const namePattern = /[^\p{L} ]/u;
+/* What each field refuses as it is typed. A letter includes its combining
+ * marks (\p{M}), and a name keeps its hyphen, apostrophe and period, so
+ * "Anne-Marie O'Neil Jr." survives. A company name also keeps the punctuation
+ * legal names are written with: the quotes of ООО «Ромашка», and commas,
+ * parentheses, slashes and plus signs. Both used to allow letters and spaces
+ * alone. */
+const companyNamePattern = /[^\p{L}\p{M}\p{N} &.,'’"«»„“”()+\/!-]/u;
+const namePattern = /[^\p{L}\p{M} .'’-]/u;
 
 const createSanitizer = (pattern) => {
   return (value) => value.replace(pattern, '');
@@ -279,7 +288,7 @@ const preventInvalidInput = (event, pattern) => {
         <Checkbox id="promotions" v-model="formData.communicationConsent.value" :label="formData.communicationConsent.label" :isRequired="formData.communicationConsent.required" :isError="!!formData.communicationConsent.error" />
       </div>
     </div>
-    <GlowButton @click="submitContactsForm" title="Leave consultation request" class="self-center lg:self-start" />
+    <GlowButton @click="submitContactsForm" :title="messages.contactForm.submit" class="self-center lg:self-start" />
   </form>
   <div v-show="isAlertVisible" class="border border-action group absolute bottom-19.25 md:fixed z-350 left-1/2 -translate-x-1/2 md:top-40 form-alert flex gap-2 md:gap-8 items-center justify-between w-full h-fit max-w-139 bg-surface-secondary p-4 md:px-6 md:py-2.5 rounded-3xl">
     <div v-if="alertKind === 'success'" class="w-8 h-8">
@@ -288,7 +297,7 @@ const preventInvalidInput = (event, pattern) => {
     <p class="text-sm md:text-lg font-bold text-heading md:max-w-sm ">
       {{ alertKind ? ALERT_TEXT[alertKind] : '' }}
     </p>
-    <button @click="alertKind = null" class="group-hover:text-action text-heading transition-colors cursor-pointer">
+    <button @click="alertKind = null" :aria-label="messages.contactForm.closeAlert" class="group-hover:text-action text-heading transition-colors cursor-pointer">
       <component :is="CloseIcon" />
     </button>
   </div>

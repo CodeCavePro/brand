@@ -32,6 +32,8 @@
  * the stylesheet. Standing on tokens instead means this bar renders the same in
  * both, and a consumer needs no global class layer to install it.
  */
+import { useBrandMessages } from '../lib/i18n/messages.ts';
+
 export interface NavItem {
   /** Link text, and the value `current` is matched against. */
   name: string;
@@ -71,10 +73,12 @@ withDefaults(defineProps<{
   logoHref: "/",
   logoAlt: "CODECAVE",
 });
+
+const messages = useBrandMessages();
 </script>
 
 <template>
-  <nav class="brand-nav" aria-label="Main">
+  <nav class="brand-nav" :aria-label="messages.brandNav.label">
     <div class="brand-nav-inner">
       <ul>
         <li v-for="item in left" :key="item.name" :class="{ dropdown: item.slot, badged: item.badge }">

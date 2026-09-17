@@ -3,6 +3,7 @@ import LinkedinIcon from "../assets/icons/linkedin-icon.vue";
 import VerifiedIcon from "../assets/icons/verified-icon.vue";
 import LazyImage from "./images/LazyImage.vue"
 import { isCorrectLinkedInFormat } from "../helpers/form-validator.ts";
+import { formatMessage, useBrandMessages } from "../lib/i18n/messages.ts";
 
 /* See ArticlePreview.vue: the fields read here, not the generated Strapi
  * `Testimonial`, which a caller may still pass unchanged. */
@@ -23,6 +24,7 @@ const props = defineProps<{
 }>()
 
 const imageUrl = (url: string) => props.resolveImage?.(url) ?? url
+const messages = useBrandMessages()
 </script>
 
 <template>
@@ -39,6 +41,7 @@ const imageUrl = (url: string) => props.resolveImage?.(url) ?? url
               target="_blank"
               rel='noopener noreferrer'
               class="text-default-transparent hover:text-action transition-colors"
+              :aria-label="formatMessage(messages.review.linkedin, { name: item.name })"
               :href="item.linkedinurl">
             <component
                 :is="LinkedinIcon"

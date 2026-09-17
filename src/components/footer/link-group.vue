@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import Button from "@codecavepro/brand/components/common/Button.vue";
+import { useId } from "vue";
 
 /* Declared here rather than imported from ./links.ts, which is this site's
  * footer content. TypeScript is structural, so every existing caller still
@@ -15,11 +16,17 @@ defineProps<{
   groupName: string
   items: LinkItem[]
 }>()
+
+/* The heading's id, generated rather than built from groupName: a group name
+ * is display text, and "Отзывы о нас" has spaces, which an id cannot hold, so
+ * aria-labelledby named nothing. Astro gives each rendered Vue app its own
+ * idPrefix, so two groups on one page never collide. */
+const labelId = useId()
 </script>
 
 <template>
-  <nav :aria-labelledby="`${groupName}-label`" class="space-y-4">
-    <p :id="`${groupName}-label`" class="text-body-secondary uppercase font-bold text-xs" >
+  <nav :aria-labelledby="labelId" class="space-y-4">
+    <p :id="labelId" class="text-body-secondary uppercase font-bold text-xs" >
       {{ groupName }}
     </p>
     <ul class="space-y-3 xl:space-y-2 text-sm">

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { formattedDate } from "@helpers/date-formatter.ts";
+import { formatMessage, useBrandMessages } from "../lib/i18n/messages.ts";
 
 /* The fields this component actually reads, instead of the generated Strapi
  * `Article`. TypeScript is structural, so a real Article still satisfies this
@@ -28,6 +29,7 @@ const props = defineProps<{
 }>()
 
 const imageUrl = (url: string) => props.resolveImage?.(url) ?? url
+const messages = useBrandMessages()
 </script>
 
 <template>
@@ -54,7 +56,7 @@ const imageUrl = (url: string) => props.resolveImage?.(url) ?? url
         {{ article.excerpt }}
       </p>
       <p class="text-xs sm:text-sm text-body-secondary mt-6 sm:mt-7">
-        Reading time: {{ article.readingtime }} m.
+        {{ formatMessage(messages.articlePreview.readingTime, { minutes: String(article.readingtime ?? '') }) }}
       </p>
     </div>
   </a>

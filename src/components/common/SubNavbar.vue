@@ -2,6 +2,7 @@
 import { computed, ref, onMounted, nextTick } from 'vue';
 import Shevron from '@assets/icons/shevron.vue';
 import { type MenuItem } from '../lib/menus/menuTypes.ts';
+import { useBrandMessages } from '../lib/i18n/messages.ts';
 
 interface Props {
   section?: string;
@@ -10,6 +11,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+const messages = useBrandMessages();
 
 const openItem = ref<string | null>(null);
 
@@ -102,7 +104,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <nav v-if="items.length" class="ds-subnav" aria-label="Section">
+  <nav v-if="items.length" class="ds-subnav" :aria-label="messages.subNavbar.label">
     <div class="ds-subnav-inner" :class="{ 'is-submenu-open': openItem }">
       <ul>
         <li v-for="item in items" :key="item.name" :ref="el => setItemRef(item.name, el)">

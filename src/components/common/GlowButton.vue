@@ -99,9 +99,9 @@ onMounted(() => {
       @mousemove="handleMouseMove"
       @mouseenter="handleMouseEnter"
       @mouseleave="handleMouseLeave"
-      class="cursor-pointer flex items-center justify-center relative z-[1] overflow-hidden w-full h-12 px-6 py-1 rounded-full bg-glow-25"
+      class="cursor-pointer flex items-center justify-center relative z-[1] overflow-hidden w-full min-h-12 px-6 py-1 rounded-full bg-glow-25"
     >
-      <p class="relative z-[2] text-primary-800 font-bold select-none">
+      <p class="relative z-[2] text-center text-primary-800 font-bold select-none">
         {{ title }}
       </p>
 

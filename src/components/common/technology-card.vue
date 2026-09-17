@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Button from "@codecavepro/brand/components/common/Button.vue";
 import { computed } from 'vue'
+import { useBrandMessages } from '../lib/i18n/messages.ts'
 
 const props = defineProps<{
   active: boolean
@@ -9,6 +10,8 @@ const props = defineProps<{
   className?: string
   index?: number
 }>()
+
+const messages = useBrandMessages()
 
 const rotate = [
   '-rotate-4 left-2 top-10',
@@ -46,10 +49,10 @@ const cardClass = computed(() => [
 <template>
   <div :class="cardClass">
     <div class="card flex flex-col items-center justify-around">
-      <h3 class="max-w-[8rem] text-center text-xl font-bold text-heading text-balance">
+      <h3 class="w-min min-w-[8rem] max-w-full text-center text-xl font-bold text-heading text-balance">
         {{ name }}
       </h3>
-      <Button as="link" :href="href ?? ''" title="Explore service" variant="tertiary" :class="`${active ? 'block' : 'hidden xl:block xl:opacity-0'}`" />
+      <Button as="link" :href="href ?? ''" :title="messages.technologyCard.explore" variant="tertiary" :class="`${active ? 'block' : 'hidden xl:block xl:opacity-0'}`" />
     </div>
   </div>
 </template>

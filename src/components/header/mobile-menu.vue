@@ -4,6 +4,7 @@ import Shevron from "@assets/icons/shevron.vue";
 import { computed, onUnmounted, ref, watch } from "vue";
 import BackIcon from "@assets/icons/back-icon.vue";
 import ServicesList from "./services-list.vue";
+import { useBrandMessages } from "../lib/i18n/messages.ts";
 
 /* Everything this drawer used to read out of menu.ts, paths.ts and the site's
  * logo asset now arrives as props, so it reaches no route table and no asset
@@ -25,6 +26,8 @@ const props = defineProps<{
   logo: string
   homeHref?: string
 }>()
+
+const messages = useBrandMessages()
 
 const servicesItem = computed(() => props.items.find((i) => i.submenu?.length))
 
@@ -81,7 +84,7 @@ const handleCloseMenu = () => {
           <a :href="homeHref" class="px-1.5 hover:opacity-80 transition-opacity">
             <img :src="logo" alt="CODECAVE" />
           </a>
-          <button @click="isMenuOpen = !isMenuOpen" :class="`burger-menu ${isMenuOpen ? 'text-action' : 'text-heading'} transition-colors`">
+          <button @click="isMenuOpen = !isMenuOpen" :aria-label="messages.mobileMenu.toggle" :aria-expanded="isMenuOpen" :class="`burger-menu ${isMenuOpen ? 'text-action' : 'text-heading'} transition-colors`">
             <span></span>
           </button>
         </div>
@@ -94,7 +97,7 @@ const handleCloseMenu = () => {
               <slot name="services" />
             </div>
 
-            <button class="pt-4 shrink-0" @click="isServicesOpen = false">
+            <button class="pt-4 shrink-0" :aria-label="messages.mobileMenu.back" @click="isServicesOpen = false">
               <component :is="BackIcon" class="w-11 h-11 text-action" />
             </button>
           </div>
