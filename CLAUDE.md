@@ -19,7 +19,7 @@ and the build scripts inside the directory that publishes the website.
 | `src/logos/` | the three SVG masters — every raster is rendered from them | yes |
 | `src/styles/` | `colors_and_type.css` (the deliverable) and `theme.css` | yes |
 | `src/tokens/` | the same tokens as typed TS modules, hand-mirrored | yes |
-| `src/styles/fonts/` | six Satoshi cuts and `fonts.css` | the CSS only |
+| `src/styles/fonts/` | the ten Satoshi cuts, the Manrope Cyrillic subset with its licence, and `fonts.css` | the CSS only |
 | `src/components/` | every component, helper and icon the system ships | yes |
 | `src/captured/` | the eight files copied from codecave.pro | **never** |
 | `docs/` | the website, and the published brand kit | pages, yes |
@@ -78,7 +78,7 @@ moment it is fixed; Jira keeps the history, so nothing here is a record:
 
 ### What the package ships, and what a consumer must do
 
-**The fonts are settled.** The package declares ten `@font-face` rules — 300/400/500/700/900, upright and italic, every weight Satoshi has — and codecave.pro declares the same ten. **The binaries are still not in the tarball**: that is a redistribution question, recorded in `build.mjs`, and no release changes it. The vendor's own `stylesheet.css` is unusable and both stylesheets say why next to the declarations.
+**The fonts are settled.** The package declares eleven `@font-face` rules: ten for Satoshi — 300/400/500/700/900, upright and italic, every weight Satoshi has — and one for Manrope, which `--font-sans` names second because Satoshi has no Cyrillic. codecave.pro declares the same eleven. **The binaries are still not in the tarball**: that is a redistribution question, recorded in `build.mjs`, and no release changes it. The vendor's own `stylesheet.css` is unusable and both stylesheets say why next to the declarations.
 
 **A consumer that installs the components has to put the package back in Tailwind's scan.** Automatic content detection skips `node_modules` and this package ships Vue source, so a utility used only inside an installed component is never emitted — with no error anywhere: the build succeeds, the typecheck passes, and the elements render unstyled. One `@source` line fixes it, the package `README.md` says so, and codecave.pro's `check:classes` fails the build when it is missing (CCWEB2-360).
 

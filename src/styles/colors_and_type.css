@@ -19,11 +19,12 @@
 /* ---------------------------------------------------------------------------
  * Font faces
  *
- * The ten faces are bound to explicit numeric weights in both styles. The
- * vendor's own stylesheet.css declares Bold and Black as the same
+ * The ten Satoshi faces are bound to explicit numeric weights in both styles.
+ * The vendor's own stylesheet.css declares Bold and Black as the same
  * `font-weight: bold`, and their italics likewise, so four cuts collide into
  * two slots there and the last one declared silently wins. That is the defect
  * these declarations exist to avoid; do not replace them with the vendor file.
+ * An eleventh face, Manrope, follows them and sets the Cyrillic Satoshi lacks.
  * ------------------------------------------------------------------------ */
 
 @font-face {
@@ -114,6 +115,40 @@
   font-weight: 900;
   font-style: italic;
   font-display: swap;
+}
+
+/* ---------------------------------------------------------------------------
+ * Cyrillic: Manrope
+ *
+ * Satoshi has no Cyrillic, in these files or in Fontshare's current release,
+ * whose own page lists 135 languages, all written in Latin letters. Russian
+ * text used to fall through to the system fonts. Manrope sets it now:
+ * --font-sans names it second, so Satoshi keeps every Latin letter, digit and
+ * punctuation mark, and Manrope draws only the Cyrillic that Satoshi lacks.
+ *
+ * It is a family of its own, not more faces under the name Satoshi, because
+ * of emphasis. Font matching narrows a family to its italic faces for <em>
+ * before it reads unicode-range, so a Cyrillic face inside Satoshi would
+ * either never match emphasised text or match it upright. A separate family
+ * with one upright face is slanted by the browser instead.
+ *
+ * One variable file covers weights 300 to 800, and a 900 request gets 800.
+ * It is Google Fonts' Cyrillic subset under the SIL Open Font License
+ * (fonts/Manrope-OFL.txt), and the unicode-range is the subset's own, so a
+ * page without Cyrillic never downloads it.
+ *
+ * size-adjust: both faces draw capitals 72 units tall at 100px, but Manrope's
+ * small letters stand 54 to Satoshi's 49 and it sets about 8% wider. At 95%
+ * the two are within about 5% on each of those measures.
+ * ------------------------------------------------------------------------ */
+@font-face {
+  font-family: Manrope;
+  src: url("./fonts/Manrope-Cyrillic.woff2") format("woff2");
+  font-weight: 300 800;
+  font-style: normal;
+  font-display: swap;
+  size-adjust: 95%;
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
 }
 
 :root {
@@ -210,11 +245,12 @@
 
   /* =========================================================================
    * TYPOGRAPHY
-   * One family. Named heading sizes come from the production @theme block;
-   * the remaining steps are measured from the live site.
+   * One family, and Manrope for the Cyrillic it lacks (see "Cyrillic" above).
+   * Named heading sizes come from the production @theme block; the remaining
+   * steps are measured from the live site.
    * ====================================================================== */
-  --font-sans: Satoshi, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-               "Helvetica Neue", "Noto Sans", Arial, sans-serif;
+  --font-sans: Satoshi, Manrope, -apple-system, BlinkMacSystemFont, "Segoe UI",
+               Roboto, "Helvetica Neue", "Noto Sans", Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
                "Liberation Mono", "Courier New", monospace;
 

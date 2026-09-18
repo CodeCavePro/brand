@@ -32,7 +32,7 @@
     /* sizes */
     --max-width-desktop: 1280px;
     --breakpoint-sm: 457px;
-    --font-sans: Satoshi, sans-serif;
+    --font-sans: Satoshi, Manrope, sans-serif;
     --text-heading-lg: 3.5rem;
     --text-heading-lg--line-height: 130%;
     --text-heading-md: 2.75rem;

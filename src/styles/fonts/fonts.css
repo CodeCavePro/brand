@@ -8,13 +8,19 @@
  * The vendor's own stylesheet.css cannot be used: it declares Bold and Black
  * BOTH as `font-weight: bold`, and their italics likewise, so four cuts
  * collide into two slots and whichever is declared last silently wins. The
- * ten faces below bind 300/400/500/700/900 in each style explicitly, which is
- * the whole point of shipping real cuts rather than letting a browser
- * synthesize them.
+ * ten Satoshi faces below bind 300/400/500/700/900 in each style explicitly,
+ * which is the whole point of shipping real cuts rather than letting a
+ * browser synthesize them.
+ *
+ * CYRILLIC
+ * Satoshi has none. The eleventh face, Manrope, sets it: --font-sans names it
+ * second, and its unicode-range limits it to the Cyrillic block. Why it is a
+ * family of its own and why it is 95% size is in colors_and_type.css.
  *
  * The binaries are not in the npm package -- see the note in
  * packages/brand/scripts/build.mjs -- so a consumer supplies the files and
- * these ten declarations tell it what to supply.
+ * these eleven declarations tell it what to supply. Manrope-OFL.txt is the
+ * licence that travels with Manrope-Cyrillic.woff2.
  */
 
 @font-face {
@@ -105,4 +111,14 @@
   font-weight: 900;
   font-style: italic;
   font-display: swap;
+}
+
+@font-face {
+  font-family: Manrope;
+  src: url("./Manrope-Cyrillic.woff2") format("woff2");
+  font-weight: 300 800;
+  font-style: normal;
+  font-display: swap;
+  size-adjust: 95%;
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
 }

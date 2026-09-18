@@ -25,27 +25,27 @@ colors:
   error-100: "#FE9A9A"
 typography:
   display:
-    fontFamily: "Satoshi, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif"
+    fontFamily: "Satoshi, Manrope, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif"
     fontSize: "56px"
     fontWeight: 700
     lineHeight: "130%"
   headline:
-    fontFamily: "Satoshi, sans-serif"
+    fontFamily: "Satoshi, Manrope, sans-serif"
     fontSize: "44px"
     fontWeight: 700
     lineHeight: "115%"
   title:
-    fontFamily: "Satoshi, sans-serif"
+    fontFamily: "Satoshi, Manrope, sans-serif"
     fontSize: "32px"
     fontWeight: 700
     lineHeight: "110%"
   body:
-    fontFamily: "Satoshi, sans-serif"
+    fontFamily: "Satoshi, Manrope, sans-serif"
     fontSize: "16px"
     fontWeight: 400
     lineHeight: "24px"
   label:
-    fontFamily: "Satoshi, sans-serif"
+    fontFamily: "Satoshi, Manrope, sans-serif"
     fontSize: "14px"
     fontWeight: 400
     lineHeight: "20px"
@@ -163,7 +163,7 @@ than the stack it uses: Cloud & DevOps, E-Commerce, Autodesk plugins, Automation
   A genuine purple _field_ switches to the lighter `#9980FF` with near-black
   text — the only dark-on-light text in the entire system.
 - **One family, two weights, one flourish.** Satoshi at 400 and 700, and the
-  eyebrow pair.
+  eyebrow pair. Manrope stands in only for the Cyrillic Satoshi lacks.
 - **Dark-first, with no light theme.** Three light-surface exceptions exist and
   they are the complete set.
 
@@ -338,8 +338,8 @@ source, and `#5F20FE` is the action color, never body text.
 
 ## Typography
 
-**Display Font:** Satoshi (with `-apple-system`, `BlinkMacSystemFont`, Segoe UI,
-Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif)
+**Display Font:** Satoshi (with Manrope for Cyrillic, then `-apple-system`,
+`BlinkMacSystemFont`, Segoe UI, Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif)
 **Body Font:** Satoshi — the same face.
 
 **Character:** One family, doing every job. Display and body are the same face
@@ -349,6 +349,15 @@ single-family rule is the brand's own austerity rather than an oversight.
 Only **two** weights are used in production: 400 regular and 700 bold. The package
 binds real Light/Medium/Black cuts as well, but designs should stay on 400/700 to
 match the shipped site.
+
+**Cyrillic is set in Manrope.** Satoshi has no Cyrillic letters, in the files here or
+in Fontshare's current release, so Russian text on codecave.ru and codecave.by used to
+fall through to the system fonts. `--font-sans` names Manrope second, and its one face
+is Google Fonts' Cyrillic subset, so Satoshi still sets every Latin letter, digit and
+punctuation mark in a Russian sentence. Manrope is a geometric sans like Satoshi, set at
+95% so its capitals, small letters and widths come within about 5% of Satoshi's. It has
+no italic and no 900: emphasis is slanted by the browser, and Black asks get its 800.
+Manrope is a stand-in for missing letters, not a second voice: never name it on its own.
 
 ### Hierarchy
 
@@ -950,6 +959,14 @@ and whichever is declared last silently wins. Binding explicit numeric weights i
 what makes a 900 render as 900. It also uses `local()` lookups, which Fontshare's
 own packaging defeats: Light, Medium and Black are separate families there, so three
 of the italics carry no italic bit at all.
+
+**Cyrillic has an eleventh face.** Satoshi has none, so the package declares one
+Manrope face beside the ten Satoshi faces, and codecave.pro declares the same one.
+It is a family of its own rather than an eleventh face under the name Satoshi: font
+matching narrows a family to its italic faces for `<em>` before it reads
+`unicode-range`, so a Cyrillic face inside Satoshi would miss emphasised text or set it
+upright. Manrope is under the SIL Open Font License, and its licence text ships beside
+the file in `src/styles/fonts/`.
 
 **Not a divergence:** the wordmark artwork is still drawn in outlined Montserrat
 Bold rather than Satoshi. That defect is carried forward faithfully — the paths are

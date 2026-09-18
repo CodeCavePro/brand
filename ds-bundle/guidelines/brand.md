@@ -40,6 +40,8 @@ installed, and it must never be re-typed by hand to fake a missing size. Export 
 ## Type
 
 One family: **Satoshi**. Headings bold, long-form copy regular, lead paragraphs light.
+Satoshi has no Cyrillic, so `--font-sans` names **Manrope** second and Russian text is set
+in it; never name Manrope on its own.
 
 The signature pattern is the **eyebrow**: short bold text in `--color-action`, directly above a
 larger light lead line. Use it to open a section rather than inventing a new heading treatment.

@@ -31,7 +31,7 @@ This repository contains resources for the **CODECAVE** brand such as [logos](/d
 | [src/logos/](/src/logos) | The three SVG masters. Every raster in the repository is rendered from these. | yes |
 | [src/styles/](/src/styles) | `colors_and_type.css` — **the deliverable** — and `theme.css`. | yes |
 | [src/tokens/](/src/tokens) | The same tokens as typed TS modules, hand-mirrored from the CSS. | yes |
-| [src/styles/fonts/](/src/styles/fonts) | Six Satoshi cuts (woff2 + woff) and `fonts.css`. | the CSS |
+| [src/styles/fonts/](/src/styles/fonts) | The ten Satoshi cuts (woff2 + woff), the Manrope Cyrillic subset with its licence, and `fonts.css`. | the CSS |
 | [src/components/](/src/components) | Every Vue component, helper and icon the system ships. | yes |
 | [src/captured/](/src/captured) | The eight files copied from codecave.pro. | **never** |
 | [docs/](/docs) | The website — pages, layouts, and the published brand kit. | pages, yes |

@@ -45,7 +45,7 @@ redesign turns into a find-and-replace across your codebase.
 
 ### Already have your own base styles? Import the values only
 
-`@codecavepro/brand/css` is the design system **whole**: the tokens, ten `@font-face`
+`@codecavepro/brand/css` is the design system **whole**: the tokens, eleven `@font-face`
 rules, base rules for `html`, `body`, `h1`–`h6` and `a`, two layout primitives and
 around sixty component classes. That is what you want for a page that should look like
 CODECAVE. It is _not_ what you want in an app that already has a base layer — dropping
@@ -60,8 +60,8 @@ else:
 
 Same 103 properties on `:root`, same values, zero rules. Nothing it declares can change
 how a single existing element renders — a `var()` only takes effect where you write
-one. Fonts come with it only as a _name_: `--font-sans` says Satoshi, and declaring the
-faces stays your call (see below).
+one. Fonts come with it only as a _name_: `--font-sans` says Satoshi, then Manrope for
+the Cyrillic Satoshi lacks, and declaring the faces stays your call (see below).
 
 Use it to end a duplicated palette without signing up for a redesign in the same commit.
 
@@ -78,8 +78,8 @@ file at that URL are provably the same bytes.
 
 ## Fonts: this package ships none
 
-`@codecavepro/brand/css` declares ten `@font-face` rules for **Satoshi**, but **no font
-binaries are included** — that is a licensing question, not an oversight. Until you
+`@codecavepro/brand/css` declares eleven `@font-face` rules, ten for **Satoshi** and one
+for **Manrope**, but **no font binaries are included** — that is a licensing question, not an oversight. Until you
 supply the files, the faces 404 and the browser falls back down the stack
 (`-apple-system`, `Segoe UI`, Roboto, …). Tokens, colours and the type _scale_ are all
 correct regardless; only the typeface is missing.
@@ -87,14 +87,15 @@ correct regardless; only the typeface is missing.
 The two stylesheets expect the files in **different places**, because one is meant to be
 dropped into a project on its own:
 
-| Import                          | `@font-face` URLs             | Put the `.woff2`/`.woff` files at              |
-| ------------------------------- | ----------------------------- | ---------------------------------------------- |
-| `@codecavepro/brand/css`        | `./fonts/Satoshi-*.woff2`     | a `fonts/` directory **beside** the stylesheet |
-| `@codecavepro/brand/fonts.css`  | `./Satoshi-*.woff2`           | **beside** the stylesheet itself               |
-| `@codecavepro/brand/tokens.css` | _none — it declares no faces_ | wherever your own `@font-face` rules point     |
+| Import                          | `@font-face` URLs                                          | Put the `.woff2`/`.woff` files at              |
+| ------------------------------- | ---------------------------------------------------------- | ---------------------------------------------- |
+| `@codecavepro/brand/css`        | `./fonts/Satoshi-*.woff2`, `./fonts/Manrope-Cyrillic.woff2` | a `fonts/` directory **beside** the stylesheet |
+| `@codecavepro/brand/fonts.css`  | `./Satoshi-*.woff2`, `./Manrope-Cyrillic.woff2`             | **beside** the stylesheet itself               |
+| `@codecavepro/brand/tokens.css` | _none — it declares no faces_                              | wherever your own `@font-face` rules point     |
 
 Get the cuts from [Fontshare](https://www.fontshare.com/fonts/satoshi) — 300, 400, 500,
-700 and 900, each upright and italic, which is the ten faces these stylesheets declare.
+700 and 900, each upright and italic, which is the ten Satoshi faces these stylesheets
+declare.
 Bind each with a real `font-weight` descriptor rather than letting the browser
 synthesize; the design system documents why in
 [DESIGN.md §10.3](https://github.com/CodeCavePro/brand/blob/development/DESIGN.md#103-synthesized-vs-real-font-weights).
@@ -104,6 +105,14 @@ Bold and Black _both_ as `font-weight: bold`, and their italics likewise, so fou
 collide into two slots and whichever is declared last silently wins — your `900` text
 renders Bold, or your `700` renders Black, with nothing to indicate which. Take the
 binaries from that download and the declarations from here.
+
+**Satoshi has no Cyrillic, so Manrope sets it.** `--font-sans` names Manrope second, and
+its one face covers only the Cyrillic block, so Satoshi keeps every Latin letter, digit
+and punctuation mark, and a page with no Cyrillic never downloads the file. It is Google
+Fonts' Cyrillic subset of the variable font, weights 300 to 800, in
+[`src/styles/fonts/`](https://github.com/CodeCavePro/brand/tree/development/src/styles/fonts)
+as `Manrope-Cyrillic.woff2`. Manrope is under the SIL Open Font License, so ship
+`Manrope-OFL.txt` from the same folder beside it.
 
 ## The typed module
 

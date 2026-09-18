@@ -6,11 +6,12 @@
  * come from the production `@theme` block; the remaining steps were measured
  * from the rendered site.
  *
- * One family, no display face, no serif, no second sans.
+ * One family, no display face, no serif. Manrope follows Satoshi in the stack
+ * only for the Cyrillic Satoshi lacks; see its @font-face in colors_and_type.css.
  */
 
 export const fontFamily = {
-  sans: 'Satoshi, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", Arial, sans-serif',
+  sans: 'Satoshi, Manrope, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", Arial, sans-serif',
   mono: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
 } as const;
 

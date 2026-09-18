@@ -114,7 +114,8 @@ exist cannot be generalized into one.
 - **Nothing dims on hover.** Hover always raises contrast; only `:disabled`
   reduces it, to opacity 0.2.
 - **One family, two weights in practice.** Satoshi at 400 and 700, with 300/500/900
-  available. Headings 56/44/32px; body 16px.
+  available. Headings 56/44/32px; body 16px. Satoshi has no Cyrillic, so
+  `--font-sans` names Manrope second for Russian text; never name Manrope on its own.
 - **Motion is entrance-only** — GSAP timelines with `stagger: 0.1` and
   `ease: 'circ.out'`, Lenis smooth scroll — and collapses entirely under
   `prefers-reduced-motion: reduce`. CSS owns state changes on three tokens
