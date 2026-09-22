@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, onMounted, nextTick } from 'vue';
+import { computed, ref, onMounted, onBeforeUnmount, nextTick } from 'vue';
 import Shevron from '@assets/icons/shevron.vue';
 import { type MenuItem } from '../lib/menus/menuTypes.ts';
 import { useBrandMessages } from '../lib/i18n/messages.ts';
@@ -97,17 +97,31 @@ async function initSubmenu() {
   openItem.value = activeItem.name;
 }
 
+const subnavRef = ref<HTMLElement | null>(null);
+
+function handleClickOutside(event: MouseEvent) {
+  const target = event.target as Node;
+
+  if (!subnavRef.value?.contains(target)) {
+    openItem.value = null;
+  }
+}
+
 onMounted(async () => {
   await initSubmenu();
+  document.addEventListener('click', handleClickOutside);
+});
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside);
 });
 
 </script>
 
 <template>
-  <nav v-if="items.length" class="ds-subnav" :aria-label="messages.subNavbar.label">
+  <nav v-if="items.length" class="ds-subnav"  ref="subnavRef" :aria-label="messages.subNavbar.label">
     <div class="ds-subnav-inner" :class="{ 'is-submenu-open': openItem }">
-      <ul>
-        <li v-for="item in items" :key="item.name" :ref="el => setItemRef(item.name, el)">
+      <ul class="ds-subnav-list">
+        <li v-for="item in items" :key="item.name" :ref="el => setItemRef(item.name, el)" class="ds-subnav-item">
           <div class="ds-subnav-item" @click="item.subMenu?.length ? openSubmenu(item) : closeSubmenu()">
             <component :is="item.href ? 'a' : 'span'" class="ds-subnav-link" :href="item.href" :aria-current="item.name === current ? 'page' : undefined">
               {{ item.label }}
@@ -171,9 +185,9 @@ onMounted(async () => {
   }
 }
 
-.ds-subnav ul {
+.ds-subnav-list {
   display: flex;
-  align-items: center;
+  align-items: start;
   justify-content: center;
 
   margin: 0;
@@ -186,7 +200,7 @@ onMounted(async () => {
   flex-wrap: nowrap;
 }
 
-.ds-subnav li {
+.ds-subnav-item{
   margin: 0;
   flex-shrink: 0;
 }
@@ -310,10 +324,8 @@ onMounted(async () => {
 
   font-family: var(--font-sans);
   font-size: var(--text-body);
-  font-weight: var(--font-weight-bold);
-  line-height: var(--leading-body);
 
-  text-align: center;
+  text-align: start;
   text-decoration: none;
 
   opacity: 0;

@@ -43,9 +43,9 @@ watch(() => [props.text1, props.text2],
 
 <template>
   <div ref="typingEffectContainer" class="flex flex-col items-center leading-[130%] text-heading-md md:text-heading-lg font-bold">
-    <h2 :key="text1" class="split-text">
+    <h1 :key="text1" class="split-text text-heading text-[36px] md:text-[44px] xl:text-5xl ">
       <span class="block text-heading">{{ text1 }}</span>
       <span class="block text-action">{{ text2 }}</span>
-    </h2>
+    </h1>
   </div>
 </template>
