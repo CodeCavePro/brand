@@ -79,7 +79,7 @@ const handleCloseMenu = () => {
 <template>
   <div>
     <div class="fixed z-50 top-0 w-full bg-surface-primary-transparent backdrop-blur-3xl border-b border-surface-quaternary">
-      <div :class="['px-5 flex flex-col gap-2 transition-all', isMenuOpen ? 'pb-5 h-dvh' : 'pb-0']">
+      <div :class="['px-5 flex flex-col gap-2 transition-all', isMenuOpen ? 'pb-5 h-dvh max-h-140' : 'pb-0']">
         <div class="flex justify-between items-center py-1.5 shrink-0">
           <a :href="homeHref" class="px-1.5 hover:opacity-80 transition-opacity">
             <img :src="logo" alt="CODECAVE" />
