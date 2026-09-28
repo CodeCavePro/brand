@@ -30,7 +30,7 @@ const messages = useBrandMessages()
 <template>
   <div :class="`mx-1 lg:mx-2 testimonial space-y-2 lg:space-y-3 py-10 px-6 lg:px-11 ${className}`">
     <div class="flex flex-col lg:flex-row gap-5 lg:items-center">
-      <img v-if="item.photo.name !== ''" 
+      <img loading="lazy" v-if="item.photo.name !== ''" 
             class="w-12 lg:w-16 h-12 lg:h-16" :src="imageUrl(item.photo.url)"
            :alt=item.photo.name />
       <div>
