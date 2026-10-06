@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<{
   type: 'button',
 })
 
-const buttonBaseClass = `flex items-center justify-center
+const buttonBaseClass = `flex items-center justify-center text-center
 ${props.isDisabled
     ? 'cursor-not-allowed opacity-60'
     : 'cursor-pointer'}

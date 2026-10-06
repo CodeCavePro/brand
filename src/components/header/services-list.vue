@@ -26,7 +26,7 @@ defineProps<{
           <h3 class="font-bold text-heading group-active:text-hovered group-hover:text-hovered transition-colors">
             {{ item.name }}
           </h3>
-          <p class="text-body-secondary-lighter group-active:text-hovered group-hover:text-hovered transition-colors">
+          <p class="text-body-secondary-lighter">
             {{ item.description }}
           </p>
         </div>
