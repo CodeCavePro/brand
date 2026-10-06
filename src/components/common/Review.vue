@@ -35,7 +35,7 @@ const messages = useBrandMessages()
            :alt=item.photo.name />
       <div>
         <div class="flex items-center gap-2">
-          <p class="text-heading text-lg lg:text-xl">{{ item.name }}</p>
+          <p class="text-heading text-lg lg:text-xl font-bold">{{ item.name }}</p>
           <a
               v-if="isCorrectLinkedInFormat(item.linkedinurl)"
               target="_blank"
