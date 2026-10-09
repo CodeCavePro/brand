@@ -77,13 +77,13 @@ const handleChange = (event: Event) => {
     />
 
     <span class="flex min-w-0 items-start">
-      <span class="min-w-0 break-words">
-        {{ label }}
+      <span class="flex min-w-0 items-start">
+        <span class="min-w-0 wrap-break-word text-pretty text-justify">
+          {{ label }}<span v-if="isRequired" class="mx-1 inline-block whitespace-nowrap">
+            <AsteriskIcon class="inline-block align-baseline" />
+          </span>
+        </span>
       </span>
-      <AsteriskIcon
-        v-if="isRequired"
-        class="mx-1 shrink-0"
-      />
     </span>
   </label>
 </template>
