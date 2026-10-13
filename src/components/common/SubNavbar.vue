@@ -118,18 +118,17 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <nav v-if="items.length" class="ds-subnav"  ref="subnavRef" :aria-label="messages.subNavbar.label">
+  <nav v-if="items.length" class="ds-subnav" ref="subnavRef" :aria-label="messages.subNavbar.label">
     <div class="ds-subnav-inner" :class="{ 'is-submenu-open': openItem }">
       <ul class="ds-subnav-list">
-        <li v-for="item in items" :key="item.name" :ref="el => setItemRef(item.name, el)" class="ds-subnav-item">
+        <li v-for="item in items" :key="item.name" :ref="el => setItemRef(item.name, el)">
           <div class="ds-subnav-item" @click="item.subMenu?.length ? openSubmenu(item) : closeSubmenu()">
-            <component :is="item.href ? 'a' : 'span'" class="ds-subnav-link" :href="item.href" :aria-current="item.name === current ? 'page' : undefined">
-              {{ item.label }}
+            <component :is="item.href ? 'a' : 'span'" :class="{
+              'is-open-link': openItem === item.name,
+            }" class="ds-subnav-link" :href="item.href" :aria-current="item.name === current ? 'page' : undefined">
+              <span>{{ item.label }}</span>
+              <Shevron v-if="item.subMenu?.length" class="ds-subnav-chevron" :class="{ 'is-open': openItem === item.name }" aria-hidden="true" />
             </component>
-
-            <span v-if="item.subMenu?.length" class="ds-subnav-toggle" aria-hidden="true">
-              <Shevron class="ds-subnav-chevron" :class="{ 'is-open': openItem === item.name }" />
-            </span>
           </div>
         </li>
       </ul>
@@ -200,22 +199,26 @@ onBeforeUnmount(() => {
   flex-wrap: nowrap;
 }
 
-.ds-subnav-item{
+.ds-subnav-item {
   margin: 0;
   flex-shrink: 0;
-}
-
-.ds-subnav-item {
   display: flex;
   align-items: center;
   cursor: pointer;
 }
+
+.ds-subnav-chevron.is-open {
+  transform: rotate(180deg);
+  color: var(--color-hovered);
+}
+
 
 .ds-subnav-link {
   box-sizing: border-box;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.5rem;
   min-height: var(--control-height);
   padding: 0.5rem 1.5rem;
   border-radius: var(--radius-pill);
@@ -232,42 +235,25 @@ onBeforeUnmount(() => {
 
 .ds-subnav-link:hover,
 .ds-subnav-link:active,
-.ds-subnav-link[aria-current='page'] {
+.ds-subnav-link[aria-current='page'],
+.ds-subnav-link.is-open-link,
+.ds-subnav-chevron,
+.ds-subnav-item:hover,
+.ds-subnav-item.is-open-link {
   color: var(--color-hovered);
 }
 
-.ds-subnav-toggle {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  margin-left: -0.75rem;
-  padding: 0;
-
-  border: 0;
-  background: transparent;
-  pointer-events: none;
-}
-
 .ds-subnav-chevron {
+  display: block;
+  flex: 0 0 1rem;
   width: 1rem;
   height: 1rem;
-
   color: var(--color-heading);
   pointer-events: none;
 
   transition:
     transform 0.25s ease,
     color 0.25s ease;
-
-}
-
-.ds-subnav-item:hover .ds-subnav-chevron {
-  color: var(--color-hovered);
-}
-
-.ds-subnav-chevron.is-open {
-  transform: rotate(180deg);
 }
 
 .ds-submenu-overlay {
@@ -285,8 +271,10 @@ onBeforeUnmount(() => {
   background: var(--color-surface-primary);
 
   border: 1px solid var(--color-surface-quaternary);
-  border-top: 0;
-  border-radius: 0 0 1rem 1rem;
+  border-top: none;
+  border-radius: 1rem;
+
+  overflow: hidden;
 }
 
 .ds-submenu-overlay.is-open {
