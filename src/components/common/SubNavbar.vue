@@ -237,8 +237,7 @@ onBeforeUnmount(() => {
 .ds-subnav-link:active,
 .ds-subnav-link[aria-current='page'],
 .ds-subnav-link.is-open-link,
-.ds-subnav-chevron,
-.ds-subnav-item:hover,
+.ds-subnav-item:hover .ds-subnav-chevron,
 .ds-subnav-item.is-open-link {
   color: var(--color-hovered);
 }
