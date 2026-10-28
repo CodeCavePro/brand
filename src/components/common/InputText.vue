@@ -38,6 +38,7 @@ defineEmits(['update:modelValue'])
         :placeholder="placeholder"
         :required="isRequired"
         :value="modelValue"
+        @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
         :aria-invalid="isError ? 'true' : undefined"
         :aria-describedby="isError ? `${id}-error` : undefined"
         :class="`
