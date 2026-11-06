@@ -94,7 +94,7 @@ const handleCloseMenu = () => {
               isMenuOpen ? 'text-action' : 'text-heading'
             ]"
           >
-            <span :class="isMenuOpen ? 'cross' : 'burger'"></span>
+            <span :class="['burger-icon', { 'is-open': isMenuOpen }]"></span>
           </button>
         </div>
         <nav v-if="isMenuOpen" class="flex-1 min-h-0 overflow-hidden text-sm">
@@ -139,7 +139,8 @@ const handleCloseMenu = () => {
   height: 3rem;
 }
 
-.burger {
+.burger-icon {
+  position: relative;
   width: 100%;
   height: 0.1rem;
   background-color: currentColor;
@@ -147,24 +148,43 @@ const handleCloseMenu = () => {
   box-shadow:
     0 -0.4rem 0 currentColor,
     0 0.4rem 0 currentColor;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.2s ease;
 }
 
-.cross {
-  width: 100%;
-  height: 0.1rem;
-  background-color: currentColor;
-  border-radius: 3rem;
-  transform: rotate(45deg);
-  position: relative;
-}
-
-.cross::after {
+.burger-icon::after {
   content: '';
   position: absolute;
   inset: 0;
   background-color: currentColor;
   border-radius: 3rem;
+  opacity: 0;
+  transform: rotate(0deg);
+  transition:
+    transform 0.3s ease,
+    opacity 0.15s ease;
+}
+
+/* Outer bars collapse into the middle one, the whole icon turns 45deg and
+ * ::after swings to 90deg -- the cross. Removing .is-open plays it back. */
+.burger-icon.is-open {
+  transform: rotate(45deg);
+  box-shadow:
+    0 0 0 currentColor,
+    0 0 0 currentColor;
+}
+
+.burger-icon.is-open::after {
+  opacity: 1;
   transform: rotate(90deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .burger-icon,
+  .burger-icon::after {
+    transition: none;
+  }
 }
 
 .services-scroll {
