@@ -99,9 +99,11 @@ const handleCloseMenu = () => {
         </div>
         <nav v-if="isMenuOpen" class="flex-1 min-h-0 overflow-hidden text-sm">
           <div v-if="isServicesOpen" class="h-full flex flex-col min-h-0">
-            <h2 class="text-center font-bold text-body-primary py-2.5 shrink-0">
-              {{ servicesItem?.submenuTitle }}
-            </h2>
+            <div class="flex items-center justify-center h-11 pt-2 shrink-0 box-content">
+              <h2 class="font-bold text-body-primary">
+                {{ servicesItem?.submenuTitle }}
+              </h2>
+            </div>
             <div class="services-scroll flex-1 min-h-0 overflow-y-auto overscroll-contain">
               <slot name="services" />
             </div>
@@ -111,7 +113,7 @@ const handleCloseMenu = () => {
             </button>
           </div>
           <ul v-else class="flex flex-col items-center gap-3 px-4 pt-2 overflow-y-auto">
-            <li v-for="(item, index) in items" :key="index">
+            <li v-for="(item, index) in items" :key="index" :class="{ 'h-11 flex items-center': item.submenu?.length }">
               <div v-if="item.submenu?.length">
                 <Button :title="item.name" variant="ghost" class="pr-1 transition-transform duration-150" @click="isServicesOpen = true">
                   <Shevron class="ml-1 rotate-270" />

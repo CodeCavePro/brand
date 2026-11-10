@@ -10,7 +10,7 @@ const props = defineProps<{
 </script>
 
 <template>
-    <div class="flex flex-col md:flex-row gap-1 md:gap-6 text-lg md:text-xl">
+    <div class="flex flex-col gap-1 md:flex-row md:gap-6 items-center justify-center text-lg md:text-xl">
       <div v-for="brow in props.brows">
           <div class="space-x-1 text-body-primary">
             <span>{{ brow.header }}</span>
