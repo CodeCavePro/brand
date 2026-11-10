@@ -18,7 +18,7 @@ const labelClass = computed(() => {
     case 'secondary':
       return `${baseLabelClass} gap-3 p-3 pr-4 bg-surface-primary-transparent rounded-custom border-2 border-surface-quaternary group-hover:bg-surface-tertiary`
     default:
-      return `${baseLabelClass} gap-2 py-2 px-3 bg-surface-secondary rounded-lg  border border-surface-tertiary`
+      return `${baseLabelClass} gap-2 py-3 px-4 bg-surface-secondary rounded-lg  border border-surface-tertiary`
   }
 })
 
@@ -40,7 +40,7 @@ const isChecked = computed(() => props.modelValue === value.value)
       :checked="isChecked"
       @change="emit('update:modelValue', value)"
     />
-    <span class="text-xs whitespace-nowrap">
+    <span class="text-sm whitespace-nowrap">
       {{ label }}
     </span>
   </label>

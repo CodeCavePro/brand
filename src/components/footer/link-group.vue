@@ -29,7 +29,7 @@ const labelId = useId()
     <p :id="labelId" class="text-body-secondary uppercase font-bold text-xs" >
       {{ groupName }}
     </p>
-    <ul class="space-y-3 xl:space-y-2 text-sm">
+    <ul class="space-y-4 xl:space-y-2 text-sm">
       <li v-for="(item, index) in items" :key="index">
         <Button
             :title="item.name"
