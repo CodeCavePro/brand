@@ -77,6 +77,7 @@ const formData = ref({
     required: props.definition.communicationConsent.required,
   },
 })
+const formRef = ref<HTMLFormElement | null>(null)
 
 const services = computed(() => props.definition.services.options ?? [])
 
@@ -152,6 +153,9 @@ const isSubmitting = ref(false)
 const isFormSubmitted = ref(false)
 const submitContactsForm = async () => {
   if (isSubmitting.value || !validateForm()) {
+
+    formRef.value?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    formRef.value?.focus();
     return
   }
 
@@ -261,7 +265,7 @@ const preventInvalidInput = (event, pattern) => {
 </script>
 
 <template>
-  <form class="flex flex-col gap-14 relative" novalidate>
+  <form ref="formRef" class="flex flex-col gap-14 relative" novalidate>
     <div class="space-y-5">
       <fieldset class="space-y-2">
         <InputText id="email" v-model="formData.email.value" :isRequired=formData.email.required :label=formData.email.label type="email" :isError="!!formData.email.error" :errorMessage="formData.email.error" :placeholder="formData.email.placeholder ?? ''" autocomplete="email" />
