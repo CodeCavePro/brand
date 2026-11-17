@@ -87,11 +87,11 @@ correct regardless; only the typeface is missing.
 The two stylesheets expect the files in **different places**, because one is meant to be
 dropped into a project on its own:
 
-| Import                          | `@font-face` URLs                                          | Put the `.woff2`/`.woff` files at              |
-| ------------------------------- | ---------------------------------------------------------- | ---------------------------------------------- |
+| Import                          | `@font-face` URLs                                           | Put the `.woff2`/`.woff` files at              |
+| ------------------------------- | ----------------------------------------------------------- | ---------------------------------------------- |
 | `@codecavepro/brand/css`        | `./fonts/Satoshi-*.woff2`, `./fonts/Manrope-Cyrillic.woff2` | a `fonts/` directory **beside** the stylesheet |
 | `@codecavepro/brand/fonts.css`  | `./Satoshi-*.woff2`, `./Manrope-Cyrillic.woff2`             | **beside** the stylesheet itself               |
-| `@codecavepro/brand/tokens.css` | _none — it declares no faces_                              | wherever your own `@font-face` rules point     |
+| `@codecavepro/brand/tokens.css` | _none — it declares no faces_                               | wherever your own `@font-face` rules point     |
 
 Get the cuts from [Fontshare](https://www.fontshare.com/fonts/satoshi) — 300, 400, 500,
 700 and 900, each upright and italic, which is the ten Satoshi faces these stylesheets
@@ -164,7 +164,7 @@ Two things to know about it:
 
 ## The components
 
-20 components and 13 icons — the buttons, the form controls and the forms
+21 components and 13 icons — the buttons, the form controls and the forms
 themselves, the nav bar, the footer link group, the article and technology
 cards, the review card and the typing effect codecave.pro renders — ship as
 **source**, byte-for-byte the files the site builds from. Not a reimplementation
