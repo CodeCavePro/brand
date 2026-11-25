@@ -254,12 +254,17 @@
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
                "Liberation Mono", "Courier New", monospace;
 
+  /* One line height for every heading size: the base the steps below share. */
+  --leading-heading: 115%;
+
   --text-heading-lg: 3.5rem;               /* 56px — hero                   */
-  --text-heading-lg--line-height: 130%;
+  --text-heading-lg--line-height: var(--leading-heading);
   --text-heading-md: 2.75rem;              /* 44px — section heading        */
-  --text-heading-md--line-height: 115%;
+  --text-heading-md--line-height: var(--leading-heading);
   --text-heading-sm: 2rem;                 /* 32px — eyebrow + lead pair    */
-  --text-heading-sm--line-height: 110%;
+  --text-heading-sm--line-height: var(--leading-heading);
+  --text-heading-mobile: 2.5rem;           /* 40px — h1 on phones           */
+  --text-heading-mobile--line-height: var(--leading-heading);
 
   /* Named for the thing, not for a t-shirt size — the same rule as RADIUS
    * below, and here for the same reason rather than for symmetry.

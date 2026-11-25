@@ -28,7 +28,7 @@ typography:
     fontFamily: "Satoshi, Manrope, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Noto Sans, Arial, sans-serif"
     fontSize: "56px"
     fontWeight: 700
-    lineHeight: "130%"
+    lineHeight: "115%"
   headline:
     fontFamily: "Satoshi, Manrope, sans-serif"
     fontSize: "44px"
@@ -38,7 +38,7 @@ typography:
     fontFamily: "Satoshi, Manrope, sans-serif"
     fontSize: "32px"
     fontWeight: 700
-    lineHeight: "110%"
+    lineHeight: "115%"
   body:
     fontFamily: "Satoshi, Manrope, sans-serif"
     fontSize: "16px"
@@ -361,9 +361,9 @@ Manrope is a stand-in for missing letters, not a second voice: never name it on 
 
 ### Hierarchy
 
-- **Display** (`--text-heading-lg`, 700, 56px, 130%): hero headline.
+- **Display** (`--text-heading-lg`, 700, 56px, 115%): hero headline.
 - **Headline** (`--text-heading-md`, 700, 44px, 115%): section heading.
-- **Title** (`--text-heading-sm`, 700, 32px, 110%): the eyebrow + lead pair.
+- **Title** (`--text-heading-sm`, 700, 32px, 115%): the eyebrow + lead pair.
 - **Subhead** (`--text-subhead`, 24px, 32px): subsection heading.
 - **Body** (`--text-body`, 400, 16px, 24px): body copy and buttons.
 - **Label** (`--text-caption`, 14px, 20px): captions and form labels.
@@ -372,8 +372,22 @@ Three further steps exist: `--text-stat` (36px / 40px) for stat figures,
 `--text-md` (20px / 28px) for intro copy, and `--text-label` (18px / 28px) for
 names and labels.
 
-The hero steps down responsively: `text-heading-sm` on mobile → `text-heading-md`
-at `md` → `text-heading-lg` at `xl`.
+Every heading size shares one line height, `--leading-heading` (115%); the
+`leading-heading` utility sets it on anything else that reads as a heading.
+
+One more step exists for phones only: `--text-heading-mobile` (40px / 115%),
+the h1 size below `md`.
+
+An h1 or h2 never takes these tokens directly. It takes one heading role, a
+utility shipped in `theme.css`, so a page's h1 stays one step above its h2s
+on every screen width and no h1 or h2 drops below 32px:
+
+| Role | Phone | `md` | `lg` | For |
+| --- | --- | --- | --- | --- |
+| `title-hero` | 40 | 44 | 56 | h1 on landing and hero pages |
+| `title-page` | 40 | 40 | 44 | h1 on articles, listings and detail pages |
+| `title-section` | 32 | 32 | 44 | h2 under a `title-hero` h1 |
+| `title-subsection` | 32 | 32 | 32 | h2 under a `title-page` h1 |
 
 ### Named Rules
 

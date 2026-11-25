@@ -29,9 +29,9 @@ export const fontFamily = {
  * `npm run check:collisions` is what will notice if that ever changes.
  */
 export const fontSize = {
-  headingLg: { size: '3.5rem', lineHeight: '130%' }, //  56px — hero
+  headingLg: { size: '3.5rem', lineHeight: '115%' }, //  56px — hero
   headingMd: { size: '2.75rem', lineHeight: '115%' }, // 44px — section heading
-  headingSm: { size: '2rem', lineHeight: '110%' }, //    32px — eyebrow + lead pair
+  headingSm: { size: '2rem', lineHeight: '115%' }, //    32px — eyebrow + lead pair
   stat: { size: '2.25rem', lineHeight: '2.5rem' }, //    36px — stat figures
   subhead: { size: '1.5rem', lineHeight: '2rem' }, //    24px — subsection heading
   md: { size: '1.25rem', lineHeight: '1.75rem' }, //     20px — intro copy

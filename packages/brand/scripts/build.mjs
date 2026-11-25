@@ -701,12 +701,24 @@ function extractTheme(src) {
   const from = opens[0].index;
   const close = css.indexOf('\n}\n', from);
   if (close === -1) throw new Error(`${rel}: the @theme block is never closed in column 0.`);
-  const block = css.slice(from, close + 2) + '\n';
+  const themeBlock = css.slice(from, close + 2) + '\n';
 
-  const declarations = (block.match(/^\s+--[\w-]+\s*:/gm) ?? []).length;
+  const declarations = (themeBlock.match(/^\s+--[\w-]+\s*:/gm) ?? []).length;
   if (declarations < 30) {
     throw new Error(`${rel}: the @theme block declares only ${declarations} names.`);
   }
+
+  /* The heading roles (title-hero and the rest) are @utility blocks beside the
+   * @theme block. A consumer needs them for the same reason it needs @theme:
+   * without them the class does not exist. Each is located the same way —
+   * opened in column 0, closed by `}` in column 0. */
+  const utilities = [];
+  for (const m of css.matchAll(/^@utility\s+[\w-]+\s*\{[ \t]*$/gm)) {
+    const end = css.indexOf('\n}\n', m.index);
+    if (end === -1) throw new Error(`${rel}: \`${m[0].trim()}\` is never closed in column 0.`);
+    utilities.push(css.slice(m.index, end + 2));
+  }
+  const block = utilities.length ? `${themeBlock}\n${utilities.join('\n\n')}\n` : themeBlock;
 
   const header = [
     '/* ==========================================================================',

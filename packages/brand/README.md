@@ -58,7 +58,7 @@ else:
 @import "@codecavepro/brand/tokens.css";
 ```
 
-Same 103 properties on `:root`, same values, zero rules. Nothing it declares can change
+Same 106 properties on `:root`, same values, zero rules. Nothing it declares can change
 how a single existing element renders — a `var()` only takes effect where you write
 one. Fonts come with it only as a _name_: `--font-sans` says Satoshi, then Manrope for
 the Cyrillic Satoshi lacks, and declaring the faces stays your call (see below).
@@ -131,7 +131,7 @@ import {
 color.action; // '#5F20FE'
 color.surfaceSecondary; // '#0F0F15'
 radius.card; // '1.5rem'
-fontSize.headingLg; // { size: '3.5rem', lineHeight: '130%' }
+fontSize.headingLg; // { size: '3.5rem', lineHeight: '115%' }
 fontSize.body; // { size: '1rem', lineHeight: '1.5rem' }
 spacing.sectionPaddingTop; // '12.5rem'
 ```

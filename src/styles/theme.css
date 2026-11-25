@@ -1,6 +1,6 @@
 /* The Tailwind @theme block — the ORIGIN, and authored here.
  *
- * These 45 entries are what makes Tailwind emit `bg-surface-primary` and the
+ * These 48 entries are what makes Tailwind emit `bg-surface-primary` and the
  * rest. tokens.css carries the values; without an @theme entry the utility does
  * not exist at all, which is why a consumer needs both.
  *
@@ -33,12 +33,15 @@
     --max-width-desktop: 1280px;
     --breakpoint-sm: 457px;
     --font-sans: Satoshi, Manrope, sans-serif;
+    --leading-heading: var(--leading-heading);
     --text-heading-lg: 3.5rem;
-    --text-heading-lg--line-height: 130%;
+    --text-heading-lg--line-height: var(--leading-heading);
     --text-heading-md: 2.75rem;
-    --text-heading-md--line-height: 115%;
+    --text-heading-md--line-height: var(--leading-heading);
     --text-heading-sm: 2rem;
-    --text-heading-sm--line-height: 110%;
+    --text-heading-sm--line-height: var(--leading-heading);
+    --text-heading-mobile: 2.5rem;
+    --text-heading-mobile--line-height: var(--leading-heading);
     --radius-custom: 2.75rem;
 
     /* colors */
@@ -85,4 +88,54 @@
     --color-default-transparent: var(--color-gray-100);
     
     --color-error: var(--color-error-300);
+}
+
+/* Heading roles. An h1 or h2 takes one of these and nothing else for its size,
+ * so that on every screen width a page's h1 stays one step above its h2s:
+ *
+ *                     phone   md     lg
+ *   title-hero        40      44     56    h1 on landing and hero pages
+ *   title-page        40      40     44    h1 on articles, listings, detail pages
+ *   title-section     32      32     44    h2 under a title-hero h1
+ *   title-subsection  32      32     32    h2 under a title-page h1
+ *
+ * 32 is the floor: no h1 or h2 goes below it. They set size and line height
+ * only; colour and weight stay with text-heading and font-bold.
+ *
+ * Shipped in dist/theme.css after the @theme block — build.mjs carries every
+ * @utility in this file across. */
+@utility title-hero {
+    font-size: var(--text-heading-mobile);
+    line-height: var(--text-heading-mobile--line-height);
+    @variant md {
+        font-size: var(--text-heading-md);
+        line-height: var(--text-heading-md--line-height);
+    }
+    @variant lg {
+        font-size: var(--text-heading-lg);
+        line-height: var(--text-heading-lg--line-height);
+    }
+}
+
+@utility title-page {
+    font-size: var(--text-heading-mobile);
+    line-height: var(--text-heading-mobile--line-height);
+    @variant lg {
+        font-size: var(--text-heading-md);
+        line-height: var(--text-heading-md--line-height);
+    }
+}
+
+@utility title-section {
+    font-size: var(--text-heading-sm);
+    line-height: var(--text-heading-sm--line-height);
+    @variant lg {
+        font-size: var(--text-heading-md);
+        line-height: var(--text-heading-md--line-height);
+    }
+}
+
+@utility title-subsection {
+    font-size: var(--text-heading-sm);
+    line-height: var(--text-heading-sm--line-height);
 }
